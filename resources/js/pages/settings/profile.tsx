@@ -15,14 +15,14 @@ import SettingsLayout from '@/layouts/settings/layout';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Profile settings',
-        href: '/settings/profile',
+        href: 'admin/settings/profile',
     },
 ];
 
 type ProfileForm = {
     name: string;
     email: string;
-}
+};
 
 export default function Profile({ mustVerifyEmail, status }: { mustVerifyEmail: boolean; status?: string }) {
     const { auth } = usePage<SharedData>().props;
