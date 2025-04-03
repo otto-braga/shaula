@@ -45,7 +45,7 @@ class WorkController extends Controller
     {
         $works = Work::all();
 
-        return Inertia::render('Admin/Work/Index', [
+        return Inertia::render('admin/work/index', [
             'works' => WorkResource::collection($works),
         ]);
     }
@@ -54,7 +54,7 @@ class WorkController extends Controller
     {
         $people = Person::all();
 
-        return Inertia::render('Admin/Work/Edit/Index',[
+        return Inertia::render('admin/work/edit/index', [
             'work_types' => new JsonResource(self::WORK_TYPES),
             'people' => PersonResource::collection($people),
         ]);
@@ -95,7 +95,7 @@ class WorkController extends Controller
 
         $people = Person::all();
 
-        return Inertia::render('Admin/Work/Edit/Index', [
+        return Inertia::render('admin/work/edit/index', [
             'work' => new WorkResource($work),
             'work_types' => new JsonResource(self::WORK_TYPES),
             'people' => PersonResource::collection($people),
@@ -112,7 +112,7 @@ class WorkController extends Controller
 
         $authors_ids = $dataForm['authors_ids'];
 
-        foreach($request->new_people_names as $new_person_name) {
+        foreach ($request->new_people_names as $new_person_name) {
             $new_person = Person::create(['name' => $new_person_name]);
             array_push($authors_ids, $new_person->id);
         }
@@ -134,7 +134,7 @@ class WorkController extends Controller
         $categories = Category::where('class', $work->workable_type)->get();
         $tags = Tag::all();
 
-        return Inertia::render('Admin/Work/Edit/Relations', [
+        return Inertia::render('admin/work/edit/relations', [
             'work' => new WorkResource($work),
             'cities' => CityResource::collection($cities),
             'languages' => LanguageResource::collection($languages),
@@ -203,7 +203,7 @@ class WorkController extends Controller
     {
         $work = Work::where('uuid', $uuid)->first();
 
-        return Inertia::render('Admin/Work/Edit/Images', [
+        return Inertia::render('admin/work/Edit/Images', [
             'work' => new WorkResource($work),
         ]);
     }
@@ -235,14 +235,14 @@ class WorkController extends Controller
     {
         $work = Work::where('uuid', $uuid)->first();
 
-        return Inertia::render('Admin/Work/Edit/Content', [
+        return Inertia::render('admin/work/Edit/Content', [
             'work' => new WorkResource($work),
         ]);
     }
 
     public function updateContent(WorkUpdateContentRequest $request, $uuid)
     {
-        try{
+        try {
             $work = Work::where('uuid', $uuid)->first();
 
             if ($request->has('files') && count($request->files) > 0) {
@@ -264,8 +264,7 @@ class WorkController extends Controller
             $work->update(['content' => $request->content]);
 
             return redirect()->back()->with('success', 'true');
-        }
-        catch(\Throwable $e){
+        } catch (\Throwable $e) {
             return redirect()->back()->with('error', 'true');
         }
     }
@@ -273,18 +272,18 @@ class WorkController extends Controller
     public function editPeople(String $uuid)
     {
         $work = Work::where('uuid', $uuid)->first()
-        ->load(
-            'people'
-        );
+            ->load(
+                'people'
+            );
 
         $activities = Activity::query()
-        ->where('name', 'not like', 'autoria')
-        ->get();
+            ->where('name', 'not like', 'autoria')
+            ->get();
 
         $people = Person::query()
-        ->get();
+            ->get();
 
-        return Inertia::render('Admin/Work/Edit/People', [
+        return Inertia::render('admin/work/Edit/People', [
             'work' => new WorkResource($work),
             'activities' => ActivityResource::collection($activities),
             'people' => PersonResource::collection($people),
@@ -360,7 +359,7 @@ class WorkController extends Controller
             return redirect()->back();
         }
 
-        $render = 'Admin/Work/Edit/Details/' . class_basename($work->workable_type);
+        $render = 'admin/work/Edit/Details/' . class_basename($work->workable_type);
 
         return Inertia::render($render, [
             'work' => new WorkResource($work),
@@ -374,6 +373,8 @@ class WorkController extends Controller
 
     public function destroy(Work $work)
     {
-        //
+        $work->delete();
+
+        return redirect()->back()->with('success', 'true');
     }
 }

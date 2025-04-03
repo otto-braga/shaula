@@ -1,9 +1,12 @@
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import DeleteDialog from '@/components/ui/delete-dialog';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Work } from '@/types/work';
-import { Head, Link } from '@inertiajs/react';
-import { Edit } from 'lucide-react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { Edit, Eye } from 'lucide-react';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -13,34 +16,28 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ works }: { works: { data: Work[] } }) {
-    console.log(works);
+    const [isOpen, setIsOpen] = useState(false);
+    const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
 
-    // const [confirmingDeletion, setConfirmingDeletion] = useState(false);
-    // const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
+    const { delete: destroy, processing, reset, errors, clearErrors } = useForm();
 
-    // const { delete: destroy, processing, reset, errors, clearErrors } = useForm();
+    const deleteResource = () => {
+        destroy(route('work.destroy', { id: resourceToDelete }), {
+            preserveScroll: true,
+            onSuccess: () => closeModal(),
+            onFinish: () => reset(),
+        });
+    };
 
-    // const confirmDeletion = (uuid: string) => {
-    //     setResourceToDelete(uuid);
-    //     setConfirmingDeletion(true);
-    // };
+    const closeModal = () => {
+        clearErrors();
+        reset();
+        setIsOpen(false);
+    };
 
-    // const deleteUser = () => {
-    //     destroy(route('work.destroy', { id: resourceToDelete }), {
-    //         preserveScroll: true,
-    //         onSuccess: () => closeModal(),
-    //         onFinish: () => reset(),
-    //     });
-    // };
-
-    // const closeModal = () => {
-    //     setConfirmingDeletion(false);
-    //     setResourceToDelete(null);
-    //     clearErrors();
-    //     reset();
-    // };
-
-    // const workToDelete = works?.data?.find((work) => work.uuid === resourceToDelete);
+    const openModal = () => {
+        setIsOpen(true);
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -70,64 +67,46 @@ export default function Index({ works }: { works: { data: Work[] } }) {
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {works?.data?.map((work) => (
-                            <div key={work.id} className="flex flex-col border-b border-gray-700 p-4">
-                                <h3 className="font-semibold">{work.title}</h3>
-                                <p>{work.authors.map((author) => author.name).join(', ')}</p>
-                                {/* <p>{work.categories.map(category => category.name).join(', ')}</p> */}
-                                <small className="font-semibold">{new Date(work.date).toLocaleDateString()}</small>
-                                <br />
-                                <small>{work.description}</small>
-                                <div className="h-full"></div>
-                                <div className="mt-2 flex justify-end gap-2">
-                                    {/* <Button variant={'destructive'} onClick={() => confirmDeletion(work.uuid)}>
-                                        <Delete className="h-5 w-5" />
-                                    </Button> */}
-                                    <Link href={route('work.edit', { id: work.uuid })}>
-                                        <Button variant={'destructive'}>
-                                            <Edit className="h-5 w-5" />
-                                        </Button>
-                                    </Link>
-                                    {/* <Link href={route('work.show', { id: work.uuid })}>
-                                            <PrimaryButton>
-                                                <RemoveRedEye className='w-5 h-5' />
-                                            </PrimaryButton>
-                                        </Link> */}
-                                </div>
-                            </div>
+                            <Card key={work.id} className="flex flex-col justify-between">
+                                <CardHeader>
+                                    <CardTitle>
+                                        <h3 className="line-clamp-1 font-semibold">{work.title}</h3>
+                                    </CardTitle>
+                                    <CardDescription>
+                                        <p className="line-clamp-2">{work.description}</p>
+                                    </CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div>
+                                        <p className="text-sm">Autores</p>
+                                        <p>{work.authors.map((author) => author.name).join(', ')}</p>
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <div className="mt-2 flex w-full justify-end gap-2">
+                                        <DeleteDialog
+                                            resourceId={work.id}
+                                            resourceName={work.title}
+                                            deleteRoute="work.destroy"
+                                            onSuccess={() => window.location.reload()}
+                                        />
+                                        <Link href={route('work.edit', { id: work.id })}>
+                                            <Button variant={'secondary'}>
+                                                <Edit className="h-5 w-5" />
+                                            </Button>
+                                        </Link>
+                                        <Link href={route('work.show', { id: work.uuid })}>
+                                            <Button variant={'secondary'}>
+                                                <Eye className="h-5 w-5" />
+                                            </Button>
+                                        </Link>
+                                    </div>
+                                </CardFooter>
+                            </Card>
                         ))}
                     </div>
                 </div>
             </section>
-
-            {/* {workToDelete && (
-                <Modal show={confirmingDeletion} onClose={closeModal}>
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            deleteUser();
-                        }}
-                        className="p-6"
-                    >
-                        <h2 className="text-lg font-medium text-gray-900 dark:text-gray-100">
-                            Tem certeza que deseja deletar o departamento {workToDelete.id}?
-                        </h2>
-
-                        <p className="mt-1 text-sm text-gray-600 dark:text-gray-400">
-                            Uma vez que o departamento é deletado, todos os seus recursos e dados serão permanentemente deletados.
-                        </p>
-
-                        <div className="mt-6 flex justify-end">
-                            <Button variant={'secondary'} onClick={closeModal}>
-                                Cancelar
-                            </Button>
-
-                            <Button variant={'destructive'} className="ms-3" disabled={processing}>
-                                Deletar Departamento
-                            </Button>
-                        </div>
-                    </form>
-                </Modal>
-            )} */}
         </AppLayout>
     );
 }

@@ -60,6 +60,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/work/{uuid}/update/people', [WorkController::class, 'updatePeople'])->name('work.update.people');
     Route::get('/work/{uuid}/edit/details', [WorkController::class, 'editDetails'])->name('work.edit.details');
 
+    Route::delete('/work/{id}/delete', [WorkController::class, 'destroy'])->name('work.destroy');
+
     Route::post('/work/{uuid}/update/details/artwork', [ArtworkController::class, 'update'])->name('artwork.update');
 });
 
