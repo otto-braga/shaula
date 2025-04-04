@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Person, personLabel } from '@/types/person';
+import { Person } from '@/types/person';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
@@ -104,29 +104,13 @@ export default function Index({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />
-            {/* <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                </div>
-            </div> */}
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
-                        <form onSubmit={submit} className="space-y-6 bg-inherit">
+                        <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <Tabs work={work} processing={processing} />
                             {isEdit}
-                            <div>
+                            <div className="max-w-sm">
                                 <Label htmlFor="work_type">Tipo de Produção</Label>
                                 <Select
                                     id="work_type"
@@ -138,6 +122,19 @@ export default function Index({
                                     }}
                                     className="w-full"
                                     isDisabled={isEdit}
+                                    styles={{
+                                        multiValue: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#d2d2d2',
+                                        }),
+                                        option(base, props) {
+                                            return {
+                                                ...base,
+                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
+                                                color: props.isFocused ? 'white' : 'black',
+                                            };
+                                        },
+                                    }}
                                 />
                                 <InputError className="mt-2" message={errors.work_type} />
                             </div>
@@ -148,25 +145,38 @@ export default function Index({
                                 <InputError className="mt-2" message={errors.title} />
                             </div>
 
-                            <div>
+                            <div className="max-w-sm">
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
                                     id="authors_ids"
                                     isMulti
-                                    options={availablePeople.map((person) => ({ value: person.id, label: personLabel(person) }))}
-                                    value={totalSelectedPeople.map((person) => ({ value: person.id, label: personLabel(person) }))}
+                                    options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
+                                    value={totalSelectedPeople.map((person) => ({ value: person.id, label: person.name }))}
                                     onChange={(options) => {
                                         setSelectedPeople(
                                             availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
                                         );
                                     }}
                                     isDisabled={isEdit}
+                                    styles={{
+                                        multiValue: (base) => ({
+                                            ...base,
+                                            backgroundColor: '#d2d2d2',
+                                        }),
+                                        option(base, props) {
+                                            return {
+                                                ...base,
+                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
+                                                color: props.isFocused ? 'white' : 'black',
+                                            };
+                                        },
+                                    }}
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
 
-                            <div className="flex flex-row gap-8">
-                                <div className="w-full">
+                            <div className="flex flex-row gap-3">
+                                <div>
                                     <Label htmlFor="date">Data de Início</Label>
                                     <Input
                                         id="date"
@@ -178,7 +188,7 @@ export default function Index({
                                     />
                                     <InputError className="mt-2" message={errors.date} />
                                 </div>
-                                <div className="w-full">
+                                <div>
                                     <Label htmlFor="date_end">Data de término</Label>
                                     <Input
                                         id="date_end"

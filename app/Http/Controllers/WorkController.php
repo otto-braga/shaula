@@ -89,9 +89,9 @@ class WorkController extends Controller
         //
     }
 
-    public function edit(String $uuid)
+    public function edit(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first()->load('authors');
+        $work->load('authors');
 
         $people = Person::all();
 

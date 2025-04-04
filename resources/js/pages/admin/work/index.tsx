@@ -90,7 +90,7 @@ export default function Index({ works }: { works: { data: Work[] } }) {
                                             deleteRoute="work.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('work.edit', { id: work.id })}>
+                                        <Link href={route('work.edit', { work: work })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
