@@ -7,7 +7,7 @@ import { Person } from '@/types/person';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import Select from 'react-select';
+import Select, { MultiValue } from 'react-select';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -17,18 +17,18 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-interface WorkType {
+interface WorkableType {
     value: string;
     label: string;
 }
 
 export default function Index({
     work,
-    work_types,
+    workable_types,
     people,
 }: {
     work: { data: Work };
-    work_types?: { data: WorkType[] };
+    workable_types?: { data: WorkableType[] };
     people?: { data: Person[] };
 }) {
     const isEdit = !!work;
@@ -36,13 +36,12 @@ export default function Index({
     // form
 
     const { data, setData, post, patch, errors, processing } = useForm({
-        work_type: work ? work.data.work_type : work_types?.data[0].value,
+        workable_type: work ? work.data.workable_type : workable_types?.data[0].value,
         title: work ? work.data.title : '',
         date: work ? work.data.date : '',
         date_end: work ? work.data.date_end : '',
         description: work ? work.data.description : '',
         authors_ids: work ? work.data.authors.map((author) => author.id) : [],
-        new_people_names: Array<string>(),
     });
 
     const submit: FormEventHandler = (e) => {
@@ -65,41 +64,30 @@ export default function Index({
 
     // work type
 
-    const [selectedWorkType, setSelectedWorkType] = useState<WorkType>(
-        work_types?.data.find((type) => type.value === data.work_type) || work_types?.data[0] || { value: '', label: '' },
+    const [selectedWorkableType, setSelectedWorkableType] = useState<WorkableType>(
+        workable_types?.data.find((type) => type.value === data.workable_type) || workable_types?.data[0] || { value: '', label: '' },
     );
 
     useEffect(() => {
-        setData('work_type', selectedWorkType?.value ?? '');
-    }, [selectedWorkType]);
+        setData('workable_type', selectedWorkableType?.value ?? '');
+    }, [selectedWorkableType]);
 
     // people
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
+    const [availablePeople, setAvailablePeople] = useState<Person[]>(
+        people?.data.filter((person) => !work?.data.authors.map((author) => author.id).includes(person.id))
+        || []);
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(work?.data.authors || []);
-    const [newPeople, setNewPeople] = useState<Person[]>([]);
-    const [totalSelectedPeople, setTotalSelectedPeople] = useState<Person[]>([]);
-
-    function addNewPerson(newPerson: Person) {
-        if (newPeople.find((person) => person.name === newPerson.name)) return;
-        setNewPeople([...newPeople, newPerson]);
-    }
 
     useEffect(() => {
-        setData(
-            'new_people_names',
-            newPeople.map((person) => person.name),
-        );
-        setTotalSelectedPeople(selectedPeople.concat(newPeople));
-    }, [newPeople]);
-
-    useEffect(() => {
-        setData(
-            'authors_ids',
-            selectedPeople.filter((person) => person.id > 0).map((person) => person.id),
-        );
-        setTotalSelectedPeople(selectedPeople.concat(newPeople));
+        setData('authors_ids', selectedPeople.map((person) => person.id));
     }, [selectedPeople]);
+
+    const onChangePeople = (options: MultiValue<{ value: number; label: string }>) => {
+        setSelectedPeople(
+            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
+        );
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -111,14 +99,14 @@ export default function Index({
                             <Tabs work={work} processing={processing} />
                             {isEdit}
                             <div className="max-w-sm">
-                                <Label htmlFor="work_type">Tipo de Produção</Label>
+                                <Label htmlFor="workable_type">Tipo de Produção</Label>
                                 <Select
-                                    id="work_type"
-                                    options={work_types?.data}
-                                    defaultValue={selectedWorkType}
+                                    id="workable_type"
+                                    options={workable_types?.data}
+                                    defaultValue={selectedWorkableType}
                                     onChange={(option) => {
-                                        setSelectedWorkType(option as WorkType);
-                                        setData('work_type', (option as WorkType).value);
+                                        setSelectedWorkableType(option as WorkableType);
+                                        setData('workable_type', (option as WorkableType).value);
                                     }}
                                     className="w-full"
                                     isDisabled={isEdit}
@@ -136,7 +124,7 @@ export default function Index({
                                         },
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.work_type} />
+                                <InputError className="mt-2" message={errors.workable_type} />
                             </div>
 
                             <div>
@@ -151,13 +139,8 @@ export default function Index({
                                     id="authors_ids"
                                     isMulti
                                     options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    value={totalSelectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => {
-                                        setSelectedPeople(
-                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
-                                        );
-                                    }}
-                                    isDisabled={isEdit}
+                                    value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
+                                    onChange={(options) => onChangePeople(options)}
                                     styles={{
                                         multiValue: (base) => ({
                                             ...base,
