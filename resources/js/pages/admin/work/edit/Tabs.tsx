@@ -64,7 +64,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                             >
                                 Conteúdo
                             </Link>
-                            {work?.data.work_type !== 'review' && (
+                            {work?.data.workable_type !== 'review' && (
                                 <Link
                                     className={
                                         'px-3' +

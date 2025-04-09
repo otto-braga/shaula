@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\WorkType;
+use App\Models\WorkableType;
 use Illuminate\Http\Request;
 
-class WorkTypeController extends Controller
+class WorkableTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -34,7 +34,7 @@ class WorkTypeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(WorkType $workType)
+    public function show(WorkableType $workableType)
     {
         //
     }
@@ -42,7 +42,7 @@ class WorkTypeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(WorkType $workType)
+    public function edit(WorkableType $workableType)
     {
         //
     }
@@ -50,7 +50,7 @@ class WorkTypeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, WorkType $workType)
+    public function update(Request $request, WorkableType $workableType)
     {
         //
     }
@@ -58,7 +58,7 @@ class WorkTypeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(WorkType $workType)
+    public function destroy(WorkableType $workableType)
     {
         //
     }

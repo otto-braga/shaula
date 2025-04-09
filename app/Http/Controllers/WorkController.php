@@ -33,7 +33,7 @@ class WorkController extends Controller
 {
     use HasFile;
 
-    const WORK_TYPES = [
+    const WORKABLE_TYPES = [
         ['value' => 'App\Models\Artwork', 'label' => 'Obra'],
         ['value' => 'App\Models\Review', 'label' => 'Crítica'],
         ['value' => 'App\Models\Source', 'label' => 'Fonte'],
@@ -55,7 +55,7 @@ class WorkController extends Controller
         $people = Person::all();
 
         return Inertia::render('admin/work/edit/index', [
-            'work_types' => new JsonResource(self::WORK_TYPES),
+            'workable_types' => new JsonResource(self::WORKABLE_TYPES),
             'people' => PersonResource::collection($people),
         ]);
     }
@@ -63,21 +63,15 @@ class WorkController extends Controller
     public function store(WorkStoreRequest $request)
     {
         $dataForm = $request->all();
-        $dataForm['workable_type'] = $dataForm['work_type'];
-        $workable = $dataForm['work_type']::create();
+
+
+        $workable = $dataForm['workable_type']::create();
         $dataForm['workable_id'] = $workable->id;
 
         $work = Work::create($dataForm);
 
-        $authors_ids = $dataForm['authors_ids'];
-
-        foreach ($request->new_people_names as $new_person_name) {
-            $new_person = Person::create(['name' => $new_person_name]);
-            array_push($authors_ids, $new_person->id);
-        }
-
         $work->people()->syncWithPivotValues(
-            $authors_ids,
+            $dataForm['authors_ids'],
             ['activity_id' => Activity::where('name', 'autoria')->first()->id]
         );
 
@@ -97,7 +91,7 @@ class WorkController extends Controller
 
         return Inertia::render('admin/work/edit/index', [
             'work' => new WorkResource($work),
-            'work_types' => new JsonResource(self::WORK_TYPES),
+            'workable_types' => new JsonResource(self::WORKABLE_TYPES),
             'people' => PersonResource::collection($people),
         ]);
     }

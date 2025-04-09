@@ -18,7 +18,7 @@ export type Work = {
     description: string;
     content: string;
 
-    work_type: string;
+    workable_type: string;
     workable: Artwork | Review;
 
     authors: Person[];

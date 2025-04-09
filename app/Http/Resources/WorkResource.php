@@ -41,7 +41,7 @@ class WorkResource extends JsonResource
             'description' => $model->description,
             'content' => $model->content,
 
-            'work_type' => $model->workable_type,
+            'workable_type' => $model->workable_type,
             'workable' => $this->castResource($model),
 
             'files' => FileResource::collection($model->files),
