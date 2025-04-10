@@ -36,6 +36,7 @@ export default function Index({
 }) {
     const isEdit = !!work;
 
+    // -------------------------------------------------------------------------
     // form
 
     const { data, setData, post, patch, errors, processing } = useForm({
@@ -64,6 +65,7 @@ export default function Index({
         }
     };
 
+    // -------------------------------------------------------------------------
     // work type
 
     const [selectedWorkableType, setSelectedWorkableType] = useState<WorkableType>(
@@ -74,6 +76,7 @@ export default function Index({
         setData('workable_type', selectedWorkableType?.value ?? '');
     }, [selectedWorkableType]);
 
+    // -------------------------------------------------------------------------
     // people
 
     const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
@@ -85,6 +88,9 @@ export default function Index({
             selectedPeople.map((person) => person.id),
         );
     }, [selectedPeople]);
+
+    // -------------------------------------------------------------------------
+    // render
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

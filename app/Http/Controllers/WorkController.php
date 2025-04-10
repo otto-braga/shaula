@@ -43,6 +43,9 @@ class WorkController extends Controller
         ['value' => 'App\Models\Exhibit', 'label' => 'Exposição'],
     ];
 
+    // -------------------------------------------------------------------------
+    // BASE
+
     public function index()
     {
         $works = Work::query()
@@ -118,6 +121,93 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'true');
     }
 
+    public function destroy(Work $work)
+    {
+        $work->delete();
+
+        return redirect()->back()->with('success', 'true');
+    }
+
+    // -------------------------------------------------------------------------
+    // PEOPLE
+
+    public function editPeople(Work $work)
+    {
+        $work->load('people');
+
+        $activities = Activity::query()
+            ->where('name', 'not like', 'autoria')
+            ->get();
+
+        $people = Person::query()
+            ->get();
+
+        return Inertia::render('admin/work/edit/people', [
+            'work' => new WorkResource($work),
+            'activities' => ActivityResource::collection($activities),
+            'people' => PersonResource::collection($people),
+        ]);
+    }
+
+    public function updatePeople(WorkUpdatePeopleRequest $request, Work $work)
+    {
+        $activities = $request->activities;
+
+        if ($activities) {
+            foreach ($activities as $activity) {
+                if ($activity['people'] === null || count($activity['people']) < 1) {
+                    $work->people()
+                        ->wherePivot('activity_id', $activity['id'])
+                        ->detach();
+                    continue;
+                }
+
+                foreach ($activity['people'] as $person) {
+                    if (in_array($person['id'], $work->people->pluck('id')->toArray())) {
+                        if (
+                            !in_array(
+                                $activity['id'],
+                                $work->people->where('id', $person['id'])
+                                    ->pluck('pivot.activity_id')->toArray()
+                            )
+                        ) {
+                            $work->people()->attach(
+                                $person['id'],
+                                ['activity_id' => $activity['id']]
+                            );
+                        }
+                    } else {
+                        $work->people()->attach(
+                            $person['id'],
+                            ['activity_id' => $activity['id']]
+                        );
+                    }
+                }
+            }
+
+            $work->people()
+                ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
+                ->detach();
+
+            foreach ($work->people as $person) {
+                if (
+                    !in_array(
+                        $person->id,
+                        collect($activities)->pluck('people')
+                            ->flatten(1)->pluck('id')->toArray()
+                    )
+                ) {
+                    $work->people()->detach($person->id);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'true');
+    }
+
+    // -------------------------------------------------------------------------
+    // RELATIONS
+
     public function editRelations(Work $work)
     {
         $cities = City::all();
@@ -189,6 +279,9 @@ class WorkController extends Controller
         return redirect()->back();
     }
 
+    // -------------------------------------------------------------------------
+    // IMAGES
+
     public function editImages(Work $work)
     {
         return Inertia::render('admin/work/Edit/Images', [
@@ -216,6 +309,9 @@ class WorkController extends Controller
 
         return redirect()->back()->with('success', 'true');
     }
+
+    // -------------------------------------------------------------------------
+    // CONTENT
 
     public function editContent(Work $work)
     {
@@ -251,82 +347,8 @@ class WorkController extends Controller
         }
     }
 
-    public function editPeople(Work $work)
-    {
-        $work->load('people');
-
-        $activities = Activity::query()
-            ->where('name', 'not like', 'autoria')
-            ->get();
-
-        $people = Person::query()
-            ->get();
-
-        return Inertia::render('admin/work/edit/people', [
-            'work' => new WorkResource($work),
-            'activities' => ActivityResource::collection($activities),
-            'people' => PersonResource::collection($people),
-        ]);
-    }
-
-    public function updatePeople(WorkUpdatePeopleRequest $request, Work $work)
-    {
-        $activities = $request->activities;
-
-        if ($activities) {
-            foreach ($activities as $activity) {
-                if ($activity['id'] < 0) {
-                    $new_activity = Activity::create(['name' => $activity['name']]);
-                    $activity['id'] = $new_activity->id;
-                }
-
-                foreach ($activity['people'] as $person) {
-                    if ($person['id'] < 0) {
-                        $new_person = Person::create(['name' => $person['name']]);
-                        $person['id'] = $new_person->id;
-                    }
-
-                    if (in_array($person['id'], $work->people->pluck('id')->toArray())) {
-                        if (
-                            !in_array(
-                                $activity['id'],
-                                $work->people->where('id', $person['id'])
-                                    ->pluck('pivot.activity_id')->toArray()
-                            )
-                        ) {
-                            $work->people()->attach(
-                                $person['id'],
-                                ['activity_id' => $activity['id']]
-                            );
-                        }
-                    } else {
-                        $work->people()->attach(
-                            $person['id'],
-                            ['activity_id' => $activity['id']]
-                        );
-                    }
-                }
-            }
-
-            $work->people()
-                ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-                ->detach();
-
-            foreach ($work->people as $person) {
-                if (
-                    !in_array(
-                        $person->id,
-                        collect($activities)->pluck('people')
-                            ->flatten(1)->pluck('id')->toArray()
-                    )
-                ) {
-                    $work->people()->detach($person->id);
-                }
-            }
-        }
-
-        return redirect()->back()->with('success', 'true');
-    }
+    // -------------------------------------------------------------------------
+    // DETAILS
 
     public function editDetails(Work $work)
     {
@@ -345,11 +367,4 @@ class WorkController extends Controller
     // {
     //     return redirect()->back();
     // }
-
-    public function destroy(Work $work)
-    {
-        $work->delete();
-
-        return redirect()->back()->with('success', 'true');
-    }
 }

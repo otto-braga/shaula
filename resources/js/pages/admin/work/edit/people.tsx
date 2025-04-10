@@ -7,6 +7,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select/creatable';
+import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -32,16 +33,21 @@ export default function People({
         activities: Array<ActivityWithPeople>(),
     });
 
+    // -------------------------------------------------------------------------
+    // form
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('work.update.people', work.data.uuid), {
+        post(route('work.update.people', work.data), {
             preserveScroll: true,
             preserveState: false,
         });
     };
 
+    // -------------------------------------------------------------------------
+    // activities
+
     const [availableActivities, setAvailableActivities] = useState<Activity[]>(activities?.data || []);
-    const [selectedActivities, setSelectedActivities] = useState<ActivityWithPeople[]>([]);
     const [loadedActivities, setLoadedActivities] = useState<ActivityWithPeople[]>(
         work.data.people
             .map((person) => ({
@@ -52,6 +58,7 @@ export default function People({
             .flat()
             .filter((activity, index, self) => self.findIndex((a) => a.id === activity.id) === index),
     );
+    const [selectedActivities, setSelectedActivities] = useState<ActivityWithPeople[]>([]);
 
     useEffect(() => {
         setSelectedActivities(loadedActivities);
@@ -60,36 +67,17 @@ export default function People({
         );
     }, [loadedActivities]);
 
-    function addNewActivity(newActivity: Activity) {
-        if (
-            availableActivities
-                .concat(selectedActivities.map((activity) => ({ id: activity.id, name: activity.name })))
-                .find((activity) => activity.name === newActivity.name)
-        )
-            return;
-        setAvailableActivities([...availableActivities, newActivity]);
-        setSelectedActivities(selectedActivities.concat({ id: newActivity.id, name: newActivity.name, people: [] }));
-        setAvailableActivities(availableActivities.filter((activity) => activity.id != newActivity.id));
-    }
-
     useEffect(() => {
         setData('activities', selectedActivities);
     }, [selectedActivities]);
 
+    // -------------------------------------------------------------------------
+    // people
+
     const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
 
-    function addNewPerson(newPerson: Person, activity: ActivityWithPeople) {
-        if (availablePeople.find((person) => person.name === newPerson.name)) return;
-        setAvailablePeople([...availablePeople, newPerson]);
-        setSelectedActivities(
-            selectedActivities.map((selectedActivity) => {
-                if (selectedActivity.id == activity.id) {
-                    return { ...selectedActivity, people: selectedActivity.people.concat({ id: newPerson.id, name: newPerson.name }) };
-                }
-                return selectedActivity;
-            }),
-        );
-    }
+    // -------------------------------------------------------------------------
+    // render
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -104,7 +92,6 @@ export default function People({
                                 <Select
                                     id="activities_ids"
                                     options={availableActivities.map((activity) => ({ value: activity.id, label: activity.name }))}
-                                    onCreateOption={(name) => addNewActivity({ id: -1, name: name } as Activity)}
                                     onChange={(option) => {
                                         setSelectedActivities(
                                             selectedActivities.concat(
@@ -115,7 +102,7 @@ export default function People({
                                         );
                                         setAvailableActivities(availableActivities.filter((activity) => option?.value != activity.id));
                                     }}
-                                    className="w-full"
+                                    styles={handleReactSelectStyling()}
                                 />
                             </div>
 
@@ -146,9 +133,6 @@ export default function People({
                                                     availablePeople.find((availablePerson) => availablePerson.id == person.id) as Person,
                                                 ),
                                             }))}
-                                            onCreateOption={(name) => {
-                                                addNewPerson({ id: -1, name: name } as Person, activity);
-                                            }}
                                             onChange={(options) => {
                                                 setSelectedActivities(
                                                     selectedActivities.map((selectedActivity) => {
@@ -164,7 +148,7 @@ export default function People({
                                                     }),
                                                 );
                                             }}
-                                            className="w-full"
+                                            styles={handleReactSelectStyling()}
                                         />
                                     </div>
                                 </div>
