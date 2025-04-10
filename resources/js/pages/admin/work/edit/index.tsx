@@ -7,7 +7,8 @@ import { Person } from '@/types/person';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import Select, { MultiValue } from 'react-select';
+import Select from 'react-select';
+import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -35,6 +36,7 @@ export default function Index({
 }) {
     const isEdit = !!work;
 
+    // -------------------------------------------------------------------------
     // form
 
     const { data, setData, post, patch, errors, processing } = useForm({
@@ -51,7 +53,7 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            patch(route('work.update', work.data.uuid), {
+            patch(route('work.update', work.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
@@ -63,6 +65,7 @@ export default function Index({
         }
     };
 
+    // -------------------------------------------------------------------------
     // work type
 
     const [selectedWorkableType, setSelectedWorkableType] = useState<WorkableType>(
@@ -73,11 +76,10 @@ export default function Index({
         setData('workable_type', selectedWorkableType?.value ?? '');
     }, [selectedWorkableType]);
 
+    // -------------------------------------------------------------------------
     // people
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(
-        people?.data.filter((person) => !work?.data.authors.map((author) => author.id).includes(person.id)) || [],
-    );
+    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(work?.data.authors || []);
 
     useEffect(() => {
@@ -87,9 +89,8 @@ export default function Index({
         );
     }, [selectedPeople]);
 
-    const onChangePeople = (options: MultiValue<{ value: number; label: string }>) => {
-        setSelectedPeople(availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)));
-    };
+    // -------------------------------------------------------------------------
+    // render
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -100,7 +101,7 @@ export default function Index({
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <Tabs work={work} processing={processing} />
                             {isEdit}
-                            <div className="max-w-sm">
+                            <div>
                                 <Label htmlFor="workable_type">Tipo de Produção</Label>
                                 <Select
                                     id="workable_type"
@@ -110,21 +111,8 @@ export default function Index({
                                         setSelectedWorkableType(option as WorkableType);
                                         setData('workable_type', (option as WorkableType).value);
                                     }}
-                                    className="w-full"
-                                    isDisabled={isEdit || default_workable_type}
-                                    styles={{
-                                        multiValue: (base) => ({
-                                            ...base,
-                                            backgroundColor: '#d2d2d2',
-                                        }),
-                                        option(base, props) {
-                                            return {
-                                                ...base,
-                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
-                                                color: props.isFocused ? 'white' : 'black',
-                                            };
-                                        },
-                                    }}
+                                    styles={handleReactSelectStyling(true)}
+                                    isDisabled={isEdit}
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -135,33 +123,25 @@ export default function Index({
                                 <InputError className="mt-2" message={errors.title} />
                             </div>
 
-                            <div className="max-w-sm">
+                            <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
                                     id="authors_ids"
                                     isMulti
                                     options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
                                     value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => onChangePeople(options)}
-                                    styles={{
-                                        multiValue: (base) => ({
-                                            ...base,
-                                            backgroundColor: '#d2d2d2',
-                                        }),
-                                        option(base, props) {
-                                            return {
-                                                ...base,
-                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
-                                                color: props.isFocused ? 'white' : 'black',
-                                            };
-                                        },
+                                    onChange={(options) => {
+                                        setSelectedPeople(
+                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id))
+                                        );
                                     }}
+                                    styles={handleReactSelectStyling()}
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
 
                             <div className="flex flex-row gap-3">
-                                <div>
+                                <div className="w-full">
                                     <Label htmlFor="date">Data de Início</Label>
                                     <Input
                                         id="date"
@@ -173,7 +153,7 @@ export default function Index({
                                     />
                                     <InputError className="mt-2" message={errors.date} />
                                 </div>
-                                <div>
+                                <div className="w-full">
                                     <Label htmlFor="date_end">Data de término</Label>
                                     <Input
                                         id="date_end"

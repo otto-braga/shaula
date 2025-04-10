@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('person_id')->constrained('people')->onDelete('cascade');
             $table->foreignId('work_id')->constrained('works')->onDelete('cascade');
             $table->foreignId('activity_id')->nullable()->constrained('activities')->onDelete('cascade');
-            $table->foreignId('language_id')->nullable()->constrained('languages')->onDelete('cascade');
             $table->unique(['person_id', 'work_id', 'activity_id'])->index('person_work_unique');
             $table->timestamps();
         });

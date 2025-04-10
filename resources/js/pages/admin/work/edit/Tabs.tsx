@@ -24,7 +24,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                         <>
                             <Link
                                 className={'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('work.edit') ? ' font-bold underline' : '')}
-                                href={isEdit ? route('work.edit', { id: work?.data.uuid }) : ''}
+                                href={isEdit ? route('work.edit', { work: work?.data }) : ''}
                             >
                                 Dados
                             </Link>
@@ -32,7 +32,8 @@ export default function Tabs({ work, processing }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('work.edit.people') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('work.edit.people', { id: work?.data.uuid }) : ''}
+                                // href={isEdit ? route('work.edit.people', { id: work?.data.uuid }) : ''}
+                                href={isEdit ? route('work.edit.people', { work: work?.data }) : ''}
                             >
                                 Pessoas
                             </Link>
@@ -42,7 +43,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                                     (!isEdit ? ' text-slate-300' : '') +
                                     (route().current('work.edit.relations') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('work.edit.relations', { id: work?.data.uuid }) : ''}
+                                href={isEdit ? route('work.edit.relations', { work: work?.data }) : ''}
                             >
                                 Relações
                             </Link>
@@ -50,7 +51,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('work.edit.images') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('work.edit.images', { id: work?.data.uuid }) : ''}
+                                href={isEdit ? route('work.edit.images', { work: work?.data }) : ''}
                                 // active={route().current('work.edit.images')}
                             >
                                 Imagens
@@ -59,7 +60,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('work.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('work.edit.content', { id: work?.data.uuid }) : ''}
+                                href={isEdit ? route('work.edit.content', { work: work?.data }) : ''}
                                 // active={route().current('work.edit.content')}
                             >
                                 Conteúdo
@@ -71,7 +72,7 @@ export default function Tabs({ work, processing }: TabsProps) {
                                         (!isEdit ? ' text-slate-300' : '') +
                                         (route().current('work.edit.details') ? ' font-bold underline' : '')
                                     }
-                                    href={isEdit ? route('work.edit.details', { id: work?.data.uuid }) : ''}
+                                    href={isEdit ? route('work.edit.details', { work: work?.data }) : ''}
                                     // active={route().current('work.edit.details')}
                                 >
                                     Detalhes

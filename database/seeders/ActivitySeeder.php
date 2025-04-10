@@ -13,8 +13,12 @@ class ActivitySeeder extends Seeder
      */
     public function run(): void
     {
+        Activity::factory()->create([
+            'id' => 1,
+            'name' => 'autoria',
+        ]);
+
         $activities = [
-            'autoria',
             'curadoria',
             'montação',
         ];

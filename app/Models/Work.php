@@ -37,14 +37,16 @@ class Work extends Model
     {
         return $this->belongsToMany(Person::class, 'person_work', 'work_id', 'person_id')
         ->withPivot('activity_id')
-        ->wherePivot('activity_id', Activity::where('name', 'autoria')->first()->id);
+        ->wherePivot('activity_id', Activity::first()->id)
+        ->orderBy('name');
     }
 
     public function people(): BelongsToMany
     {
         return $this->belongsToMany(Person::class, 'person_work', 'work_id', 'person_id')
-            ->withPivot('activity_id')
-            ->wherePivot('activity_id', '!=', Activity::where('name', 'autoria')->first()->id);
+        ->withPivot('activity_id')
+        ->wherePivot('activity_id', '!=', Activity::first()->id)
+        ->orderBy('name');
     }
 
     public function activities()

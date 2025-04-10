@@ -43,9 +43,15 @@ class WorkController extends Controller
         ['value' => 'App\Models\Exhibit', 'label' => 'Exposição'],
     ];
 
+    // -------------------------------------------------------------------------
+    // BASE
+
     public function index()
     {
-        $works = Work::all();
+        $works = Work::query()
+            ->with('workable')
+            ->orderBy('date', 'desc')
+            ->get();
 
         return Inertia::render('admin/work/index', [
             'works' => WorkResource::collection($works),
@@ -54,7 +60,9 @@ class WorkController extends Controller
 
     public function create()
     {
-        $people = Person::all();
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('admin/work/edit/index', [
             'workable_types' => new JsonResource(self::WORKABLE_TYPES),
@@ -66,15 +74,14 @@ class WorkController extends Controller
     {
         $dataForm = $request->all();
 
-
         $workable = $dataForm['workable_type']::create();
         $dataForm['workable_id'] = $workable->id;
 
         $work = Work::create($dataForm);
 
-        $work->people()->syncWithPivotValues(
+        $work->authors()->syncWithPivotValues(
             $dataForm['authors_ids'],
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+            ['activity_id' => Activity::first()->id]
         );
 
         return redirect()->route('work.edit', $work->id)->with('success', 'true');
@@ -89,7 +96,9 @@ class WorkController extends Controller
     {
         $work->load('authors');
 
-        $people = Person::all();
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('admin/work/edit/index', [
             'work' => new WorkResource($work),
@@ -98,32 +107,109 @@ class WorkController extends Controller
         ]);
     }
 
-    public function update(WorkUpdateRequest $request, $uuid)
+    public function update(WorkUpdateRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         $dataForm = $request->all();
 
         $work->update($dataForm);
 
-        $authors_ids = $dataForm['authors_ids'];
-
-        foreach ($request->new_people_names as $new_person_name) {
-            $new_person = Person::create(['name' => $new_person_name]);
-            array_push($authors_ids, $new_person->id);
-        }
-
-        $work->people()->syncWithPivotValues(
-            $authors_ids,
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+        $work->authors()->syncWithPivotValues(
+            $dataForm['authors_ids'],
+            ['activity_id' => Activity::first()->id]
         );
 
         return redirect()->back()->with('success', 'true');
     }
 
-    public function editRelations(String $uuid)
+    public function destroy(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
+        $work->delete();
+
+        return redirect()->back()->with('success', 'true');
+    }
+
+    // -------------------------------------------------------------------------
+    // PEOPLE
+
+    public function editPeople(Work $work)
+    {
+        $work->load('people');
+
+        $activities = Activity::query()
+            ->where('name', 'not like', 'autoria')
+            ->get();
+
+        $people = Person::query()
+            ->get();
+
+        return Inertia::render('admin/work/edit/people', [
+            'work' => new WorkResource($work),
+            'activities' => ActivityResource::collection($activities),
+            'people' => PersonResource::collection($people),
+        ]);
+    }
+
+    public function updatePeople(WorkUpdatePeopleRequest $request, Work $work)
+    {
+        $activities = $request->activities;
+
+        if ($activities) {
+            foreach ($activities as $activity) {
+                if ($activity['people'] === null || count($activity['people']) < 1) {
+                    $work->people()
+                        ->wherePivot('activity_id', $activity['id'])
+                        ->detach();
+                    continue;
+                }
+
+                foreach ($activity['people'] as $person) {
+                    if (in_array($person['id'], $work->people->pluck('id')->toArray())) {
+                        if (
+                            !in_array(
+                                $activity['id'],
+                                $work->people->where('id', $person['id'])
+                                    ->pluck('pivot.activity_id')->toArray()
+                            )
+                        ) {
+                            $work->people()->attach(
+                                $person['id'],
+                                ['activity_id' => $activity['id']]
+                            );
+                        }
+                    } else {
+                        $work->people()->attach(
+                            $person['id'],
+                            ['activity_id' => $activity['id']]
+                        );
+                    }
+                }
+            }
+
+            $work->people()
+                ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
+                ->detach();
+
+            foreach ($work->people as $person) {
+                if (
+                    !in_array(
+                        $person->id,
+                        collect($activities)->pluck('people')
+                            ->flatten(1)->pluck('id')->toArray()
+                    )
+                ) {
+                    $work->people()->detach($person->id);
+                }
+            }
+        }
+
+        return redirect()->back()->with('success', 'true');
+    }
+
+    // -------------------------------------------------------------------------
+    // RELATIONS
+
+    public function editRelations(Work $work)
+    {
         $cities = City::all();
         $languages = Language::all();
         $awards = Award::all();
@@ -140,10 +226,8 @@ class WorkController extends Controller
         ]);
     }
 
-    public function updateRelations(WorkUpdateRelationsRequest $request, $uuid)
+    public function updateRelations(WorkUpdateRelationsRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         $cities = $request->cities;
         foreach ($cities as $key => $city) {
             if ($city['id'] < 1) {
@@ -195,19 +279,18 @@ class WorkController extends Controller
         return redirect()->back();
     }
 
-    public function editImages(String $uuid)
-    {
-        $work = Work::where('uuid', $uuid)->first();
+    // -------------------------------------------------------------------------
+    // IMAGES
 
+    public function editImages(Work $work)
+    {
         return Inertia::render('admin/work/Edit/Images', [
             'work' => new WorkResource($work),
         ]);
     }
 
-    public function updateImages(WorkUpdateImagesRequest $request, String $uuid)
+    public function updateImages(WorkUpdateImagesRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         if ($request->has('files') && count($request->files) > 0) {
             $this->storeFile(
                 $request,
@@ -227,20 +310,19 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'true');
     }
 
-    public function editContent(String $uuid)
-    {
-        $work = Work::where('uuid', $uuid)->first();
+    // -------------------------------------------------------------------------
+    // CONTENT
 
+    public function editContent(Work $work)
+    {
         return Inertia::render('admin/work/Edit/Content', [
             'work' => new WorkResource($work),
         ]);
     }
 
-    public function updateContent(WorkUpdateContentRequest $request, $uuid)
+    public function updateContent(WorkUpdateContentRequest $request, Work $work)
     {
         try {
-            $work = Work::where('uuid', $uuid)->first();
-
             if ($request->has('files') && count($request->files) > 0) {
                 $this->storeFile(
                     $request,
@@ -265,92 +347,11 @@ class WorkController extends Controller
         }
     }
 
-    public function editPeople(String $uuid)
+    // -------------------------------------------------------------------------
+    // DETAILS
+
+    public function editDetails(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first()
-            ->load(
-                'people'
-            );
-
-        $activities = Activity::query()
-            ->where('name', 'not like', 'autoria')
-            ->get();
-
-        $people = Person::query()
-            ->get();
-
-        return Inertia::render('admin/work/edit/people', [
-            'work' => new WorkResource($work),
-            'activities' => ActivityResource::collection($activities),
-            'people' => PersonResource::collection($people),
-        ]);
-    }
-
-    public function updatePeople(WorkUpdatePeopleRequest $request, $uuid)
-    {
-        $work = Work::where('uuid', $uuid)->first();
-
-        $activities = $request->activities;
-
-        if ($activities) {
-            foreach ($activities as $activity) {
-                if ($activity['id'] < 0) {
-                    $new_activity = Activity::create(['name' => $activity['name']]);
-                    $activity['id'] = $new_activity->id;
-                }
-
-                foreach ($activity['people'] as $person) {
-                    if ($person['id'] < 0) {
-                        $new_person = Person::create(['name' => $person['name']]);
-                        $person['id'] = $new_person->id;
-                    }
-
-                    if (in_array($person['id'], $work->people->pluck('id')->toArray())) {
-                        if (
-                            !in_array(
-                                $activity['id'],
-                                $work->people->where('id', $person['id'])
-                                    ->pluck('pivot.activity_id')->toArray()
-                            )
-                        ) {
-                            $work->people()->attach(
-                                $person['id'],
-                                ['activity_id' => $activity['id']]
-                            );
-                        }
-                    } else {
-                        $work->people()->attach(
-                            $person['id'],
-                            ['activity_id' => $activity['id']]
-                        );
-                    }
-                }
-            }
-
-            $work->people()
-                ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-                ->detach();
-
-            foreach ($work->people as $person) {
-                if (
-                    !in_array(
-                        $person->id,
-                        collect($activities)->pluck('people')
-                            ->flatten(1)->pluck('id')->toArray()
-                    )
-                ) {
-                    $work->people()->detach($person->id);
-                }
-            }
-        }
-
-        return redirect()->back()->with('success', 'true');
-    }
-
-    public function editDetails(String $uuid)
-    {
-        $work = Work::where('uuid', $uuid)->first();
-
         if (class_basename($work->workable_type) === 'Review') {
             return redirect()->back();
         }
@@ -366,11 +367,4 @@ class WorkController extends Controller
     // {
     //     return redirect()->back();
     // }
-
-    public function destroy(Work $work)
-    {
-        $work->delete();
-
-        return redirect()->back()->with('success', 'true');
-    }
 }
