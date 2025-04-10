@@ -39,6 +39,7 @@
         "@radix-ui/react-toggle-group": "^1.1.2",
         "@radix-ui/react-tooltip": "^1.1.8",
         "@tailwindcss/vite": "^4.0.6",
+        "@tinymce/tinymce-react": "^6.1.0",
         "@types/react": "^19.0.3",
         "@types/react-dom": "^19.0.2",
         "@vitejs/plugin-react": "^4.3.4",
@@ -54,6 +55,7 @@
         "tailwind-merge": "^3.0.1",
         "tailwindcss": "^4.0.0",
         "tailwindcss-animate": "^1.0.7",
+        "tinymce": "^7.8.0",
         "typescript": "^5.7.2",
         "vite": "^6.0"
     },

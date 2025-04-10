@@ -23,8 +23,8 @@ class ActivitySeeder extends Seeder
             'montação',
         ];
 
-        foreach ($activities as $activity) {
-            Activity::factory()->create(['name' => $activity]);
-        }
+        // foreach ($activities as $activity) {
+        //     Activity::factory()->create(['name' => $activity]);
+        // }
     }
 }

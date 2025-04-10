@@ -24,6 +24,11 @@ class Person extends Model
         'chrono',
     ];
 
+    public function image()
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function genders(): BelongsToMany
     {
         return $this->belongsToMany(Gender::class, 'gender_person', 'person_id', 'gender_id');
