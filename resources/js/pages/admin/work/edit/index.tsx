@@ -27,17 +27,20 @@ export default function Index({
     work,
     workable_types,
     people,
+    default_workable_type,
 }: {
     work: { data: Work };
     workable_types?: { data: WorkableType[] };
     people?: { data: Person[] };
+    default_workable_type?: string;
 }) {
     const isEdit = !!work;
 
     // form
 
     const { data, setData, post, patch, errors, processing } = useForm({
-        workable_type: work ? work.data.workable_type : workable_types?.data[0].value,
+        //acho que pode ser só : default_workable_type sem o || ...
+        workable_type: work ? work.data.workable_type : default_workable_type || workable_types?.data[0]?.value,
         title: work ? work.data.title : '',
         date: work ? work.data.date : '',
         date_end: work ? work.data.date_end : '',
@@ -47,8 +50,6 @@ export default function Index({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        console.log(data);
 
         if (isEdit) {
             patch(route('work.update', work.data), {
@@ -79,7 +80,10 @@ export default function Index({
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(work?.data.authors || []);
 
     useEffect(() => {
-        setData('authors_ids', selectedPeople.map((person) => person.id));
+        setData(
+            'authors_ids',
+            selectedPeople.map((person) => person.id),
+        );
     }, [selectedPeople]);
 
     return (

@@ -10,7 +10,7 @@ trait HasSlug
     {
         static::creating(function ($model) {
             if (empty($model->slug)) {
-                $model->slug = (string) Str::slug($model->name);
+                $model->slug = (string) Str::slug($model->title);
             }
         });
     }

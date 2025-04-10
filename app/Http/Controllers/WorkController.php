@@ -25,13 +25,15 @@ use App\Models\Person;
 use App\Models\Tag;
 use App\Models\Work;
 use App\Traits\HasFile;
+use App\Traits\HasSlug;
+use App\Traits\HasUuid;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class WorkController extends Controller
 {
-    use HasFile;
+    use HasFile, HasSlug, HasUuid;
 
     const WORKABLE_TYPES = [
         ['value' => 'App\Models\Artwork', 'label' => 'Obra'],
@@ -79,7 +81,7 @@ class WorkController extends Controller
             ['activity_id' => Activity::first()->id]
         );
 
-        return redirect()->route('work.edit', $work->uuid)->with('success', 'true');
+        return redirect()->route('work.edit', $work->id)->with('success', 'true');
     }
 
     public function show(Work $work)
