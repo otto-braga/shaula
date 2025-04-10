@@ -92,7 +92,7 @@ export default function Index({
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <Tabs work={work} processing={processing} />
                             {isEdit}
-                            <div className="max-w-sm">
+                            <div>
                                 <Label htmlFor="workable_type">Tipo de Produção</Label>
                                 <Select
                                     id="workable_type"
@@ -102,10 +102,8 @@ export default function Index({
                                         setSelectedWorkableType(option as WorkableType);
                                         setData('workable_type', (option as WorkableType).value);
                                     }}
-                                    className="w-full"
+                                    styles={handleReactSelectStyling(true)}
                                     isDisabled={isEdit}
-                                    styles={handleReactSelectStyling()}
-
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -116,7 +114,7 @@ export default function Index({
                                 <InputError className="mt-2" message={errors.title} />
                             </div>
 
-                            <div className="max-w-sm">
+                            <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
                                     id="authors_ids"
@@ -134,7 +132,7 @@ export default function Index({
                             </div>
 
                             <div className="flex flex-row gap-3">
-                                <div>
+                                <div className="w-full">
                                     <Label htmlFor="date">Data de Início</Label>
                                     <Input
                                         id="date"
@@ -146,7 +144,7 @@ export default function Index({
                                     />
                                     <InputError className="mt-2" message={errors.date} />
                                 </div>
-                                <div>
+                                <div className="w-full">
                                     <Label htmlFor="date_end">Data de término</Label>
                                     <Input
                                         id="date_end"

@@ -1,17 +1,17 @@
 import { CSSObjectWithLabel, Theme } from 'react-select';
 
-export const handleReactSelectStyling= () => {
+export const handleReactSelectStyling = (isDisabled: boolean = false) => {
     const isDarkMode = document.documentElement.classList.contains('dark'); // Check if dark mode is active
     if (isDarkMode) {
         return {
             control: (base: CSSObjectWithLabel) => ({
                 ...base,
-                backgroundColor: 'black',
+                backgroundColor: isDisabled ? '#222' : 'black',
                 color: 'white',
-                borderColor: 'black',
+                borderColor: isDisabled ? '#222' : 'grey',
                 boxShadow: 'none',
                 '&:hover': {
-                    borderColor: 'black',
+                    borderColor: isDisabled ? 'grey' : 'white',
                 },
             }),
             option: (base: CSSObjectWithLabel) => ({
@@ -19,13 +19,13 @@ export const handleReactSelectStyling= () => {
                 backgroundColor: 'black',
                 color: 'white',
                 '&:hover': {
-                    backgroundColor: 'black',
+                    backgroundColor: '#333',
                     color: 'white',
                 },
             }),
             multiValue: (base: CSSObjectWithLabel) => ({
                 ...base,
-                backgroundColor: 'black',
+                backgroundColor: '#333',
                 color: 'white',
             }),
             multiValueLabel: (base: CSSObjectWithLabel) => ({
@@ -50,7 +50,7 @@ export const handleReactSelectStyling= () => {
             }),
             singleValue: (base: CSSObjectWithLabel) => ({
                 ...base,
-                color: 'white',
+                color: isDisabled ? 'grey' : 'white',
             }),
             menu: (base: CSSObjectWithLabel) => ({
                 ...base,
@@ -64,13 +64,13 @@ export const handleReactSelectStyling= () => {
             }),
             indicatorSeparator: (base: CSSObjectWithLabel) => ({
                 ...base,
-                backgroundColor: 'black',
+                backgroundColor: isDisabled ? 'black' : 'grey',
                 color: 'white',
             }),
             dropdownIndicator: (base: CSSObjectWithLabel) => ({
                 ...base,
-                backgroundColor: 'black',
-                color: 'white',
+                backgroundColor: isDisabled ? '#222' : 'black',
+                color: isDisabled ? 'grey' : 'white',
             }),
             clearIndicator: (base: CSSObjectWithLabel) => ({
                 ...base,
