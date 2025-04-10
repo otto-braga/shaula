@@ -7,11 +7,9 @@ import { Person } from '@/types/person';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import Select, { MultiValue } from 'react-select';
+import Select from 'react-select';
+import { handleReactSelectTheming, handleReactSelecttyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
-
-// import './index.css';
-// import './index.scss';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -106,19 +104,8 @@ export default function Index({
                                     }}
                                     className="w-full"
                                     isDisabled={isEdit}
-                                    // styles={{
-                                    //     multiValue: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: '#d2d2d2',
-                                    //     }),
-                                    //     option(base, props) {
-                                    //         return {
-                                    //             ...base,
-                                    //             backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
-                                    //             color: props.isFocused ? 'white' : 'black',
-                                    //         };
-                                    //     },
-                                    // }}
+                                    // theme={(theme) => handleReactSelectTheming(theme)}
+                                    styles={handleReactSelecttyling()}
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -141,129 +128,8 @@ export default function Index({
                                             availablePeople.filter((person) => options.map((option) => option.value).includes(person.id))
                                         );
                                     }}
-
-                                    // maneira concisa de lidar com tema
-
-                                    theme={(theme) => {
-                                        const isDarkMode = document.documentElement.classList.contains('dark'); // Check if dark mode is active
-                                        if (isDarkMode) {
-                                            return {
-                                                ...theme,
-                                                colors: {
-                                                    ...theme.colors,
-                                                    neutral0: "black", //background color
-                                                    neutral30: "hotpink", //control/borderColor(focused)
-                                                    neutral10: "grey", //selected option bg color
-                                                    neutral50: "grey", // pacleholder color
-                                                    neutral80: "white", //input color
-                                                    primary25: "grey", //option bg color focued
-                                                    primary: "black", //option bg color selected
-                                                    primary50: "white" // option bg color active(enavled or available)
-                                                }
-                                            }
-                                        }
-                                        else {
-                                            return {
-                                                ...theme
-                                            }
-                                        }
-                                    }}
-
-                                    // maneira mais complicada de lidar com tema
-
-                                    // styles={{
-                                    //     control: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //         borderColor: 'black',
-                                    //         boxShadow: 'none',
-                                    //         '&:hover': {
-                                    //             borderColor: 'black',
-                                    //         },
-                                    //     }),
-                                    //     option: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //         '&:hover': {
-                                    //             backgroundColor: 'black',
-                                    //             color: 'white',
-                                    //         },
-                                    //     }),
-                                    //     multiValue: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     multiValueLabel: (base) => ({
-                                    //         ...base,
-                                    //         color: 'white',
-                                    //     }),
-                                    //     multiValueRemove: (base) => ({
-                                    //         ...base,
-                                    //         color: 'white',
-                                    //         '&:hover': {
-                                    //             backgroundColor: 'black',
-                                    //             color: 'white',
-                                    //         },
-                                    //     }),
-                                    //     input: (base) => ({
-                                    //         ...base,
-                                    //         color: 'white',
-                                    //     }),
-                                    //     placeholder: (base) => ({
-                                    //         ...base,
-                                    //         color: 'white',
-
-                                    //     }),
-                                    //     singleValue: (base) => ({
-                                    //         ...base,
-                                    //         color: 'white',
-                                    //     }),
-
-                                    //     menu: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     menuList: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     indicatorSeparator: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     dropdownIndicator: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-
-                                    //         color: 'white',
-                                    //     }),
-                                    //     clearIndicator: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     loadingIndicator: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     noOptionsMessage: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    //     menuPortal: (base) => ({
-                                    //         ...base,
-                                    //         backgroundColor: 'black',
-                                    //         color: 'white',
-                                    //     }),
-                                    // }}
+                                    // theme={(theme) => handleReactSelectTheming(theme)}
+                                    styles={handleReactSelecttyling()}
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
