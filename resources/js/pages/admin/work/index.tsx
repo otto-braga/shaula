@@ -1,6 +1,6 @@
+import DeleteDialog from '@/components/common/delete-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import DeleteDialog from '@/components/ui/delete-dialog';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Work } from '@/types/work';
