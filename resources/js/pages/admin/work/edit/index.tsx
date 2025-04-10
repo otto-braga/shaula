@@ -10,6 +10,9 @@ import { FormEventHandler, useEffect, useState } from 'react';
 import Select, { MultiValue } from 'react-select';
 import Tabs from './Tabs';
 
+// import './index.css';
+// import './index.scss';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Produções',
@@ -74,20 +77,13 @@ export default function Index({
 
     // people
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(
-        people?.data.filter((person) => !work?.data.authors.map((author) => author.id).includes(person.id))
-        || []);
+    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(work?.data.authors || []);
 
     useEffect(() => {
+        // order seleceted people by name
         setData('authors_ids', selectedPeople.map((person) => person.id));
     }, [selectedPeople]);
-
-    const onChangePeople = (options: MultiValue<{ value: number; label: string }>) => {
-        setSelectedPeople(
-            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
-        );
-    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -110,19 +106,19 @@ export default function Index({
                                     }}
                                     className="w-full"
                                     isDisabled={isEdit}
-                                    styles={{
-                                        multiValue: (base) => ({
-                                            ...base,
-                                            backgroundColor: '#d2d2d2',
-                                        }),
-                                        option(base, props) {
-                                            return {
-                                                ...base,
-                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
-                                                color: props.isFocused ? 'white' : 'black',
-                                            };
-                                        },
-                                    }}
+                                    // styles={{
+                                    //     multiValue: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: '#d2d2d2',
+                                    //     }),
+                                    //     option(base, props) {
+                                    //         return {
+                                    //             ...base,
+                                    //             backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
+                                    //             color: props.isFocused ? 'white' : 'black',
+                                    //         };
+                                    //     },
+                                    // }}
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -140,20 +136,134 @@ export default function Index({
                                     isMulti
                                     options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
                                     value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => onChangePeople(options)}
-                                    styles={{
-                                        multiValue: (base) => ({
-                                            ...base,
-                                            backgroundColor: '#d2d2d2',
-                                        }),
-                                        option(base, props) {
-                                            return {
-                                                ...base,
-                                                backgroundColor: props.isFocused ? '#d2d2d2' : 'white',
-                                                color: props.isFocused ? 'white' : 'black',
-                                            };
-                                        },
+                                    onChange={(options) => {
+                                        setSelectedPeople(
+                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id))
+                                        );
                                     }}
+
+                                    // maneira concisa de lidar com tema
+
+                                    theme={(theme) => {
+                                        const isDarkMode = document.documentElement.classList.contains('dark'); // Check if dark mode is active
+                                        if (isDarkMode) {
+                                            return {
+                                                ...theme,
+                                                colors: {
+                                                    ...theme.colors,
+                                                    neutral0: "black", //background color
+                                                    neutral30: "hotpink", //control/borderColor(focused)
+                                                    neutral10: "grey", //selected option bg color
+                                                    neutral50: "grey", // pacleholder color
+                                                    neutral80: "white", //input color
+                                                    primary25: "grey", //option bg color focued
+                                                    primary: "black", //option bg color selected
+                                                    primary50: "white" // option bg color active(enavled or available)
+                                                }
+                                            }
+                                        }
+                                        else {
+                                            return {
+                                                ...theme
+                                            }
+                                        }
+                                    }}
+
+                                    // maneira mais complicada de lidar com tema
+
+                                    // styles={{
+                                    //     control: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //         borderColor: 'black',
+                                    //         boxShadow: 'none',
+                                    //         '&:hover': {
+                                    //             borderColor: 'black',
+                                    //         },
+                                    //     }),
+                                    //     option: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //         '&:hover': {
+                                    //             backgroundColor: 'black',
+                                    //             color: 'white',
+                                    //         },
+                                    //     }),
+                                    //     multiValue: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     multiValueLabel: (base) => ({
+                                    //         ...base,
+                                    //         color: 'white',
+                                    //     }),
+                                    //     multiValueRemove: (base) => ({
+                                    //         ...base,
+                                    //         color: 'white',
+                                    //         '&:hover': {
+                                    //             backgroundColor: 'black',
+                                    //             color: 'white',
+                                    //         },
+                                    //     }),
+                                    //     input: (base) => ({
+                                    //         ...base,
+                                    //         color: 'white',
+                                    //     }),
+                                    //     placeholder: (base) => ({
+                                    //         ...base,
+                                    //         color: 'white',
+
+                                    //     }),
+                                    //     singleValue: (base) => ({
+                                    //         ...base,
+                                    //         color: 'white',
+                                    //     }),
+
+                                    //     menu: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     menuList: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     indicatorSeparator: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     dropdownIndicator: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+
+                                    //         color: 'white',
+                                    //     }),
+                                    //     clearIndicator: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     loadingIndicator: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     noOptionsMessage: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    //     menuPortal: (base) => ({
+                                    //         ...base,
+                                    //         backgroundColor: 'black',
+                                    //         color: 'white',
+                                    //     }),
+                                    // }}
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>

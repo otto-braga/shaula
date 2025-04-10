@@ -43,7 +43,10 @@ class WorkController extends Controller
 
     public function index()
     {
-        $works = Work::all();
+        $works = Work::query()
+            ->with('workable')
+            ->orderBy('date', 'desc')
+            ->get();
 
         return Inertia::render('admin/work/index', [
             'works' => WorkResource::collection($works),
@@ -52,7 +55,9 @@ class WorkController extends Controller
 
     public function create()
     {
-        $people = Person::all();
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('admin/work/edit/index', [
             'workable_types' => new JsonResource(self::WORKABLE_TYPES),
@@ -64,15 +69,14 @@ class WorkController extends Controller
     {
         $dataForm = $request->all();
 
-
         $workable = $dataForm['workable_type']::create();
         $dataForm['workable_id'] = $workable->id;
 
         $work = Work::create($dataForm);
 
-        $work->people()->syncWithPivotValues(
+        $work->authors()->syncWithPivotValues(
             $dataForm['authors_ids'],
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+            ['activity_id' => Activity::first()->id]
         );
 
         return redirect()->route('work.edit', $work->uuid)->with('success', 'true');
@@ -87,7 +91,9 @@ class WorkController extends Controller
     {
         $work->load('authors');
 
-        $people = Person::all();
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
 
         return Inertia::render('admin/work/edit/index', [
             'work' => new WorkResource($work),
@@ -104,16 +110,9 @@ class WorkController extends Controller
 
         $work->update($dataForm);
 
-        $authors_ids = $dataForm['authors_ids'];
-
-        foreach ($request->new_people_names as $new_person_name) {
-            $new_person = Person::create(['name' => $new_person_name]);
-            array_push($authors_ids, $new_person->id);
-        }
-
-        $work->people()->syncWithPivotValues(
-            $authors_ids,
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+        $work->authors()->syncWithPivotValues(
+            $dataForm['authors_ids'],
+            ['activity_id' => Activity::first()->id]
         );
 
         return redirect()->back()->with('success', 'true');
