@@ -4,7 +4,19 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Building2, CircleDashed, CircleDotDashed, ContactRound, Folder, LayoutGrid, Tag, Text, Transgender } from 'lucide-react';
+import {
+    BookOpen,
+    Building2,
+    CircleDashed,
+    CircleDotDashed,
+    ContactRound,
+    Folder,
+    LayoutGrid,
+    PersonStanding,
+    Tag,
+    Text,
+    Transgender,
+} from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -22,6 +34,11 @@ const mainNavItems: NavItem[] = [
         title: 'Críticas',
         href: '/admin/criticas',
         icon: Text,
+    },
+    {
+        title: 'Pessoas',
+        href: '/admin/pessoas',
+        icon: PersonStanding,
     },
 ];
 

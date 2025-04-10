@@ -15,29 +15,6 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ reviews }: { reviews: { data: Work[] } }) {
-    // const [isOpen, setIsOpen] = useState(false);
-    // const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
-
-    // const { delete: destroy, processing, reset, errors, clearErrors } = useForm();
-
-    // const deleteResource = () => {
-    //     destroy(route('work.destroy', { id: resourceToDelete }), {
-    //         preserveScroll: true,
-    //         onSuccess: () => closeModal(),
-    //         onFinish: () => reset(),
-    //     });
-    // };
-
-    // const closeModal = () => {
-    //     clearErrors();
-    //     reset();
-    //     setIsOpen(false);
-    // };
-
-    // const openModal = () => {
-    //     setIsOpen(true);
-    // };
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />

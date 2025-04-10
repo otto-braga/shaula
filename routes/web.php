@@ -60,8 +60,17 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    Route::resource('/pessoas', PersonController::class)->names('person');
-    Route::post('/pessoas/store/select', [PersonController::class, 'storeSelect'])->name('person.store.select');
+    // Route::resource('/pessoas', PersonController::class)->names('person');
+
+    Route::get('/pessoas', [PersonController::class, 'index'])->name('person.index');
+    Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('person.create');
+    Route::post('/pessoas/store', [PersonController::class, 'store'])->name('person.store');
+    Route::get('/pessoas/{uuid}', [PersonController::class, 'show'])->name('person.show');
+    Route::get('/pessoas/{uuid}/editar', [PersonController::class, 'edit'])->name('person.edit');
+    Route::post('/pessoas/{uuid}/update', [PersonController::class, 'update'])->name('person.update');
+    Route::delete('/pessoas/{uuid}/delete', [PersonController::class, 'destroy'])->name('person.destroy');
+
+    // Route::post('/pessoas/store/select', [PersonController::class, 'storeSelect'])->name('person.store.select');
 
     //Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');

@@ -5,7 +5,7 @@ import { Trash } from 'lucide-react';
 import { useState } from 'react';
 
 interface DeleteDialogProps {
-    resourceId: number;
+    resourceId: number | string;
     resourceName: string;
     deleteRoute: string;
     onSuccess: () => void;
