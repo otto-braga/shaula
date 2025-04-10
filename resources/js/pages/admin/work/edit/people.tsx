@@ -1,9 +1,12 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Person } from '@/types/person';
+import { Activity } from '@/types/activity';
+import { Person, personLabel } from '@/types/person';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
+import { Trash } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
+import Select from 'react-select/creatable';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -25,10 +28,6 @@ export default function People({
     activities?: { data: Activity[] };
     people?: { data: Person[] };
 }) {
-    const isEdit = !!work;
-
-    // form
-
     const { data, setData, post, errors, processing } = useForm({
         activities: Array<ActivityWithPeople>(),
     });
@@ -41,19 +40,15 @@ export default function People({
         });
     };
 
-    // activities
-
     const [availableActivities, setAvailableActivities] = useState<Activity[]>(activities?.data || []);
     const [selectedActivities, setSelectedActivities] = useState<ActivityWithPeople[]>([]);
     const [loadedActivities, setLoadedActivities] = useState<ActivityWithPeople[]>(
         work.data.people
-            .map((person) => {
-                return {
-                    id: person.activity.id,
-                    name: person.activity.name,
-                    people: work.data.people.filter((p) => p.activity.id == person.activity.id).map((p) => ({ id: p.id, name: p.name })),
-                };
-            })
+            .map((person) => ({
+                id: person.activity.id,
+                name: person.activity.name,
+                people: work.data.people.filter((p) => p.activity.id == person.activity.id).map((p) => ({ id: p.id, name: p.name })),
+            }))
             .flat()
             .filter((activity, index, self) => self.findIndex((a) => a.id === activity.id) === index),
     );
@@ -81,8 +76,6 @@ export default function People({
         setData('activities', selectedActivities);
     }, [selectedActivities]);
 
-    // people
-
     const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
 
     function addNewPerson(newPerson: Person, activity: ActivityWithPeople) {
@@ -108,10 +101,9 @@ export default function People({
                             <Tabs work={work} processing={processing} />
 
                             <div>
-                                <InputLabel htmlFor="activities_ids" value="Atividades" />
-                                <CreatableSelect
+                                <Select
                                     id="activities_ids"
-                                    options={availableActivities.map((activity) => ({ value: activity.id, label: activityLabel(activity) }))}
+                                    options={availableActivities.map((activity) => ({ value: activity.id, label: activity.name }))}
                                     onCreateOption={(name) => addNewActivity({ id: -1, name: name } as Activity)}
                                     onChange={(option) => {
                                         setSelectedActivities(
@@ -125,7 +117,6 @@ export default function People({
                                     }}
                                     className="w-full"
                                 />
-                                {/* <InputError className="mt-2" message={errors.activities} /> */}
                             </div>
 
                             {selectedActivities.map((activity) => (
@@ -139,12 +130,11 @@ export default function People({
                                             setAvailableActivities(availableActivities.concat(activity));
                                         }}
                                     >
-                                        <Delete />
+                                        <Trash className="h-4 w-4 text-red-500" />
                                     </button>
-                                    <span>{activityLabel(activity)}</span>
+                                    <span>{activity.name}</span>
                                     <div>
-                                        <InputLabel htmlFor="people_ids" value="Pessoas" />
-                                        <CreatableSelect
+                                        <Select
                                             id="people_ids"
                                             isMulti
                                             options={availablePeople
@@ -176,7 +166,6 @@ export default function People({
                                             }}
                                             className="w-full"
                                         />
-                                        {/* <InputError className="mt-2" message={errors.people_ids} /> */}
                                     </div>
                                 </div>
                             ))}

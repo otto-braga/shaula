@@ -9,12 +9,12 @@ import { Edit, Eye } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Produções',
-        href: '/admin/work',
+        title: 'Críticas',
+        href: '/admin/criticas',
     },
 ];
 
-export default function Index({ works }: { works: { data: Work[] } }) {
+export default function Index({ reviews }: { reviews: { data: Work[] } }) {
     // const [isOpen, setIsOpen] = useState(false);
     // const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
 
@@ -44,42 +44,42 @@ export default function Index({ works }: { works: { data: Work[] } }) {
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-end">
-                        <Link href={route('work.create')} prefetch>
+                        <Link href={route('review.create')} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
-                        {works?.data?.map((work) => (
-                            <Card key={work.id} className="flex flex-col justify-between">
+                        {reviews?.data?.map((review) => (
+                            <Card key={review.id} className="flex flex-col justify-between">
                                 <CardHeader>
-                                    <h2>{work.workable_type}</h2>
+                                    <h2>{review.workable_type}</h2>
                                     <CardTitle>
-                                        <h3 className="line-clamp-1 font-semibold">{work.title}</h3>
+                                        <h3 className="line-clamp-1 font-semibold">{review.title}</h3>
                                     </CardTitle>
                                     <CardDescription>
-                                        <p className="line-clamp-2">{work.description}</p>
+                                        <p className="line-clamp-2">{review.description}</p>
                                     </CardDescription>
                                 </CardHeader>
                                 <CardContent>
                                     <div>
                                         <p className="text-sm">Autores</p>
-                                        <p>{work.authors.map((author) => author.name).join(', ')}</p>
+                                        <p>{review.authors.map((author) => author.name).join(', ')}</p>
                                     </div>
                                 </CardContent>
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={work.id}
-                                            resourceName={work.title}
+                                            resourceId={review.id}
+                                            resourceName={review.title}
                                             deleteRoute="work.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('work.edit', { work: work })}>
+                                        <Link href={route('work.edit', { work: review })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
                                         </Link>
-                                        <Link href={route('work.show', { id: work.uuid })}>
+                                        <Link href={route('work.show', { id: review.uuid })}>
                                             <Button variant={'secondary'}>
                                                 <Eye className="h-5 w-5" />
                                             </Button>

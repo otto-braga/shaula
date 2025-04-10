@@ -90,7 +90,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
 
     Route::resource('/artwork', ArtworkController::class)->names('artwork');
 
-    Route::resource('/critica', ReviewController::class)->names('review');
+    Route::resource('/criticas', ReviewController::class)->names('review');
 
     Route::resource('/work', WorkController::class)->names('work');
     Route::get('/work/{uuid}/edit/relations', [WorkController::class, 'editRelations'])->name('work.edit.relations');
