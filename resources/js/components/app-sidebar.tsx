@@ -4,7 +4,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid } from 'lucide-react';
+import { BookOpen, Building2, CircleDashed, CircleDotDashed, ContactRound, Folder, LayoutGrid, Tag, Transgender } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const mainNavItems: NavItem[] = [
@@ -17,6 +17,39 @@ const mainNavItems: NavItem[] = [
         title: 'Produções',
         href: '/admin/work',
         icon: LayoutGrid,
+    },
+];
+
+const auxNavItems: NavItem[] = [
+    {
+        title: 'Identades de Gênero',
+        href: '/admin/generos',
+        icon: Transgender,
+    },
+    {
+        title: 'Atividades',
+        href: '/admin/atividades',
+        icon: ContactRound,
+    },
+    {
+        title: 'Cidades',
+        href: '/admin/cidades',
+        icon: Building2,
+    },
+    {
+        title: 'Linguagens',
+        href: '/admin/linguagens',
+        icon: CircleDashed,
+    },
+    {
+        title: 'Tags',
+        href: '/admin/tags',
+        icon: Tag,
+    },
+    {
+        title: 'Categorias',
+        href: '/admin/categorias',
+        icon: CircleDotDashed,
     },
 ];
 
@@ -49,7 +82,8 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} title="Conteúdo" />
+                <NavMain items={auxNavItems} title="Auxiliares" />
             </SidebarContent>
 
             <SidebarFooter>

@@ -2,64 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class ActivityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $activities = Activity::all();
+
+        return Inertia::render('admin/activities/index', [
+            'activities' => ActivityResource::collection($activities),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:activities',
+        ]);
+
+        try {
+            Activity::create([
+                'name' => $request->name,
+            ]);
+            return redirect()->back()->with('success', 'Atividade criada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar atividade.');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Activity $activity)
+    public function update(Activity $activity)
     {
-        //
+        request()->validate([
+            'name' => 'required|unique:activities',
+        ]);
+
+        try {
+            $activity->update([
+                'name' => request('name'),
+            ]);
+            return redirect()->back()->with('success', 'Atividade atualizada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao atualizar atividade.');
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Activity $activity)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Activity $activity)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Activity $activity)
     {
-        //
+        try {
+            $activity->delete();
+            return redirect()->back()->with('success', 'Atividade deletada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao deletar atividade.');
+        }
     }
 }
