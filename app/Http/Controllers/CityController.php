@@ -2,64 +2,61 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CityResource;
 use App\Models\City;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class CityController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $cities = City::all();
+
+        return Inertia::render('admin/cities/index', [
+            'cities' => CityResource::collection($cities),
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|unique:cities',
+        ]);
+
+        try {
+            City::create([
+                'name' => $request->name,
+            ]);
+            return redirect()->back()->with('success', 'Cidade criada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao criar cidade.');
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(City $city)
+    public function update(City $city)
     {
-        //
+        request()->validate([
+            'name' => 'required|unique:cities',
+        ]);
+
+        try {
+            $city->update([
+                'name' => request('name'),
+            ]);
+            return redirect()->back()->with('success', 'Cidade atualizada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao atualizar cidade.');
+        }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(City $city)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, City $city)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(City $city)
     {
-        //
+        try {
+            $city->delete();
+            return redirect()->back()->with('success', 'Cidade deletada com sucesso.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Erro ao deletar cidade.');
+        }
     }
 }

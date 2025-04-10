@@ -1,10 +1,16 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\GenderController;
+use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\TagController;
 use App\Http\Controllers\WorkController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -42,8 +48,45 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
         return Inertia::render('settings/appearance');
     })->name('appearance');
 
+    //Tags
+    Route::get('tags', [TagController::class, 'index'])->name('tags.index');
+    Route::post('tags', [TagController::class, 'store'])->name('tags.store');
+    Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
+    Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+
+    //Categories
+    Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+
     Route::resource('/pessoas', PersonController::class)->names('person');
     Route::post('/pessoas/store/select', [PersonController::class, 'storeSelect'])->name('person.store.select');
+
+    //Genders
+    Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
+    Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
+    Route::put('generos/{gender}', [GenderController::class, 'update'])->name('genders.update');
+    Route::delete('generos/{gender}', [GenderController::class, 'destroy'])->name('genders.destroy');
+
+    //Actitivies
+    Route::get('atividades', [ActivityController::class, 'index'])->name('activities.index');
+    Route::post('atividades', [ActivityController::class, 'store'])->name('activities.store');
+    Route::put('atividades/{activity}', [ActivityController::class, 'update'])->name('activities.update');
+    Route::delete('atividades/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+
+    //Cities
+    Route::get('cidades', [CityController::class, 'index'])->name('cities.index');
+    Route::post('cidades', [CityController::class, 'store'])->name('cities.store');
+    Route::put('cidades/{city}', [CityController::class, 'update'])->name('cities.update');
+    Route::delete('cidades/{city}', [CityController::class, 'destroy'])->name('cities.destroy');
+
+    //Languages
+    Route::get('linguagens', [LanguageController::class, 'index'])->name('languages.index');
+    Route::post('linguagens', [LanguageController::class, 'store'])->name('languages.store');
+    Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
+    Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
+
 
     Route::resource('/artwork', ArtworkController::class)->names('artwork');
 

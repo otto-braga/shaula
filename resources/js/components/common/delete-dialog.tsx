@@ -28,8 +28,8 @@ export default function DeleteDialog({ resourceId, resourceName, deleteRoute, on
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
-                <Button variant="destructive" onClick={() => setIsOpen(true)}>
-                    <Trash size={16}/>
+                <Button variant="outline" onClick={() => setIsOpen(true)}>
+                    <Trash size={16} className="text-red-600" />
                 </Button>
             </DialogTrigger>
             <DialogContent>
