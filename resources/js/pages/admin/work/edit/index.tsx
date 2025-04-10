@@ -8,7 +8,7 @@ import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
-import { handleReactSelectTheming, handleReactSelecttyling } from '@/utils/react-select-styling';
+import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -104,8 +104,8 @@ export default function Index({
                                     }}
                                     className="w-full"
                                     isDisabled={isEdit}
-                                    // theme={(theme) => handleReactSelectTheming(theme)}
-                                    styles={handleReactSelecttyling()}
+                                    styles={handleReactSelectStyling()}
+
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -128,8 +128,7 @@ export default function Index({
                                             availablePeople.filter((person) => options.map((option) => option.value).includes(person.id))
                                         );
                                     }}
-                                    // theme={(theme) => handleReactSelectTheming(theme)}
-                                    styles={handleReactSelecttyling()}
+                                    styles={handleReactSelectStyling()}
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>

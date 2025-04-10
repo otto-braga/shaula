@@ -1,6 +1,6 @@
 import { CSSObjectWithLabel, Theme } from 'react-select';
 
-export const handleReactSelecttyling= () => {
+export const handleReactSelectStyling= () => {
     const isDarkMode = document.documentElement.classList.contains('dark'); // Check if dark mode is active
     if (isDarkMode) {
         return {
