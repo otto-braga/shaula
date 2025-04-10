@@ -50,19 +50,19 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::resource('/critica', ReviewController::class)->names('review');
 
     Route::resource('/work', WorkController::class)->names('work');
-    Route::get('/work/{uuid}/edit/relations', [WorkController::class, 'editRelations'])->name('work.edit.relations');
-    Route::post('/work/{uuid}/update/relations', [WorkController::class, 'updateRelations'])->name('work.update.relations');
-    Route::get('/work/{uuid}/edit/images', [WorkController::class, 'editImages'])->name('work.edit.images');
-    Route::post('/work/{uuid}/update/images', [WorkController::class, 'updateImages'])->name('work.update.images');
-    Route::get('/work/{uuid}/edit/content', [WorkController::class, 'editContent'])->name('work.edit.content');
-    Route::post('/work/{uuid}/update/content', [WorkController::class, 'updateContent'])->name('work.update.content');
-    Route::get('/work/{uuid}/edit/people', [WorkController::class, 'editPeople'])->name('work.edit.people');
-    Route::post('/work/{uuid}/update/people', [WorkController::class, 'updatePeople'])->name('work.update.people');
-    Route::get('/work/{uuid}/edit/details', [WorkController::class, 'editDetails'])->name('work.edit.details');
+    Route::get('/work/{work:id}/edit/relations', [WorkController::class, 'editRelations'])->name('work.edit.relations');
+    Route::post('/work/{work:id}/update/relations', [WorkController::class, 'updateRelations'])->name('work.update.relations');
+    Route::get('/work/{work:id}/edit/images', [WorkController::class, 'editImages'])->name('work.edit.images');
+    Route::post('/work/{work:id}/update/images', [WorkController::class, 'updateImages'])->name('work.update.images');
+    Route::get('/work/{work:id}/edit/content', [WorkController::class, 'editContent'])->name('work.edit.content');
+    Route::post('/work/{work:id}/update/content', [WorkController::class, 'updateContent'])->name('work.update.content');
+    Route::get('/work/{work:id}/edit/people', [WorkController::class, 'editPeople'])->name('work.edit.people');
+    Route::post('/work/{work:id}/update/people', [WorkController::class, 'updatePeople'])->name('work.update.people');
+    Route::get('/work/{work:id}/edit/details', [WorkController::class, 'editDetails'])->name('work.edit.details');
 
     Route::delete('/work/{id}/delete', [WorkController::class, 'destroy'])->name('work.destroy');
 
-    Route::post('/work/{uuid}/update/details/artwork', [ArtworkController::class, 'update'])->name('artwork.update');
+    Route::post('/work/{work:id}/update/details/artwork', [ArtworkController::class, 'update'])->name('artwork.update');
 });
 
 // require __DIR__ . '/settings.php';

@@ -51,7 +51,7 @@ export default function Index({
         console.log(data);
 
         if (isEdit) {
-            patch(route('work.update', work.data.uuid), {
+            patch(route('work.update', work.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
@@ -79,7 +79,6 @@ export default function Index({
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(work?.data.authors || []);
 
     useEffect(() => {
-        // order seleceted people by name
         setData('authors_ids', selectedPeople.map((person) => person.id));
     }, [selectedPeople]);
 

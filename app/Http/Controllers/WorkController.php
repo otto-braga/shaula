@@ -102,10 +102,8 @@ class WorkController extends Controller
         ]);
     }
 
-    public function update(WorkUpdateRequest $request, $uuid)
+    public function update(WorkUpdateRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         $dataForm = $request->all();
 
         $work->update($dataForm);
@@ -118,9 +116,8 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'true');
     }
 
-    public function editRelations(String $uuid)
+    public function editRelations(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
         $cities = City::all();
         $languages = Language::all();
         $awards = Award::all();
@@ -137,10 +134,8 @@ class WorkController extends Controller
         ]);
     }
 
-    public function updateRelations(WorkUpdateRelationsRequest $request, $uuid)
+    public function updateRelations(WorkUpdateRelationsRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         $cities = $request->cities;
         foreach ($cities as $key => $city) {
             if ($city['id'] < 1) {
@@ -192,19 +187,15 @@ class WorkController extends Controller
         return redirect()->back();
     }
 
-    public function editImages(String $uuid)
+    public function editImages(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         return Inertia::render('admin/work/Edit/Images', [
             'work' => new WorkResource($work),
         ]);
     }
 
-    public function updateImages(WorkUpdateImagesRequest $request, String $uuid)
+    public function updateImages(WorkUpdateImagesRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         if ($request->has('files') && count($request->files) > 0) {
             $this->storeFile(
                 $request,
@@ -224,20 +215,16 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'true');
     }
 
-    public function editContent(String $uuid)
+    public function editContent(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         return Inertia::render('admin/work/Edit/Content', [
             'work' => new WorkResource($work),
         ]);
     }
 
-    public function updateContent(WorkUpdateContentRequest $request, $uuid)
+    public function updateContent(WorkUpdateContentRequest $request, Work $work)
     {
         try {
-            $work = Work::where('uuid', $uuid)->first();
-
             if ($request->has('files') && count($request->files) > 0) {
                 $this->storeFile(
                     $request,
@@ -262,12 +249,9 @@ class WorkController extends Controller
         }
     }
 
-    public function editPeople(String $uuid)
+    public function editPeople(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first()
-            ->load(
-                'people'
-            );
+        $work->load('people');
 
         $activities = Activity::query()
             ->where('name', 'not like', 'autoria')
@@ -276,17 +260,15 @@ class WorkController extends Controller
         $people = Person::query()
             ->get();
 
-        return Inertia::render('admin/work/Edit/People', [
+        return Inertia::render('admin/work/edit/people', [
             'work' => new WorkResource($work),
             'activities' => ActivityResource::collection($activities),
             'people' => PersonResource::collection($people),
         ]);
     }
 
-    public function updatePeople(WorkUpdatePeopleRequest $request, $uuid)
+    public function updatePeople(WorkUpdatePeopleRequest $request, Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         $activities = $request->activities;
 
         if ($activities) {
@@ -344,10 +326,8 @@ class WorkController extends Controller
         return redirect()->back()->with('success', 'true');
     }
 
-    public function editDetails(String $uuid)
+    public function editDetails(Work $work)
     {
-        $work = Work::where('uuid', $uuid)->first();
-
         if (class_basename($work->workable_type) === 'Review') {
             return redirect()->back();
         }
