@@ -1,7 +1,7 @@
+import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Person } from '@/types/person';
 import { Work } from '@/types/work';
@@ -53,7 +53,7 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            patch(route('work.update', work.data), {
+            post(route('work.update', work.data), {
                 preserveScroll: true,
                 preserveState: false,
             });

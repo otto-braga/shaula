@@ -1,20 +1,38 @@
+import TimedMessage from '@/components/tabs/timed-message';
 import { Button } from '@/components/ui/button';
 import { Work } from '@/types/work';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
+import { CheckIcon, XIcon } from 'lucide-react';
+import { useEffect, useState,  } from 'react';
 
 type TabsProps = {
     work?: { data: Work };
     processing: boolean;
+    className?: string;
 };
 
-export default function Tabs({ work, processing }: TabsProps) {
-    // console.log('success', usePage().props.flash?.success);
-    // console.log('error', usePage().props.flash?.error);
+export default function Tabs({ work, processing, className }: TabsProps) {
+    const { flash } = usePage().props;
+
+    console.log('flash', flash);
+
+    const timedMessageDuration: number = 3000;
+    const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (flash?.success != undefined && !isTimedMessageShown) {
+            setIsTimedMessageShown(true);
+            setTimeout(() => {
+                setIsTimedMessageShown(false);
+            }, timedMessageDuration);
+        }
+    }, [ flash ]);
 
     const isEdit = !!work;
 
     return (
-        <div className="flex flex-col gap-2">
+        <div className={"flex flex-col gap-2" + (className ? ' ' + className : '')}>
             <div className="flex flex-col">
                 <h2 className="text-lg">{isEdit ? `${work.data.title}` : '[novo cadastro]'}</h2>
             </div>
@@ -82,23 +100,59 @@ export default function Tabs({ work, processing }: TabsProps) {
                     )}
                 </div>
                 <div className="ml-8 flex justify-end">
-                    <Button type="submit" disabled={processing}>
-                        Salvar
+                    <Button type="submit"
+                        disabled={processing || isTimedMessageShown}
+                        className={
+                            'rounded min-w-[8em]' +
+                            (
+                                isTimedMessageShown ?
+                                    (
+                                        flash?.success ?
+                                            ' bg-green-400'
+                                            : ' bg-red-400'
+                                    )
+                                    : (
+                                        ''
+                                    )
+                            )
+                        }
+                        >
+                        {
+                            processing ?
+                                'Salvando...'
+                                : isTimedMessageShown ?
+                                    (
+                                        flash?.success ?
+                                            (
+                                                <div className="flex items-center gap-2">
+                                                    Salvo! <CheckIcon className="h-16 w-16" />
+                                                </div>
+                                            )
+                                            : (
+                                                <div className="flex items-center gap-2">
+                                                    Erro! <XIcon className="h-16 w-16" />
+                                                </div>
+                                            )
+                                    )
+                                    : 'Salvar'
+                        }
                     </Button>
                 </div>
             </div>
 
             {/* {usePage().props.flash?.success && (
-                <TimedMessage variant="success" duration={3000}>
-                    <p className="w-full rounded bg-yellow-100 text-center  text-gray-600 dark:text-gray-400">
+                <TimedMessage variant="success" duration={timedMessageDuration}>
+                    <p className="w-full rounded bg-yellow-200 text-center  text-gray-600 dark:text-gray-200 dark:bg-yellow-900">
                         salvamento realizado com sucesso
                     </p>
                 </TimedMessage>
             )}
 
             {usePage().props.flash?.error && (
-                <TimedMessage variant="success" duration={3000}>
-                    <p className="w-full rounded bg-red-100 text-center  text-gray-600 dark:text-gray-400">erro ao salvar</p>
+                <TimedMessage variant="success" duration={timedMessageDuration}>
+                    <p className="w-full rounded bg-red-400 text-center  text-gray-600 dark:text-gray-400 dark:bg-red-900">
+                        erro ao salvar
+                    </p>
                 </TimedMessage>
             )} */}
         </div>

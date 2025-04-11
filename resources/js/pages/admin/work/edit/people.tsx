@@ -6,7 +6,7 @@ import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import Select from 'react-select/creatable';
+import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
 

@@ -1,9 +1,11 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
 import { Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './Tabs';
+
+import ImageCard from '@/components/image/image-card';
 
 import { FilePondFile, FilePondInitialFile } from 'filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
@@ -12,13 +14,18 @@ import 'filepond/dist/filepond.min.css';
 import { FilePond, registerPlugin } from 'react-filepond';
 registerPlugin(FilePondPluginImagePreview);
 
-import ImageCard from '@/Components/ImageCard';
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Produções',
+        href: '/admin/work',
+    },
+];
 
 export default function Images({
     work,
-}: PageProps<{
+}: {
     work: { data: Work };
-}>) {
+}) {
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
         filesToRemove: Array<number>(),
@@ -27,7 +34,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('work.update.images', work.data.uuid), {
+        post(route('work.update.images', work.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -37,12 +44,7 @@ export default function Images({
 
     useEffect(() => {
         setData('files', images as File[]);
-        // console.log('files', images);
     }, [images]);
-
-    // useEffect(() => {
-    //     console.log('data.files', data.files);
-    // }, [data.files]);
 
     const [imagesToRemove, setImagesToRemove] = useState<Array<number>>([]);
 
@@ -52,12 +54,11 @@ export default function Images({
     }, [imagesToRemove]);
 
     return (
-        <AuthenticatedLayout header={<h2 className="">Editor</h2>}>
-            <Head title={'Editor'} />
-
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
-                    <div className="rounded border bg-white p-3 dark:border-gray-600 dark:bg-slate-800">
+                    <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
                             <Tabs work={work} processing={processing} />
 
@@ -74,10 +75,9 @@ export default function Images({
                                     <ImageCard
                                         key={index}
                                         image={image}
-                                        toRemove={imagesToRemove.includes(image.id)}
-                                        onSelected={() => {}}
-                                        onRemove={(remove) => {
-                                            if (remove) {
+                                        onSelectedChange={(isSelected) => {}}
+                                        onRemoveChange={(isToRemove) => {
+                                            if (isToRemove) {
                                                 setImagesToRemove([...imagesToRemove, image.id]);
                                             } else {
                                                 setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
@@ -90,6 +90,7 @@ export default function Images({
                     </div>
                 </div>
             </section>
-        </AuthenticatedLayout>
+        </AppLayout>
     );
 }
+
