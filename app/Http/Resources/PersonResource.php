@@ -28,6 +28,10 @@ class PersonResource extends JsonResource
             'bio' => $this->bio,
             'chrono' => $this->chrono,
 
+            'genders' => $this->genders,
+
+            'image' => new FileResource($this->image->first()),
+
             // 'genders' => $this->genders, // collection
             // 'cities' => $this->cities, // collection
             // 'works' => WorkResource::collection($this->whenLoaded('works')),

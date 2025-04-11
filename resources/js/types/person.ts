@@ -1,6 +1,7 @@
 import { Activity } from "./activity";
 import { Award } from "./award";
 import { City } from "./city";
+import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
 import { Link } from "./link";
@@ -16,6 +17,7 @@ export type Person = {
     works: Work[];
     worksAsAuthor: Work[];
     links: Link[];
+    image: FileProps;
     activity: Activity;
     activities: Activity[];
     activitiesThroughWorks: Activity[];

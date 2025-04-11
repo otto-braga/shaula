@@ -27,6 +27,11 @@ class File extends Model
         'temporary',
     ];
 
+    public function fileable()
+    {
+        return $this->morphTo();
+    }
+
     public function work(): MorphToMany
     {
         return $this->morphedByMany(Work::class, 'fileable');

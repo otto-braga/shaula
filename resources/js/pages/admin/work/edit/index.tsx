@@ -5,10 +5,10 @@ import { Label } from '@/components/ui/label';
 import { type BreadcrumbItem } from '@/types';
 import { Person } from '@/types/person';
 import { Work } from '@/types/work';
+import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './Tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -112,7 +112,7 @@ export default function Index({
                                         setData('workable_type', (option as WorkableType).value);
                                     }}
                                     styles={handleReactSelectStyling(true)}
-                                    isDisabled={isEdit}
+                                    isDisabled={default_workable_type ? true : isEdit}
                                 />
                                 <InputError className="mt-2" message={errors.workable_type} />
                             </div>
@@ -132,7 +132,7 @@ export default function Index({
                                     value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
                                     onChange={(options) => {
                                         setSelectedPeople(
-                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id))
+                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
                                         );
                                     }}
                                     styles={handleReactSelectStyling()}
