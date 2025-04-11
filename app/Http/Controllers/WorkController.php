@@ -84,7 +84,8 @@ class WorkController extends Controller
             ['activity_id' => Activity::first()->id]
         );
 
-        return redirect()->route('work.edit', $work->id)->with('success', 'true');
+        session()->flash('success', true);
+        return redirect()->route('work.edit', $work->id);
     }
 
     public function show(Work $work)
@@ -118,14 +119,16 @@ class WorkController extends Controller
             ['activity_id' => Activity::first()->id]
         );
 
-        return redirect()->back()->with('success', 'true');
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     public function destroy(Work $work)
     {
         $work->delete();
 
-        return redirect()->back()->with('success', 'true');
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------
@@ -202,7 +205,8 @@ class WorkController extends Controller
             }
         }
 
-        return redirect()->back()->with('success', 'true');
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------
@@ -228,54 +232,13 @@ class WorkController extends Controller
 
     public function updateRelations(WorkUpdateRelationsRequest $request, Work $work)
     {
-        $cities = $request->cities;
-        foreach ($cities as $key => $city) {
-            if ($city['id'] < 1) {
-                $newCity = City::create(['name' => $city['name']]);
-                $cities[$key]['id'] = $newCity->id;
-            }
-        }
-        $work->cities()->sync(Arr::pluck($cities, 'id'));
+        $work->cities()->sync(Arr::pluck($request->cities, 'id'));
+        $work->languages()->sync(Arr::pluck($request->languages, 'id'));
+        $work->awards()->sync(Arr::pluck($request->awards, 'id'));
+        $work->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $work->tags()->sync(Arr::pluck($request->tags, 'id'));
 
-        $languages = $request->languages;
-        foreach ($languages as $key => $language) {
-            if ($language['id'] < 1) {
-                $newLanguage = Language::create(['name' => $language['name']]);
-                $languages[$key]['id'] = $newLanguage->id;
-            }
-        }
-        $work->languages()->sync(Arr::pluck($languages, 'id'));
-
-        $awards = $request->awards;
-        foreach ($awards as $key => $award) {
-            if ($award['id'] < 1) {
-                $newAward = Award::create(['name' => $award['name']]);
-                $awards[$key]['id'] = $newAward->id;
-            }
-        }
-        $work->awards()->sync(Arr::pluck($awards, 'id'));
-
-        $categories = $request->categories;
-        foreach ($categories as $key => $category) {
-            if ($category['id'] < 1) {
-                $newCategory = Category::create([
-                    'name' => $category['name'],
-                    'class' => $work->workable_type
-                ]);
-                $categories[$key]['id'] = $newCategory->id;
-            }
-        }
-        $work->categories()->sync(Arr::pluck($categories, 'id'));
-
-        $tags = $request->tags;
-        foreach ($tags as $key => $tag) {
-            if ($tag['id'] < 1) {
-                $newTag = Tag::create(['name' => $tag['name']]);
-                $tags[$key]['id'] = $newTag->id;
-            }
-        }
-        $work->tags()->sync(Arr::pluck($tags, 'id'));
-
+        session()->flash('success', true);
         return redirect()->back();
     }
 
@@ -284,30 +247,36 @@ class WorkController extends Controller
 
     public function editImages(Work $work)
     {
-        return Inertia::render('admin/work/Edit/Images', [
+        return Inertia::render('admin/work/edit/images', [
             'work' => new WorkResource($work),
         ]);
     }
 
     public function updateImages(WorkUpdateImagesRequest $request, Work $work)
     {
-        if ($request->has('files') && count($request->files) > 0) {
-            $this->storeFile(
-                $request,
-                $work->id,
-                Work::class,
-                $work->uuid,
-                'general'
-            );
-        }
-
-        if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-            foreach ($request->filesToRemove as $fileId) {
-                $this->deleteFile($fileId);
+        try {
+            if ($request->has('files') && count($request->files) > 0) {
+                $this->storeFile(
+                    $request,
+                    $work->id,
+                    Work::class,
+                    $work->uuid,
+                    'general'
+                );
             }
-        }
 
-        return redirect()->back()->with('success', 'true');
+            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
+                foreach ($request->filesToRemove as $fileId) {
+                    $this->deleteFile($fileId);
+                }
+            }
+
+            session()->flash('success', true);
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -315,7 +284,7 @@ class WorkController extends Controller
 
     public function editContent(Work $work)
     {
-        return Inertia::render('admin/work/Edit/Content', [
+        return Inertia::render('admin/work/edit/content', [
             'work' => new WorkResource($work),
         ]);
     }
@@ -341,9 +310,11 @@ class WorkController extends Controller
 
             $work->update(['content' => $request->content]);
 
-            return redirect()->back()->with('success', 'true');
+            session()->flash('success', true);
+            return redirect()->back();
         } catch (\Throwable $e) {
-            return redirect()->back()->with('error', 'true');
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -356,7 +327,7 @@ class WorkController extends Controller
             return redirect()->back();
         }
 
-        $render = 'admin/work/Edit/Details/' . class_basename($work->workable_type);
+        $render = 'admin/work/edit/details/' . class_basename($work->workable_type);
 
         return Inertia::render($render, [
             'work' => new WorkResource($work),
