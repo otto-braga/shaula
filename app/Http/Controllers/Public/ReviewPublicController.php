@@ -16,9 +16,10 @@ class ReviewPublicController extends Controller
      */
     public function index()
     {
-        $reviews = Review::all();
+        //get the last 3 reviews
+        $reviews = Review::latest()->take(3)->get();
 
-        return Inertia::render('Review/Index', [
+        return Inertia::render('review/index', [
             'reviews' => WorkResource::collection($reviews),
         ]);
     }
@@ -29,10 +30,10 @@ class ReviewPublicController extends Controller
     public function show($uuid)
     {
 
-        
+
         $review = Work::where('uuid', $uuid)->firstOrFail();
         $review->load('workable');
-        
+
         return Inertia::render('Review/Show', [
             'review' => new WorkResource($review),
         ]);
