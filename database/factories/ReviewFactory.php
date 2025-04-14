@@ -2,6 +2,10 @@
 
 namespace Database\Factories;
 
+use App\Models\Activity;
+use App\Models\Category;
+use App\Models\Person;
+use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -20,8 +24,22 @@ class ReviewFactory extends Factory
             'slug' => $this->faker->slug,
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
-            // 'content' => $this->faker->text(1000),
             'content' => json_encode($this->faker->text),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function ($review) {
+            $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
+            foreach ($authors as $author) {
+                $review->authors()->save($author, ['activity_id' => Activity::where('name', 'autoria')->first()->id]);
+            }
+
+            $categories = Category::where('class', Review::class)->inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($categories as $category) {
+                $review->categories()->attach($category);
+            }
+        });
     }
 }

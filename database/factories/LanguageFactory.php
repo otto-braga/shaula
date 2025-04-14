@@ -17,7 +17,7 @@ class LanguageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'linguagem '.$this->faker->unique()->word,
         ];
     }
 }

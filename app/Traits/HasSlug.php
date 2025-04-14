@@ -10,7 +10,21 @@ trait HasSlug
     {
         static::creating(function ($model) {
             if (empty($model->slug)) {
-                $model->slug = (string) Str::slug($model->title);
+                $slug = '';
+
+                if (isset($model->title)) {
+                    $slug = (string) Str::slug($model->title);
+                } else if (isset($model->name)) {
+                    $slug = (string) Str::slug($model->name);
+                }
+
+                $model->slug = $slug;
+            }
+        });
+
+        static::created(function ($model) {
+            if (static::where('slug', $model->slug)->count() > 1) {
+                $model->update(['slug' => $model->slug.'-'.$model->id]);
             }
         });
     }

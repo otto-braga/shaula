@@ -17,7 +17,7 @@ class AwardFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => 'premio '.$this->faker->unique()->word,
         ];
     }
 }

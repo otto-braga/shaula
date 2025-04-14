@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Award;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +13,6 @@ class AwardSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Award::factory(10)->create();
     }
 }

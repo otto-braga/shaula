@@ -20,13 +20,6 @@ class ActivitySeeder extends Seeder
             'slug' => Str::slug('autoria'),
         ]);
 
-        $activities = [
-            'atividade-teste-1',
-            'atividade-teste-2',
-        ];
-
-        foreach ($activities as $activity) {
-            Activity::factory()->create(['name' => $activity, 'slug' => Str::slug($activity)]);
-        }
+        Activity::factory(10)->create();
     }
 }

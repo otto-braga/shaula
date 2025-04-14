@@ -29,7 +29,7 @@ class PersonController extends Controller
     {
         $people = Person::query()
             ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            ->get();
 
         return Inertia::render('admin/person/index', [
             'people' => PersonResource::collection($people),
