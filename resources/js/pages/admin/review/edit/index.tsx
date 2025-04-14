@@ -39,7 +39,8 @@ export default function Index({
     const { data, setData, post, patch, errors, processing } = useForm({
         title: review ? review.data.title : '',
         date: review ? review.data.date : '',
-        authors_ids: review ? review.data.authors.map((author) => author.id) : [],
+        // authors_ids: review ? review.data.authors.map((author) => author.id) : [],
+        authors: review ? review.data.authors : [],
 
         categories: review ? review.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name })) : [],
     });
@@ -64,10 +65,7 @@ export default function Index({
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(review?.data.authors || []);
 
     useEffect(() => {
-        setData(
-            'authors_ids',
-            selectedPeople.map((person) => person.id),
-        );
+        setData('authors',selectedPeople);
     }, [selectedPeople]);
 
     return (
@@ -89,7 +87,7 @@ export default function Index({
                             <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
-                                    id="authors_ids"
+                                    id="authors"
                                     isMulti
                                     options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
                                     value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
@@ -100,12 +98,12 @@ export default function Index({
                                     }}
                                     styles={handleReactSelectStyling()}
                                 />
-                                <InputError className="mt-2" message={errors.authors_ids} />
+                                <InputError className="mt-2" message={errors.authors} />
                             </div>
 
                             <div className="flex flex-row gap-3">
                                 <div className="w-full">
-                                    <Label htmlFor="date">Data</Label>
+                                    <Label htmlFor="date">Data de Início</Label>
                                     <Input
                                         id="date"
                                         type="date"

@@ -29,13 +29,61 @@ class ArtworkController extends Controller
     public function index()
     {
         $artworks = Artwork::query()
-            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('admin/artwork/index', [
             'artworks' => ArtworkResource::collection($artworks),
         ]);
     }
+
+    public function show(Artwork $artwork)
+    {
+        //
+    }
+
+    // -------------------------------------------------------------------------
+    // CREATE
+
+    public function create()
+    {
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
+
+        $languages = Language::all();
+        $awards = Award::all();
+        $categories = Category::where('class', Artwork::class)->get();
+
+        return Inertia::render('admin/artwork/edit/index', [
+            'people' => PersonResource::collection($people),
+            'languages' => LanguageResource::collection($languages),
+            'awards' => AwardResource::collection($awards),
+            'categories' => CategoryResource::collection($categories),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $dataForm = $request->all();
+
+        $artwork = Artwork::create($dataForm);
+
+        $artwork->authors()->syncWithPivotValues(
+            Arr::pluck($dataForm['authors'], 'id'),
+            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+        );
+
+        $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
+        $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
+        $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
+
+        session()->flash('success', true);
+        return redirect()->route('artwork.edit', $artwork->id);
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT
 
     public function edit(Artwork $artwork)
     {
@@ -66,8 +114,8 @@ class ArtworkController extends Controller
         $artwork->update($dataForm);
 
         $artwork->authors()->syncWithPivotValues(
-            $dataForm['authors_ids'],
-            ['activity_id' => Activity::first()->id]
+            Arr::pluck($dataForm['authors'], 'id'),
+            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
         );
 
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
@@ -78,16 +126,8 @@ class ArtworkController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Artwork $artwork)
-    {
-        $artwork->delete();
-
-        session()->flash('success', true);
-        return redirect()->back();
-    }
-
     // -------------------------------------------------------------------------
-    // PEOPLE
+    // EDIT PEOPLE
 
     public function editPeople(Artwork $artwork)
     {
@@ -165,7 +205,7 @@ class ArtworkController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // IMAGES
+    // EDIT IMAGES
 
     public function editImages(Artwork $artwork)
     {
@@ -202,7 +242,7 @@ class ArtworkController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // CONTENT
+    // EDIT CONTENT
 
     public function editContent(Artwork $artwork)
     {
@@ -238,6 +278,17 @@ class ArtworkController extends Controller
             session()->flash('success', false);
             return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // DELETE
+
+    public function destroy(Artwork $artwork)
+    {
+        $artwork->delete();
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
 }

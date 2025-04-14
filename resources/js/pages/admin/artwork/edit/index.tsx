@@ -39,7 +39,7 @@ export default function Index({
     const { data, setData, post, patch, errors, processing } = useForm({
         title: artwork ? artwork.data.title : '',
         date: artwork ? artwork.data.date : '',
-        authors_ids: artwork ? artwork.data.authors.map((author) => author.id) : [],
+        authors: artwork ? artwork.data.authors : [],
 
         languages: artwork ? artwork.data.languages?.map((language) => ({ id: language.id, name: language.name, label: language.name })) : [],
         awards: artwork ? artwork.data.awards?.map((award) => ({ id: award.id, name: award.name, label: award.name })) : [],
@@ -69,10 +69,7 @@ export default function Index({
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(artwork?.data.authors || []);
 
     useEffect(() => {
-        setData(
-            'authors_ids',
-            selectedPeople.map((person) => person.id),
-        );
+        setData('authors', selectedPeople);
     }, [selectedPeople]);
 
     return (
@@ -94,7 +91,7 @@ export default function Index({
                             <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
-                                    id="authors_ids"
+                                    id="authors"
                                     isMulti
                                     options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
                                     value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
@@ -105,7 +102,7 @@ export default function Index({
                                     }}
                                     styles={handleReactSelectStyling()}
                                 />
-                                <InputError className="mt-2" message={errors.authors_ids} />
+                                <InputError className="mt-2" message={errors.authors} />
                             </div>
 
                             <div className="flex flex-row gap-3">
@@ -127,7 +124,7 @@ export default function Index({
                                 <Label htmlFor="dimensions">Dimensões</Label>
                                 <Input
                                     id="title"
-                                    value={artwork.data.dimensions ?? ''}
+                                    value={data.dimensions ?? ''}
                                     onChange={(e) => setData('dimensions', e.target.value)}
                                 />
                                 <InputError className="mt-2" message={errors.dimensions} />
@@ -137,7 +134,7 @@ export default function Index({
                                 <Label htmlFor="materials">Materiais</Label>
                                 <Input
                                     id="materials"
-                                    value={artwork.data.materials ?? ''}
+                                    value={data.materials ?? ''}
                                     onChange={(e) => setData('materials', e.target.value)}
                                 />
                                 <InputError className="mt-2" message={errors.materials} />

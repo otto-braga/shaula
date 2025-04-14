@@ -24,13 +24,55 @@ class ReviewController extends Controller
     public function index()
     {
         $reviews = Review::query()
-            ->orderBy('date', 'desc')
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('admin/review/index', [
             'reviews' => ReviewResource::collection($reviews),
         ]);
     }
+
+    public function show(Review $review)
+    {
+        //
+    }
+
+    // -------------------------------------------------------------------------
+    // CREATE
+
+    public function create()
+    {
+        $people = Person::query()
+            ->orderBy('name')
+            ->get();
+
+        $categories = Category::where('class', Review::class)->get();
+
+        return Inertia::render('admin/review/edit/index', [
+            'people' => PersonResource::collection($people),
+            'categories' => CategoryResource::collection($categories),
+        ]);
+    }
+
+    public function store(Request $request)
+    {
+        $dataForm = $request->all();
+
+        $review = Review::create($dataForm);
+
+        $review->authors()->syncWithPivotValues(
+            Arr::pluck($dataForm['authors'], 'id'),
+            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+        );
+
+        $review->categories()->sync(Arr::pluck($request->categories, 'id'));
+
+        session()->flash('success', true);
+        return redirect()->route('review.edit', $review->id);
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT
 
     public function edit(Review $review)
     {
@@ -57,8 +99,8 @@ class ReviewController extends Controller
         $review->update($dataForm);
 
         $review->authors()->syncWithPivotValues(
-            $dataForm['authors_ids'],
-            ['activity_id' => Activity::first()->id]
+            Arr::pluck($dataForm['authors'], 'id'),
+            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
         );
 
         $review->categories()->sync(Arr::pluck($request->categories, 'id'));
@@ -67,16 +109,8 @@ class ReviewController extends Controller
         return redirect()->back();
     }
 
-    public function destroy(Review $review)
-    {
-        $review->delete();
-
-        session()->flash('success', true);
-        return redirect()->back();
-    }
-
     // -------------------------------------------------------------------------
-    // PEOPLE
+    // EDIT PEOPLE
 
     // public function editPeople(Review $review)
     // {
@@ -154,7 +188,7 @@ class ReviewController extends Controller
     // }
 
     // -------------------------------------------------------------------------
-    // IMAGES
+    // EDIT IMAGES
 
     public function editImages(Review $review)
     {
@@ -191,7 +225,7 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // CONTENT
+    // EDIT CONTENT
 
     public function editContent(Review $review)
     {
@@ -227,5 +261,16 @@ class ReviewController extends Controller
             session()->flash('success', false);
             return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // DELETE
+
+    public function destroy(Review $review)
+    {
+        $review->delete();
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 }

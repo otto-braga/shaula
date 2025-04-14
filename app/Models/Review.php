@@ -22,7 +22,7 @@ class Review extends Model
 
     public function authors(): BelongsToMany
     {
-        return $this->belongsToMany(Person::class, 'person_artwork', 'artwork_id', 'person_id')
+        return $this->belongsToMany(Person::class, 'person_review', 'review_id', 'person_id')
             ->withPivot('activity_id')
             ->wherePivot('activity_id', Activity::first()->id)
             ->orderBy('name');
@@ -30,7 +30,7 @@ class Review extends Model
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'category_artwork', 'artwork_id', 'category_id');
+        return $this->belongsToMany(Category::class, 'category_review', 'review_id', 'category_id');
     }
 
     public function tags(): MorphToMany
