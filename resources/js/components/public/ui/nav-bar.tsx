@@ -14,8 +14,8 @@ const navItems: NavItem[] = [
         href: '/critica',
     },
     {
-        title: 'Artistas',
-        href: '/artistas',
+        title: 'Pessoas',
+        href: '/pessoas',
     },
 ];
 
@@ -45,7 +45,7 @@ export function NavBar() {
                 showNavbar ? 'translate-y-0' : '-translate-y-full'
             }`}
         >
-            <div className="font-bold">SHAULA</div>
+            <div className="text-3xl font-bold">SHAULA</div>
 
             <div className="md:hidden">
                 <Sheet>
@@ -69,7 +69,7 @@ export function NavBar() {
                 </Sheet>
             </div>
 
-            <div className="hidden space-x-3 md:block">
+            <div className="hidden space-x-3 text-2xl md:block">
                 {navItems.map((item) => (
                     <Link key={item.href} href={item.href} className={`${page.url === item.href ? 'underline' : ''} hover:underline`}>
                         {item.title}

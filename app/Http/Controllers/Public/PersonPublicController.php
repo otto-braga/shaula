@@ -16,6 +16,8 @@ class PersonPublicController extends Controller
     {
         $people = Person::paginate(12);
 
+        dd('teste');
+
         return Inertia::render('Person/Index', [
             'people' => PersonResource::collection($people)
         ]);
@@ -33,5 +35,4 @@ class PersonPublicController extends Controller
             'person' => new PersonResource($person)
         ]);
     }
-
 }

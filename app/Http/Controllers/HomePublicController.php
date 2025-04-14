@@ -12,12 +12,12 @@ class HomePublicController extends Controller
     public function index()
     {
 
-        $lastReviews = Review::orderBy('created_at', 'desc')->take(3)->get();
-        $lastArtworks = Artwork::orderBy('created_at', 'desc')->take(6)->get();
+        $reviews = Review::latest()->take(3)->get();
+        $artworks = Artwork::latest()->take(6)->get();
 
         return Inertia::render('index', [
-            'lastReviews' => WorkResource::collection($lastReviews),
-            'lastArtworks' => WorkResource::collection($lastArtworks)
+            'reviews' => WorkResource::collection($reviews),
+            'artworks' => WorkResource::collection($artworks)
         ]);
     }
 }
