@@ -71,15 +71,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // People
-    Route::get('/pessoas', [PersonController::class, 'index'])->name('person.index');
-    Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('person.create');
-    Route::post('/pessoas/store', [PersonController::class, 'store'])->name('person.store');
-    Route::get('/pessoas/{uuid}', [PersonController::class, 'show'])->name('person.show');
-    Route::get('/pessoas/{uuid}/editar', [PersonController::class, 'edit'])->name('person.edit');
-    Route::post('/pessoas/{uuid}/update', [PersonController::class, 'update'])->name('person.update');
-    Route::delete('/pessoas/{uuid}/delete', [PersonController::class, 'destroy'])->name('person.destroy');
-
     // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
     Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
@@ -104,6 +95,19 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
     Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
 
+    // People
+    Route::get('/pessoas', [PersonController::class, 'index'])->name('person.index');
+    Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('person.create');
+    Route::post('/pessoas/store', [PersonController::class, 'store'])->name('person.store');
+    Route::get('/pessoas/{person:id}', [PersonController::class, 'show'])->name('person.show');
+    Route::get('/pessoas/{person:id}/editar', [PersonController::class, 'edit'])->name('person.edit');
+    Route::post('/pessoas/{person:id}/update', [PersonController::class, 'update'])->name('person.update');
+    Route::get('/pessoas/{person:id}/edit/images', [PersonController::class, 'editImages'])->name('person.edit.images');
+    Route::post('/pessoas/{person:id}/update/images', [PersonController::class, 'updateImages'])->name('person.update.images');
+    Route::get('/pessoas/{person:id}/edit/content', [PersonController::class, 'editContent'])->name('person.edit.content');
+    Route::post('/pessoas/{person:id}/update/content', [PersonController::class, 'updateContent'])->name('person.update.content');
+    Route::delete('/pessoas/{person:id}/delete', [PersonController::class, 'destroy'])->name('person.destroy');
+
     // Artworks
     Route::get('/artwork', [ArtworkController::class, 'index'])->name('artwork.index');
     Route::get('/artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
@@ -111,13 +115,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/artwork/{artwork:id}', [ArtworkController::class, 'show'])->name('artwork.show');
     Route::get('/artwork/{artwork:id}/edit', [ArtworkController::class, 'edit'])->name('artwork.edit');
     Route::post('/artwork/{artwork:id}/update', [ArtworkController::class, 'update'])->name('artwork.update');
-    Route::delete('/artwork/{artwork:id}/delete', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
     Route::get('/artwork/{artwork:id}/edit/people', [ArtworkController::class, 'editPeople'])->name('artwork.edit.people');
     Route::post('/artwork/{artwork:id}/update/people', [ArtworkController::class, 'updatePeople'])->name('artwork.update.people');
     Route::get('/artwork/{artwork:id}/edit/images', [ArtworkController::class, 'editImages'])->name('artwork.edit.images');
     Route::post('/artwork/{artwork:id}/update/images', [ArtworkController::class, 'updateImages'])->name('artwork.update.images');
     Route::get('/artwork/{artwork:id}/edit/content', [ArtworkController::class, 'editContent'])->name('artwork.edit.content');
     Route::post('/artwork/{artwork:id}/update/content', [ArtworkController::class, 'updateContent'])->name('artwork.update.content');
+    Route::delete('/artwork/{artwork:id}/delete', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
 
     // Reviews
     Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
@@ -126,12 +130,12 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/review/{review:id}', [ReviewController::class, 'show'])->name('review.show');
     Route::get('/review/{review:id}/edit', [ReviewController::class, 'edit'])->name('review.edit');
     Route::post('/review/{review:id}/update', [ReviewController::class, 'update'])->name('review.update');
-    Route::delete('/review/{review:id}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
     Route::post('/review/{review:id}/update/relations', [ReviewController::class, 'updateRelations'])->name('review.update.relations');
     Route::get('/review/{review:id}/edit/images', [ReviewController::class, 'editImages'])->name('review.edit.images');
     Route::post('/review/{review:id}/update/images', [ReviewController::class, 'updateImages'])->name('review.update.images');
     Route::get('/review/{review:id}/edit/content', [ReviewController::class, 'editContent'])->name('review.edit.content');
     Route::post('/review/{review:id}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
+    Route::delete('/review/{review:id}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
 });
 
 // require __DIR__ . '/settings.php';

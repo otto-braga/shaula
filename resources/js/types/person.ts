@@ -28,6 +28,15 @@ export type Person = {
     chrono: string;
     date_of_birth: string | null;
     date_of_death: string | null;
+
+    content: string;
+    files: FileProps[];
+    images: FileProps[];
+    general_images: FileProps[];
+    content_images: FileProps[];
+
+    created_at: string;
+    updated_at: string;
 }
 
 export function personLabel(person: Person) {

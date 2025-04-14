@@ -21,7 +21,7 @@ import ContentImageCard from '@/components/image/content-image-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Produções',
+        title: 'Críticas',
         href: '/admin/review',
     },
 ];
@@ -79,7 +79,7 @@ export default function Content({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs review={review} processing={processing} className='sticky top-0 z-50 bg-black text-gray-800 dark:text-gray-200' />
+                            <Tabs review={review} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
 
                             <div className='sticky top-96'>
 
@@ -103,6 +103,9 @@ export default function Content({
                                         autoresize_bottom_margin: 0,
 
                                         menubar: false,
+
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
                                         toolbar: 'undo redo | ' +
                                             'gallery | ' +

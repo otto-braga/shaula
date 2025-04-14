@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Review } from '@/types/review';
+import { Person } from '@/types/person';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './tabs';
@@ -16,15 +16,15 @@ registerPlugin(FilePondPluginImagePreview);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Críticas',
-        href: '/admin/review',
+        title: 'Pessoas',
+        href: '/admin/pessoas',
     },
 ];
 
 export default function Images({
-    review,
+    person,
 }: {
-    review: { data: Review };
+    person: { data: Person };
 }) {
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
@@ -34,7 +34,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('review.update.images', review.data), {
+        post(route('person.update.images', person.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -60,7 +60,7 @@ export default function Images({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs review={review} processing={processing} />
+                            <Tabs person={person} processing={processing} />
 
                             <FilePond
                                 files={images}
@@ -71,7 +71,7 @@ export default function Images({
                             />
 
                             <div className="flex flex-row gap-2">
-                                {review.data.general_images.map((image, index) => (
+                                {person.data.general_images.map((image, index) => (
                                     <ImageCard
                                         key={index}
                                         image={image}

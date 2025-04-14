@@ -16,7 +16,7 @@ registerPlugin(FilePondPluginImagePreview);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Produções',
+        title: 'Obras',
         href: '/admin/artwork',
     },
 ];

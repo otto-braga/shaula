@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Artwork } from '@/types/artwork';
+import { Person } from '@/types/person';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import Tabs from './tabs';
@@ -21,18 +21,18 @@ import ContentImageCard from '@/components/image/content-image-card';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Obras',
-        href: '/admin/artwork',
+        title: 'Pessoas',
+        href: '/admin/pessoas',
     },
 ];
 
 export default function Content({
-    artwork,
+    person,
 }: {
-    artwork: { data: Artwork }
+    person: { data: Person }
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        content: artwork.data.content as string ?? String(),
+        content: person.data.content as string ?? String(),
         files: Array<File>(),
         filesToRemove: Array<number>(),
     });
@@ -40,7 +40,7 @@ export default function Content({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('artwork.update.content', artwork.data), {
+        post(route('person.update.content', person.data), {
             preserveScroll: true,
             preserveState: true,
         });
@@ -79,7 +79,7 @@ export default function Content({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs artwork={artwork} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
+                            <Tabs person={person} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
 
                             <div className='sticky top-96'>
 
@@ -87,7 +87,7 @@ export default function Content({
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorRef.current = editor}
-                                    initialValue={artwork.data.content as string || String()}
+                                    initialValue={person.data.content as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',
@@ -144,7 +144,7 @@ export default function Content({
                                 <div>
                                     <div className='flex flex-row gap-2'>
                                         {
-                                            artwork.data.content_images.map((image, index) => (
+                                            person.data.content_images.map((image, index) => (
                                                 <ContentImageCard
                                                     key={index}
                                                     image={image}
