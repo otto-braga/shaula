@@ -12,7 +12,7 @@ import Tabs from './tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Produções',
+        title: 'Obras',
         href: '/admin/artwork',
     },
 ];

@@ -16,7 +16,7 @@ import { Category } from '@/types/category';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Obras',
+        title: 'Críticas',
         href: '/admin/review',
     },
 ];
