@@ -71,20 +71,13 @@ class Person extends Model
         return $this->belongsToMany(Language::class, 'person_artwork', 'person_id', 'language_id');
     }
 
-    public function awards(): MorphToMany
+    public function reviews(): BelongsToMany
     {
-        return $this->morphToMany(Award::class, 'awardable');
+        return $this->belongsToMany(Review::class, 'person_review', 'person_id', 'review_id');
     }
 
-    // mentions
-
-    public function mentioners(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentions', 'mentioned_type', 'mentioned_id');
-    }
-
-    public function mentions(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentions', 'mentioner_type', 'mentioner_id');
-    }
+    // public function awards(): MorphToMany
+    // {
+    //     return $this->morphToMany(Award::class, 'awardable');
+    // }
 }

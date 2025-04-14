@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,23 +19,18 @@ class PersonResource extends JsonResource
         return [
             'id' => $this->id,
             'uuid' => $this->uuid,
-
-            'name' => $this->name,
             'slug' => $this->slug,
 
+            'name' => $this->name,
             'date_of_birth' => $this->date_of_birth,
             'date_of_death' => $this->date_of_death,
-
             'bio' => $this->bio,
             'chrono' => $this->chrono,
 
-            'genders' => $this->genders,
+            'genders' => new Collection($this->genders),
 
             'image' => new FileResource($this->image->first()),
 
-            // 'genders' => $this->genders, // collection
-            // 'cities' => $this->cities, // collection
-            // 'works' => WorkResource::collection($this->whenLoaded('works')),
             'works' => WorkResource::collection($this->whenLoaded('works')),
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)),
             // 'links' => $this->links, // collection

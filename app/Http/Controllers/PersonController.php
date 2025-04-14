@@ -17,30 +17,17 @@ class PersonController extends Controller
 
     use HasFile;
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $people = Person::query()
-            ->with(
-                'works',
-            )
-            ->latest()
+            ->orderBy('created_at', 'desc')
             ->paginate(12);
-
-        // dd($people);
-
-        // dd(PersonResource::collection($people)->first());
 
         return Inertia::render('admin/people/index', [
             'people' => PersonResource::collection($people)
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $genders = Gender::all();
@@ -51,9 +38,6 @@ class PersonController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
 
@@ -111,16 +95,6 @@ class PersonController extends Controller
         }
     }
 
-    public function storeSelect($name)
-    {
-        $person = Person::create(['name' => $name]);
-
-        return response()->json(new PersonResource($person));
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(String $uuid)
     {
         // $person = Person::where('uuid', $uuid)->first();
@@ -135,9 +109,6 @@ class PersonController extends Controller
         // ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($uuid)
     {
         $person = Person::where('uuid', $uuid)->first();
@@ -152,9 +123,6 @@ class PersonController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $uuid)
     {
         $person = Person::where('uuid', $uuid)->first();
@@ -182,6 +150,20 @@ class PersonController extends Controller
                         $person->genders()->sync($gender['value']);
                     }
                 }
+
+
+
+
+                // $dataForm = $request->all();
+
+                // $person->update($dataForm);
+
+                // // $person->genders()->sync($request->genders);
+
+
+
+
+
 
                 if ($request->hasFile('image')) {
 
@@ -214,9 +196,6 @@ class PersonController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($uuid)
     {
         $person = Person::where('uuid', $uuid)->first();
