@@ -27,7 +27,12 @@ class PersonPublicController extends Controller
      */
     public function show($id)
     {
-        $person = Person::where('id', $id)->firstOrFail();
+        $person = Person::where('id', $id)
+            ->firstOrFail();
+
+        $person->load([
+            'artworks',
+        ]);
 
         return Inertia::render('person/show', [
             'person' => new PersonResource($person)

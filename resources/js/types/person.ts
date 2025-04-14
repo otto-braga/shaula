@@ -1,11 +1,12 @@
 import { Activity } from "./activity";
+import { Artwork } from "./artwork";
 import { Award } from "./award";
 import { City } from "./city";
 import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
 import { Link } from "./link";
-import { Work } from "./work";
+import { Review } from "./review";
 
 export type Person = {
     id: number;
@@ -14,8 +15,8 @@ export type Person = {
     name: string;
     genders: Gender[];
     cities: City[];
-    works: Work[];
-    worksAsAuthor: Work[];
+    // works: Work[];
+    // worksAsAuthor: Work[];
     links: Link[];
     image: FileProps;
     activity: Activity;
@@ -34,6 +35,9 @@ export type Person = {
     images: FileProps[];
     general_images: FileProps[];
     content_images: FileProps[];
+
+    artworks: Artwork[];
+    reviews: Review[];
 
     created_at: string;
     updated_at: string;

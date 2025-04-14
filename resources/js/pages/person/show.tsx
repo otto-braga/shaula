@@ -17,6 +17,17 @@ export default function Index({ person }: { person: { data: Person } }) {
                 <div>
                     <h2 className="text-xl">{person.data.name}</h2>
                 </div>
+                {/* listar as artworks de person */}
+                <div>
+                    <p className="font-medium ">Obras</p>
+                    <p>
+                        {person.data.artworks.map((artwork) => (
+                            <Link key={artwork.id} href={artwork.url} target="_blank">
+                                {artwork.title}
+                            </Link>
+                        )).join(', ')}
+                    </p>
+                </div>
             </div>
             <div></div>
         </PublicLayout>
