@@ -40,6 +40,11 @@ const mainNavItems: NavItem[] = [
         href: '/admin/pessoas',
         icon: PersonStanding,
     },
+    {
+        title: 'Obras',
+        href: route('artwork.index'),
+        icon: LayoutGrid,
+    }
 ];
 
 const auxNavItems: NavItem[] = [
@@ -105,6 +110,8 @@ export function AppSidebar() {
 
             <SidebarContent>
                 <NavMain items={mainNavItems} title="Conteúdo" />
+            </SidebarContent>
+            <SidebarContent>
                 <NavMain items={auxNavItems} title="Auxiliares" />
             </SidebarContent>
 

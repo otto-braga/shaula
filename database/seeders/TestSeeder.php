@@ -17,7 +17,7 @@ class TestSeeder extends Seeder
         $this->call(CitySeeder::class);
         $this->call(ActivitySeeder::class);
         $this->call(PersonSeeder::class);
-        $this->call(ReviewSeeder::class);
         $this->call(ArtworkSeeder::class);
+        // $this->call(ReviewSeeder::class);
     }
 }

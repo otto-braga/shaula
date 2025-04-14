@@ -45,9 +45,9 @@ class Person extends Model
         return $this->morphMany(Link::class, 'linkable', 'linkable_type', 'linkable_id');
     }
 
-    public function works(): BelongsToMany
+    public function artworks(): BelongsToMany
     {
-        return $this->belongsToMany(Work::class, 'person_work', 'person_id', 'work_id')
+        return $this->belongsToMany(Artwork::class, 'person_artwork', 'person_id', 'artwork_id')
             ->withPivot('activity_id');
     }
 
@@ -56,9 +56,9 @@ class Person extends Model
         return $this->belongsToMany(Activity::class, 'activity_person', 'person_id', 'activity_id');
     }
 
-    public function activitiesThroughWorks(): BelongsToMany
+    public function activitiesThroughArtworks(): BelongsToMany
     {
-        return $this->belongsToMany(Activity::class, 'person_work', 'person_id', 'activity_id');
+        return $this->belongsToMany(Activity::class, 'person_artwork', 'person_id', 'activity_id');
     }
 
     public function languages(): MorphToMany
@@ -66,9 +66,9 @@ class Person extends Model
         return $this->morphToMany(Language::class, 'languageable');
     }
 
-    public function languagesThroughWorks(): BelongsToMany
+    public function languagesThroughArtworks(): BelongsToMany
     {
-        return $this->belongsToMany(Language::class, 'person_work', 'person_id', 'language_id');
+        return $this->belongsToMany(Language::class, 'person_artwork', 'person_id', 'language_id');
     }
 
     public function awards(): MorphToMany

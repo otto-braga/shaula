@@ -9,7 +9,7 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
-import Tabs from './Tabs';
+import Tabs from './tabs';
 
 import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";

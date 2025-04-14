@@ -1,9 +1,9 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { PageProps } from '@/types';
-import { Work } from '@/types/work';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem } from '@/types';
+import { Artwork } from '@/types/artwork';
 import { Head, useForm, usePage } from '@inertiajs/react';
-import { FormEventHandler, useCallback, useEffect, useRef, useState } from 'react';
-import Tabs from './Tabs';
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
+import Tabs from './tabs';
 
 import { FilePond, registerPlugin } from "react-filepond";
 import "filepond/dist/filepond.min.css";
@@ -14,17 +14,25 @@ registerPlugin(FilePondPluginImagePreview);
 
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import Modal from '@/Components/Modal';
-import PrimaryButton from '@/Components/PrimaryButton';
-import ImageCard from '@/Components/ImageCard';
+
+import { Button } from '@headlessui/react';
+import Modal from '@/components/common/modal';
+import ContentImageCard from '@/components/image/content-image-card';
+
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'Produções',
+        href: '/admin/artwork',
+    },
+];
 
 export default function Content({
-    work,
-}: PageProps<{
-    work: { data: Work }
-}>) {
+    artwork,
+}: {
+    artwork: { data: Artwork }
+}) {
     const { data, setData, post, errors, processing } = useForm({
-        content: work.data.content as string ?? String(),
+        content: artwork.data.content as string ?? String(),
         files: Array<File>(),
         filesToRemove: Array<number>(),
     });
@@ -32,9 +40,9 @@ export default function Content({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('work.update.content', work.data.uuid), {
+        post(route('artwork.update.content', artwork.data), {
             preserveScroll: true,
-            preserveState: false,
+            preserveState: true,
         });
     };
 
@@ -65,41 +73,21 @@ export default function Content({
     }, [imagesToRemove]);
 
     return (
-        <AuthenticatedLayout
-            header={
-                <h2 className="">
-                    Editor
-                </h2>
-            }
-        >
-            <Head title={'Editor'} />
-
-            <section className='py-12 px-4 text-gray-800 dark:text-gray-200'>
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Produções" />
+            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
-                    <div className='bg-white border p-3 rounded dark:border-gray-600 dark:bg-slate-800'>
-                        <form onSubmit={submit} className="space-y-6 bg-inherit">
-
-                            <Tabs work={work} processing={processing} />
+                    <div className="">
+                        <form onSubmit={submit} className="space-y-3 bg-inherit">
+                            <Tabs artwork={artwork} processing={processing} className='sticky top-0 z-50 bg-black text-gray-800 dark:text-gray-200' />
 
                             <div className='sticky top-96'>
-
-                                {usePage().props.errors.files && (
-                                    <p className="text-red-500 text-xs italic">
-                                        {usePage().props.errors.files}
-                                    </p>
-                                )}
-
-                                {usePage().props.errors.content && (
-                                    <p className="text-red-500 text-xs italic">
-                                        {usePage().props.errors.content}
-                                    </p>
-                                )}
 
                                 <Editor
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorRef.current = editor}
-                                    initialValue={work.data.content as string || String()}
+                                    initialValue={artwork.data.content as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',
@@ -153,12 +141,11 @@ export default function Content({
                                 <div>
                                     <div className='flex flex-row gap-2'>
                                         {
-                                            work.data.content_images.map((image, index) => (
-                                                <ImageCard
+                                            artwork.data.content_images.map((image, index) => (
+                                                <ContentImageCard
                                                     key={index}
                                                     image={image}
-                                                    toRemove={imagesToRemove.includes(image.id)}
-                                                    onSelected={() => {
+                                                    onSelectedChange={() => {
                                                         editorRef?.current?.execCommand(
                                                             'mceInsertContent',
                                                             false,
@@ -166,8 +153,8 @@ export default function Content({
                                                         );
                                                         closeGallery();
                                                     }}
-                                                    onRemove={(remove) => {
-                                                        if (remove) {
+                                                    onRemoveChange={(isToRemove) => {
+                                                        if (isToRemove) {
                                                             setImagesToRemove([...imagesToRemove, image.id]);
                                                         } else {
                                                             setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
@@ -186,10 +173,11 @@ export default function Content({
                                         allowMultiple={true}
                                     />
 
-                                    <div className='flex justify-end ml-8'>
-                                        <PrimaryButton type="submit" disabled={processing} onClick={submit}>
+                                    <div className='flex justify-center ml-8'>
+                                        <Button type="submit" disabled={processing} onClick={submit}
+                                            className='bg-gray-300 hover:bg-blue-300 text-black font-bold py-2 px-4 rounded'>
                                             Salvar
-                                        </PrimaryButton>
+                                        </Button>
                                     </div>
                                 </div>
                             </Modal>
@@ -198,6 +186,6 @@ export default function Content({
                     </div>
                 </div>
             </section>
-        </AuthenticatedLayout>
-    )
+        </AppLayout>
+    );
 }

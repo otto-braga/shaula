@@ -17,8 +17,8 @@ class Category extends Model
         'class',
     ];
 
-    public function works(): BelongsToMany
+    public function artworks(): BelongsToMany
     {
-        return $this->belongsToMany(Work::class, 'category_work', 'category_id', 'work_id');
+        return $this->belongsToMany(Artwork::class, 'artwork_category', 'category_id', 'artwork_id');
     }
 }
