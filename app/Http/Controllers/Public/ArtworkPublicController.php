@@ -18,8 +18,8 @@ class ArtworkPublicController extends Controller
     {
         $artworks = Artwork::paginate(12);
 
-        return Inertia::render('Artwork/Index', [
-            'artworks' => WorkResource::collection($artworks)
+        return Inertia::render('artwork/index', [
+            'artworks' => ArtworkResource::collection($artworks)
         ]);
     }
 
@@ -30,10 +30,9 @@ class ArtworkPublicController extends Controller
     public function show($uuid)
     {
         $artwork = Work::where('uuid', $uuid)->firstOrFail();
-        $artwork->load('workable');
 
         return Inertia::render('Artwork/Show', [
-            'artwork' => new WorkResource($artwork)
+            'artwork' => new ArtworkResource($artwork)
         ]);
     }
 }

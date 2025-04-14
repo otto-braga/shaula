@@ -6,8 +6,8 @@ import { Work } from '@/types/work';
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
 
-export default function Index({ reviews }: { reviews: { data: Work[] } }) {
-    console.log(reviews);
+export default function Index({ artworks }: { artworks: { data: Work[] } }) {
+    console.log(artworks);
 
     return (
         <PublicLayout head="Crítica">
@@ -31,7 +31,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                 <div className="absolute z-20 h-full w-[6%] bg-gradient-to-r from-white" />
                 <div className="absolute right-0 z-20 h-full w-[6%] bg-gradient-to-l from-white" />
                 <CarouselContent className="">
-                    {reviews.data.map((review) => (
+                    {artworks.data.map((review) => (
                         <CarouselItem key={review.id} className="relative basis-1/2 pl-4">
                             <img
                                 src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
@@ -63,7 +63,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                     <div className="h-full w-full bg-black/10">FILTROS</div>
                 </div>
                 <div className="col-span-2 divide-y">
-                    {reviews.data.map((review) => (
+                    {artworks.data.map((review) => (
                         <div className="grid grid-cols-2 gap-3 space-y-3 py-6">
                             <div>
                                 <img

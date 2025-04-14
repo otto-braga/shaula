@@ -1,8 +1,11 @@
-import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { Award } from '@/types/award';
+import { Category } from '@/types/category';
+import { Language } from '@/types/language';
 import { Person } from '@/types/person';
 import { Review } from '@/types/review';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
@@ -10,13 +13,10 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
-import { Language } from '@/types/language';
-import { Award } from '@/types/award';
-import { Category } from '@/types/category';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Obras',
+        title: 'Críticas',
         href: '/admin/review',
     },
 ];
@@ -28,11 +28,11 @@ export default function Index({
     awards,
     categories,
 }: {
-    review: { data: Review },
-    people?: { data: Person[] },
-    languages?: { data: Language[] },
-    awards?: { data: Award[] },
-    categories?: { data: Category[] },
+    review: { data: Review };
+    people?: { data: Person[] };
+    languages?: { data: Language[] };
+    awards?: { data: Award[] };
+    categories?: { data: Category[] };
 }) {
     const isEdit = !!review;
 
@@ -65,7 +65,7 @@ export default function Index({
     const [selectedPeople, setSelectedPeople] = useState<Person[]>(review?.data.authors || []);
 
     useEffect(() => {
-        setData('authors',selectedPeople);
+        setData('authors', selectedPeople);
     }, [selectedPeople]);
 
     return (
@@ -124,15 +124,15 @@ export default function Index({
                                     options={categories?.data.map((category) => ({ value: category.id, label: category.name }))}
                                     value={data.categories.map((category) => ({ value: category.id, label: category.label }))}
                                     onChange={(options) => {
-                                        setData('categories', options.map((option) => (
-                                            { id: option.value, name: option.label, label: option.label }
-                                        )));
+                                        setData(
+                                            'categories',
+                                            options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
+                                        );
                                     }}
                                     styles={handleReactSelectStyling()}
                                 />
                                 <InputError className="mt-2" message={errors.categories} />
                             </div>
-
                         </form>
                     </div>
                 </div>

@@ -14,11 +14,9 @@ class PersonPublicController extends Controller
      */
     public function index()
     {
-        $people = Person::paginate(12);
+        $people = Person::latest()->paginate(12);
 
-        dd('teste');
-
-        return Inertia::render('Person/Index', [
+        return Inertia::render('person/index', [
             'people' => PersonResource::collection($people)
         ]);
     }
@@ -27,11 +25,11 @@ class PersonPublicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($slug)
+    public function show($id)
     {
-        $person = Person::where('slug', $slug)->firstOrFail();
+        $person = Person::where('id', $id)->firstOrFail();
 
-        return Inertia::render('Person/Show', [
+        return Inertia::render('person/show', [
             'person' => new PersonResource($person)
         ]);
     }
