@@ -22,9 +22,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                     <p className="font-medium ">Obras</p>
                     <p>
                         {person.data.artworks.map((artwork) => (
-                            <Link key={artwork.id} href={artwork.url} target="_blank">
-                                {artwork.title}
-                            </Link>
+                            artwork.title
                         )).join(', ')}
                     </p>
                 </div>
