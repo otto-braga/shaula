@@ -18,6 +18,6 @@ class TestSeeder extends Seeder
         $this->call(ActivitySeeder::class);
         $this->call(PersonSeeder::class);
         $this->call(ArtworkSeeder::class);
-        // $this->call(ReviewSeeder::class);
+        $this->call(ReviewSeeder::class);
     }
 }

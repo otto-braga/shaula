@@ -47,13 +47,12 @@ class ArtworkController extends Controller
 
         $languages = Language::all();
         $awards = Award::all();
-        $categories = Category::where('class', $artwork->artworkable_type)->get();
+        $categories = Category::where('class', Artwork::class)->get();
 
         return Inertia::render('admin/artwork/edit/index', [
             'artwork' => new ArtworkResource($artwork),
             'people' => PersonResource::collection($people),
 
-            'artwork' => new ArtworkResource($artwork),
             'languages' => LanguageResource::collection($languages),
             'awards' => AwardResource::collection($awards),
             'categories' => CategoryResource::collection($categories),

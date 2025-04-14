@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->string('slug');
+            $table->string('title');
+            $table->date('date')->nullable();
+            $table->longText('content')->nullable();
 
             $table->timestamps();
         });

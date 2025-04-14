@@ -7,6 +7,7 @@ import { Link } from '@inertiajs/react';
 import {
     BookOpen,
     Building2,
+    Circle,
     CircleDashed,
     CircleDotDashed,
     ContactRound,
@@ -22,60 +23,55 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        href: '/admin/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
-    },
-    {
-        title: 'Produções',
-        href: '/admin/work',
-        icon: LayoutGrid,
-    },
-    {
-        title: 'Críticas',
-        href: '/admin/criticas',
-        icon: Text,
     },
     {
         title: 'Pessoas',
-        href: '/admin/pessoas',
+        href: route('person.index'),
         icon: PersonStanding,
     },
     {
         title: 'Obras',
         href: route('artwork.index'),
-        icon: LayoutGrid,
-    }
+        icon: Circle,
+    },
+    {
+        title: 'Críticas',
+        href: route('review.index'),
+        icon: Text,
+    },
 ];
 
 const auxNavItems: NavItem[] = [
     {
         title: 'Identades de Gênero',
-        href: '/admin/generos',
+        href: route('genders.index'),
         icon: Transgender,
     },
     {
         title: 'Atividades',
-        href: '/admin/atividades',
+        href: route('activities.index'),
         icon: ContactRound,
     },
     {
         title: 'Cidades',
-        href: '/admin/cidades',
+        href: route('cities.index'),
         icon: Building2,
     },
     {
         title: 'Linguagens',
-        href: '/admin/linguagens',
+        href: route('languages.index'),
         icon: CircleDashed,
     },
-    {
-        title: 'Tags',
-        href: '/admin/tags',
-        icon: Tag,
-    },
+    // {
+    //     title: 'Tags',
+    //     href: route('tags.index'),
+    //     icon: Tag,
+    // },
     {
         title: 'Categorias',
-        href: '/admin/categorias',
+        href: route('categories.index'),
         icon: CircleDotDashed,
     },
 ];

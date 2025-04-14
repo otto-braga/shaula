@@ -10,7 +10,6 @@ export type Artwork = {
     id: number;
     uuid: string;
     slug: string;
-
     title: string;
     date: string;
     authors: Person[];
@@ -30,4 +29,7 @@ export type Artwork = {
     awards: Award[];
     dimensions: string;
     materials: string;
+
+    created_at: string;
+    updated_at: string;
 }

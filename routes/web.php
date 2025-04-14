@@ -48,20 +48,19 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
         return Inertia::render('settings/appearance');
     })->name('appearance');
 
-    //Tags
+    // Tags
     Route::get('tags', [TagController::class, 'index'])->name('tags.index');
     Route::post('tags', [TagController::class, 'store'])->name('tags.store');
     Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
-    //Categories
+    // Categories
     Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
 
-    // Route::resource('/pessoas', PersonController::class)->names('person');
-
+    // People
     Route::get('/pessoas', [PersonController::class, 'index'])->name('person.index');
     Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('person.create');
     Route::post('/pessoas/store', [PersonController::class, 'store'])->name('person.store');
@@ -70,54 +69,31 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/pessoas/{uuid}/update', [PersonController::class, 'update'])->name('person.update');
     Route::delete('/pessoas/{uuid}/delete', [PersonController::class, 'destroy'])->name('person.destroy');
 
-    // Route::post('/pessoas/store/select', [PersonController::class, 'storeSelect'])->name('person.store.select');
-
-    //Genders
+    // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
     Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
     Route::put('generos/{gender}', [GenderController::class, 'update'])->name('genders.update');
     Route::delete('generos/{gender}', [GenderController::class, 'destroy'])->name('genders.destroy');
 
-    //Actitivies
+    // Actitivies
     Route::get('atividades', [ActivityController::class, 'index'])->name('activities.index');
     Route::post('atividades', [ActivityController::class, 'store'])->name('activities.store');
     Route::put('atividades/{activity}', [ActivityController::class, 'update'])->name('activities.update');
     Route::delete('atividades/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
 
-    //Cities
+    // Cities
     Route::get('cidades', [CityController::class, 'index'])->name('cities.index');
     Route::post('cidades', [CityController::class, 'store'])->name('cities.store');
     Route::put('cidades/{city}', [CityController::class, 'update'])->name('cities.update');
     Route::delete('cidades/{city}', [CityController::class, 'destroy'])->name('cities.destroy');
 
-    //Languages
+    // Languages
     Route::get('linguagens', [LanguageController::class, 'index'])->name('languages.index');
     Route::post('linguagens', [LanguageController::class, 'store'])->name('languages.store');
     Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
     Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
 
-
-    // Route::resource('/artwork', ArtworkController::class)->names('artwork');
-
-    // Route::resource('/criticas', ReviewController::class)->names('review');
-
-    // Route::get('/work', [WorkController::class, 'index'])->name('work.index');
-    // Route::get('/work/create', [WorkController::class, 'create'])->name('work.create');
-    // Route::post('/work/store', [WorkController::class, 'store'])->name('work.store');
-    // Route::get('/work/{work:id}', [WorkController::class, 'show'])->name('work.show');
-    // Route::get('/work/{work:id}/edit', [WorkController::class, 'edit'])->name('work.edit');
-    // Route::post('/work/{work:id}/update', [WorkController::class, 'update'])->name('work.update');
-    // Route::delete('/work/{work:id}/delete', [WorkController::class, 'destroy'])->name('work.destroy');
-    // Route::get('/work/{work:id}/edit/people', [WorkController::class, 'editPeople'])->name('work.edit.people');
-    // Route::post('/work/{work:id}/update/people', [WorkController::class, 'updatePeople'])->name('work.update.people');
-    // Route::get('/work/{work:id}/edit/relations', [WorkController::class, 'editRelations'])->name('work.edit.relations');
-    // Route::post('/work/{work:id}/update/relations', [WorkController::class, 'updateRelations'])->name('work.update.relations');
-    // Route::get('/work/{work:id}/edit/images', [WorkController::class, 'editImages'])->name('work.edit.images');
-    // Route::post('/work/{work:id}/update/images', [WorkController::class, 'updateImages'])->name('work.update.images');
-    // Route::get('/work/{work:id}/edit/content', [WorkController::class, 'editContent'])->name('work.edit.content');
-    // Route::post('/work/{work:id}/update/content', [WorkController::class, 'updateContent'])->name('work.update.content');
-    // Route::get('/work/{work:id}/edit/details', [WorkController::class, 'editDetails'])->name('work.edit.details');
-
+    // Artworks
     Route::get('/artwork', [ArtworkController::class, 'index'])->name('artwork.index');
     Route::get('/artwork/create', [ArtworkController::class, 'create'])->name('artwork.create');
     Route::post('/artwork/store', [ArtworkController::class, 'store'])->name('artwork.store');
@@ -127,15 +103,24 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/artwork/{artwork:id}/delete', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
     Route::get('/artwork/{artwork:id}/edit/people', [ArtworkController::class, 'editPeople'])->name('artwork.edit.people');
     Route::post('/artwork/{artwork:id}/update/people', [ArtworkController::class, 'updatePeople'])->name('artwork.update.people');
-    Route::get('/artwork/{artwork:id}/edit/relations', [ArtworkController::class, 'editRelations'])->name('artwork.edit.relations');
-    Route::post('/artwork/{artwork:id}/update/relations', [ArtworkController::class, 'updateRelations'])->name('artwork.update.relations');
     Route::get('/artwork/{artwork:id}/edit/images', [ArtworkController::class, 'editImages'])->name('artwork.edit.images');
     Route::post('/artwork/{artwork:id}/update/images', [ArtworkController::class, 'updateImages'])->name('artwork.update.images');
     Route::get('/artwork/{artwork:id}/edit/content', [ArtworkController::class, 'editContent'])->name('artwork.edit.content');
     Route::post('/artwork/{artwork:id}/update/content', [ArtworkController::class, 'updateContent'])->name('artwork.update.content');
-    Route::get('/artwork/{artwork:id}/edit/details', [ArtworkController::class, 'editDetails'])->name('artwork.edit.details');
 
-    // Route::get('/work/{workable_type}', [WorkController::class, 'index'])->name('artwork.index');
+    // Reviews
+    Route::get('/review', [ReviewController::class, 'index'])->name('review.index');
+    Route::get('/review/create', [ReviewController::class, 'create'])->name('review.create');
+    Route::post('/review/store', [ReviewController::class, 'store'])->name('review.store');
+    Route::get('/review/{review:id}', [ReviewController::class, 'show'])->name('review.show');
+    Route::get('/review/{review:id}/edit', [ReviewController::class, 'edit'])->name('review.edit');
+    Route::post('/review/{review:id}/update', [ReviewController::class, 'update'])->name('review.update');
+    Route::delete('/review/{review:id}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
+    Route::post('/review/{review:id}/update/relations', [ReviewController::class, 'updateRelations'])->name('review.update.relations');
+    Route::get('/review/{review:id}/edit/images', [ReviewController::class, 'editImages'])->name('review.edit.images');
+    Route::post('/review/{review:id}/update/images', [ReviewController::class, 'updateImages'])->name('review.update.images');
+    Route::get('/review/{review:id}/edit/content', [ReviewController::class, 'editContent'])->name('review.edit.content');
+    Route::post('/review/{review:id}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
 });
 
 // require __DIR__ . '/settings.php';
