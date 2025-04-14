@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Activity;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class ActivitySeeder extends Seeder
 {
@@ -16,15 +17,16 @@ class ActivitySeeder extends Seeder
         Activity::factory()->create([
             'id' => 1,
             'name' => 'autoria',
+            'slug' => Str::slug('autoria'),
         ]);
 
         $activities = [
-            'curadoria',
-            'montação',
+            'atividade-teste-1',
+            'atividade-teste-2',
         ];
 
-        // foreach ($activities as $activity) {
-        //     Activity::factory()->create(['name' => $activity]);
-        // }
+        foreach ($activities as $activity) {
+            Activity::factory()->create(['name' => $activity, 'slug' => Str::slug($activity)]);
+        }
     }
 }

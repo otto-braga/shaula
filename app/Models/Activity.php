@@ -22,8 +22,8 @@ class Activity extends Model
         return $this->belongsToMany(Person::class, 'activity_person', 'activity_id', 'person_id');
     }
 
-    public function peopleThroughWorks()
+    public function peopleThroughArtworks()
     {
-        return $this->belongsToMany(Person::class, 'person_work', 'activity_id', 'person_id');
+        return $this->belongsToMany(Person::class, 'person_artwork', 'activity_id', 'person_id');
     }
 }

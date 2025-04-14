@@ -2,7 +2,7 @@ import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Activity } from '@/types/activity';
 import { Person, personLabel } from '@/types/person';
-import { Work } from '@/types/work';
+import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
 import { FormEventHandler, useEffect, useState } from 'react';
@@ -13,7 +13,7 @@ import Tabs from './tabs';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Produções',
-        href: '/admin/work',
+        href: '/admin/artwork',
     },
 ];
 
@@ -21,11 +21,11 @@ type PersonInActivity = { id: number; name: string };
 type ActivityWithPeople = { id: number; name: string; people: PersonInActivity[] };
 
 export default function People({
-    work,
+    artwork,
     activities,
     people,
 }: {
-    work: { data: Work };
+    artwork: { data: Artwork };
     activities?: { data: Activity[] };
     people?: { data: Person[] };
 }) {
@@ -33,27 +33,21 @@ export default function People({
         activities: Array<ActivityWithPeople>(),
     });
 
-    // -------------------------------------------------------------------------
-    // form
-
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('work.update.people', work.data), {
+        post(route('artwork.update.people', artwork.data), {
             preserveScroll: true,
             preserveState: false,
         });
     };
 
-    // -------------------------------------------------------------------------
-    // activities
-
     const [availableActivities, setAvailableActivities] = useState<Activity[]>(activities?.data || []);
     const [loadedActivities, setLoadedActivities] = useState<ActivityWithPeople[]>(
-        work.data.people
+        artwork.data.people
             .map((person) => ({
                 id: person.activity.id,
                 name: person.activity.name,
-                people: work.data.people.filter((p) => p.activity.id == person.activity.id).map((p) => ({ id: p.id, name: p.name })),
+                people: artwork.data.people.filter((p) => p.activity.id == person.activity.id).map((p) => ({ id: p.id, name: p.name })),
             }))
             .flat()
             .filter((activity, index, self) => self.findIndex((a) => a.id === activity.id) === index),
@@ -71,13 +65,7 @@ export default function People({
         setData('activities', selectedActivities);
     }, [selectedActivities]);
 
-    // -------------------------------------------------------------------------
-    // people
-
     const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
-
-    // -------------------------------------------------------------------------
-    // render
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -86,7 +74,7 @@ export default function People({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs work={work} processing={processing} />
+                            <Tabs artwork={artwork} processing={processing} />
 
                             <div>
                                 <Select

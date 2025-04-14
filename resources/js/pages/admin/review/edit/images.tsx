@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Work } from '@/types/work';
+import { Review } from '@/types/review';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './tabs';
@@ -17,14 +17,14 @@ registerPlugin(FilePondPluginImagePreview);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Produções',
-        href: '/admin/work',
+        href: '/admin/review',
     },
 ];
 
 export default function Images({
-    work,
+    review,
 }: {
-    work: { data: Work };
+    review: { data: Review };
 }) {
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
@@ -34,7 +34,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('work.update.images', work.data), {
+        post(route('review.update.images', review.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -60,7 +60,7 @@ export default function Images({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs work={work} processing={processing} />
+                            <Tabs review={review} processing={processing} />
 
                             <FilePond
                                 files={images}
@@ -71,7 +71,7 @@ export default function Images({
                             />
 
                             <div className="flex flex-row gap-2">
-                                {work.data.general_images.map((image, index) => (
+                                {review.data.general_images.map((image, index) => (
                                     <ImageCard
                                         key={index}
                                         image={image}

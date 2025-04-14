@@ -1,14 +1,8 @@
 import AppLayout from '@/layouts/app-layout';
-import InputError from '@/components/input-error';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { type BreadcrumbItem } from '@/types';
-import { Person } from '@/types/person';
-import { Work } from '@/types/work';
+import { Review } from '@/types/review';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
-import Select from 'react-select';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
 
 import { FilePond, registerPlugin } from "react-filepond";
@@ -21,7 +15,6 @@ registerPlugin(FilePondPluginImagePreview);
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
-import ImageCard from '@/components/image/image-card';
 import { Button } from '@headlessui/react';
 import Modal from '@/components/common/modal';
 import ContentImageCard from '@/components/image/content-image-card';
@@ -29,17 +22,17 @@ import ContentImageCard from '@/components/image/content-image-card';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Produções',
-        href: '/admin/work',
+        href: '/admin/review',
     },
 ];
 
 export default function Content({
-    work,
+    review,
 }: {
-    work: { data: Work }
+    review: { data: Review }
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        content: work.data.content as string ?? String(),
+        content: review.data.content as string ?? String(),
         files: Array<File>(),
         filesToRemove: Array<number>(),
     });
@@ -47,7 +40,7 @@ export default function Content({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('work.update.content', work.data), {
+        post(route('review.update.content', review.data), {
             preserveScroll: true,
             preserveState: true,
         });
@@ -86,27 +79,15 @@ export default function Content({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs work={work} processing={processing} className='sticky top-0 z-50 bg-black text-gray-800 dark:text-gray-200' />
+                            <Tabs review={review} processing={processing} className='sticky top-0 z-50 bg-black text-gray-800 dark:text-gray-200' />
 
                             <div className='sticky top-96'>
-
-                                {/* {usePage().props.errors.files && (
-                                    <p className="text-red-500 text-xs italic">
-                                        {usePage().props.errors.files}
-                                    </p>
-                                )}
-
-                                {usePage().props.errors.content && (
-                                    <p className="text-red-500 text-xs italic">
-                                        {usePage().props.errors.content}
-                                    </p>
-                                )} */}
 
                                 <Editor
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorRef.current = editor}
-                                    initialValue={work.data.content as string || String()}
+                                    initialValue={review.data.content as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',
@@ -160,7 +141,7 @@ export default function Content({
                                 <div>
                                     <div className='flex flex-row gap-2'>
                                         {
-                                            work.data.content_images.map((image, index) => (
+                                            review.data.content_images.map((image, index) => (
                                                 <ContentImageCard
                                                     key={index}
                                                     image={image}

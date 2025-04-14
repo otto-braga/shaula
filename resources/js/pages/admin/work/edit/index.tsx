@@ -9,7 +9,7 @@ import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
-import Tabs from './Tabs';
+import Tabs from './tabs';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

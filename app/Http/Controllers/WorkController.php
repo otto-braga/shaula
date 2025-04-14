@@ -17,11 +17,16 @@ use App\Http\Resources\PersonResource;
 use App\Http\Resources\TagResource;
 use App\Http\Resources\WorkResource;
 use App\Models\Activity;
+use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\City;
+use App\Models\Curation;
+use App\Models\Exhibit;
 use App\Models\Language;
 use App\Models\Person;
+use App\Models\Review;
+use App\Models\Source;
 use App\Models\Tag;
 use App\Models\Work;
 use App\Traits\HasFile;
@@ -36,11 +41,11 @@ class WorkController extends Controller
     use HasFile, HasSlug, HasUuid;
 
     const WORKABLE_TYPES = [
-        ['value' => 'App\Models\Artwork', 'label' => 'Obra'],
-        ['value' => 'App\Models\Review', 'label' => 'Crítica'],
-        ['value' => 'App\Models\Source', 'label' => 'Fonte'],
-        ['value' => 'App\Models\Curation', 'label' => 'Curadoria'],
-        ['value' => 'App\Models\Exhibit', 'label' => 'Exposição'],
+        ['value' => Artwork::class, 'label' => 'Obra'],
+        ['value' => Review::class, 'label' => 'Crítica'],
+        ['value' => Source::class, 'label' => 'Fonte'],
+        ['value' => Curation::class, 'label' => 'Curadoria'],
+        ['value' => Exhibit::class, 'label' => 'Exposição'],
     ];
 
     // -------------------------------------------------------------------------
@@ -323,19 +328,11 @@ class WorkController extends Controller
 
     public function editDetails(Work $work)
     {
-        if (class_basename($work->workable_type) === 'Review') {
-            return redirect()->back();
-        }
-
-        $render = 'admin/work/edit/details/' . class_basename($work->workable_type);
+        $render = 'admin/work/' . strtolower(class_basename($work->workable_type)) . '/edit';
 
         return Inertia::render($render, [
             'work' => new WorkResource($work),
         ]);
     }
 
-    // public function updateDetails(WorkUpdateDetailsRequest $request, $uuid)
-    // {
-    //     return redirect()->back();
-    // }
 }

@@ -6,7 +6,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
-import Tabs from './Tabs';
+import Tabs from './tabs';
 import InputError from '@/components/input-error';
 import { City } from '@/types/city';
 import { Language } from '@/types/language';

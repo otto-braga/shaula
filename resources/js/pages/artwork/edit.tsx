@@ -3,7 +3,7 @@ import { PageProps } from '@/types';
 import { Artwork, Work } from '@/types/work';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import Tabs from '../tabs';
+import Tabs from '../Tabs';
 import InputLabel from '@/Components/InputLabel';
 import CreatableSelect from 'react-select/creatable';
 import { City } from '@/types/city';

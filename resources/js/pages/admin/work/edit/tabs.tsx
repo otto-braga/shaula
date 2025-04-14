@@ -14,8 +14,6 @@ type TabsProps = {
 export default function Tabs({ work, processing, className }: TabsProps) {
     const { flash } = usePage().props;
 
-    console.log('flash', flash);
-
     const timedMessageDuration: number = 3000;
     const [isSaving, setIsSaving] = useState<boolean>(false);
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
@@ -83,7 +81,7 @@ export default function Tabs({ work, processing, className }: TabsProps) {
                             >
                                 Conteúdo
                             </Link>
-                            {work?.data.workable_type !== 'review' && (
+                            {work?.data.workable_type !== 'App\\Models\\Review' && (
                                 <Link
                                     className={
                                         'px-3' +
