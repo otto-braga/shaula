@@ -7,8 +7,11 @@ use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GenderController;
+use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\Public\PersonPublicController;
+use App\Http\Controllers\Public\ReviewPublicController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\WorkController;
@@ -16,11 +19,15 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 
-Route::get('/', function () {
-    return Inertia::render('welcome');
-})->name('home');
+// Route::get('/', function () {
+//     return Inertia::render('welcome');
+// })->name('home');
 
-// Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomePublicController::class, 'index'])->name('home');
+
+Route::get('/critica', [ReviewPublicController::class, 'index'])->name('review-public.index');
+
+Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('person-public.index');
 
 // Route::get('publicacoes', [PostPublicController::class, 'index'])->name('posts-public.index');
 // Route::get('publicacoes/{slug}', [PostPublicController::class, 'show'])->name('posts-public.show');

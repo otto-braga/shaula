@@ -1,96 +1,60 @@
-import DeleteDialog from '@/components/common/delete-dialog';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
+import DangerButton from '@/Components/DangerButton';
+import PrimaryButton from '@/Components/PrimaryButton';
+import SecondaryButton from '@/Components/SecondaryButton';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { PageProps } from '@/types';
 import { Work } from '@/types/work';
 import { Head, Link } from '@inertiajs/react';
-import { Edit, Eye } from 'lucide-react';
+import { Delete, Edit } from '@mui/icons-material';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Produções',
-        href: '/admin/work',
-    },
-];
-
-export default function Index({ works }: { works: { data: Work[] } }) {
-    // const [isOpen, setIsOpen] = useState(false);
-    // const [resourceToDelete, setResourceToDelete] = useState<string | null>(null);
-
-    // const { delete: destroy, processing, reset, errors, clearErrors } = useForm();
-
-    // const deleteResource = () => {
-    //     destroy(route('work.destroy', { id: resourceToDelete }), {
-    //         preserveScroll: true,
-    //         onSuccess: () => closeModal(),
-    //         onFinish: () => reset(),
-    //     });
-    // };
-
-    // const closeModal = () => {
-    //     clearErrors();
-    //     reset();
-    //     setIsOpen(false);
-    // };
-
-    // const openModal = () => {
-    //     setIsOpen(true);
-    // };
+export default function Index({
+    works,
+}: PageProps<{
+    works: { data: Work[] };
+}>) {
+    console.log(works);
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AuthenticatedLayout header={<h2 className="text-xl leading-tight font-semibold text-gray-800 dark:text-gray-200">Produções</h2>}>
             <Head title="Produções" />
+
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-end">
-                        <Link href={route('work.create')} prefetch>
-                            <Button>Cadastrar</Button>
+                        <Link href={route('work.create')}>
+                            <PrimaryButton>Cadastrar</PrimaryButton>
                         </Link>
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {works?.data?.map((work) => (
-                            <Card key={work.id} className="flex flex-col justify-between">
-                                <CardHeader>
-                                    <h2>{work.workable_type}</h2>
-                                    <CardTitle>
-                                        <h3 className="line-clamp-1 font-semibold">{work.title}</h3>
-                                    </CardTitle>
-                                    <CardDescription>
-                                        <p className="line-clamp-2">{work.description}</p>
-                                    </CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div>
-                                        <p className="text-sm">Autores</p>
-                                        <p>{work.authors.map((author) => author.name).join(', ')}</p>
-                                    </div>
-                                </CardContent>
-                                <CardFooter>
-                                    <div className="mt-2 flex w-full justify-end gap-2">
-                                        <DeleteDialog
-                                            resourceId={work.id}
-                                            resourceName={work.title}
-                                            deleteRoute="work.destroy"
-                                            onSuccess={() => window.location.reload()}
-                                        />
-                                        <Link href={route('work.edit', { work: work })}>
-                                            <Button variant={'secondary'}>
-                                                <Edit className="h-5 w-5" />
-                                            </Button>
-                                        </Link>
-                                        <Link href={route('work.show', { id: work.uuid })}>
-                                            <Button variant={'secondary'}>
-                                                <Eye className="h-5 w-5" />
-                                            </Button>
-                                        </Link>
-                                    </div>
-                                </CardFooter>
-                            </Card>
+                            <div key={work.id} className="flex flex-col border-b border-gray-700 p-4">
+                                <h3 className="font-semibold">{work.title}</h3>
+                                <p>{work.authors.map((author) => author.name).join(', ')}</p>
+                                {/* <p>{work.categories.map(category => category.name).join(', ')}</p> */}
+                                <small className="font-semibold">{new Date(work.date).toLocaleDateString()}</small>
+                                <br />
+                                <small>{work.description}</small>
+                                <div className="h-full"></div>
+                                <div className="mt-2 flex justify-end gap-2">
+                                    <DangerButton onClick={() => confirmDeletion(work.uuid)}>
+                                        <Delete className="h-5 w-5" />
+                                    </DangerButton>
+                                    <Link href={route('work.edit', { id: work.uuid })}>
+                                        <SecondaryButton>
+                                            <Edit className="h-5 w-5" />
+                                        </SecondaryButton>
+                                    </Link>
+                                    {/* <Link href={route('work.show', { id: work.uuid })}>
+                                            <PrimaryButton>
+                                                <RemoveRedEye className='w-5 h-5' />
+                                            </PrimaryButton>
+                                        </Link> */}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
             </section>
-        </AppLayout>
+        </AuthenticatedLayout>
     );
 }
