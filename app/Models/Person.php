@@ -24,11 +24,6 @@ class Person extends Model
         'chrono',
     ];
 
-    public function image()
-    {
-        return $this->morphMany(File::class, 'fileable');
-    }
-
     public function genders(): BelongsToMany
     {
         return $this->belongsToMany(Gender::class, 'gender_person', 'person_id', 'gender_id');
@@ -80,4 +75,26 @@ class Person extends Model
     // {
     //     return $this->morphToMany(Award::class, 'awardable');
     // }
+
+    // files
+
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'not like', 'image%');
+    }
+
+    public function images(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'like', 'image%');
+    }
+
+    public function generalImages(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable')->where('collection', 'general');
+    }
+
+    public function contentImages(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable')->where('collection', 'content');
+    }
 }
