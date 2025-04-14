@@ -103,7 +103,7 @@ export default function Index({
 
                             <div className="flex flex-row gap-3">
                                 <div className="w-full">
-                                    <Label htmlFor="date">Data de Início</Label>
+                                    <Label htmlFor="date">Data</Label>
                                     <Input
                                         id="date"
                                         type="date"
