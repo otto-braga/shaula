@@ -10,7 +10,7 @@ interface PublicLayoutProps {
 export default ({ children, head }: PublicLayoutProps) => (
     <>
         <Head title={head ?? 'SHAULA'} />
-        <div>
+        <div className="">
             <NavBar />
             <main className="mt-16 px-8 py-4">{children}</main>
         </div>

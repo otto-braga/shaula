@@ -31,6 +31,8 @@ class PersonResource extends JsonResource
 
             'image' => new FileResource($this->image->first()),
 
+            'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
+
             'works' => WorkResource::collection($this->whenLoaded('works')),
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)),
             // 'links' => $this->links, // collection

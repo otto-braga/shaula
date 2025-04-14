@@ -37,15 +37,15 @@ export default function Index({ reviews, artworks }: { reviews: { data: Work[] }
                                     />
                                 </div>
                                 <div className="mt-3">
-                                    <h2 className="text-xl font-semibold">{review.title}</h2>
-                                    <div className="space-x-1">
+                                    <h2 className="text-center text-xl font-semibold">{review.title}</h2>
+                                    <div className="space-x-1 text-center">
                                         {review.authors.map((author) => (
                                             <span key={author.id} className="text-gray-500 underline">
                                                 {author.name}
                                             </span>
                                         ))}
                                     </div>
-                                    <div dangerouslySetInnerHTML={{ __html: review.description }} className="mt-3 text-sm text-gray-600" />
+                                    <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 text-sm text-gray-600" />
                                 </div>
                             </CarouselItem>
                         ))}

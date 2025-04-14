@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\ReviewResource;
 use App\Http\Resources\WorkResource;
 use App\Models\Review;
 use App\Models\Work;
@@ -20,7 +21,7 @@ class ReviewPublicController extends Controller
         $reviews = Review::latest()->take(3)->get();
 
         return Inertia::render('review/index', [
-            'reviews' => WorkResource::collection($reviews),
+            'reviews' => ReviewResource::collection($reviews),
         ]);
     }
 
@@ -35,7 +36,7 @@ class ReviewPublicController extends Controller
         $review->load('workable');
 
         return Inertia::render('Review/Show', [
-            'review' => new WorkResource($review),
+            'review' => new ReviewResource($review),
         ]);
     }
 

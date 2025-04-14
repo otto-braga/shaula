@@ -46,7 +46,7 @@ class ReviewController extends Controller
             ->orderBy('name')
             ->get();
 
-        $categories = Category::where('class', Review::class)->get();
+        $categories = Category::all();
 
         return Inertia::render('admin/review/edit/index', [
             'people' => PersonResource::collection($people),
@@ -82,7 +82,7 @@ class ReviewController extends Controller
             ->orderBy('name')
             ->get();
 
-        $categories = Category::where('class', Review::class)->get();
+        $categories = Category::all();
 
         return Inertia::render('admin/review/edit/index', [
             'review' => new ReviewResource($review),
