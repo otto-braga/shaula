@@ -12,7 +12,7 @@ export default ({ children, head }: PublicLayoutProps) => (
         <Head title={head ?? 'SHAULA'} />
         <div className="">
             <NavBar />
-            <main className="mt-16 px-8 py-4">{children}</main>
+            <main className="mt-16">{children}</main>
         </div>
     </>
 );

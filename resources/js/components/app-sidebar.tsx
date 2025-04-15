@@ -10,11 +10,11 @@ import {
     Circle,
     CircleDashed,
     CircleDotDashed,
+    Clock,
     ContactRound,
     Folder,
     LayoutGrid,
     PersonStanding,
-    Tag,
     Text,
     Transgender,
 } from 'lucide-react';
@@ -64,11 +64,11 @@ const auxNavItems: NavItem[] = [
         href: route('languages.index'),
         icon: CircleDashed,
     },
-    // {
-    //     title: 'Tags',
-    //     href: route('tags.index'),
-    //     icon: Tag,
-    // },
+    {
+        title: 'Períodos Históricos',
+        href: route('periods.index'),
+        icon: Clock,
+    },
     {
         title: 'Categorias',
         href: route('categories.index'),

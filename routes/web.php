@@ -9,6 +9,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\PersonPublicController;
 use App\Http\Controllers\Public\ReviewPublicController;
@@ -52,6 +53,12 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('tags', [TagController::class, 'store'])->name('tags.store');
     Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+
+    // Periods (Períodos históricos)
+    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
+    Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
+    Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
+    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
 
     // Categories
     Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');

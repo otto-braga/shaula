@@ -5,6 +5,7 @@ import { Work } from '@/types/work';
 
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
+import { Users } from 'lucide-react';
 
 export default function Index({ reviews }: { reviews: { data: Work[] } }) {
     console.log(reviews);
@@ -12,6 +13,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
     return (
         <PublicLayout head="Crítica">
             {/* relative e object-cover para todos ficarem do mesmo tamanho. */}
+
             <Carousel
                 opts={{
                     // align: 'start',
@@ -28,18 +30,18 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                 ]}
                 className="relative mt-3"
             >
-                <div className="absolute z-20 h-full w-[6%] bg-gradient-to-r from-white" />
-                <div className="absolute right-0 z-20 h-full w-[6%] bg-gradient-to-l from-white" />
+                <div className="absolute z-20 hidden h-full w-[6%] bg-gradient-to-r from-white md:block" />
+                <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" />
                 <CarouselContent className="">
                     {reviews.data.map((review) => (
-                        <CarouselItem key={review.id} className="relative basis-1/2 pl-4">
+                        <CarouselItem key={review.id} className="relative basis-1/1 pl-4 md:basis-1/2">
                             <img
                                 src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
                                 alt="Review Image"
                                 className="aspect-video w-full object-cover"
                             />
-                            <div className="absolute bottom-0 z-20 mt-3 w-full p-4 text-center">
-                                <h2 className="text-2xl font-semibold text-white">{review.title}</h2>
+                            <div className="absolute bottom-0 z-20 mt-3 flex w-full flex-col items-center justify-center p-4 text-center">
+                                <h2 className="text-xl font-semibold text-white md:text-2xl">{review.title}</h2>
                                 <div className="space-x-1">
                                     {review.authors.map((author) => (
                                         <span key={author.id} className="text-gray-200 underline">
@@ -52,19 +54,26 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                         </CarouselItem>
                     ))}
                 </CarouselContent>
-                <div className="mt-3 flex justify-center">
-                    <CarouselPrevious />
-                    <CarouselNext />
+                <div className="hidden md:block">
+                    <CarouselPrevious className="absolute top-1/2 left-2 z-30" />
+                    <CarouselNext className="absolute top-1/2 right-2 z-30" />
                 </div>
             </Carousel>
 
-            <section className="mt-20 grid gap-8 border-t pt-12 md:grid-cols-3">
+            <div className="px-4 py-6 md:px-8">
+                <div className="flex gap-1">
+                    <Users />
+                    <span>Editorial</span>
+                </div>
+            </div>
+
+            <section className="grid gap-8 px-4 pt-8 md:grid-cols-3 md:px-8">
                 <div className="col-span-1">
-                    <div className="h-full w-full bg-black/10">FILTROS</div>
+                    <div className="h-full w-full bg-black/10"></div>
                 </div>
                 <div className="col-span-2 divide-y">
                     {reviews.data.map((review) => (
-                        <div className="grid grid-cols-2 gap-3 space-y-3 py-6">
+                        <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
                             <div>
                                 <img
                                     src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
