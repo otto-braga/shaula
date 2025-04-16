@@ -20,22 +20,14 @@ class HistoryArticle extends Model
         'content',
     ];
 
-    public function authors(): BelongsToMany
+    public function authors(): MorphToMany
     {
-        return $this->belongsToMany(Person::class, 'person_history_article', 'history_article_id', 'person_id')
-            ->withPivot('activity_id')
-            ->wherePivot('activity_id', Activity::first()->id)
-            ->orderBy('name');
+        return $this->morphToMany(Person::class, 'authorable', 'authorables');
     }
 
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_history_article', 'history_article_id', 'category_id');
-    }
-
-    public function tags(): MorphToMany
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     // files

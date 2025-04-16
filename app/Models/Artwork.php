@@ -25,26 +25,21 @@ class Artwork extends Model
         'materials',
     ];
 
-    public function authors(): BelongsToMany
+    public function authors(): MorphToMany
     {
-        return $this->belongsToMany(Person::class, 'person_artwork', 'artwork_id', 'person_id')
-        ->withPivot('activity_id')
-        ->wherePivot('activity_id', Activity::first()->id)
-        ->orderBy('name');
+        return $this->morphToMany(Person::class, 'authorable', 'authorables');
     }
 
     public function people(): BelongsToMany
     {
         return $this->belongsToMany(Person::class, 'person_artwork', 'artwork_id', 'person_id')
         ->withPivot('activity_id')
-        ->wherePivot('activity_id', '!=', Activity::first()->id)
         ->orderBy('name');
     }
 
     public function activities()
     {
         return $this->people()->get()->pluck('pivot.activity_id')
-        ->where('activity_id', '!=', Activity::where('name', 'autoria')->first()->id)
         ->unique()
         ->map(function ($activity_id) {
             return Activity::find($activity_id);
@@ -53,22 +48,17 @@ class Artwork extends Model
 
     public function languages(): MorphToMany
     {
-        return $this->morphToMany(Language::class, 'languageable');
+        return $this->morphToMany(Language::class, 'languageable'); // TODO: create pivot table
     }
 
     public function awards(): MorphToMany
     {
-        return $this->morphToMany(Award::class, 'awardable');
+        return $this->morphToMany(Award::class, 'awardable'); // TODO: create pivot table
     }
 
     public function categories(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'category_artwork', 'artwork_id', 'category_id');
-    }
-
-    public function tags(): MorphToMany
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->belongsToMany(Category::class, 'category_artwork', 'artwork_id', 'category_id');  // TODO: make polymorphic
     }
 
     // files

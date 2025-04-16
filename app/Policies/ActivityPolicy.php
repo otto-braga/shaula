@@ -37,11 +37,7 @@ class ActivityPolicy
      */
     public function update(User $user, Activity $activity): Response
     {
-        if ($activity->id !== 1 && $activity->name !== 'autoria') {
-            return Response::allow();
-        }
-
-        return Response::deny('Você não tem permissão para alterar esse recurso.');
+        return Response::deny('Você não tem permissão para editar esse recurso.');
     }
 
     /**
@@ -49,10 +45,6 @@ class ActivityPolicy
      */
     public function delete(User $user, Activity $activity): Response
     {
-        if ($activity->id !== 1 && $activity->name !== 'autoria') {
-            return Response::allow();
-        }
-
         return Response::deny('Você não tem permissão para deletar esse recurso.');
     }
 

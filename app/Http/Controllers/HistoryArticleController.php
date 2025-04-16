@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Resources\HistoryArticleResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PersonResource;
-use App\Models\Activity;
 use App\Models\HistoryArticle;
 use App\Models\Category;
 use App\Models\Person;
@@ -60,11 +59,7 @@ class HistoryArticleController extends Controller
 
         $historyArticle = HistoryArticle::create($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
-        );
-
+        $historyArticle->authors()->sync(Arr::pluck($request->authors, 'id'));
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
@@ -98,11 +93,7 @@ class HistoryArticleController extends Controller
 
         $historyArticle->update($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
-        );
-
+        $historyArticle->authors()->sync(Arr::pluck($request->authors, 'id'));
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);

@@ -37,10 +37,10 @@ class ArtworkFactory extends Factory
         return $this->afterCreating(function ($artwork) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $artwork->authors()->save($author, ['activity_id' => Activity::where('name', 'autoria')->first()->id]);
+                $artwork->authors()->attach($author);
             }
 
-            $activities = Activity::where('name', '!=', 'autoria')->inRandomOrder()->take(rand(0, 3))->get();
+            $activities = Activity::inRandomOrder()->take(rand(0, 3))->get();
             foreach ($activities as $activity) {
                 $people = Person::inRandomOrder()->take(rand(1, 3))->get();
                 foreach ($people as $person) {

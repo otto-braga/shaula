@@ -2,11 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\Activity;
 use App\Models\Category;
 use App\Models\HistoryArticle;
 use App\Models\Person;
-use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -34,7 +32,7 @@ class HistoryArticleFactory extends Factory
         return $this->afterCreating(function ($review) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $review->authors()->save($author, ['activity_id' => Activity::where('name', 'autoria')->first()->id]);
+                $review->authors()->attach($author);
             }
 
             $categories = Category::where('class', HistoryArticle::class)->inRandomOrder()->take(rand(0, 5))->get();

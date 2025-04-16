@@ -69,11 +69,7 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
-        $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
-        );
-
+        $artwork->authors()->sync(Arr::pluck($request->authors, 'id'));
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
         $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
         $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
@@ -113,11 +109,7 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
-        );
-
+        $artwork->authors()->sync(Arr::pluck($request->authors, 'id'));
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
         $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
         $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));

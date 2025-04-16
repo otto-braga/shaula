@@ -20,22 +20,14 @@ class Review extends Model
         'content',
     ];
 
-    public function authors(): BelongsToMany
+    public function authors(): MorphToMany
     {
-        return $this->belongsToMany(Person::class, 'person_review', 'review_id', 'person_id')
-            ->withPivot('activity_id')
-            ->wherePivot('activity_id', Activity::first()->id)
-            ->orderBy('name');
+        return $this->morphToMany(Person::class, 'authorable', 'authorables');
     }
 
     public function categories(): BelongsToMany
     {
         return $this->belongsToMany(Category::class, 'category_review', 'review_id', 'category_id');
-    }
-
-    public function tags(): MorphToMany
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
     }
 
     // files
