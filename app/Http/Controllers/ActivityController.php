@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ActivityController extends Controller
@@ -36,6 +37,8 @@ class ActivityController extends Controller
 
     public function update(Activity $activity)
     {
+        Gate::authorize('update', $activity);
+
         request()->validate([
             'name' => 'required|unique:activities',
         ]);
@@ -52,6 +55,8 @@ class ActivityController extends Controller
 
     public function destroy(Activity $activity)
     {
+        Gate::authorize('delete', $activity);
+
         try {
             $activity->delete();
             return redirect()->back()->with('success', 'Atividade deletada com sucesso.');
