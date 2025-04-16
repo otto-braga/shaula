@@ -22,16 +22,14 @@ class PeriodController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:periods',
-            'start_date' => 'date',
-            'end_date' => 'date|after:start_date',
+            'timespan' => '',
             'about' => 'required',
         ]);
 
         try {
             Period::create([
                 'name' => $request->name,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
+                'timespan' => $request->timespan,
                 'about' => $request->about,
             ]);
             return redirect()->back()->with('success', 'Período criada com sucesso.');
@@ -41,20 +39,18 @@ class PeriodController extends Controller
         }
     }
 
-    public function update(Period $category)
+    public function update(Period $period)
     {
         request()->validate([
             'name' => 'required|unique:periods',
-            'start_date' => 'date',
-            'end_date' => 'date|after:start_date',
+            'timespan' => '',
             'about' => 'required',
         ]);
 
         try {
-            $category->update([
+            $period->update([
                 'name' => request('name'),
-                'start_date' => request('start_date'),
-                'end_date' => request('end_date'),
+                'timespan' => request('timespan'),
                 'about' => request('about'),
             ]);
             return redirect()->back()->with('success', 'Período atualizada com sucesso.');
@@ -63,10 +59,10 @@ class PeriodController extends Controller
         }
     }
 
-    public function destroy(Period $category)
+    public function destroy(Period $period)
     {
         try {
-            $category->delete();
+            $period->delete();
             return redirect()->back()->with('success', 'Período deletada com sucesso.');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Erro ao deletar período.');

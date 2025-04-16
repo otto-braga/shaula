@@ -17,8 +17,7 @@ class PeriodResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'start_date' => $this->start_date,
-            'end_date' => $this->end_date,
+            'timespan' => $this->timespan,
             'about' => $this->about,
         ];
     }

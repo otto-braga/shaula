@@ -1,6 +1,6 @@
 import DeleteDialog from '@/components/common/delete-dialog';
 import PeriodDialogForm from '@/components/period/period-dialog-form';
-import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Period } from '@/types/period';
@@ -14,6 +14,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ periods }: { periods: { data: Period[] } }) {
+    console.log(periods);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Períodos" />
@@ -26,12 +27,22 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
                         <CardHeader className="">
                             <CardTitle>{period.name}</CardTitle>
                         </CardHeader>
+                        <CardContent className="space-y-3">
+                            <div>
+                                <p className="text-sm text-slate-500">Período de Tempo</p>
+                                <p>{period.timespan}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-slate-500">Sobre</p>
+                                <div dangerouslySetInnerHTML={{ __html: period.about }} className="line-clamp-3" />
+                            </div>
+                        </CardContent>
                         <CardFooter className="flex justify-end gap-2">
                             <PeriodDialogForm period={period} />
                             <DeleteDialog
                                 resourceId={period.id}
                                 resourceName={period.name}
-                                deleteRoute="categories.destroy"
+                                deleteRoute="periods.destroy"
                                 onSuccess={() => window.location.reload()}
                             />
                         </CardFooter>

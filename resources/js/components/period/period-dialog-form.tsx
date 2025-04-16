@@ -5,8 +5,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Period } from '@/types/period';
 import { useForm } from '@inertiajs/react';
+import { Editor } from '@tinymce/tinymce-react';
 import { Plus } from 'lucide-react';
-import { FormEventHandler, useState } from 'react';
+import { FormEventHandler, useRef, useState } from 'react';
+import { Editor as TinyMCEEditor } from 'tinymce';
 
 interface PeriodDialogFormProps {
     period?: Period;
@@ -26,8 +28,7 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
         clearErrors,
     } = useForm({
         name: period ? period.name : '',
-        start_date: period ? period.start_date : '',
-        end_date: period ? period.end_date : '',
+        timespan: period ? period.timespan : '',
         about: period ? period.about : '',
     });
 
@@ -35,13 +36,13 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
         e.preventDefault();
 
         if (period) {
-            update(route('categories.update', period.id), {
+            update(route('periods.update', period.id), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),
             });
         } else {
-            post(route('categories.store'), {
+            post(route('periods.store'), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),
@@ -58,6 +59,12 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
     const openModal = () => {
         setIsOpen(true);
     };
+
+    function onContentInput() {
+        setData('about', editorRef?.current?.getContent() ?? String());
+    }
+
+    const editorRef = useRef<TinyMCEEditor | null>(null);
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -79,7 +86,7 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
                 <DialogTitle>{period ? 'Editar Tag' : 'Criar Tag'}</DialogTitle>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid gap-2">
-                        <Label htmlFor="name" className="sr-only">
+                        <Label htmlFor="name" className="">
                             Nome
                         </Label>
 
@@ -94,35 +101,92 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
 
                         <InputError message={errors.name} />
                     </div>
+
                     <div className="grid gap-2">
-                        <Label htmlFor="name" className="sr-only">
-                            Data de início
+                        <Label htmlFor="timespan" className="">
+                            Período de tempo
                         </Label>
 
-                        {/* <Select
-                            id="languages"
-                            isMulti
-                            options={years.map((year) => ({ value: year, label: year.toString() }))}
-                            value={data.start_date.map((year: string) => ({ value: year, label: year.toString() }))}
-                            onChange={(options) => {
-                                setData(
-                                    'languages',
-                                    options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
-                                );
-                            }}
-                            styles={handleReactSelectStyling()}
-                        /> */}
-
                         <Input
-                            id="start_date"
-                            type="date"
-                            name="name"
-                            value={data.start_date}
-                            onChange={(e) => setData('start_date', e.target.value)}
-                            placeholder="Data de início"
+                            id="timespan"
+                            type="text"
+                            name="timespan"
+                            value={data.timespan}
+                            onChange={(e) => setData('timespan', e.target.value)}
+                            placeholder="Séc. XV - Séc. XVI"
                         />
 
-                        <InputError message={errors.name} />
+                        <InputError message={errors.timespan} />
+                    </div>
+
+                    <div>
+                        <Label htmlFor="name">Biografia</Label>
+                        <Editor
+                            tinymceScriptSrc="/tinymce/tinymce.min.js"
+                            licenseKey="gpl"
+                            onInit={(_evt, editor) => (editorRef.current = editor)}
+                            initialValue={(period?.about as string) || String()}
+                            init={{
+                                plugins: [
+                                    'advlist',
+                                    'autolink',
+                                    'lists',
+                                    'link',
+                                    'charmap',
+                                    'anchor',
+                                    'searchreplace',
+                                    'visualblocks',
+                                    'code',
+                                    'fullscreen',
+                                    'insertdatetime',
+                                    'media',
+                                    'table',
+                                    'preview',
+                                    'help',
+                                    'wordcount',
+                                    'autoresize',
+                                ],
+
+                                // toolbar_sticky: true,
+                                // toolbar_sticky_offset: 100,
+
+                                min_height: 300,
+                                // autoresize_bottom_margin: 0,
+
+                                menubar: false,
+
+                                toolbar:
+                                    'undo redo | ' +
+                                    'gallery | ' +
+                                    'bold italic forecolor | alignleft aligncenter ' +
+                                    'alignright alignjustify |  outdent indent | ' +
+                                    'removeformat',
+
+                                content_style:
+                                    'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+
+                                paste_preprocess: (editor, args) => {
+                                    const blob = args.content.match(/<img src="blob:.*">/g);
+
+                                    if (blob) {
+                                        args.content = '';
+                                    }
+                                },
+
+                                paste_block_drop: true,
+
+                                // setup: (editor) => {
+                                //     editor.ui.registry.addButton('gallery', {
+                                //         text: 'Galeria',
+                                //         onAction: () => {
+                                //             setShowGallery(true);
+                                //         },
+                                //     });
+                                // },
+                            }}
+                            onEditorChange={onContentInput}
+                        />
+                        <InputError className="mt-2" message={errors.about} />
                     </div>
 
                     <DialogFooter className="gap-2">
