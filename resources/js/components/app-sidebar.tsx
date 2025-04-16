@@ -41,6 +41,11 @@ const mainNavItems: NavItem[] = [
         href: route('review.index'),
         icon: Text,
     },
+    {
+        title: 'História da Arte',
+        href: route('historyArticle.index'),
+        icon: BookOpen,
+    }
 ];
 
 const auxNavItems: NavItem[] = [

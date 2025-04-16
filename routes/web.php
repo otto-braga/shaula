@@ -7,6 +7,7 @@ use App\Http\Controllers\ArtworkController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GenderController;
+use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PersonController;
@@ -123,6 +124,19 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('review.edit.content');
     Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
+
+    // History Articles
+    Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('historyArticle.index');
+    Route::get('/historia-da-arte/criar', [HistoryArticleController::class, 'create'])->name('historyArticle.create');
+    Route::post('/historia-da-arte/store', [HistoryArticleController::class, 'store'])->name('historyArticle.store');
+    Route::get('/historia-da-arte/{historyArticle:slug}', [HistoryArticleController::class, 'show'])->name('historyArticle.show');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('historyArticle.edit');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('historyArticle.update');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('historyArticle.edit.images');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/imagens', [HistoryArticleController::class, 'updateImages'])->name('historyArticle.update.images');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('historyArticle.edit.content');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('historyArticle.update.content');
+    Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('historyArticle.destroy');
 });
 
 // require __DIR__ . '/settings.php';
