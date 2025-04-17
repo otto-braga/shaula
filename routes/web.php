@@ -27,6 +27,7 @@ use Inertia\Inertia;
 Route::get('/', [HomePublicController::class, 'index'])->name('home');
 
 Route::get('/critica', [ReviewPublicController::class, 'index'])->name('review-public.index');
+Route::get('/critica/{slug}', [ReviewPublicController::class, 'show'])->name('review-public.show');
 
 Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('person-public.index');
 Route::get('/pessoas/{id}', [PersonPublicController::class, 'show'])->name('person-public.show');

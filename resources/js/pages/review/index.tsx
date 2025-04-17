@@ -3,6 +3,7 @@ import PublicLayout from '@/layouts/public-layout';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import { Work } from '@/types/work';
 
+import { Link } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
 import { Users } from 'lucide-react';
@@ -73,26 +74,28 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                 </div>
                 <div className="col-span-2 divide-y">
                     {reviews.data.map((review) => (
-                        <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
-                            <div>
-                                <img
-                                    src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
-                                    alt="Review Image"
-                                    className="aspect-video w-full object-cover"
-                                />
-                            </div>
-                            <div>
-                                <h2 className="text-2xl font-semibold">{review.title}</h2>
-                                <div className="space-x-1">
-                                    {review.authors.map((author) => (
-                                        <span key={author.id} className="text-gray-500 underline">
-                                            {author.name}
-                                        </span>
-                                    ))}
+                        <Link href={route('review-public.show', { slug: review.slug })}>
+                            <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
+                                <div>
+                                    <img
+                                        src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
+                                        alt="Review Image"
+                                        className="aspect-video w-full object-cover"
+                                    />
                                 </div>
-                                <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 text-lg text-gray-600" />
+                                <div>
+                                    <h2 className="text-2xl font-semibold">{review.title}</h2>
+                                    <div className="space-x-1">
+                                        {review.authors.map((author) => (
+                                            <span key={author.id} className="text-gray-500 underline">
+                                                {author.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 text-lg text-gray-600" />
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </section>
