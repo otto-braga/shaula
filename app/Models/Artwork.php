@@ -25,50 +25,46 @@ class Artwork extends Model
         'materials',
     ];
 
-    public function authors(): BelongsToMany
+    public function authors(): MorphToMany
     {
-        return $this->belongsToMany(Person::class, 'person_artwork', 'artwork_id', 'person_id')
-        ->withPivot('activity_id')
-        ->wherePivot('activity_id', Activity::first()->id)
-        ->orderBy('name');
+        return $this->morphToMany(Person::class, 'personable', 'personables')
+            ->withPivot('is_author')
+            ->where('is_author', true)
+            ->orderBy('name');
     }
 
-    public function people(): BelongsToMany
+    public function people(): MorphToMany
     {
-        return $this->belongsToMany(Person::class, 'person_artwork', 'artwork_id', 'person_id')
-        ->withPivot('activity_id')
-        ->wherePivot('activity_id', '!=', Activity::first()->id)
-        ->orderBy('name');
+        return $this->morphToMany(Person::class, 'personable', 'personables')
+            ->withPivot('is_author')
+            ->where('is_author', false)
+            ->withPivot('activity_id')
+            ->orderBy('name');
     }
 
     public function activities()
     {
         return $this->people()->get()->pluck('pivot.activity_id')
-        ->where('activity_id', '!=', Activity::where('name', 'autoria')->first()->id)
+        ->where('activity_id', '!=', 1)
         ->unique()
         ->map(function ($activity_id) {
             return Activity::find($activity_id);
         });
     }
 
-    public function languages(): MorphToMany
+    public function categories(): MorphToMany
     {
-        return $this->morphToMany(Language::class, 'languageable');
+        return $this->morphToMany(Category::class, 'categorizable');
     }
 
-    public function awards(): MorphToMany
+    public function languages(): BelongsToMany
     {
-        return $this->morphToMany(Award::class, 'awardable');
+        return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');
     }
 
-    public function categories(): BelongsToMany
+    public function awards(): BelongsToMany
     {
-        return $this->belongsToMany(Category::class, 'category_artwork', 'artwork_id', 'category_id');
-    }
-
-    public function tags(): MorphToMany
-    {
-        return $this->morphToMany(Tag::class, 'taggable');
+        return $this->belongsToMany(Award::class, 'artwork_award', 'artwork_id', 'award_id');
     }
 
     // files

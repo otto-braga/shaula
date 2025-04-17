@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('awardables', function (Blueprint $table) {
+        Schema::create('activities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('award_id')->constrained('awards')->onDelete('cascade');
-            $table->morphs('awardable');
-            $table->unique(['award_id', 'awardable_id', 'awardable_type'])->index('awardables_unique');
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('awardables');
+        Schema::dropIfExists('activities');
     }
 };
