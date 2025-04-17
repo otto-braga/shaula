@@ -60,7 +60,10 @@ class ReviewController extends Controller
 
         $review = Review::create($dataForm);
 
-        $review->authors()->sync(Arr::pluck($request->authors, 'id'));
+        $review->authors()->syncWithPivotValues(
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
+        );
         $review->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
@@ -94,7 +97,10 @@ class ReviewController extends Controller
 
         $review->update($dataForm);
 
-        $review->authors()->sync(Arr::pluck($request->authors, 'id'));
+        $review->authors()->syncWithPivotValues(
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
+        );
         $review->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);

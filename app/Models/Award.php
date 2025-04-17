@@ -17,13 +17,13 @@ class Award extends Model
         'promoter',
     ];
 
-    public function works(): MorphToMany
-    {
-        return $this->morphedByMany(Work::class, 'awardable');
-    }
+    // public function works(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Work::class, 'awardable');
+    // }
 
-    public function people(): MorphToMany
-    {
-        return $this->morphedByMany(Person::class, 'awardable');
-    }
+    // public function people(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Person::class, 'awardable');
+    // }
 }

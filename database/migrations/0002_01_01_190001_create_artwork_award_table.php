@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('taggables', function (Blueprint $table) {
+        Schema::create('artwork_award', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('tag_id')->constrained('tags')->onDelete('cascade');
-            $table->morphs('taggable');
-
+            $table->foreignId('artwork_id')->constrained('artworks')->onDelete('cascade');
+            $table->foreignId('award_id')->constrained('awards')->onDelete('cascade');
+            $table->unique(['artwork_id', 'award_id'])->index('artwork_award_unique');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('taggables');
+        Schema::dropIfExists('artwork_award');
     }
 };

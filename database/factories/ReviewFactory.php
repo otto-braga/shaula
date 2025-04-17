@@ -32,10 +32,10 @@ class ReviewFactory extends Factory
         return $this->afterCreating(function ($review) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $review->authors()->attach($author);
+                $review->authors()->attach($author, ['is_author' => true]);
             }
 
-            $categories = Category::where('class', Review::class)->inRandomOrder()->take(rand(0, 5))->get();
+            $categories = Category::inRandomOrder()->take(rand(0, 5))->get();
             foreach ($categories as $category) {
                 $review->categories()->attach($category);
             }

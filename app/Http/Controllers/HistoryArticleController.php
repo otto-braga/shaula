@@ -59,7 +59,10 @@ class HistoryArticleController extends Controller
 
         $historyArticle = HistoryArticle::create($dataForm);
 
-        $historyArticle->authors()->sync(Arr::pluck($request->authors, 'id'));
+        $historyArticle->authors()->syncWithPivotValues(
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
+        );
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
@@ -93,7 +96,10 @@ class HistoryArticleController extends Controller
 
         $historyArticle->update($dataForm);
 
-        $historyArticle->authors()->sync(Arr::pluck($request->authors, 'id'));
+        $historyArticle->authors()->syncWithPivotValues(
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
+        );
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);

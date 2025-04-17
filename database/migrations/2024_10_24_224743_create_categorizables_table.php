@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('city_work', function (Blueprint $table) {
+        Schema::create('categorizables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('city_id')->constrained('cities')->onDelete('cascade');
-            $table->foreignId('work_id')->constrained('works')->onDelete('cascade');
-            $table->unique(['city_id', 'work_id'])->index('city_work_unique');
-            $table->boolean('is_default')->default(false);
+
+            $table->foreignId('category_id')->constrained('categories')->onDelete('cascade');
+            $table->morphs('categorizable');
+
             $table->timestamps();
         });
     }
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('city_work');
+        Schema::dropIfExists('categorizables');
     }
 };

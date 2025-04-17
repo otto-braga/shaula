@@ -16,13 +16,13 @@ class Language extends Model
         'name',
     ];
 
-    public function works(): MorphToMany
-    {
-        return $this->morphedByMany(Work::class, 'languageable');
-    }
+    // public function works(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Work::class, 'languageable');
+    // }
 
-    public function people(): MorphToMany
-    {
-        return $this->morphedByMany(Person::class, 'languageable');
-    }
+    // public function people(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Person::class, 'languageable');
+    // }
 }

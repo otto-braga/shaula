@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('awards', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
+            $table->string('name');
             $table->string('promoter')->nullable();
+            $table->unique(['name', 'promoter'])->index('awards_unique');
             $table->timestamps();
         });
     }
