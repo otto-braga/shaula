@@ -53,7 +53,7 @@ class ArtworkController extends Controller
 
         $languages = Language::all();
         $awards = Award::all();
-        $categories = Category::where('class', Artwork::class)->get();
+        $categories = Category::all();
 
         return Inertia::render('admin/artwork/edit/index', [
             'people' => PersonResource::collection($people),
@@ -70,10 +70,9 @@ class ArtworkController extends Controller
         $artwork = Artwork::create($dataForm);
 
         $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
         );
-
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
         $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
         $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
@@ -95,7 +94,7 @@ class ArtworkController extends Controller
 
         $languages = Language::all();
         $awards = Award::all();
-        $categories = Category::where('class', Artwork::class)->get();
+        $categories = Category::all();
 
         return Inertia::render('admin/artwork/edit/index', [
             'artwork' => new ArtworkResource($artwork),
@@ -114,10 +113,9 @@ class ArtworkController extends Controller
         $artwork->update($dataForm);
 
         $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($dataForm['authors'], 'id'),
-            ['activity_id' => Activity::where('name', 'autoria')->first()->id]
+            Arr::pluck($request->authors, 'id'),
+            ['is_author' => true]
         );
-
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
         $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
         $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
@@ -134,7 +132,7 @@ class ArtworkController extends Controller
         $artwork->load('people');
 
         $activities = Activity::query()
-            ->where('name', 'not like', 'autoria')
+            ->where('id', '!=', 1)
             ->get();
 
         $people = Person::query()

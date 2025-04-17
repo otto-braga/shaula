@@ -11,12 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('person_artwork', function (Blueprint $table) {
+        Schema::create('personables', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('person_id')->constrained('people')->onDelete('cascade');
-            $table->foreignId('artwork_id')->constrained('artworks')->onDelete('cascade');
+            $table->morphs('personable');
+            $table->boolean('is_author')->default(false);
+            $table->boolean('is_mention')->default(false);
             $table->foreignId('activity_id')->nullable()->constrained('activities')->onDelete('cascade');
-            $table->unique(['person_id', 'artwork_id', 'activity_id'])->index('person_artwork_unique');
+            // $table->unique(['person_id', 'personable_id', 'personable_type', 'activity_id'], 'personables_unique');
+
             $table->timestamps();
         });
     }
@@ -26,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('person_artwork');
+        Schema::dropIfExists('personables');
     }
 };

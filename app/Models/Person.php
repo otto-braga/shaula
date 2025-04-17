@@ -35,15 +35,15 @@ class Person extends Model
             ->withPivot('is_default');
     }
 
-    public function links(): MorphMany
+    public function artworks(): MorphToMany
     {
-        return $this->morphMany(Link::class, 'linkable', 'linkable_type', 'linkable_id');
-    }
-
-    public function artworks(): BelongsToMany
-    {
-        return $this->belongsToMany(Artwork::class, 'person_artwork', 'person_id', 'artwork_id')
-            ->withPivot('activity_id');
+        return $this->morphedByMany(Artwork::class, 'personable', 'personables')
+            ->withPivot([
+                'is_author',
+                'is_mention',
+                'activity_id',
+            ])
+            ->orderBy('date');
     }
 
     public function activities(): BelongsToMany
@@ -53,23 +53,34 @@ class Person extends Model
 
     public function activitiesThroughArtworks(): BelongsToMany
     {
-        return $this->belongsToMany(Activity::class, 'person_artwork', 'person_id', 'activity_id');
+        return $this->belongsToMany(Activity::class, 'personables', 'person_id', 'activity_id');
     }
 
-    public function languages(): MorphToMany
+    public function reviews(): MorphToMany
     {
-        return $this->morphToMany(Language::class, 'languageable');
+        return $this->morphedByMany(Review::class, 'personable', 'personables')
+        ->withPivot([
+            'is_author',
+            'is_mention',
+            'activity_id',
+        ])
+        ->orderBy('date');
     }
 
-    public function languagesThroughArtworks(): BelongsToMany
-    {
-        return $this->belongsToMany(Language::class, 'person_artwork', 'person_id', 'language_id');
-    }
+    // public function languages(): MorphToMany
+    // {
+    //     return $this->morphToMany(Language::class, 'languageable');
+    // }
 
-    public function reviews(): BelongsToMany
-    {
-        return $this->belongsToMany(Review::class, 'person_review', 'person_id', 'review_id');
-    }
+    // public function languagesThroughArtworks(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Language::class, 'person_artwork', 'person_id', 'language_id');
+    // }
+
+    // public function reviews(): BelongsToMany
+    // {
+    //     return $this->belongsToMany(Review::class, 'person_review', 'person_id', 'review_id');
+    // }
 
     // public function awards(): MorphToMany
     // {

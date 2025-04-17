@@ -29,7 +29,6 @@ class ReviewResource extends JsonResource
             'general_images' => FileResource::collection($this->generalImages),
             'content_images' => FileResource::collection($this->contentImages),
             'categories' => CategoryResource::collection($this->categories),
-            'tags' => TagResource::collection($this->tags),
 
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
 
