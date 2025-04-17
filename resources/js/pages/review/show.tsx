@@ -15,17 +15,17 @@ export default function Index({ review }: { review: { data: Work } }) {
 
             <div className="relative h-full max-h-[800px] w-full overflow-hidden">
                 <img
-                    src={`${review.data.general_images[0].path ? review.data.general_images[1].path : 'https://placehold.co/1280x900'}`}
+                    src={`${review.data.general_images.length > 0 ? review.data.general_images[0].path : 'https://placehold.co/1280x900'}`}
                     alt="Review Image"
                     className="aspect-video w-full object-cover"
                 />
-                <div className="absolute bottom-1/4 left-1/2 z-20 flex justify-center bg-black/30 p-1 backdrop-blur-2xl">
+                <div className="via-zinc-70 absolute bottom-1/4 left-1/2 z-20 flex justify-center bg-gradient-to-r from-zinc-900/20 via-zinc-400/50 to-zinc-900/40 p-1 backdrop-blur-lg">
                     <div>
                         <h1 className="font-semibold text-white md:text-3xl">{review.data.title}</h1>
                         <div className="flex gap-1">
                             {review.data.authors.map((author) => (
                                 <Link href={route('person-public.show', author.id)} key={author.id}>
-                                    <span className="text-gray-300 underline md:text-lg">{author.name}</span>
+                                    <span className="text-gray-100 underline md:text-lg">{author.name}</span>
                                 </Link>
                             ))}
                         </div>
@@ -33,8 +33,28 @@ export default function Index({ review }: { review: { data: Work } }) {
                 </div>
             </div>
             <section className="mt-8 grid gap-8 p-4 md:grid-cols-8 md:px-8">
-                <div className="md:col-span-2 lg:col-span-2">
-                    <div className="sticky h-full w-full bg-zinc-100">asdsa</div>
+                <div className="space-y-3 md:col-span-2 lg:col-span-2">
+                    <div>
+                        <p className="font-semibold">Autoria</p>
+                        {review.data.authors.map((author) => (
+                            <Link href={route('person-public.show', author.id)} key={author.id}>
+                                <p className="hover:underline">{author.name}</p>
+                            </Link>
+                        ))}
+                    </div>
+                    {review.data.categories.length > 0 && (
+                        <div className="mt-4">
+                            <p className="font-semibold">Categorias</p>
+                            {review.data.categories.map((category) => (
+                                <p>{category.name}</p>
+                            ))}
+                        </div>
+                    )}
+                    <div className="mt-4">
+                        <p className="font-semibold">Citações</p>
+                        <p>Nome da pessoa</p>
+                        <p>Nome da pessoa</p>
+                    </div>
                 </div>
                 <div className="md:col-span-5 lg:col-span-4">
                     <div>
@@ -42,7 +62,20 @@ export default function Index({ review }: { review: { data: Work } }) {
                     </div>
                     <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 text-lg lg:text-xl" />
                 </div>
-                <div className="md:col-span-1 lg:col-span-2"></div>
+                <div className="md:col-span-1 lg:col-span-2 lg:pl-20 xl:pl-32">
+                    {review.data.general_images.length > 0 && (
+                        <div className="grid grid-cols-1 gap-3">
+                            {review.data.general_images.map((image) => (
+                                <img
+                                    key={image.id}
+                                    src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`}
+                                    alt="Review Image"
+                                    className=""
+                                />
+                            ))}
+                        </div>
+                    )}
+                </div>
             </section>
 
             {/* <div className="flex gap-3">

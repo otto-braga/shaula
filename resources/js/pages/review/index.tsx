@@ -37,7 +37,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                     {reviews.data.map((review) => (
                         <CarouselItem key={review.id} className="relative basis-1/1 pl-4 md:basis-1/2">
                             <img
-                                src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
+                                src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
                                 alt="Review Image"
                                 className="aspect-video w-full object-cover"
                             />
@@ -78,7 +78,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                             <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
                                 <div>
                                     <img
-                                        src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1280x900'}`}
+                                        src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
                                         alt="Review Image"
                                         className="aspect-video w-full object-cover"
                                     />
