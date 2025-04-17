@@ -23,8 +23,7 @@ class ReviewController extends Controller
 
     public function index()
     {
-        $reviews = Review::query()
-            ->orderBy('created_at', 'desc')
+        $reviews = Review::latest()
             ->get();
 
         return Inertia::render('admin/review/index', [
@@ -67,7 +66,7 @@ class ReviewController extends Controller
         $review->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('review.edit', $review->id);
+        return redirect()->route('review.edit', $review->slug);
     }
 
     // -------------------------------------------------------------------------

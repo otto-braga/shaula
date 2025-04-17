@@ -28,14 +28,12 @@ class ReviewPublicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($uuid)
+    public function show($slug)
     {
 
+        $review = Review::where('slug', $slug)->firstOrFail();
 
-        $review = Work::where('uuid', $uuid)->firstOrFail();
-        $review->load('workable');
-
-        return Inertia::render('Review/Show', [
+        return Inertia::render('review/show', [
             'review' => new ReviewResource($review),
         ]);
     }
