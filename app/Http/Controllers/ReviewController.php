@@ -287,14 +287,14 @@ class ReviewController extends Controller
 
     public function editMentions(Review $review)
     {
-        $test = $review->mentioned()->mentionedclass(Person::class)->first();
-        dd(
-            $test->mentioner()->mentionerClass(Review::class)->get(),
-            $review->mentioned()->mentionedClass(Person::class)->get(),
-            $review->mentioned()->mentionedClass(Artwork::class)->get()
-        );
+        // $mentionedTest = $review->mentioned()->mentionedclass(Person::class)->first();
+        // dd(
+        //     $review->mentioned()->mentionedClass(Person::class)->get(),
+        //     $review->mentioned()->mentionedClass(Artwork::class)->get(),
+        //     $mentionedTest->mentioner()->mentionerClass(Review::class)->get(),
+        // );
 
-        $review->load('mentions');
+        $review->load('mentioned');
 
         $people = Person::query()
             ->get();
@@ -311,6 +311,10 @@ class ReviewController extends Controller
 
     public function updateMentions(Request $request, Review $review)
     {
+        $review->mentioned()->where('mentioned_type', Person::class)
+            ->whereNotIn('mentioned_id', Arr::pluck($request->people, 'id'))
+            ->delete();
+
         if ($request->has('people') && count($request->people) > 0) {
             foreach($request->people as $person) {
                 Mention::updateOrCreate([
@@ -320,11 +324,11 @@ class ReviewController extends Controller
                     'mentioner_type' => Review::class
                     ]);
             }
-
-            $review->mentions()->where('mentioned_type', Person::class)
-                ->whereNotIn('mentioned_id', Arr::pluck($request->people, 'id'))
-                ->delete();
         }
+
+        $review->mentioned()->where('mentioned_type', Artwork::class)
+            ->whereNotIn('mentioned_id', Arr::pluck($request->artworks, 'id'))
+            ->delete();
 
         if ($request->has('artworks') && count($request->artworks) > 0) {
             foreach($request->artworks as $artwork) {
@@ -335,10 +339,6 @@ class ReviewController extends Controller
                     'mentioner_type' => Review::class
                     ]);
             }
-
-            $review->mentions()->where('mentioned_type', Artwork::class)
-                ->whereNotIn('mentioned_id', Arr::pluck($request->artworks, 'id'))
-                ->delete();
         }
 
         session()->flash('success', true);

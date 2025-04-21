@@ -18,6 +18,11 @@ class Mention extends Model
         'mentioned_type',
     ];
 
+    public function mentioned()
+    {
+        return $this->morphTo();
+    }
+
     public function mentioner()
     {
         return $this->morphTo();
@@ -32,15 +37,6 @@ class Mention extends Model
             ->unique();
 
         return $class::whereIn('id', $instances_ids);
-
-        // return $builder->with('mentioned')
-        //     ->where('mentioned_type', $class)
-        //     ->get()
-        //     ->pluck('mentioned_id')
-        //     ->unique()
-        //     ->map(function ($instance_id) use ($class) {
-        //         return $class::find($instance_id);
-        //     });
     }
 
     public function scopeMentionerClass($builder, $class)
@@ -52,20 +48,5 @@ class Mention extends Model
             ->unique();
 
         return $class::whereIn('id', $instances_ids);
-    }
-
-    public function scopePeople($builder)
-    {
-        return $builder->where('mentioned_type', Person::class);
-    }
-
-    public function scopeArtworks($builder)
-    {
-        return $builder->where('mentioned_type', Artwork::class);
-    }
-
-    public function mentioned()
-    {
-        return $this->morphTo();
     }
 }
