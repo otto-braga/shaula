@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ArtworkResource;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PersonResource;
+use App\Models\Artwork;
 use App\Models\Review;
 use App\Models\Category;
 use App\Models\Person;
@@ -274,6 +276,34 @@ class ReviewController extends Controller
     public function destroy(Review $review)
     {
         $review->delete();
+
+        session()->flash('success', true);
+        return redirect()->back();
+    }
+
+    // -------------------------------------------------------------------------
+    // MENTIONS
+
+    public function editMentions(Review $review)
+    {
+        $review->load('people');
+
+        $people = Person::query()
+            ->get();
+
+        $artworks = Artwork::query()
+            ->get();
+
+        return Inertia::render('admin/review/edit/mentions', [
+            'review' => new ReviewResource($review),
+            'people' => PersonResource::collection($people),
+            'artworks' => ArtworkResource::collection($artworks),
+        ]);
+    }
+
+    public function updateMentions(Request $request, Review $review)
+    {
+        $review->mentionsMade()->sync(Arr::pluck($request->people, 'id'));
 
         session()->flash('success', true);
         return redirect()->back();

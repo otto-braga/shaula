@@ -68,6 +68,14 @@ export default function Tabs({ review, processing, className }: TabsProps) {
                             >
                                 Pessoas
                             </Link>
+                            <Link
+                                className={
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit.mentions') ? ' font-bold underline' : '')
+                                }
+                                href={isEdit ? route('review.edit.mentions', { review: review?.data }) : ''}
+                            >
+                                Menções
+                            </Link>
                         </>
                     )}
                 </div>

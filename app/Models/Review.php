@@ -62,4 +62,16 @@ class Review extends Model
             ->where('mime_type', 'like', 'image%')
             ->where('collection', 'content');
     }
+
+    // mentions
+
+    public function mentionsMade(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
+    }
+
+    public function mentionsReceived(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+    }
 }

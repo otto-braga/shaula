@@ -135,6 +135,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
 
+    ROute::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('review.edit.mentions');
+    Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('review.update.mentions');
+
     // History Articles
     Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('historyArticle.index');
     Route::get('/historia-da-arte/criar', [HistoryArticleController::class, 'create'])->name('historyArticle.create');
