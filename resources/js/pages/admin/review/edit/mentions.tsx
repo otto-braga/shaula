@@ -1,14 +1,13 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Activity } from '@/types/activity';
 import { Person, personLabel } from '@/types/person';
 import { Review } from '@/types/review';
 import { Head, useForm } from '@inertiajs/react';
-import { Trash } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler } from 'react';
 import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
+import { Artwork } from '@/types/artwork';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -20,17 +19,20 @@ const breadcrumbs: BreadcrumbItem[] = [
 export default function People({
     review,
     people,
+    artworks,
 }: {
     review: { data: Review };
     people: { data: Person[] };
+    artworks: { data: Artwork[] };
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        people: review ? review.data.people : [],
+        people: review.data.mentioned_people ? review.data.mentioned_people : [],
+        artworks: review.data.mentioned_artworks ? review.data.mentioned_artworks : [],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('review.update.people', review.data), {
+        post(route('review.update.mentions', review.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -45,7 +47,7 @@ export default function People({
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
                             <Tabs review={review} processing={processing} />
                                 <Select
-                                    id="people_ids"
+                                    id="people"
                                     isMulti
                                     options={
                                         people?.data.map((person) => ({
@@ -62,6 +64,29 @@ export default function People({
                                     onChange={(selectedOptions => {
                                         setData('people', people?.data.filter((person) =>
                                             selectedOptions.some((option) => option.value === person.id)
+                                        ));
+                                    })}
+                                    styles={handleReactSelectStyling()}
+                                />
+
+                                <Select
+                                    id="artworks"
+                                    isMulti
+                                    options={
+                                        artworks?.data.map((artwork) => ({
+                                            value: artwork.id,
+                                            label: artwork.title,
+                                        })) || []
+                                    }
+                                    value={
+                                        data.artworks.map((artwork) => ({
+                                            value: artwork.id,
+                                            label: artwork.title,
+                                        })) || []
+                                    }
+                                    onChange={(selectedOptions => {
+                                        setData('artworks', artworks?.data.filter((artwork) =>
+                                            selectedOptions.some((option) => option.value === artwork.id)
                                         ));
                                     })}
                                     styles={handleReactSelectStyling()}

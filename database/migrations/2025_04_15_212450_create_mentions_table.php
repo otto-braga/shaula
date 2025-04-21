@@ -20,6 +20,8 @@ return new class extends Migration
             $table->foreignId('mentioned_id')->onDelete('cascade');
             $table->string('mentioned_type');
 
+            $table->unique(['mentioner_id', 'mentioner_type', 'mentioned_id', 'mentioned_type'])->name('mentioner_mentioned_unique');
+
             $table->timestamps();
         });
     }

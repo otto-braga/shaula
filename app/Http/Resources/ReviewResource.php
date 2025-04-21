@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
+use App\Models\Artwork;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,7 +31,23 @@ class ReviewResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
-            'people' => PersonResource::collection($this->whenLoaded('people')),
+            // 'people' => PersonResource::collection($this->whenLoaded('people')),
+            // 'people' => PersonResource::collection($this->people()),
+
+
+            'mentioned_people' => PersonResource::collection($this->whenLoaded(
+                'mentioned',
+                function () {
+                    return $this->mentioned()->mentionedClass(Person::class)->get();
+                }
+            )),
+
+            'mentioned_artworks' => ArtworkResource::collection($this->whenLoaded(
+                'mentioned',
+                function () {
+                    return $this->mentioned()->mentionedClass(Artwork::class)->get();
+                }
+            )),
 
             'categories' => CategoryResource::collection($this->categories),
 

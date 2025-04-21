@@ -10,6 +10,7 @@ use App\Http\Resources\PersonResource;
 use App\Models\Artwork;
 use App\Models\Review;
 use App\Models\Category;
+use App\Models\Mention;
 use App\Models\Person;
 use App\Traits\HasFile;
 use Illuminate\Support\Arr;
@@ -286,7 +287,14 @@ class ReviewController extends Controller
 
     public function editMentions(Review $review)
     {
-        $review->load('people');
+        $test = $review->mentioned()->mentionedclass(Person::class)->first();
+        dd(
+            $test->mentioner()->mentionerClass(Review::class)->get(),
+            $review->mentioned()->mentionedClass(Person::class)->get(),
+            $review->mentioned()->mentionedClass(Artwork::class)->get()
+        );
+
+        $review->load('mentions');
 
         $people = Person::query()
             ->get();
@@ -303,7 +311,35 @@ class ReviewController extends Controller
 
     public function updateMentions(Request $request, Review $review)
     {
-        $review->mentionsMade()->sync(Arr::pluck($request->people, 'id'));
+        if ($request->has('people') && count($request->people) > 0) {
+            foreach($request->people as $person) {
+                Mention::updateOrCreate([
+                    'mentioned_id' => $person['id'],
+                    'mentioned_type' => Person::class,
+                    'mentioner_id' => $review->id,
+                    'mentioner_type' => Review::class
+                    ]);
+            }
+
+            $review->mentions()->where('mentioned_type', Person::class)
+                ->whereNotIn('mentioned_id', Arr::pluck($request->people, 'id'))
+                ->delete();
+        }
+
+        if ($request->has('artworks') && count($request->artworks) > 0) {
+            foreach($request->artworks as $artwork) {
+                Mention::updateOrCreate([
+                    'mentioned_id' => $artwork['id'],
+                    'mentioned_type' => Artwork::class,
+                    'mentioner_id' => $review->id,
+                    'mentioner_type' => Review::class
+                    ]);
+            }
+
+            $review->mentions()->where('mentioned_type', Artwork::class)
+                ->whereNotIn('mentioned_id', Arr::pluck($request->artworks, 'id'))
+                ->delete();
+        }
 
         session()->flash('success', true);
         return redirect()->back();
