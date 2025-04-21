@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PersonResource;
-use App\Models\Activity;
 use App\Models\Review;
 use App\Models\Category;
 use App\Models\Person;
@@ -109,80 +108,80 @@ class ReviewController extends Controller
     // -------------------------------------------------------------------------
     // EDIT PEOPLE
 
-    // public function editPeople(Review $review)
-    // {
-    //     $review->load('people');
+    public function editPeople(Review $review)
+    {
+        $review->load('people');
 
-    //     $activities = Activity::query()
-    //         ->where('name', 'not like', 'autoria')
-    //         ->get();
+        $people = Person::query()
+            ->get();
 
-    //     $people = Person::query()
-    //         ->get();
+        return Inertia::render('admin/review/edit/people', [
+            'review' => new ReviewResource($review),
+            'people' => PersonResource::collection($people),
+        ]);
+    }
 
-    //     return Inertia::render('admin/review/edit/people', [
-    //         'review' => new ReviewResource($review),
-    //         'activities' => ActivityResource::collection($activities),
-    //         'people' => PersonResource::collection($people),
-    //     ]);
-    // }
+    public function updatePeople(Request $request, Review $review)
+    {
+        $review->people()->syncWithPivotValues(
+            Arr::pluck($request->people, 'id'),
+            ['is_mention' => true]
+        );
 
-    // public function updatePeople(Request $request, Review $review)
-    // {
-    //     $activities = $request->activities;
+        session()->flash('success', true);
+        return redirect()->back();
 
-    //     if ($activities) {
-    //         foreach ($activities as $activity) {
-    //             if ($activity['people'] === null || count($activity['people']) < 1) {
-    //                 $review->people()
-    //                     ->wherePivot('activity_id', $activity['id'])
-    //                     ->detach();
-    //                 continue;
-    //             }
+        // $activities = $request->activities;
 
-    //             foreach ($activity['people'] as $person) {
-    //                 if (in_array($person['id'], $review->people->pluck('id')->toArray())) {
-    //                     if (
-    //                         !in_array(
-    //                             $activity['id'],
-    //                             $review->people->where('id', $person['id'])
-    //                                 ->pluck('pivot.activity_id')->toArray()
-    //                         )
-    //                     ) {
-    //                         $review->people()->attach(
-    //                             $person['id'],
-    //                             ['activity_id' => $activity['id']]
-    //                         );
-    //                     }
-    //                 } else {
-    //                     $review->people()->attach(
-    //                         $person['id'],
-    //                         ['activity_id' => $activity['id']]
-    //                     );
-    //                 }
-    //             }
-    //         }
+        // if ($activities) {
+        //     foreach ($activities as $activity) {
+        //         if ($activity['people'] === null || count($activity['people']) < 1) {
+        //             $review->people()
+        //                 ->wherePivot('activity_id', $activity['id'])
+        //                 ->detach();
+        //             continue;
+        //         }
 
-    //         $review->people()
-    //             ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-    //             ->detach();
+        //         foreach ($activity['people'] as $person) {
+        //             if (in_array($person['id'], $review->people->pluck('id')->toArray())) {
+        //                 if (
+        //                     !in_array(
+        //                         $activity['id'],
+        //                         $review->people->where('id', $person['id'])
+        //                             ->pluck('pivot.activity_id')->toArray()
+        //                     )
+        //                 ) {
+        //                     $review->people()->attach(
+        //                         $person['id'],
+        //                         ['activity_id' => $activity['id']]
+        //                     );
+        //                 }
+        //             } else {
+        //                 $review->people()->attach(
+        //                     $person['id'],
+        //                     ['activity_id' => $activity['id']]
+        //                 );
+        //             }
+        //         }
+        //     }
 
-    //         foreach ($review->people as $person) {
-    //             if (
-    //                 !in_array(
-    //                     $person->id,
-    //                     collect($activities)->pluck('people')
-    //                         ->flatten(1)->pluck('id')->toArray()
-    //                 )
-    //             ) {
-    //                 $review->people()->detach($person->id);
-    //             }
-    //         }
-    //     }
+        //     $review->people()
+        //         ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
+        //         ->detach();
 
-    //     session()->flash('success', true);
-    //     return redirect()->back();
-    // }
+        //     foreach ($review->people as $person) {
+        //         if (
+        //             !in_array(
+        //                 $person->id,
+        //                 collect($activities)->pluck('people')
+        //                     ->flatten(1)->pluck('id')->toArray()
+        //             )
+        //         ) {
+        //             $review->people()->detach($person->id);
+        //         }
+        //     }
+        // }
+    }
 
     // -------------------------------------------------------------------------
     // EDIT IMAGES
@@ -210,6 +209,15 @@ class ReviewController extends Controller
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
                 foreach ($request->filesToRemove as $fileId) {
                     $this->deleteFile($fileId);
+                }
+            }
+
+            if ($review->images()->count() > 0) {
+                $review->images()->update(['is_primary' => false]);
+                if ($request->primaryImageId > 0) {
+                    $review->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+                } else {
+                    $review->images()->first()->update(['is_primary' => true]);
                 }
             }
 

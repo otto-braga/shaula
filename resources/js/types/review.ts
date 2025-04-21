@@ -14,10 +14,13 @@ export type Review = {
     date: string;
     authors: Person[];
     content: string;
-    files: FileProps[];
+
     images: FileProps[];
-    general_images: FileProps[];
+    primary_image: FileProps | null;
     content_images: FileProps[];
+
+    people: Person[];
+
     categories: Category[];
     tags: Tag[];
 

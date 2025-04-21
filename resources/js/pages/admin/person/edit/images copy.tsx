@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Work } from '@/types/work';
+import { Person } from '@/types/person';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './tabs';
@@ -16,25 +16,26 @@ registerPlugin(FilePondPluginImagePreview);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Produções',
-        href: '/admin/work',
+        title: 'Pessoas',
+        href: '/admin/pessoas',
     },
 ];
 
 export default function Images({
-    work,
+    person,
 }: {
-    work: { data: Work };
+    person: { data: Person };
 }) {
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
         filesToRemove: Array<number>(),
+        primaryImageId: person.data.primary_image?.id || 0,
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('work.update.images', work.data), {
+        post(route('person.update.images', person.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -53,6 +54,13 @@ export default function Images({
         setData('filesToRemove', imagesToRemove);
     }, [imagesToRemove]);
 
+    const [imageToSelect, setImageToSelect] = useState<number>(person.data.primary_image?.id || 0);
+
+    useEffect(() => {
+        setData('primaryImageId', imageToSelect);
+        console.log('imageToSelect', imageToSelect);
+    }, [imageToSelect]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />
@@ -60,7 +68,7 @@ export default function Images({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs work={work} processing={processing} />
+                            <Tabs person={person} processing={processing} />
 
                             <FilePond
                                 files={images}
@@ -71,11 +79,19 @@ export default function Images({
                             />
 
                             <div className="flex flex-row gap-2">
-                                {work.data.general_images.map((image, index) => (
+                                {person.data.images.map((image, index) => (
                                     <ImageCard
                                         key={index}
                                         image={image}
-                                        onSelectedChange={(isSelected) => {}}
+                                        initSelected={image.id === imageToSelect}
+                                        onSelectedChange={(isSelected) => {
+                                            if (isSelected) {
+                                                setImageToSelect(image.id);
+                                            }
+                                            if (!isSelected && image.id === imageToSelect) {
+                                                setImageToSelect(0);
+                                            }
+                                        }}
                                         onRemoveChange={(isToRemove) => {
                                             if (isToRemove) {
                                                 setImagesToRemove([...imagesToRemove, image.id]);

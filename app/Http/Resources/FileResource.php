@@ -30,12 +30,6 @@ class FileResource extends JsonResource
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
-            // 'lastModified' => $this->updated_at->diffForHumans(),
-            // 'lastModifiedDate' => $this->updated_at->timestamp,
-
-            // 'type' => $this->type,
-            // 'webkitRelativePath' => $this->path,
         ];
     }
 }

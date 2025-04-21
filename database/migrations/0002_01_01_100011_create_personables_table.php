@@ -19,7 +19,6 @@ return new class extends Migration
             $table->boolean('is_author')->default(false);
             $table->boolean('is_mention')->default(false);
             $table->foreignId('activity_id')->nullable()->constrained('activities')->onDelete('cascade');
-            // $table->unique(['person_id', 'personable_id', 'personable_type', 'activity_id'], 'personables_unique');
 
             $table->timestamps();
         });

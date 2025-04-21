@@ -32,25 +32,34 @@ class Review extends Model
         return $this->morphToMany(Category::class, 'categorizable');
     }
 
-    // files
-
-    public function files(): MorphMany
+    public function people(): MorphToMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'not like', 'image%');
+        return $this->morphToMany(Person::class, 'personable', 'personables')
+            ->withPivot('is_mention')
+            ->where('is_mention', true)
+            ->orderBy('name');
     }
+
+    // files
 
     public function images(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'like', 'image%');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'general');
     }
 
-    public function generalImages(): MorphMany
+    public function primaryImage()
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'general');
+        return $this->images()
+            ->where('is_primary', true)
+            ->first();
     }
 
     public function contentImages(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'content');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'content');
     }
 }

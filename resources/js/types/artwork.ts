@@ -23,6 +23,7 @@ export type Artwork = {
 
     people: Person[];
     activities: Activity[];
+
     activity: Activity | null;
 
     languages: Language[];
