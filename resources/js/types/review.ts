@@ -1,4 +1,5 @@
 import { Activity } from "./activity";
+import { Artwork } from "./artwork";
 import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
@@ -14,10 +15,16 @@ export type Review = {
     date: string;
     authors: Person[];
     content: string;
-    files: FileProps[];
+
     images: FileProps[];
-    general_images: FileProps[];
+    primary_image: FileProps | null;
     content_images: FileProps[];
+
+    people: Person[];
+
+    mentioned_people: Person[];
+    mentioned_artworks: Artwork[];
+
     categories: Category[];
     tags: Tag[];
 

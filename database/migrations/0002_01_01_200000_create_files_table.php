@@ -24,8 +24,7 @@ return new class extends Migration
             $table->string('collection')->nullable();
             $table->unsignedBigInteger('size');
 
-            $table->boolean('primary')->default(false);
-            $table->boolean('temporary')->default(false);
+            $table->boolean('is_primary')->default(false);
 
             $table->timestamps();
         });

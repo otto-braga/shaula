@@ -127,11 +127,16 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}', [ReviewController::class, 'show'])->name('review.show');
     Route::get('/criticas/{review:slug}/editar', [ReviewController::class, 'edit'])->name('review.edit');
     Route::post('/criticas/{review:slug}/update', [ReviewController::class, 'update'])->name('review.update');
+    Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('review.edit.people');
+    Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('review.update.people');
     Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('review.edit.images');
     Route::post('/criticas/{review:slug}/update/imagens', [ReviewController::class, 'updateImages'])->name('review.update.images');
     Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('review.edit.content');
     Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
+
+    ROute::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('review.edit.mentions');
+    Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('review.update.mentions');
 
     // History Articles
     Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('historyArticle.index');
