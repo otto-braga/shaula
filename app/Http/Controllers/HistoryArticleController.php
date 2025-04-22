@@ -120,18 +120,21 @@ class HistoryArticleController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $historyArticle->id,
-                    HistoryArticle::class,
-                    $historyArticle->uuid,
-                    'general'
-                );
+                $this->storeFile($request, $historyArticle, 'general');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
                 foreach ($request->filesToRemove as $fileId) {
                     $this->deleteFile($fileId);
+                }
+            }
+
+            if ($historyArticle->images()->count() > 0) {
+                $historyArticle->images()->update(['is_primary' => false]);
+                if ($request->primaryImageId > 0) {
+                    $historyArticle->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+                } else {
+                    $historyArticle->images()->first()->update(['is_primary' => true]);
                 }
             }
 
@@ -157,13 +160,7 @@ class HistoryArticleController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $historyArticle->id,
-                    HistoryArticle::class,
-                    $historyArticle->uuid,
-                    'content'
-                );
+                $this->storeFile($request, $historyArticle, 'content');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {

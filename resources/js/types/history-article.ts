@@ -14,10 +14,11 @@ export type HistoryArticle = {
     date: string;
     authors: Person[];
     content: string;
-    files: FileProps[];
+
     images: FileProps[];
-    general_images: FileProps[];
+    primary_image: FileProps | null;
     content_images: FileProps[];
+
     categories: Category[];
     tags: Tag[];
 

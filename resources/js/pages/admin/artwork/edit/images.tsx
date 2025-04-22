@@ -5,19 +5,19 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './tabs';
 
-import ImageCard from '@/components/image/image-card';
-
 import { FilePondFile, FilePondInitialFile } from 'filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
 import { FilePond, registerPlugin } from 'react-filepond';
+import { Button } from '@/components/ui/button';
+import { CheckIcon, DeleteIcon } from 'lucide-react';
 registerPlugin(FilePondPluginImagePreview);
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Obras',
-        href: '/admin/artwork',
+        title: 'Pessoas',
+        href: route('artwork.index'),
     },
 ];
 
@@ -29,6 +29,7 @@ export default function Images({
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
         filesToRemove: Array<number>(),
+        primaryImageId: artwork.data.primary_image?.id || 0,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -53,6 +54,13 @@ export default function Images({
         setData('filesToRemove', imagesToRemove);
     }, [imagesToRemove]);
 
+    const [imageToSelect, setImageToSelect] = useState<number>(artwork.data.primary_image?.id || 0);
+
+    useEffect(() => {
+        setData('primaryImageId', imageToSelect);
+        console.log('imageToSelect', imageToSelect);
+    }, [imageToSelect]);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />
@@ -71,19 +79,55 @@ export default function Images({
                             />
 
                             <div className="flex flex-row gap-2">
-                                {artwork.data.general_images.map((image, index) => (
-                                    <ImageCard
-                                        key={index}
-                                        image={image}
-                                        onSelectedChange={(isSelected) => {}}
-                                        onRemoveChange={(isToRemove) => {
-                                            if (isToRemove) {
-                                                setImagesToRemove([...imagesToRemove, image.id]);
-                                            } else {
-                                                setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
+                                {artwork.data.images.map((image, index) => (
+                                    <div key={image.id} className='flex flex-col items-center'>
+                                        <img key={image.id + 'image'} src={image.path} alt={image.path}
+                                            className={
+                                                'object-cover w-32 h-32 rounded-lg shadow-md'
+                                                + (imagesToRemove.find(id => id === image.id) ? ' opacity-50' : '')
                                             }
-                                        }}
-                                    />
+                                        />
+                                        <div className='w-full flex flex-col justify-between'>
+                                            <Button
+                                                key={image.id + 'select_button'}
+                                                type="button"
+                                                className={
+                                                    (image.id == imageToSelect ? 'bg-blue-600 hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
+                                                }
+                                                onClick={
+                                                    () => {
+                                                        setImageToSelect(image.id);
+                                                    }
+                                                }
+                                            >
+                                                <CheckIcon /> Principal
+                                            </Button>
+                                            <Button
+                                                key={image.id + 'delete_button'}
+                                                type="button"
+                                                className={
+                                                    (imagesToRemove.find(id => id === image.id) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                                }
+                                                onClick={
+                                                    () => {
+                                                        if (!imagesToRemove.find(id => id === image.id)) {
+                                                            setImagesToRemove([...imagesToRemove, image.id]);
+                                                            if (image.id === imageToSelect) {
+                                                                setImageToSelect(0);
+                                                            }
+                                                        } else {
+                                                            setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
+                                                            if (image.id === artwork.data.primary_image?.id && imageToSelect === 0) {
+                                                                setImageToSelect(artwork.data.primary_image?.id || 0);
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            >
+                                                <DeleteIcon /> Deletar
+                                            </Button>
+                                        </div>
+                                    </div>
                                 ))}
                             </div>
                         </form>

@@ -109,84 +109,6 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT PEOPLE
-
-    public function editPeople(Review $review)
-    {
-        $review->load('people');
-
-        $people = Person::query()
-            ->get();
-
-        return Inertia::render('admin/review/edit/people', [
-            'review' => new ReviewResource($review),
-            'people' => PersonResource::collection($people),
-        ]);
-    }
-
-    public function updatePeople(Request $request, Review $review)
-    {
-        $review->people()->syncWithPivotValues(
-            Arr::pluck($request->people, 'id'),
-            ['is_mention' => true]
-        );
-
-        session()->flash('success', true);
-        return redirect()->back();
-
-        // $activities = $request->activities;
-
-        // if ($activities) {
-        //     foreach ($activities as $activity) {
-        //         if ($activity['people'] === null || count($activity['people']) < 1) {
-        //             $review->people()
-        //                 ->wherePivot('activity_id', $activity['id'])
-        //                 ->detach();
-        //             continue;
-        //         }
-
-        //         foreach ($activity['people'] as $person) {
-        //             if (in_array($person['id'], $review->people->pluck('id')->toArray())) {
-        //                 if (
-        //                     !in_array(
-        //                         $activity['id'],
-        //                         $review->people->where('id', $person['id'])
-        //                             ->pluck('pivot.activity_id')->toArray()
-        //                     )
-        //                 ) {
-        //                     $review->people()->attach(
-        //                         $person['id'],
-        //                         ['activity_id' => $activity['id']]
-        //                     );
-        //                 }
-        //             } else {
-        //                 $review->people()->attach(
-        //                     $person['id'],
-        //                     ['activity_id' => $activity['id']]
-        //                 );
-        //             }
-        //         }
-        //     }
-
-        //     $review->people()
-        //         ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-        //         ->detach();
-
-        //     foreach ($review->people as $person) {
-        //         if (
-        //             !in_array(
-        //                 $person->id,
-        //                 collect($activities)->pluck('people')
-        //                     ->flatten(1)->pluck('id')->toArray()
-        //             )
-        //         ) {
-        //             $review->people()->detach($person->id);
-        //         }
-        //     }
-        // }
-    }
-
-    // -------------------------------------------------------------------------
     // EDIT IMAGES
 
     public function editImages(Review $review)
@@ -200,13 +122,7 @@ class ReviewController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $review->id,
-                    Review::class,
-                    $review->uuid,
-                    'general'
-                );
+                $this->storeFile($request, $review, 'general');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
@@ -246,13 +162,7 @@ class ReviewController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $review->id,
-                    Review::class,
-                    $review->uuid,
-                    'content'
-                );
+                $this->storeFile($request, $review, 'content');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
@@ -287,13 +197,6 @@ class ReviewController extends Controller
 
     public function editMentions(Review $review)
     {
-        // $mentionedTest = $review->mentioned()->mentionedclass(Person::class)->first();
-        // dd(
-        //     $review->mentioned()->mentionedClass(Person::class)->get(),
-        //     $review->mentioned()->mentionedClass(Artwork::class)->get(),
-        //     $mentionedTest->mentioner()->mentionerClass(Review::class)->get(),
-        // );
-
         $review->load('mentioned');
 
         $people = Person::query()

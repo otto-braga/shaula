@@ -105,13 +105,7 @@ class PersonController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $person->id,
-                    Person::class,
-                    $person->uuid,
-                    'general'
-                );
+                $this->storeFile($request, $person, 'general');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
@@ -152,13 +146,7 @@ class PersonController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $person->id,
-                    Person::class,
-                    $person->uuid,
-                    'content'
-                );
+                $this->storeFile($request, $person, 'content');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {

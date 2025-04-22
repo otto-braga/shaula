@@ -31,10 +31,6 @@ class ReviewResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
-            // 'people' => PersonResource::collection($this->whenLoaded('people')),
-            // 'people' => PersonResource::collection($this->people()),
-
-
             'mentioned_people' => PersonResource::collection($this->whenLoaded(
                 'mentioned',
                 function () {
