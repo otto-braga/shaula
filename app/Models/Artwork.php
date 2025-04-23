@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasLabel;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Artwork extends Model
 {
-    use HasFactory, HasUuid, HasSlug;
+    use HasFactory, HasUuid, HasSlug, HasLabel;
 
     protected $table = 'artworks';
 
