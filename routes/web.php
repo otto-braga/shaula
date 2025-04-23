@@ -10,6 +10,7 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MentionController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\PersonPublicController;
@@ -150,6 +151,10 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('historyArticle.edit.content');
     Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('historyArticle.update.content');
     Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('historyArticle.destroy');
+
+    // Mentions
+    Route::get('/mencoes/{id}/mentioner', [MentionController::class, 'mentioner'])->name('mentions.fetch.mentioner');
+    Route::get('/mencoes/{id}/mentioned', [MentionController::class, 'mentioned'])->name('mentions.fetch.mentioned');
 });
 
 // require __DIR__ . '/settings.php';

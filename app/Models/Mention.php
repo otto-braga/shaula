@@ -18,6 +18,16 @@ class Mention extends Model
         'mentioned_type',
     ];
 
+    public function getMentionedNameAttribute()
+    {
+        return $this->mentioned->name ?? $this->mentioned->title;
+    }
+
+    public function getMentionerNameAttribute()
+    {
+        return $this->mentioner->name ?? $this->mentioner->title;
+    }
+
     public function mentioned()
     {
         return $this->morphTo();

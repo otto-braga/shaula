@@ -20,7 +20,6 @@ class ReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'slug' => $this->faker->slug,
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
             'content' => json_encode($this->faker->text),
