@@ -13,28 +13,21 @@ export type Person = {
     uuid: string | null;
     slug: string | null;
     name: string;
-    genders: Gender[];
-    cities: City[];
-    // works: Work[];
-    // worksAsAuthor: Work[];
-    links: Link[];
-    image: FileProps;
-    activity: Activity;
-    activities: Activity[];
-    activitiesThroughWorks: Activity[];
-    languages: Language[];
-    languagesThroughWorks: Language[];
-    awards: Award[];
-    bio: string;
-    chrono: string;
     date_of_birth: string | null;
     date_of_death: string | null;
-
     content: string;
-    files: FileProps[];
+
     images: FileProps[];
-    general_images: FileProps[];
+    primary_image: FileProps | null;
     content_images: FileProps[];
+
+    activities: Activity[];
+    activity: Activity;
+
+    genders: Gender[];
+    cities: City[];
+
+    languages: Language[];
 
     artworks: Artwork[];
     reviews: Review[];

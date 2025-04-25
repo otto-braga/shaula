@@ -216,18 +216,21 @@ class ArtworkController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $artwork->id,
-                    Artwork::class,
-                    $artwork->uuid,
-                    'general'
-                );
+                $this->storeFile($request, $artwork, 'general');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
                 foreach ($request->filesToRemove as $fileId) {
                     $this->deleteFile($fileId);
+                }
+            }
+
+            if ($artwork->images()->count() > 0) {
+                $artwork->images()->update(['is_primary' => false]);
+                if ($request->primaryImageId > 0) {
+                    $artwork->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+                } else {
+                    $artwork->images()->first()->update(['is_primary' => true]);
                 }
             }
 
@@ -253,13 +256,7 @@ class ArtworkController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $artwork->id,
-                    Artwork::class,
-                    $artwork->uuid,
-                    'content'
-                );
+                $this->storeFile($request, $artwork, 'content');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {

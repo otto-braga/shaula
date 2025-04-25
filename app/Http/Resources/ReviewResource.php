@@ -3,6 +3,8 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
+use App\Models\Artwork;
+use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -24,10 +26,25 @@ class ReviewResource extends JsonResource
             'date' => $this->date,
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
-            'files' => FileResource::collection($this->files),
+
             'images' => FileResource::collection($this->images),
-            'general_images' => FileResource::collection($this->generalImages),
+            'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
+
+            'mentioned_people' => PersonResource::collection($this->whenLoaded(
+                'mentioned',
+                function () {
+                    return $this->mentioned()->mentionedClass(Person::class)->get();
+                }
+            )),
+
+            'mentioned_artworks' => ArtworkResource::collection($this->whenLoaded(
+                'mentioned',
+                function () {
+                    return $this->mentioned()->mentionedClass(Artwork::class)->get();
+                }
+            )),
+
             'categories' => CategoryResource::collection($this->categories),
 
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork

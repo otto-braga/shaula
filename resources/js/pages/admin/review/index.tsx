@@ -10,7 +10,7 @@ import { Edit, Eye } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Críticas',
-        href: '/admin/review',
+        href: route('review.index'),
     },
 ];
 

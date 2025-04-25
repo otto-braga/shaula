@@ -15,9 +15,9 @@ registerPlugin(FilePondPluginImagePreview);
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
-import { Button } from '@headlessui/react';
+import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
-import ContentImageCard from '@/components/image/content-image-card';
+import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -39,6 +39,8 @@ export default function Content({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        setImages([]);
 
         post(route('person.update.content', person.data), {
             preserveScroll: true,
@@ -71,6 +73,20 @@ export default function Content({
         console.log('imagesToRemove', imagesToRemove);
         setData('filesToRemove', imagesToRemove);
     }, [imagesToRemove]);
+
+    const { flash } = usePage().props;
+
+    const timedMessageDuration: number = 3000;
+    const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (flash?.success != undefined && !isTimedMessageShown) {
+            setIsTimedMessageShown(true);
+            setTimeout(() => {
+                setIsTimedMessageShown(false);
+            }, timedMessageDuration);
+        }
+    }, [flash]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -142,32 +158,6 @@ export default function Content({
 
                             <Modal show={showGallery} onClose={closeGallery}>
                                 <div>
-                                    <div className='flex flex-row gap-2'>
-                                        {
-                                            person.data.content_images.map((image, index) => (
-                                                <ContentImageCard
-                                                    key={index}
-                                                    image={image}
-                                                    onSelectedChange={() => {
-                                                        editorRef?.current?.execCommand(
-                                                            'mceInsertContent',
-                                                            false,
-                                                            `<img src="${image.path}" alt="${image.path}" />`
-                                                        );
-                                                        closeGallery();
-                                                    }}
-                                                    onRemoveChange={(isToRemove) => {
-                                                        if (isToRemove) {
-                                                            setImagesToRemove([...imagesToRemove, image.id]);
-                                                        } else {
-                                                            setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
-                                                        }
-                                                    }}
-                                                />
-                                            ))
-                                        }
-                                    </div>
-
                                     <FilePond
                                         files={images}
                                         onupdatefiles={(imageItems: FilePondFile[]) => {
@@ -176,10 +166,96 @@ export default function Content({
                                         allowMultiple={true}
                                     />
 
-                                    <div className='flex justify-center ml-8'>
-                                        <Button type="submit" disabled={processing} onClick={submit}
-                                            className='bg-gray-300 hover:bg-blue-300 text-black font-bold py-2 px-4 rounded'>
-                                            Salvar
+                                    <div className="flex flex-row gap-2">
+                                        {person.data.content_images.map((image, index) => (
+                                            <div key={image.id} className='flex flex-col items-center'>
+                                                <img key={image.id + 'image'} src={image.path} alt={image.path}
+                                                    className={
+                                                        'object-cover w-32 h-32 rounded-lg shadow-md'
+                                                        + (imagesToRemove.find(id => id === image.id) ? ' opacity-50' : '')
+                                                    }
+                                                />
+                                                <div className='w-full flex flex-col justify-between'>
+                                                    <Button
+                                                        key={image.id + 'select_button'}
+                                                        type="button"
+                                                        className={
+                                                            ('bg-gray-100 hover:bg-blue-300')
+                                                        }
+                                                        onClick={
+                                                            () => {
+                                                                editorRef?.current?.execCommand(
+                                                                    'mceInsertContent',
+                                                                    false,
+                                                                    `<img src="${image.path}" alt="${image.path}" />`
+                                                                );
+                                                                closeGallery();
+                                                            }
+                                                        }
+                                                    >
+                                                        <CheckIcon /> Adicionar ao texto
+                                                    </Button>
+                                                    <Button
+                                                        key={image.id + 'delete_button'}
+                                                        type="button"
+                                                        className={
+                                                            (imagesToRemove.find(id => id === image.id) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                                        }
+                                                        onClick={
+                                                            () => {
+                                                                if (!imagesToRemove.find(id => id === image.id)) {
+                                                                    setImagesToRemove([...imagesToRemove, image.id]);
+                                                                } else {
+                                                                    setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
+                                                                }
+                                                            }
+                                                        }
+                                                    >
+                                                        <DeleteIcon /> Deletar
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+
+                                    <div className="ml-8 flex justify-center">
+                                        <Button type="submit"
+                                            onClick={submit}
+                                            disabled={processing || isTimedMessageShown}
+                                            className={
+                                                'rounded min-w-[8em]' +
+                                                (
+                                                    isTimedMessageShown ?
+                                                        (
+                                                            flash?.success ?
+                                                                ' bg-green-400'
+                                                                : ' bg-red-400'
+                                                        )
+                                                        : (
+                                                            ''
+                                                        )
+                                                )
+                                            }
+                                        >
+                                            {
+                                                processing ?
+                                                    'Salvando...'
+                                                    : isTimedMessageShown ?
+                                                        (
+                                                            flash?.success ?
+                                                                (
+                                                                    <div className="flex items-center gap-2">
+                                                                        Salvo! <CheckIcon className="h-16 w-16" />
+                                                                    </div>
+                                                                )
+                                                                : (
+                                                                    <div className="flex items-center gap-2">
+                                                                        Erro! <XIcon className="h-16 w-16" />
+                                                                    </div>
+                                                                )
+                                                        )
+                                                        : 'Salvar'
+                                            }
                                         </Button>
                                     </div>
                                 </div>

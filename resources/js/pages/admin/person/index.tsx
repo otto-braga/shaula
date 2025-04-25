@@ -10,7 +10,7 @@ import { Plus } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pessoas',
-        href: '/admin/pessoas',
+        href: route('person.index'),
     },
 ];
 
@@ -32,8 +32,8 @@ export default function Index({ people }: { people: { data: Person[] } }) {
                 {people.data.map((person) => (
                     <Card className="rounded" key={person.id}>
                         <CardHeader className="">
-                            {person.image?.path ? (
-                                <img src={`${person.image.path}`} alt={person.name} className="mb-3 aspect-square rounded-t object-cover" />
+                            {person.primary_image?.path ? (
+                                <img src={`${person.primary_image.path}`} alt={person.name} className="mb-3 aspect-square rounded-t object-cover" />
                             ) : (
                                 <div className="text- mb-3 flex aspect-square items-center justify-center rounded-t bg-gray-800/50 text-white/50">
                                     Sem imagem

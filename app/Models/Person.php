@@ -2,17 +2,19 @@
 
 namespace App\Models;
 
+use App\Traits\HasLabel;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug;
+    use HasFactory, HasUuid, HasSlug, HasLabel;
 
     protected $table = 'people';
 
@@ -20,8 +22,7 @@ class Person extends Model
         'name',
         'date_of_birth',
         'date_of_death',
-        'bio',
-        'chrono',
+        'content',
     ];
 
     public function genders(): BelongsToMany
@@ -48,11 +49,6 @@ class Person extends Model
 
     public function activities(): BelongsToMany
     {
-        return $this->belongsToMany(Activity::class, 'activity_person', 'person_id', 'activity_id');
-    }
-
-    public function activitiesThroughArtworks(): BelongsToMany
-    {
         return $this->belongsToMany(Activity::class, 'personables', 'person_id', 'activity_id');
     }
 
@@ -67,45 +63,43 @@ class Person extends Model
         ->orderBy('date');
     }
 
-    // public function languages(): MorphToMany
-    // {
-    //     return $this->morphToMany(Language::class, 'languageable');
-    // }
-
-    // public function languagesThroughArtworks(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Language::class, 'person_artwork', 'person_id', 'language_id');
-    // }
-
-    // public function reviews(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Review::class, 'person_review', 'person_id', 'review_id');
-    // }
-
-    // public function awards(): MorphToMany
-    // {
-    //     return $this->morphToMany(Award::class, 'awardable');
-    // }
+    public function languages(): HasManyThrough
+    {
+        return $this->hasManyThrough(Language::class, Artwork::class, 'person_id', 'artwork_id', 'id', 'id');
+    }
 
     // files
 
-    public function files(): MorphMany
-    {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'not like', 'image%');
-    }
-
     public function images(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'like', 'image%');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'general');
     }
 
-    public function generalImages(): MorphMany
+    public function primaryImage()
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'general');
+        return $this->images()
+            ->where('is_primary', true)
+            ->first();
     }
 
     public function contentImages(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'content');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'content');
+    }
+
+    // mentions
+
+    public function mentioned(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
+    }
+
+    public function mentioner(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
 }

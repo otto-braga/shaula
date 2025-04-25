@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasLabel;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Review extends Model
 {
-    use HasFactory, HasUuid, HasSlug;
+    use HasFactory, HasUuid, HasSlug, HasLabel;
 
     protected $fillable = [
         'title',
@@ -34,23 +35,36 @@ class Review extends Model
 
     // files
 
-    public function files(): MorphMany
-    {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'not like', 'image%');
-    }
-
     public function images(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('mime_type', 'like', 'image%');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'general');
     }
 
-    public function generalImages(): MorphMany
+    public function primaryImage()
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'general');
+        return $this->images()
+            ->where('is_primary', true)
+            ->first();
     }
 
     public function contentImages(): MorphMany
     {
-        return $this->morphMany(File::class, 'fileable')->where('collection', 'content');
+        return $this->morphMany(File::class, 'fileable')
+            ->where('mime_type', 'like', 'image%')
+            ->where('collection', 'content');
+    }
+
+    // mentions
+
+    public function mentioned(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
+    }
+
+    public function mentioner(): MorphMany
+    {
+        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
 }

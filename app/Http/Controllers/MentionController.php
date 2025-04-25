@@ -7,59 +7,43 @@ use Illuminate\Http\Request;
 
 class MentionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    protected function castMentioner($resource)
     {
-        //
+        foreach (config('mention_types') as $mentionType) {
+            if ($resource->mentioner_type === $mentionType['type']) {
+                return new $mentionType['resource']($resource->mentioner);
+            }
+        }
+
+        return null;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function mentioner($id)
     {
-        //
+        $mention = Mention::find($id);
+
+        return Response()->json([
+            'data' => $this->castMentioner($mention)
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    protected function castMentioned($resource)
     {
-        //
+        foreach (config('mention_types') as $mentionType) {
+            if ($resource->mentioned_type === $mentionType['type']) {
+                return new $mentionType['resource']($resource->mentioned);
+            }
+        }
+
+        return null;
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Mention $mention)
+    public function mentioned($id)
     {
-        //
-    }
+        $mention = Mention::find($id);
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Mention $mention)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Mention $mention)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Mention $mention)
-    {
-        //
+        return response()->json([
+            'data' => $this->castMentioned($mention)
+        ]);
     }
 }

@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ArtworkResource;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\MentionsByTypeResource;
 use App\Http\Resources\PersonResource;
-use App\Models\Activity;
+use App\Models\Artwork;
 use App\Models\Review;
 use App\Models\Category;
+use App\Models\Mention;
 use App\Models\Person;
 use App\Traits\HasFile;
+use App\Traits\HasMention;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    use HasFile;
+    use HasFile, HasMention;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -107,84 +112,6 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT PEOPLE
-
-    // public function editPeople(Review $review)
-    // {
-    //     $review->load('people');
-
-    //     $activities = Activity::query()
-    //         ->where('name', 'not like', 'autoria')
-    //         ->get();
-
-    //     $people = Person::query()
-    //         ->get();
-
-    //     return Inertia::render('admin/review/edit/people', [
-    //         'review' => new ReviewResource($review),
-    //         'activities' => ActivityResource::collection($activities),
-    //         'people' => PersonResource::collection($people),
-    //     ]);
-    // }
-
-    // public function updatePeople(Request $request, Review $review)
-    // {
-    //     $activities = $request->activities;
-
-    //     if ($activities) {
-    //         foreach ($activities as $activity) {
-    //             if ($activity['people'] === null || count($activity['people']) < 1) {
-    //                 $review->people()
-    //                     ->wherePivot('activity_id', $activity['id'])
-    //                     ->detach();
-    //                 continue;
-    //             }
-
-    //             foreach ($activity['people'] as $person) {
-    //                 if (in_array($person['id'], $review->people->pluck('id')->toArray())) {
-    //                     if (
-    //                         !in_array(
-    //                             $activity['id'],
-    //                             $review->people->where('id', $person['id'])
-    //                                 ->pluck('pivot.activity_id')->toArray()
-    //                         )
-    //                     ) {
-    //                         $review->people()->attach(
-    //                             $person['id'],
-    //                             ['activity_id' => $activity['id']]
-    //                         );
-    //                     }
-    //                 } else {
-    //                     $review->people()->attach(
-    //                         $person['id'],
-    //                         ['activity_id' => $activity['id']]
-    //                     );
-    //                 }
-    //             }
-    //         }
-
-    //         $review->people()
-    //             ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-    //             ->detach();
-
-    //         foreach ($review->people as $person) {
-    //             if (
-    //                 !in_array(
-    //                     $person->id,
-    //                     collect($activities)->pluck('people')
-    //                         ->flatten(1)->pluck('id')->toArray()
-    //                 )
-    //             ) {
-    //                 $review->people()->detach($person->id);
-    //             }
-    //         }
-    //     }
-
-    //     session()->flash('success', true);
-    //     return redirect()->back();
-    // }
-
-    // -------------------------------------------------------------------------
     // EDIT IMAGES
 
     public function editImages(Review $review)
@@ -198,18 +125,21 @@ class ReviewController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $review->id,
-                    Review::class,
-                    $review->uuid,
-                    'general'
-                );
+                $this->storeFile($request, $review, 'general');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
                 foreach ($request->filesToRemove as $fileId) {
                     $this->deleteFile($fileId);
+                }
+            }
+
+            if ($review->images()->count() > 0) {
+                $review->images()->update(['is_primary' => false]);
+                if ($request->primaryImageId > 0) {
+                    $review->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+                } else {
+                    $review->images()->first()->update(['is_primary' => true]);
                 }
             }
 
@@ -235,13 +165,7 @@ class ReviewController extends Controller
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile(
-                    $request,
-                    $review->id,
-                    Review::class,
-                    $review->uuid,
-                    'content'
-                );
+                $this->storeFile($request, $review, 'content');
             }
 
             if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
@@ -270,4 +194,85 @@ class ReviewController extends Controller
         session()->flash('success', true);
         return redirect()->back();
     }
+
+    // -------------------------------------------------------------------------
+    // MENTIONS
+
+    public function editMentions(Review $review)
+    {
+        $mentionsQueries = $this->getMentionsQueries();
+        $mentionsByType = $this->getMentionsByType($review);
+
+        return Inertia::render('admin/review/edit/mentions', [
+            'review' => new ReviewResource($review),
+            'mentions_queries' => new JsonResource($mentionsQueries),
+            'mentions_by_type' => MentionsByTypeResource::collection($mentionsByType),
+        ]);
+    }
+
+    public function updateMentions(Request $request, Review $review)
+    {
+        $this->applyMentionsUpdate($request, $review);
+
+        session()->flash('success', true);
+        return redirect()->back();
+
+        // dd($request->all());
+
+        // foreach ($request->mentions_by_type as $mentions_type) {
+        //     $mentionType = $mentions_type['type'];
+        //     $mentionedIds = Arr::pluck($mentions_type['mentions'], 'id');
+
+        //     if (count($mentionedIds) > 0) {
+        //         $review->mentioned()->where('mentioned_type', $mentionType)
+        //             ->whereNotIn('mentioned_id', $mentionedIds)
+        //             ->delete();
+
+        //         foreach ($mentionedIds as $mentionedId) {
+        //             Mention::updateOrCreate([
+        //                 'mentioned_id' => $mentionedId,
+        //                 'mentioned_type' => $mentionType,
+        //                 'mentioner_id' => $review->id,
+        //                 'mentioner_type' => Review::class
+        //             ]);
+        //         }
+        //     }
+        // }
+    }
+
+    // public function updateMentions(Request $request, Review $review)
+    // {
+    //     $review->mentioned()->where('mentioned_type', Person::class)
+    //         ->whereNotIn('mentioned_id', Arr::pluck($request->people, 'id'))
+    //         ->delete();
+
+    //     if ($request->has('people') && count($request->people) > 0) {
+    //         foreach ($request->people as $person) {
+    //             Mention::updateOrCreate([
+    //                 'mentioned_id' => $person['id'],
+    //                 'mentioned_type' => Person::class,
+    //                 'mentioner_id' => $review->id,
+    //                 'mentioner_type' => Review::class
+    //             ]);
+    //         }
+    //     }
+
+    //     $review->mentioned()->where('mentioned_type', Artwork::class)
+    //         ->whereNotIn('mentioned_id', Arr::pluck($request->artworks, 'id'))
+    //         ->delete();
+
+    //     if ($request->has('artworks') && count($request->artworks) > 0) {
+    //         foreach ($request->artworks as $artwork) {
+    //             Mention::updateOrCreate([
+    //                 'mentioned_id' => $artwork['id'],
+    //                 'mentioned_type' => Artwork::class,
+    //                 'mentioner_id' => $review->id,
+    //                 'mentioner_type' => Review::class
+    //             ]);
+    //         }
+    //     }
+
+    //     session()->flash('success', true);
+    //     return redirect()->back();
+    // }
 }

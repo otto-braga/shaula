@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
 class File extends Model
 {
     use HasFactory;
@@ -23,17 +21,11 @@ class File extends Model
         'collection',
         'size',
 
-        'primary',
-        'temporary',
+        'is_primary',
     ];
 
     public function fileable()
     {
         return $this->morphTo();
-    }
-
-    public function work(): MorphToMany
-    {
-        return $this->morphedByMany(Work::class, 'fileable');
     }
 }

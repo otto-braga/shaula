@@ -8,8 +8,10 @@ use Illuminate\Support\Facades\Storage;
 
 trait HasFile
 {
-    protected function storeFile(Request $request, $fileable_id, $fileable_type, $directory, $collection)
+    protected function storeFile(Request $request, $fileable, $collection)
     {
+        $directory = 'files/' . class_basename($fileable) . '/' . $fileable->uuid;
+
         $validated = $request->validate([
             "files.*" => "required|mimes:jpeg,jpg,png",
         ]);
@@ -19,14 +21,12 @@ trait HasFile
         $uploadedFilesIds = [];
 
         foreach ($validated['files'] as $file) {
-            // $filePath = $file->store($storeDirectory);
-
             $filePath = $file->store($storeDirectory, 'public');
 
             $uploadedFile = File::create(
                 [
-                    'fileable_id' => $fileable_id,
-                    'fileable_type' => $fileable_type,
+                    'fileable_id' => $fileable->id,
+                    'fileable_type' => get_class($fileable),
                     'name' => $file->hashName(),
                     'original_name' => $file->getClientOriginalName(),
                     'mime_type' => $file->getClientMimeType(),
