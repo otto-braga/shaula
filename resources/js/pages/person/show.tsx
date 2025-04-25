@@ -6,28 +6,24 @@ export default function Index({ person }: { person: { data: Person } }) {
     return (
         <PublicLayout head={person.data.name}>
             {/* relative e object-cover para todos ficarem do mesmo tamanho. */}
-            <div className="max-w-sm">
-                <div>
-                    <img
-                        src={`${person.data.image ? person.data.image.path : 'https://placehold.co/1280x900'}`}
-                        alt="person Image"
-                        className="aspect-square w-full object-cover"
-                    />
-                </div>
-                <div>
-                    <h2 className="text-xl">{person.data.name}</h2>
-                </div>
-                {/* listar as artworks de person */}
-                <div>
-                    <p className="font-medium ">Obras</p>
-                    <p>
-                        {person.data.artworks.map((artwork) => (
-                            artwork.title
-                        )).join(', ')}
-                    </p>
-                </div>
+            <div className="grid p-4 md:grid-cols-2 md:p-8">
+                <section>
+                    <div className="grid grid-cols-3 gap-3 space-y-3">
+                        <div>
+                            <img
+                                src={`${person.data.image ? person.data.image.path : 'https://placehold.co/1280x900'}`}
+                                alt="person Image"
+                                className="aspect-square w-full object-cover"
+                            />
+                        </div>
+                        <div className="col-span-2 space-y-1">
+                            <h2 className="text-lg font-medium">{person.data.name}</h2>
+                            <p className=" ">{person.data.bio}</p>
+                        </div>
+                    </div>
+                </section>
+                <section></section>
             </div>
-            <div></div>
         </PublicLayout>
     );
 }
