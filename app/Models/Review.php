@@ -67,4 +67,16 @@ class Review extends Model
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $search = $filters['search'] ?? '';
+
+        if ($search != '') {
+            $query->where('title', 'like', '%' . $search . '%')
+                ->orWhere('content', 'like', '%' . $search . '%');
+        }
+
+        return $query;
+    }
 }

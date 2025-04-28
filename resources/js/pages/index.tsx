@@ -1,10 +1,11 @@
 import PublicLayout from '@/layouts/public-layout';
-import { Work } from '@/types/work';
+import { Artwork } from '@/types/artwork';
+import { Review } from '@/types/review';
 import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
 import { ArrowUpRight } from 'lucide-react';
 
-export default function Index({ reviews, artworks }: { reviews: { data: Work[] }; artworks: { data: Work[] } }) {
+export default function Index({ reviews, artworks }: { reviews: { data: Review[] }; artworks: { data: Artwork[] } }) {
     return (
         <PublicLayout head="SHAULA">
             <section className="px-4 py-8 md:p-8">
@@ -14,28 +15,30 @@ export default function Index({ reviews, artworks }: { reviews: { data: Work[] }
                         <ArrowUpRight size={32} />
                     </span>
                 </Link>
-                <div className="mt-6 flex w-full flex-col items-start md:flex-row md:gap-8 lg:gap-12">
+                <div className="mt-6 grid w-full gap-8 md:grid-cols-3">
                     {reviews.data.map((review) => (
-                        <div key={review.id} className="">
-                            <div className="bg-pink-100">
-                                <img
-                                    src={`${review.images[0] ? review.images[1].path : 'https://placehold.co/1200x900'}`}
-                                    alt="Review Image"
-                                    className="w-full object-cover"
-                                />
-                            </div>
-                            <div className="mt-3">
-                                <h2 className="text-center text-2xl font-semibold">{review.title}</h2>
-                                <div className="space-x-1 text-center">
-                                    {review.authors.map((author) => (
-                                        <span key={author.id} className="text-gray-500 underline">
-                                            {author.name}
-                                        </span>
-                                    ))}
+                        <Link href={route('review-public.show', review.slug)} key={review.id} className="group">
+                            <div key={review.id} className="">
+                                <div className="bg-pink-100">
+                                    <img
+                                        src={`${review.primary_image ? review.primary_image.path : 'https://placehold.co/1200x900'}`}
+                                        alt="Review Image"
+                                        className="w-full object-cover"
+                                    />
                                 </div>
-                                <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 no-underline" />
+                                <div className="mt-3">
+                                    <h2 className="text-center text-2xl font-semibold group-hover:underline">{review.title}</h2>
+                                    <div className="space-x-1 text-center">
+                                        {review.authors.map((author) => (
+                                            <span key={author.id} className="text-gray-500">
+                                                {author.name}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 no-underline" />
+                                </div>
                             </div>
-                        </div>
+                        </Link>
                     ))}
                 </div>
             </section>

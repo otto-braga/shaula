@@ -1,8 +1,7 @@
 import { Activity } from "./activity";
-import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
-import { Language } from "./language";
+import { Period } from "./period";
 import { Person } from "./person";
 import { Tag } from "./tag";
 
@@ -21,6 +20,7 @@ export type HistoryArticle = {
 
     categories: Category[];
     tags: Tag[];
+    period: Period;
 
     activity: Activity | null;
 

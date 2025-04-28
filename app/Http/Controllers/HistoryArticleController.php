@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\HistoryArticleResource;
 use App\Http\Resources\CategoryResource;
+use App\Http\Resources\PeriodResource;
 use App\Http\Resources\PersonResource;
 use App\Models\HistoryArticle;
 use App\Models\Category;
+use App\Models\Period;
 use App\Models\Person;
 use App\Traits\HasFile;
 use Illuminate\Support\Arr;
@@ -47,9 +49,12 @@ class HistoryArticleController extends Controller
 
         $categories = Category::all();
 
+        $periods = Period::all();
+
         return Inertia::render('admin/historyArticle/edit/index', [
             'people' => PersonResource::collection($people),
             'categories' => CategoryResource::collection($categories),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
@@ -66,7 +71,7 @@ class HistoryArticleController extends Controller
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('historyArticle.edit', $historyArticle->id);
+        return redirect()->route('historyArticle.edit', $historyArticle->slug);
     }
 
     // -------------------------------------------------------------------------
@@ -82,11 +87,13 @@ class HistoryArticleController extends Controller
 
         $categories = Category::all();
 
+        $periods = Period::all();
+
         return Inertia::render('admin/historyArticle/edit/index', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
             'people' => PersonResource::collection($people),
-
             'categories' => CategoryResource::collection($categories),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 

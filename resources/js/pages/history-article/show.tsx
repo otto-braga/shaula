@@ -1,13 +1,13 @@
 import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
-import { Review } from '@/types/review';
+import { HistoryArticle } from '@/types/history-article';
 
 import { Link } from '@inertiajs/react';
 
 import 'keen-slider/keen-slider.min.css';
 
-export default function Index({ review }: { review: { data: Review } }) {
-    console.log(review);
+export default function Show({ historyArticle }: { historyArticle: { data: HistoryArticle } }) {
+    console.log(historyArticle);
 
     return (
         <PublicLayout head="Crítica">
@@ -15,15 +15,15 @@ export default function Index({ review }: { review: { data: Review } }) {
 
             <div className="relative h-full max-h-[800px] w-full overflow-hidden">
                 <img
-                    src={`${review.data.primary_image ? review.data.primary_image.path : 'https://placehold.co/1280x900'}`}
+                    src={`${historyArticle.data.primary_image ? historyArticle.data.primary_image.path : 'https://placehold.co/1280x900'}`}
                     alt="Review Image"
                     className="aspect-video w-full object-cover"
                 />
                 <div className="via-zinc-70 absolute bottom-1/4 left-1/2 z-20 flex justify-center bg-gradient-to-r from-zinc-900/20 via-zinc-400/50 to-zinc-900/40 p-1 backdrop-blur-lg">
                     <div>
-                        <h1 className="font-semibold text-white md:text-3xl">{review.data.title}</h1>
+                        <h1 className="font-semibold text-white md:text-3xl">{historyArticle.data.title}</h1>
                         <div className="flex gap-1">
-                            {review.data.authors.map((author) => (
+                            {historyArticle.data.authors.map((author) => (
                                 <Link href={route('person-public.show', author.slug)} key={author.id}>
                                     <span className="text-gray-100 hover:underline md:text-lg">{author.name}</span>
                                 </Link>
@@ -36,41 +36,31 @@ export default function Index({ review }: { review: { data: Review } }) {
                 <div className="space-y-3 md:col-span-2 lg:col-span-2">
                     <div>
                         <p className="font-semibold">Autoria</p>
-                        {review.data.authors.map((author) => (
+                        {/* {historyArticle.data.authors.map((author) => (
                             <Link href={route('person-public.show', author.slug)} key={author.id}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
-                        ))}
+                        ))} */}
                     </div>
-                    {review.data.categories.length > 0 && (
+                    {historyArticle.data.categories.length > 0 && (
                         <div className="mt-4">
                             <p className="font-semibold">Categorias</p>
-                            {review.data.categories.map((category) => (
+                            {historyArticle.data.categories.map((category) => (
                                 <p>{category.name}</p>
-                            ))}
-                        </div>
-                    )}
-                    {review.data.mentioned_people.length > 0 && (
-                        <div className="mt-4">
-                            <p className="font-semibold">Citações</p>
-                            {review.data.mentioned_people.map((person) => (
-                                <Link href={route('person-public.show', person.slug)} key={person.id}>
-                                    <p className="hover:underline">{person.name}</p>
-                                </Link>
                             ))}
                         </div>
                     )}
                 </div>
                 <div className="md:col-span-5 lg:col-span-4">
                     <div>
-                        <span className="text-sm text-slate-500">{formatDate(review.data.date)}</span>
+                        <span className="text-sm text-slate-500">{formatDate(historyArticle.data.date)}</span>
                     </div>
-                    <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 text-lg lg:text-xl" />
+                    <div dangerouslySetInnerHTML={{ __html: historyArticle.data.content }} className="mt-3 text-lg lg:text-xl" />
                 </div>
                 <div className="md:col-span-1 lg:col-span-2 lg:pl-20 xl:pl-32">
-                    {review.data.images.length > 0 && (
+                    {historyArticle.data.images.length > 0 && (
                         <div className="grid grid-cols-1 gap-3">
-                            {review.data.images.map((image) => (
+                            {historyArticle.data.images.map((image) => (
                                 <img
                                     key={image.id}
                                     src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`}
@@ -82,14 +72,6 @@ export default function Index({ review }: { review: { data: Review } }) {
                     )}
                 </div>
             </section>
-
-            {/* <div className="flex gap-3">
-                {review.data.general_images.map((image) => (
-                    <div key={image.id} className="">
-                        <img src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`} alt="Review Image" className="max-h-[600px]" />
-                    </div>
-                ))}
-            </div> */}
         </PublicLayout>
     );
 }
