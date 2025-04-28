@@ -1,6 +1,6 @@
 import DeleteDialog from '@/components/common/delete-dialog';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { HistoryArticle } from '@/types/history-article';
@@ -42,7 +42,7 @@ export default function Index({ historyArticles }: { historyArticles: { data: Hi
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={historyArticle.id}
+                                            resourceId={historyArticle.slug}
                                             resourceName={historyArticle.title}
                                             deleteRoute="historyArticle.destroy"
                                             onSuccess={() => window.location.reload()}

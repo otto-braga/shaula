@@ -20,9 +20,9 @@ class Category extends Model
     // /**
     //  * Relacionamento polimórfico inverso para os modelos relacionados.
     //  */
-    // public function categorizables(): MorphToMany
-    // {
-    //     return $this->morphedByMany(Review::class, 'categorizable')
-    //         ->union($this->morphedByMany(Artwork::class, 'categorizable'));
-    // }
+    public function categorizables(): MorphToMany
+    {
+        return $this->morphedByMany(Review::class, 'categorizable')
+            ->union($this->morphedByMany(Artwork::class, 'categorizable'));
+    }
 }

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('history_articles', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
+            $table->foreignId('period_id')->constrained('periods');
             $table->string('slug');
             $table->string('title');
             $table->date('date')->nullable();

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Period extends Model
 {
@@ -11,4 +12,9 @@ class Period extends Model
         'timespan',
         'about',
     ];
+
+    public function historyArticles(): HasMany
+    {
+        return $this->hasMany(HistoryArticle::class);
+    }
 }
