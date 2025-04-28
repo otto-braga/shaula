@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
-use App\Http\Resources\WorkResource;
 use App\Models\Review;
-use App\Models\Work;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
 class ReviewPublicController extends Controller
@@ -15,13 +13,24 @@ class ReviewPublicController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //get the last 3 reviews
-        $reviews = Review::latest()->take(3)->get();
+
+        $query = Review::query();
+
+        $reviews = $query->latest()
+            ->filter(Request::only('search'))
+            ->paginate(12)
+            ->withQueryString();
+
+        $lastReviews = Review::latest()
+            ->take(3)
+            ->get();
 
         return Inertia::render('review/index', [
             'reviews' => ReviewResource::collection($reviews),
+            'lastReviews' => ReviewResource::collection($lastReviews),
+            'filters' => Request::all('search'),
         ]);
     }
 
@@ -32,6 +41,10 @@ class ReviewPublicController extends Controller
     {
 
         $review = Review::where('slug', $slug)->firstOrFail();
+
+        $review->load([
+            'mentioned'
+        ]);
 
         return Inertia::render('review/show', [
             'review' => new ReviewResource($review),

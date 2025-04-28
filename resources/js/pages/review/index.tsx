@@ -1,15 +1,31 @@
 import PublicLayout from '@/layouts/public-layout';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import { Work } from '@/types/work';
 
-import { Link } from '@inertiajs/react';
+import { PaginatedData } from '@/types/paginated-data';
+import { Review } from '@/types/review';
+import { Link, router } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
-import { Users } from 'lucide-react';
+import { Search, Users } from 'lucide-react';
+import { useState } from 'react';
 
-export default function Index({ reviews }: { reviews: { data: Work[] } }) {
-    console.log(reviews);
+export default function Index({
+    reviews,
+    filters,
+    lastReviews,
+}: {
+    reviews: PaginatedData<Review>;
+    filters: { search: string };
+    lastReviews: { data: Review[] };
+}) {
+    const [search, setSearch] = useState(filters.search || '');
+
+    function handleSearch(e: React.FormEvent) {
+        e.preventDefault();
+
+        router.get('/critica', { search }, { preserveState: true });
+    }
 
     return (
         <PublicLayout head="Crítica">
@@ -34,7 +50,7 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                 <div className="absolute z-20 hidden h-full w-[6%] bg-gradient-to-r from-white md:block" />
                 <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" />
                 <CarouselContent className="">
-                    {reviews.data.map((review) => (
+                    {lastReviews.data.map((review) => (
                         <CarouselItem key={review.id} className="relative basis-1/1 pl-4 md:basis-1/2">
                             <img
                                 src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
@@ -50,7 +66,6 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                                         </span>
                                     ))}
                                 </div>
-                                <div dangerouslySetInnerHTML={{ __html: review.description }} className="mt-3 text-sm text-gray-600" />
                             </div>
                         </CarouselItem>
                     ))}
@@ -70,7 +85,20 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
 
             <section className="grid gap-8 px-4 pt-8 md:grid-cols-3 md:px-8">
                 <div className="col-span-1">
-                    <div className="h-full w-full bg-black/10"></div>
+                    <form onSubmit={handleSearch} className="mb-6 w-full">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                placeholder="Buscar criticas..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="w-full border-0 border-b-2 border-black px-3 py-2 text-lg ring-0 focus:ring-0 focus:outline-0"
+                            />
+                            <button type="submit" className="absolute right-0 bottom-1 bg-white p-2 hover:cursor-pointer">
+                                <Search />
+                            </button>
+                        </div>
+                    </form>
                 </div>
                 <div className="col-span-2 divide-y">
                     {reviews.data.map((review) => (
@@ -97,6 +125,23 @@ export default function Index({ reviews }: { reviews: { data: Work[] } }) {
                             </div>
                         </Link>
                     ))}
+                    <div className="mt-8 flex flex-wrap gap-2">
+                        {reviews.meta.links.map((link, index) =>
+                            link.url ? (
+                                <Link
+                                    key={index}
+                                    href={link.url}
+                                    className={`rounded border px-4 py-2 ${link.active ? 'bg-blue-600 text-white' : 'bg-white text-gray-700'}`}
+                                >
+                                    {link.label === '&laquo; Previous' ? 'Anterior' : link.label === 'Next &raquo;' ? 'Próxima' : link.label}
+                                </Link>
+                            ) : (
+                                <span key={index} className="cursor-not-allowed rounded border px-4 py-2 text-gray-400">
+                                    {link.label}
+                                </span>
+                            ),
+                        )}
+                    </div>
                 </div>
             </section>
         </PublicLayout>
