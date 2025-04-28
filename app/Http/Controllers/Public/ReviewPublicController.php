@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
+use App\Models\Person;
 use App\Models\Review;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
@@ -26,6 +27,11 @@ class ReviewPublicController extends Controller
         $lastReviews = Review::latest()
             ->take(3)
             ->get();
+
+        $authors = Person::whereHas('reviews', function ($query) {
+            $query->where('is_author', true);
+        })->get();
+
 
         return Inertia::render('review/index', [
             'reviews' => ReviewResource::collection($reviews),

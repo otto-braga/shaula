@@ -73,7 +73,8 @@ class Review extends Model
         $search = $filters['search'] ?? '';
 
         if ($search != '') {
-            $query->where('title', 'like', '%' . $search . '%');
+            $query->where('title', 'like', '%' . $search . '%')
+                ->orWhere('content', 'like', '%' . $search . '%');
         }
 
         return $query;

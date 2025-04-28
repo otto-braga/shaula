@@ -83,9 +83,9 @@ export default function Index({
                 </div>
             </div>
 
-            <section className="grid gap-8 px-4 pt-8 md:grid-cols-3 md:px-8">
-                <div className="col-span-1">
-                    <form onSubmit={handleSearch} className="mb-6 w-full">
+            <section className="grid grid-cols-1 px-4 pt-8 md:grid-cols-3 md:gap-8 md:px-8">
+                <div className="mb-6 w-full md:col-span-1 md:mb-0">
+                    <form onSubmit={handleSearch}>
                         <div className="relative">
                             <input
                                 type="text"
