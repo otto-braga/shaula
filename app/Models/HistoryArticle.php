@@ -32,6 +32,11 @@ class HistoryArticle extends Model
         return $this->morphToMany(Category::class, 'categorizable');
     }
 
+    public function periods(): MorphToMany
+    {
+        return $this->morphToMany(Period::class, 'periodizable');
+    }
+
     // files
 
     public function images(): MorphMany

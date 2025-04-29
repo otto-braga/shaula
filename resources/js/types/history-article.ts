@@ -1,15 +1,14 @@
 import { Activity } from "./activity";
-import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
-import { Language } from "./language";
+import { Period } from "./period";
 import { Person } from "./person";
-import { Tag } from "./tag";
 
 export type HistoryArticle = {
     id: number;
     uuid: string;
     slug: string;
+
     title: string;
     date: string;
     authors: Person[];
@@ -20,7 +19,7 @@ export type HistoryArticle = {
     content_images: FileProps[];
 
     categories: Category[];
-    tags: Tag[];
+    periods: Period[];
 
     activity: Activity | null;
 

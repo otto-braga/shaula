@@ -36,6 +36,11 @@ class Person extends Model
             ->withPivot('is_default');
     }
 
+    public function periods(): MorphToMany
+    {
+        return $this->morphToMany(Period::class, 'periodizable');
+    }
+
     public function artworks(): MorphToMany
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')

@@ -16,9 +16,13 @@ class PeriodResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'uuid' => $this->uuid,
+            'slug' => $this->slug,
             'name' => $this->name,
-            'timespan' => $this->timespan,
-            'about' => $this->about,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

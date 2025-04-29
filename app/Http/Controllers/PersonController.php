@@ -7,6 +7,8 @@ use App\Http\Resources\PersonResource;
 use App\Models\City;
 use App\Models\Gender;
 use App\Models\Person;
+use App\Models\Period;
+use App\Http\Resources\PeriodResource;
 use App\Traits\HasFile;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
@@ -43,10 +45,12 @@ class PersonController extends Controller
     {
         $genders = Gender::all();
         $cities = City::all();
+        $periods = Period::all();
 
         return Inertia::render('admin/person/edit/index', [
             'genders' => JsonResource::collection($genders),
-            'cities' => JsonResource::collection($cities)
+            'cities' => JsonResource::collection($cities),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
@@ -70,11 +74,13 @@ class PersonController extends Controller
     {
         $genders = Gender::all();
         $cities = City::all();
+        $periods = Period::all();
 
         return Inertia::render('admin/person/edit/index', [
             'person' => new PersonResource($person),
             'genders' => JsonResource::collection($genders),
-            'cities' => JsonResource::collection($cities)
+            'cities' => JsonResource::collection($cities),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 

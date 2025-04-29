@@ -25,6 +25,7 @@ class ArtworkResource extends JsonResource
             'content_images' => FileResource::collection($this->contentImages),
 
             'categories' => CategoryResource::collection($this->categories),
+            'periods' => PeriodResource::collection($this->periods),
 
             'people' => PersonResource::collection($this->people),
             'activities' => ActivityResource::collection($this->activities()), // Todas as atividades dessa artwork

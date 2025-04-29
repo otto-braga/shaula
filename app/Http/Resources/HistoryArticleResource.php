@@ -30,6 +30,7 @@ class HistoryArticleResource extends JsonResource
             'content_images' => FileResource::collection($this->contentImages),
 
             'categories' => CategoryResource::collection($this->categories),
+            'periods' => PeriodResource::collection($this->periods),
 
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
 

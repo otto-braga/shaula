@@ -3,6 +3,7 @@ import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Language } from "./language";
+import { Period } from "./period";
 import { Person } from "./person";
 import { Tag } from "./tag";
 
@@ -20,7 +21,7 @@ export type Artwork = {
     content_images: FileProps[];
 
     categories: Category[];
-    tags: Tag[];
+    periods: Period[];
 
     people: Person[];
     activities: Activity[];

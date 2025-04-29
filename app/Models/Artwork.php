@@ -58,6 +58,11 @@ class Artwork extends Model
         return $this->morphToMany(Category::class, 'categorizable');
     }
 
+    public function periods(): MorphToMany
+    {
+        return $this->morphToMany(Period::class, 'periodizable');
+    }
+
     public function languages(): BelongsToMany
     {
         return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');

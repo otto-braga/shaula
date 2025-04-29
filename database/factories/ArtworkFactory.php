@@ -7,6 +7,7 @@ use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\Language;
+use App\Models\Period;
 use App\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -60,6 +61,11 @@ class ArtworkFactory extends Factory
             $awards = Award::inRandomOrder()->take(rand(0, 5))->get();
             foreach ($awards as $award) {
                 $artwork->awards()->attach($award);
+            }
+
+            $periods = Period::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($periods as $period) {
+                $artwork->periods()->attach($period);
             }
         });
     }

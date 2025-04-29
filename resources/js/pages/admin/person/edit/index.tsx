@@ -15,6 +15,7 @@ import { Award } from '@/types/award';
 import { Category } from '@/types/category';
 import { Gender } from '@/types/gender';
 import { City } from '@/types/city';
+import { Period } from '@/types/period';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,10 +28,12 @@ export default function Index({
     person,
     genders,
     cities,
+    periods,
 }: {
     person: { data: Person },
     genders: { data: Gender[] },
     cities: { data: City[] },
+    periods: { data: Period[] },
 }) {
     const isEdit = !!person;
 
@@ -40,6 +43,7 @@ export default function Index({
         date_of_death: person ? person.data.date_of_death : '',
         genders: person ? person.data.genders?.map((gender) => ({ id: gender.id, label: gender.name })) : [],
         cities: person ? person.data.cities?.map((city) => ({ id: city.id, label: city.name })) : [],
+        periods: person ? person.data.periods?.map((period) => ({ id: period.id, label: period.name })) : [],
     });
 
     const submit: FormEventHandler = (e) => {
@@ -136,6 +140,23 @@ export default function Index({
                                     styles={handleReactSelectStyling()}
                                 />
                                 <InputError className="mt-2" message={errors.cities} />
+                            </div>
+
+                            <div>
+                                <Label htmlFor="periods">Períodos</Label>
+                                <Select
+                                    id="periods"
+                                    isMulti
+                                    options={periods?.data.map((period) => ({ value: period.id, label: period.name }))}
+                                    value={data.periods?.map((period) => ({ value: period.id, label: period.label }))}
+                                    onChange={(options) => {
+                                        setData('periods', options.map((option) => (
+                                            { id: option.value, label: option.label }
+                                        )));
+                                    }}
+                                    styles={handleReactSelectStyling()}
+                                />
+                                <InputError className="mt-2" message={errors.periods} />
                             </div>
 
                         </form>

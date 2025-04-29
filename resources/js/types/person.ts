@@ -6,6 +6,7 @@ import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
 import { Link } from "./link";
+import { Period } from "./period";
 import { Review } from "./review";
 
 export type Person = {
@@ -26,6 +27,8 @@ export type Person = {
 
     genders: Gender[];
     cities: City[];
+
+    periods: Period[];
 
     languages: Language[];
 

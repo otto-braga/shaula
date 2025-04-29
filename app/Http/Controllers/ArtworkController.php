@@ -9,12 +9,14 @@ use App\Http\Resources\AwardResource;
 use App\Http\Resources\CategoryResource;
 use App\Http\Resources\LanguageResource;
 use App\Http\Resources\PersonResource;
+use App\Http\Resources\PeriodResource;
 use App\Models\Activity;
 use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\Language;
 use App\Models\Person;
+use App\Models\Period;
 use App\Traits\HasFile;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
@@ -54,12 +56,14 @@ class ArtworkController extends Controller
         $languages = Language::all();
         $awards = Award::all();
         $categories = Category::all();
+        $periods = Period::all();
 
         return Inertia::render('admin/artwork/edit/index', [
             'people' => PersonResource::collection($people),
             'languages' => LanguageResource::collection($languages),
             'awards' => AwardResource::collection($awards),
             'categories' => CategoryResource::collection($categories),
+            'periods' => PeriodResource::collection($periods), // Pass periods to the view
         ]);
     }
 
@@ -95,14 +99,15 @@ class ArtworkController extends Controller
         $languages = Language::all();
         $awards = Award::all();
         $categories = Category::all();
+        $periods = Period::all();
 
         return Inertia::render('admin/artwork/edit/index', [
             'artwork' => new ArtworkResource($artwork),
             'people' => PersonResource::collection($people),
-
             'languages' => LanguageResource::collection($languages),
             'awards' => AwardResource::collection($awards),
             'categories' => CategoryResource::collection($categories),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
