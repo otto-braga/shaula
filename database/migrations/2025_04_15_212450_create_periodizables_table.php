@@ -11,13 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('history_articles', function (Blueprint $table) {
+        Schema::create('periodizables', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('slug');
-            $table->string('title');
-            $table->date('date')->nullable();
-            $table->longText('content')->nullable();
+
+            $table->foreignId('period_id')->constrained('periods')->onDelete('cascade');
+            $table->morphs('periodizable');
 
             $table->timestamps();
         });
@@ -28,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('history_articles');
+        Schema::dropIfExists('periodizables');
     }
 };

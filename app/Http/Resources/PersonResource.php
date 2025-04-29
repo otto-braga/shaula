@@ -33,6 +33,8 @@ class PersonResource extends JsonResource
             'genders' => new Collection($this->genders),
             'cities' => CityResource::collection($this->cities),
 
+            'periods' => PeriodResource::collection($this->periods),
+
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
             'activities' => ActivityResource::collection($this->activities),
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)),

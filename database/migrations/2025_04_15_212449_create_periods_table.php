@@ -13,9 +13,14 @@ return new class extends Migration
     {
         Schema::create('periods', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->string('slug');
+
             $table->string('name')->unique();
-            $table->string('timespan')->nullable();
-            $table->text('about')->nullable();
+
+            $table->string('start_date')->nullable();
+            $table->string('end_date')->nullable();
+
             $table->timestamps();
         });
     }

@@ -13,6 +13,7 @@ import Tabs from './tabs';
 import { Language } from '@/types/language';
 import { Award } from '@/types/award';
 import { Category } from '@/types/category';
+import { Period } from '@/types/period';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -27,12 +28,14 @@ export default function Index({
     languages,
     awards,
     categories,
+    periods,
 }: {
     artwork: { data: Artwork },
     people?: { data: Person[] },
     languages?: { data: Language[] },
     awards?: { data: Award[] },
     categories?: { data: Category[] },
+    periods?: { data: Period[] },
 }) {
     const isEdit = !!artwork;
 
@@ -44,6 +47,8 @@ export default function Index({
         languages: artwork ? artwork.data.languages?.map((language) => ({ id: language.id, name: language.name, label: language.name })) : [],
         awards: artwork ? artwork.data.awards?.map((award) => ({ id: award.id, name: award.name, label: award.name })) : [],
         categories: artwork ? artwork.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name })) : [],
+
+        periods: artwork ? artwork.data.periods?.map((period) => ({ id: period.id, name: period.name, label: period.name })) : [],
 
         dimensions: artwork ? artwork.data.dimensions : '',
         materials: artwork ? artwork.data.materials : '',
@@ -189,6 +194,23 @@ export default function Index({
                                     styles={handleReactSelectStyling()}
                                 />
                                 <InputError className="mt-2" message={errors.categories} />
+                            </div>
+
+                            <div>
+                                <Label htmlFor="periods">Períodos</Label>
+                                <Select
+                                    id="periods"
+                                    isMulti
+                                    options={periods?.data.map((period) => ({ value: period.id, label: period.name }))}
+                                    value={data.periods.map((period) => ({ value: period.id, label: period.label }))}
+                                    onChange={(options) => {
+                                        setData('periods', options.map((option) => (
+                                            { id: option.value, name: option.label, label: option.label }
+                                        )));
+                                    }}
+                                    styles={handleReactSelectStyling()}
+                                />
+                                <InputError className="mt-2" message={errors.periods} />
                             </div>
 
                         </form>

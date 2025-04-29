@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\City;
 use App\Models\Gender;
+use App\Models\Period;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -31,6 +32,11 @@ class PersonFactory extends Factory
         return $this->afterCreating(function ($person) {
             $person->cities()->attach(City::inRandomOrder()->first());
             $person->genders()->attach(Gender::inRandomOrder()->first());
+
+            $periods = Period::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($periods as $period) {
+                $person->periods()->attach($period);
+            }
         });
     }
 }

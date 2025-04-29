@@ -6,8 +6,6 @@ use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
@@ -19,7 +17,6 @@ class HistoryArticle extends Model
         'title',
         'date',
         'content',
-        'period_id',
     ];
 
     public function authors(): MorphToMany
@@ -35,9 +32,9 @@ class HistoryArticle extends Model
         return $this->morphToMany(Category::class, 'categorizable');
     }
 
-    public function period(): BelongsTo
+    public function periods(): MorphToMany
     {
-        return $this->belongsTo(Period::class);
+        return $this->morphToMany(Period::class, 'periodizable');
     }
 
     // files

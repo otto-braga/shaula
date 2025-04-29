@@ -3,12 +3,12 @@ import { Category } from "./category";
 import { FileProps } from "./file";
 import { Period } from "./period";
 import { Person } from "./person";
-import { Tag } from "./tag";
 
 export type HistoryArticle = {
     id: number;
     uuid: string;
     slug: string;
+
     title: string;
     date: string;
     authors: Person[];
@@ -19,8 +19,7 @@ export type HistoryArticle = {
     content_images: FileProps[];
 
     categories: Category[];
-    tags: Tag[];
-    period: Period;
+    periods: Period[];
 
     activity: Activity | null;
 

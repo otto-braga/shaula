@@ -3,15 +3,17 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
+import { Award } from '@/types/award';
 import { Category } from '@/types/category';
-import { HistoryArticle } from '@/types/history-article';
-import { Period } from '@/types/period';
+import { Language } from '@/types/language';
 import { Person } from '@/types/person';
+import { HistoryArticle } from '@/types/history-article';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
+import { Period } from '@/types/period';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -33,17 +35,16 @@ export default function Index({
 }) {
     const isEdit = !!historyArticle;
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, patch, errors, processing } = useForm({
         title: historyArticle ? historyArticle.data.title : '',
         date: historyArticle ? historyArticle.data.date : '',
-        // authors_ids: historyArticle ? historyArticle.data.authors.map((author) => author.id) : [],
         authors: historyArticle ? historyArticle.data.authors : [],
-        period_id: historyArticle ? historyArticle.data.period.id : 0,
 
-        categories: historyArticle
-            ? historyArticle.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name }))
-            : [],
+        categories: historyArticle ? historyArticle.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name })) : [],
+        periods: historyArticle ? historyArticle.data.periods?.map((period) => ({ id: period.id, name: period.name, label: period.name })) : [],
     });
+
+    console.log('historyArticle', periods);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -133,25 +134,23 @@ export default function Index({
                                 />
                                 <InputError className="mt-2" message={errors.categories} />
                             </div>
+
                             <div>
-                                <Label htmlFor="period_id">Período Histórico</Label>
+                                <Label htmlFor="periods">Períodos</Label>
                                 <Select
-                                    id="period_id"
-                                    isSearchable
+                                    id="periods"
+                                    isMulti
                                     options={periods?.data.map((period) => ({ value: period.id, label: period.name }))}
-                                    value={
-                                        periods?.data.find((period) => period.id === data.period_id)
-                                            ? { value: data.period_id, label: periods.data.find((period) => period.id === data.period_id)?.name }
-                                            : null
-                                    }
-                                    styles={handleReactSelectStyling()}
-                                    onChange={(option) => {
-                                        if (option && 'value' in option) {
-                                            setData('period_id', option.value);
-                                        }
+                                    value={data.periods.map((period) => ({ value: period.id, label: period.label }))}
+                                    onChange={(options) => {
+                                        setData(
+                                            'periods',
+                                            options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
+                                        );
                                     }}
+                                    styles={handleReactSelectStyling()}
                                 />
-                                <InputError className="mt-2" message={errors.categories} />
+                                <InputError className="mt-2" message={errors.periods} />
                             </div>
                         </form>
                     </div>

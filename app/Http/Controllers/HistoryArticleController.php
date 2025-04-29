@@ -48,6 +48,7 @@ class HistoryArticleController extends Controller
             ->get();
 
         $categories = Category::all();
+        $periods = Period::all();
 
         $periods = Period::all();
 
@@ -86,6 +87,7 @@ class HistoryArticleController extends Controller
             ->get();
 
         $categories = Category::all();
+        $periods = Period::all();
 
         $periods = Period::all();
 

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\Period;
 use App\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -36,6 +37,11 @@ class HistoryArticleFactory extends Factory
             $categories = Category::inRandomOrder()->take(rand(0, 5))->get();
             foreach ($categories as $category) {
                 $review->categories()->attach($category);
+            }
+
+            $periods = Period::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($periods as $period) {
+                $review->periods()->attach($period);
             }
         });
     }
