@@ -60,12 +60,12 @@ class Person extends Model
     public function reviews(): MorphToMany
     {
         return $this->morphedByMany(Review::class, 'personable', 'personables')
-        ->withPivot([
-            'is_author',
-            'is_mention',
-            'activity_id',
-        ])
-        ->orderBy('date');
+            ->withPivot([
+                'is_author',
+                'is_mention',
+                'activity_id',
+            ])
+            ->orderBy('date');
     }
 
     public function languages(): HasManyThrough
@@ -106,5 +106,16 @@ class Person extends Model
     public function mentioner(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $search = $filters['search'] ?? '';
+
+        if ($search != '') {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        return $query;
     }
 }

@@ -50,6 +50,8 @@ class HistoryArticleController extends Controller
         $categories = Category::all();
         $periods = Period::all();
 
+        $periods = Period::all();
+
         return Inertia::render('admin/historyArticle/edit/index', [
             'people' => PersonResource::collection($people),
             'categories' => CategoryResource::collection($categories),
@@ -70,7 +72,7 @@ class HistoryArticleController extends Controller
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('historyArticle.edit', $historyArticle->id);
+        return redirect()->route('historyArticle.edit', $historyArticle->slug);
     }
 
     // -------------------------------------------------------------------------
@@ -85,6 +87,8 @@ class HistoryArticleController extends Controller
             ->get();
 
         $categories = Category::all();
+        $periods = Period::all();
+
         $periods = Period::all();
 
         return Inertia::render('admin/historyArticle/edit/index', [

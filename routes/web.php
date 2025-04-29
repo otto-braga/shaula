@@ -13,8 +13,11 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MentionController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\Public\ArtworkPublicController;
+use App\Http\Controllers\Public\HistoryArticlePublicController;
 use App\Http\Controllers\Public\PersonPublicController;
 use App\Http\Controllers\Public\ReviewPublicController;
+use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
@@ -31,7 +34,14 @@ Route::get('/critica', [ReviewPublicController::class, 'index'])->name('review-p
 Route::get('/critica/{slug}', [ReviewPublicController::class, 'show'])->name('review-public.show');
 
 Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('person-public.index');
-Route::get('/pessoas/{id}', [PersonPublicController::class, 'show'])->name('person-public.show');
+Route::get('/pessoas/{slug}', [PersonPublicController::class, 'show'])->name('person-public.show');
+
+Route::get('/obras/${slug}', [ArtworkPublicController::class, 'show'])->name('artwork-public.show');
+
+Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('history-article-public.index');
+Route::get('/historia/{slug}', [HistoryArticlePublicController::class, 'show'])->name('history-article-public.show');
+
+Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
     Route::get('/dashboard', function () {

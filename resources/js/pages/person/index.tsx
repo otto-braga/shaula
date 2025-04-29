@@ -1,30 +1,8 @@
 import PublicLayout from '@/layouts/public-layout';
+import { PaginatedData } from '@/types/paginated-data';
 import { Person } from '@/types/person';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
-
-type PaginatedData<T> = {
-    data: T[];
-    links: {
-        first: string;
-        last: string;
-        next: string | null;
-        prev: string | null;
-    };
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        per_page: number;
-        to: number;
-        total: number;
-        links: Array<{
-            active: boolean;
-            label: string;
-            url: string | null;
-        }>;
-    };
-};
 
 export default function Index({ people, filters }: { people: PaginatedData<Person>; filters: { search: string } }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -49,11 +27,11 @@ export default function Index({ people, filters }: { people: PaginatedData<Perso
                 </form>
                 <div className="grid grid-cols-4 gap-4">
                     {people.data.map((person) => (
-                        <Link key={person.id} href={`/pessoas/${person.id}`} className="relative">
+                        <Link key={person.id} href={route('person-public.show', person.slug)} className="relative">
                             <div>
                                 <div>
                                     <img
-                                        src={`${person.image ? person.image.path : 'https://placehold.co/1280x900'}`}
+                                        src={`${person.primary_image ? person.primary_image.path : 'https://placehold.co/1280x900'}`}
                                         alt="person Image"
                                         className="aspect-square w-full object-cover"
                                     />

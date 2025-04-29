@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Category extends Model
 {
@@ -17,8 +17,12 @@ class Category extends Model
         'class',
     ];
 
-    public function artworks(): BelongsToMany
+    // /**
+    //  * Relacionamento polimórfico inverso para os modelos relacionados.
+    //  */
+    public function categorizables(): MorphToMany
     {
-        return $this->belongsToMany(Artwork::class, 'artwork_category', 'category_id', 'artwork_id');
+        return $this->morphedByMany(Review::class, 'categorizable')
+            ->union($this->morphedByMany(Artwork::class, 'categorizable'));
     }
 }

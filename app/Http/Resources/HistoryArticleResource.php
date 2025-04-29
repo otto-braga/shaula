@@ -20,6 +20,8 @@ class HistoryArticleResource extends JsonResource
             'uuid' => $this->uuid,
             'slug' => $this->slug,
 
+            'period' => new PeriodResource($this->period),
+
             'title' => $this->title,
             'date' => $this->date,
             'authors' => PersonResource::collection($this->authors),

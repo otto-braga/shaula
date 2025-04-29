@@ -17,6 +17,10 @@ const navItems: NavItem[] = [
         title: 'Pessoas',
         href: '/pessoas',
     },
+    {
+        title: 'História',
+        href: '/historia',
+    },
 ];
 
 export function NavBar() {
@@ -45,7 +49,8 @@ export function NavBar() {
                 showNavbar ? 'translate-y-0' : '-translate-y-full'
             }`}
         >
-            <div className="text-3xl font-bold">SHAULA</div>
+            {/* <div className="text-3xl font-bold">SHAULA</div> */}
+            <img src="/images/logo.webp" alt="SHAULA" className="mb-3 w-32" />
 
             <div className="md:hidden">
                 <Sheet>

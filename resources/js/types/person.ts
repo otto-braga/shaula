@@ -1,6 +1,5 @@
 import { Activity } from "./activity";
 import { Artwork } from "./artwork";
-import { Award } from "./award";
 import { City } from "./city";
 import { FileProps } from "./file";
 import { Gender } from "./gender";
@@ -12,7 +11,7 @@ import { Review } from "./review";
 export type Person = {
     id: number;
     uuid: string | null;
-    slug: string | null;
+    slug: string;
     name: string;
     date_of_birth: string | null;
     date_of_death: string | null;

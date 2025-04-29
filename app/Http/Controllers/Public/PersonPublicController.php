@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PersonResource;
 use App\Models\Person;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
 class PersonPublicController extends Controller
@@ -15,17 +15,15 @@ class PersonPublicController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Person::query();
 
-        if ($search = $request->get('search')) {
-            $query->where('name', 'like', "%{$search}%");
-        }
-
-        $people = $query->latest()->paginate(12)->withQueryString();
+        $people = Person::latest()
+            ->filter(Request::only('search'))
+            ->paginate(12)
+            ->withQueryString();
 
         return Inertia::render('person/index', [
             'people' => PersonResource::collection($people),
-            'filters' => $request->only('search'),
+            'filters' => Request::all('search'),
         ]);
     }
 
@@ -33,13 +31,14 @@ class PersonPublicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show($slug)
     {
-        $person = Person::where('id', $id)
+        $person = Person::where('slug', $slug)
             ->firstOrFail();
 
         $person->load([
             'artworks',
+            'reviews'
         ]);
 
         return Inertia::render('person/show', [
