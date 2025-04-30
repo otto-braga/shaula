@@ -5,6 +5,7 @@ import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
 import { Link } from "./link";
+import { Mention } from "./mention";
 import { Period } from "./period";
 import { Review } from "./review";
 
@@ -33,6 +34,8 @@ export type Person = {
 
     artworks: Artwork[];
     reviews: Review[];
+
+    mentioned: Mention[];
 
     created_at: string;
     updated_at: string;

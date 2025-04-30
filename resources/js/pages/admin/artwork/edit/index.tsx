@@ -58,12 +58,12 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            post(route('artwork.update', artwork.data), {
+            post(route('artworks.update', artwork.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('artwork.store'), {
+            post(route('artworks.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });

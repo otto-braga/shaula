@@ -42,7 +42,7 @@ export default function Content({
 
         setImages([]);
 
-        post(route('review.update.content', review.data), {
+        post(route('reviews.update.content', review.data), {
             preserveScroll: true,
             preserveState: true,
         });

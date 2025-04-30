@@ -9,15 +9,16 @@ use App\Models\Gender;
 use App\Models\Person;
 use App\Models\Period;
 use App\Http\Resources\PeriodResource;
+use App\Models\Mention;
 use App\Traits\HasFile;
+use App\Traits\HasMention;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class PersonController extends Controller
 {
-
-    use HasFile;
+    use HasFile, HasMention;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -64,7 +65,7 @@ class PersonController extends Controller
         $person->cities()->sync(Arr::pluck($request->cities, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('person.edit', $person->id);
+        return redirect()->route('people.edit', $person->id);
     }
 
     // -------------------------------------------------------------------------
@@ -169,6 +170,38 @@ class PersonController extends Controller
             session()->flash('success', false);
             return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT MENTIONS
+
+    public function editMentions(Person $person)
+    {
+        $person->load('mentioned');
+
+        $mentionQueries = $this->getMentionQueries();
+
+        return Inertia::render('admin/person/edit/mentions', [
+            'person' => new PersonResource($person),
+            'mention_queries' => new JsonResource($mentionQueries),
+        ]);
+    }
+
+    public function updateMentions(Request $request, Person $person)
+    {
+        $person->mentioned()->delete();
+
+        foreach ($request->mentions as $mention) {
+            Mention::create([
+                'mentioned_id' => $mention['mentioned_id'],
+                'mentioned_type' => $mention['mentioned_type'],
+                'mentioner_id' => $person->id,
+                'mentioner_type' => $person::class
+            ]);
+        }
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------

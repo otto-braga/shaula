@@ -21,7 +21,7 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-end">
-                        <Link href={route('artwork.create')} prefetch>
+                        <Link href={route('artworks.create')} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>
@@ -47,12 +47,12 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                                             deleteRoute="artwork.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('artwork.edit', { artwork: artwork })}>
+                                        <Link href={route('artworks.edit', { artwork: artwork })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
                                         </Link>
-                                        <Link href={route('artwork.show', { id: artwork.uuid })}>
+                                        <Link href={route('artworks.show', { id: artwork.uuid })}>
                                             <Button variant={'secondary'}>
                                                 <Eye className="h-5 w-5" />
                                             </Button>

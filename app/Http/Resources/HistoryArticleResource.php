@@ -36,6 +36,8 @@ class HistoryArticleResource extends JsonResource
 
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
 
+            'mentioned' => MentionResource::collection($this->whenLoaded('mentioned')),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

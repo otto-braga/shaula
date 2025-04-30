@@ -28,22 +28,22 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Pessoas',
-        href: route('person.index'),
+        href: route('people.index'),
         icon: PersonStanding,
     },
     {
         title: 'Obras',
-        href: route('artwork.index'),
+        href: route('artworks.index'),
         icon: Circle,
     },
     {
         title: 'Críticas',
-        href: route('review.index'),
+        href: route('reviews.index'),
         icon: Text,
     },
     {
         title: 'História da Arte',
-        href: route('historyArticle.index'),
+        href: route('history_articles.index'),
         icon: BookOpen,
     }
 ];

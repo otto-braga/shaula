@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import Tabs from './tabs';
@@ -42,7 +42,7 @@ export default function Content({
 
         setImages([]);
 
-        post(route('historyArticle.update.content', historyArticle.data), {
+        post(route('history_articles.update.content', historyArticle.data), {
             preserveScroll: true,
             preserveState: true,
         });

@@ -2,13 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ArtworkResource;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Http\Resources\CategoryResource;
-use App\Http\Resources\MentionsByTypeResource;
 use App\Http\Resources\PersonResource;
-use App\Models\Artwork;
 use App\Models\Review;
 use App\Models\Category;
 use App\Models\Mention;
@@ -71,7 +68,7 @@ class ReviewController extends Controller
         $review->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('review.edit', $review->slug);
+        return redirect()->route('reviews.edit', $review->slug);
     }
 
     // -------------------------------------------------------------------------
@@ -185,6 +182,38 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
+    // EDIT MENTIONS
+
+    public function editMentions(Review $review)
+    {
+        $review->load('mentioned');
+
+        $mentionQueries = $this->getMentionQueries();
+
+        return Inertia::render('admin/review/edit/mentions', [
+            'review' => new ReviewResource($review),
+            'mention_queries' => new JsonResource($mentionQueries),
+        ]);
+    }
+
+    public function updateMentions(Request $request, Review $review)
+    {
+        $review->mentioned()->delete();
+
+        foreach ($request->mentions as $mention) {
+            Mention::create([
+                'mentioned_id' => $mention['mentioned_id'],
+                'mentioned_type' => $mention['mentioned_type'],
+                'mentioner_id' => $review->id,
+                'mentioner_type' => $review::class
+            ]);
+        }
+
+        session()->flash('success', true);
+        return redirect()->back();
+    }
+
+    // -------------------------------------------------------------------------
     // DELETE
 
     public function destroy(Review $review)
@@ -194,85 +223,4 @@ class ReviewController extends Controller
         session()->flash('success', true);
         return redirect()->back();
     }
-
-    // -------------------------------------------------------------------------
-    // MENTIONS
-
-    public function editMentions(Review $review)
-    {
-        $mentionsQueries = $this->getMentionsQueries();
-        $mentionsByType = $this->getMentionsByType($review);
-
-        return Inertia::render('admin/review/edit/mentions', [
-            'review' => new ReviewResource($review),
-            'mentions_queries' => new JsonResource($mentionsQueries),
-            'mentions_by_type' => MentionsByTypeResource::collection($mentionsByType),
-        ]);
-    }
-
-    public function updateMentions(Request $request, Review $review)
-    {
-        $this->applyMentionsUpdate($request, $review);
-
-        session()->flash('success', true);
-        return redirect()->back();
-
-        // dd($request->all());
-
-        // foreach ($request->mentions_by_type as $mentions_type) {
-        //     $mentionType = $mentions_type['type'];
-        //     $mentionedIds = Arr::pluck($mentions_type['mentions'], 'id');
-
-        //     if (count($mentionedIds) > 0) {
-        //         $review->mentioned()->where('mentioned_type', $mentionType)
-        //             ->whereNotIn('mentioned_id', $mentionedIds)
-        //             ->delete();
-
-        //         foreach ($mentionedIds as $mentionedId) {
-        //             Mention::updateOrCreate([
-        //                 'mentioned_id' => $mentionedId,
-        //                 'mentioned_type' => $mentionType,
-        //                 'mentioner_id' => $review->id,
-        //                 'mentioner_type' => Review::class
-        //             ]);
-        //         }
-        //     }
-        // }
-    }
-
-    // public function updateMentions(Request $request, Review $review)
-    // {
-    //     $review->mentioned()->where('mentioned_type', Person::class)
-    //         ->whereNotIn('mentioned_id', Arr::pluck($request->people, 'id'))
-    //         ->delete();
-
-    //     if ($request->has('people') && count($request->people) > 0) {
-    //         foreach ($request->people as $person) {
-    //             Mention::updateOrCreate([
-    //                 'mentioned_id' => $person['id'],
-    //                 'mentioned_type' => Person::class,
-    //                 'mentioner_id' => $review->id,
-    //                 'mentioner_type' => Review::class
-    //             ]);
-    //         }
-    //     }
-
-    //     $review->mentioned()->where('mentioned_type', Artwork::class)
-    //         ->whereNotIn('mentioned_id', Arr::pluck($request->artworks, 'id'))
-    //         ->delete();
-
-    //     if ($request->has('artworks') && count($request->artworks) > 0) {
-    //         foreach ($request->artworks as $artwork) {
-    //             Mention::updateOrCreate([
-    //                 'mentioned_id' => $artwork['id'],
-    //                 'mentioned_type' => Artwork::class,
-    //                 'mentioner_id' => $review->id,
-    //                 'mentioner_type' => Review::class
-    //             ]);
-    //         }
-    //     }
-
-    //     session()->flash('success', true);
-    //     return redirect()->back();
-    // }
 }

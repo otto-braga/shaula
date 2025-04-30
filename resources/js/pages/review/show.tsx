@@ -1,13 +1,29 @@
 import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
+import { Mention } from '@/types/mention';
 import { Review } from '@/types/review';
+import { modelLabelPlural } from '@/utils/model-label';
 
 import { Link } from '@inertiajs/react';
 
 import 'keen-slider/keen-slider.min.css';
+import { useState } from 'react';
 
 export default function Index({ review }: { review: { data: Review } }) {
     console.log(review);
+
+    const [mentionsByType, setMentionsByType] = useState<{
+        [key: string]: Mention[];
+    }>(
+        review.data.mentioned.reduce((acc: { [key: string]: Mention[] }, mention: Mention) => {
+            const type = mention.mentioned_type || '';
+            if (!acc[type]) {
+                acc[type] = [];
+            }
+            acc[type].push(mention);
+            return acc;
+        }, {})
+    );
 
     return (
         <PublicLayout head="Crítica">
@@ -24,7 +40,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <h1 className="font-semibold text-white md:text-3xl">{review.data.title}</h1>
                         <div className="flex gap-1">
                             {review.data.authors.map((author) => (
-                                <Link href={route('person-public.show', author.slug)} key={author.id}>
+                                <Link href={route('public.people.show', author)} key={author.id}>
                                     <span className="text-gray-100 hover:underline md:text-lg">{author.name}</span>
                                 </Link>
                             ))}
@@ -37,7 +53,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div>
                         <p className="font-semibold">Autoria</p>
                         {review.data.authors.map((author) => (
-                            <Link href={route('person-public.show', author.slug)} key={author.id}>
+                            <Link href={route('public.people.show', author)} key={author.id}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))}
@@ -46,20 +62,49 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <div className="mt-4">
                             <p className="font-semibold">Categorias</p>
                             {review.data.categories.map((category) => (
-                                <p>{category.name}</p>
+                                <p key={category.id}>{category.name}</p>
                             ))}
                         </div>
                     )}
-                    {review.data.mentioned_people.length > 0 && (
+
+
+                    {/* {review.data.mentioned_people.length > 0 && (
                         <div className="mt-4">
                             <p className="font-semibold">Citações</p>
                             {review.data.mentioned_people.map((person) => (
-                                <Link href={route('person-public.show', person.slug)} key={person.id}>
+                                <Link href={route('public.people.show', person)} key={person.id}>
                                     <p className="hover:underline">{person.name}</p>
                                 </Link>
                             ))}
                         </div>
-                    )}
+                    )} */}
+
+
+                    <div className="mt-4">
+                        <p className="font-semibold">Menções (EX: todas juntas)</p>
+                        {review.data.mentioned.map((mention) => (
+                            <Link href={route('public.mentions.show', mention)} key={mention.id + 'juntas'}>
+                                <p className="hover:underline">{mention.mentioned_name}</p>
+                            </Link>
+                        ))}
+                    </div>
+
+
+                    <div className="mt-4">
+                        <p className="font-semibold">Menções (EX: sep. por tipo)</p>
+                        {Object.entries(mentionsByType).map(([type, mentions]) => (
+                            <div key={type} className="mb-4">
+                                <p className="font-semibold text-sm">{modelLabelPlural(type)}</p>
+                                {mentions.map((mention) => (
+                                    <Link href={route('public.mentions.show', mention)} key={mention.id  + 'separadas'}>
+                                        <p className="hover:underline">{mention.mentioned_name}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+
+
                 </div>
                 <div className="md:col-span-5 lg:col-span-4">
                     <div>

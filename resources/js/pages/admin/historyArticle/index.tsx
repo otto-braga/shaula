@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Head, Link } from '@inertiajs/react';
 import { Edit, Eye } from 'lucide-react';
 
@@ -21,7 +21,7 @@ export default function Index({ historyArticles }: { historyArticles: { data: Hi
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-end">
-                        <Link href={route('historyArticle.create')} prefetch>
+                        <Link href={route('history_articles.create')} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>
@@ -47,12 +47,12 @@ export default function Index({ historyArticles }: { historyArticles: { data: Hi
                                             deleteRoute="historyArticle.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('historyArticle.edit', { historyArticle: historyArticle })}>
+                                        <Link href={route('history_articles.edit', { historyArticle: historyArticle })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
                                         </Link>
-                                        <Link href={route('historyArticle.show', { id: historyArticle.uuid })}>
+                                        <Link href={route('history_articles.show', { id: historyArticle.uuid })}>
                                             <Button variant={'secondary'}>
                                                 <Eye className="h-5 w-5" />
                                             </Button>

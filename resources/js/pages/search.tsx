@@ -1,6 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
 import { Artwork } from '@/types/artwork';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Review } from '@/types/review';
 
 type Result = {

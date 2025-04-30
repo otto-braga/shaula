@@ -1,6 +1,7 @@
 import { Activity } from "./activity";
 import { Category } from "./category";
 import { FileProps } from "./file";
+import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
 
@@ -22,6 +23,8 @@ export type HistoryArticle = {
     periods: Period[];
 
     activity: Activity | null;
+
+    mentioned: Mention[];
 
     created_at: string;
     updated_at: string;

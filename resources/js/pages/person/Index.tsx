@@ -6,7 +6,7 @@ import { Person } from "@/types/person";
 
 export default function Index({
     people,
-}:PageProps<{ 
+}:PageProps<{
         people: { data: Person[], meta: {
         current_page: number;
         from: number;
@@ -26,7 +26,7 @@ export default function Index({
         last: string;
         prev: string | null;
         next: string | null;
-    }; } 
+    }; }
     }>) {
 
     console.log(people.meta)
@@ -36,9 +36,9 @@ export default function Index({
     };
 
     return <>
-    
+
         <PublicLayout>
-            
+
             <Grid2 container spacing={4}>
 
                 <Grid2 size={{ xs: 0, sm: 3 }}>
@@ -52,7 +52,7 @@ export default function Index({
                         {
                             people.data.map((person) => (
                                 <div className="" key={person.id}>
-                                    <Link href={route('public.person.show', person.slug)}>
+                                    <Link href={route('public.person.show', person)}>
                                         <div key={person.id} className="">
                                             <div>
                                                 <img src='https://placehold.co/150x150' alt={person.name} className="w-full" />
