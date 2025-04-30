@@ -34,10 +34,22 @@ class PersonController extends Controller
         ]);
     }
 
-    public function show(Person $person)
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetch(Request $request)
     {
-        //
+        $people = Person::fetchSome($request->search)->get();
+
+        return response()->json(PersonResource::collection($people));
     }
+
+    // -------------------------------------------------------------------------
+    // SHOW
+
+    // public function show(Person $person)
+    // {
+    // }
 
     // -------------------------------------------------------------------------
     // CREATE

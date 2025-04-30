@@ -130,7 +130,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
     Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('people.create');
     Route::post('/pessoas/store', [PersonController::class, 'store'])->name('people.store');
-    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
+    // Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
     Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('people.edit');
     Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('people.update');
     Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('people.edit.images');
@@ -140,6 +140,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/pessoas/{person:slug}/editar/mencoes', [PersonController::class, 'editMentions'])->name('people.edit.mentions');
     Route::post('/pessoas/{person:slug}/update/mentions', [PersonController::class, 'updateMentions'])->name('people.update.mentions');
     Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('people.destroy');
+    Route::get('/pessoas/fetch', [PersonController::class, 'fetch'])->name('people.fetch');
 
     // Artworks
     Route::get('/obras', [ArtworkController::class, 'index'])->name('artworks.index');

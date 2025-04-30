@@ -95,9 +95,9 @@ class ArtworkController extends Controller
     {
         $artwork->load('authors');
 
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
+        // $people = Person::query()
+        //     ->orderBy('name')
+        //     ->get();
 
         $languages = Language::all();
         $awards = Award::all();
@@ -106,7 +106,7 @@ class ArtworkController extends Controller
 
         return Inertia::render('admin/artwork/edit/index', [
             'artwork' => new ArtworkResource($artwork),
-            'people' => PersonResource::collection($people),
+            // 'people' => PersonResource::collection($people),
             'languages' => LanguageResource::collection($languages),
             'awards' => AwardResource::collection($awards),
             'categories' => CategoryResource::collection($categories),
@@ -121,7 +121,7 @@ class ArtworkController extends Controller
         $artwork->update($dataForm);
 
         $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
         $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));

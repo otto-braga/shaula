@@ -8,7 +8,7 @@ import { Artwork } from '@/types/artwork';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
-import Select from 'react-select';
+import Select, { MultiValue } from 'react-select';
 import Tabs from './tabs';
 import { Language } from '@/types/language';
 import { Award } from '@/types/award';
@@ -22,16 +22,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+type Option = {
+    value: number;
+    label: string;
+};
+
 export default function Index({
     artwork,
-    people,
+    // people,
     languages,
     awards,
     categories,
     periods,
 }: {
     artwork: { data: Artwork },
-    people?: { data: Person[] },
+    // people?: { data: Person[] },
     languages?: { data: Language[] },
     awards?: { data: Award[] },
     categories?: { data: Category[] },
@@ -40,9 +45,9 @@ export default function Index({
     const isEdit = !!artwork;
 
     const { data, setData, post, patch, errors, processing } = useForm({
-        title: artwork ? artwork.data.title : '',
-        date: artwork ? artwork.data.date : '',
-        authors: artwork ? artwork.data.authors : [],
+        title: artwork ? artwork.data.title : '' as string,
+        date: artwork ? artwork.data.date : '' as string,
+        authors_ids: artwork ? artwork.data.authors.map((author) => author.id) : [] as number[],
 
         languages: artwork ? artwork.data.languages?.map((language) => ({ id: language.id, name: language.name, label: language.name })) : [],
         awards: artwork ? artwork.data.awards?.map((award) => ({ id: award.id, name: award.name, label: award.name })) : [],
@@ -70,12 +75,77 @@ export default function Index({
         }
     };
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
-    const [selectedPeople, setSelectedPeople] = useState<Person[]>(artwork?.data.authors || []);
+    const fetchData = async (route: string = '', search: string = '', setFunction: (test: MultiValue<Option>) => void) => {
+        if (search.length < 1) {
+            return;
+        }
 
-    useEffect(() => {
-        setData('authors', selectedPeople);
-    }, [selectedPeople]);
+        let response;
+
+        fetch(
+            route,
+            {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                response = data;
+                setFunction(
+                    response.map((object: any) => ({
+                        value: object.id,
+                        label: object.name ?? object.title,
+                    }) as Option) as MultiValue<Option>
+                );
+            });
+
+        return response;
+    };
+
+    const [availablePeople, setAvailablePeople] = useState<MultiValue<Option>>([]);
+    const [selectedPeople, setSelectedPeople] = useState<MultiValue<Option>>(artwork.data.authors?.map(author => ({ value: author.id, label: author.name })) ?? []);
+
+    const fetchPeople = async (search: string = '') => {
+        if (search.length < 1) {
+            return;
+        }
+
+        let response;
+
+        fetch(route('people.fetch', { search: search }),
+            {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                response = data as Person[];
+                console.log('response', response);
+                setAvailablePeople(
+                    response.map((person) => ({
+                        value: person.id,
+                        label: person.name,
+                    }) as Option) as MultiValue<Option>
+                );
+            });
+        return response;
+    };
+
+    const onPeopleChange = (options: MultiValue<Option>) => {
+        setSelectedPeople(options);
+        setAvailablePeople([]);
+        setData('authors_ids', options.map((option) => (option.value)));
+    };
+
+    const onPeopleInputChange = (inputValue: string) => {
+        fetchData(route('people.fetch', { search: inputValue }), inputValue, setAvailablePeople);
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -96,18 +166,15 @@ export default function Index({
                             <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <Select
-                                    id="authors"
+                                    id="authors_ids"
                                     isMulti
-                                    options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => {
-                                        setSelectedPeople(
-                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
-                                        );
-                                    }}
+                                    options={availablePeople}
+                                    value={selectedPeople}
+                                    onChange={onPeopleChange}
                                     styles={handleReactSelectStyling()}
+                                    onInputChange={onPeopleInputChange}
                                 />
-                                <InputError className="mt-2" message={errors.authors} />
+                                <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
 
                             <div className="flex flex-row gap-3">
