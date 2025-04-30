@@ -17,7 +17,7 @@ registerPlugin(FilePondPluginImagePreview);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Críticas',
-        href: route('review.index'),
+        href: route('reviews.index'),
     },
 ];
 
@@ -35,7 +35,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('review.update.images', review.data), {
+        post(route('reviews.update.images', review.data), {
             preserveScroll: true,
             preserveState: false,
         });

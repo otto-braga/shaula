@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Link, usePage } from '@inertiajs/react';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { useEffect, useState,  } from 'react';
@@ -38,27 +38,35 @@ export default function Tabs({ historyArticle, processing, className }: TabsProp
                         <>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('historyArticle.edit') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('history_articles.edit') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('historyArticle.edit', { historyArticle: historyArticle?.data }) : ''}
+                                href={isEdit ? route('history_articles.edit', { historyArticle: historyArticle?.data }) : ''}
                             >
                                 Dados
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('historyArticle.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('history_articles.edit.images') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('historyArticle.edit.images', { historyArticle: historyArticle?.data }) : ''}
+                                href={isEdit ? route('history_articles.edit.images', { historyArticle: historyArticle?.data }) : ''}
                             >
                                 Imagens
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('historyArticle.edit.content') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('history_articles.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('historyArticle.edit.content', { historyArticle: historyArticle?.data }) : ''}
+                                href={isEdit ? route('history_articles.edit.content', { historyArticle: historyArticle?.data }) : ''}
                             >
                                 Conteúdo
+                            </Link>
+                            <Link
+                                className={
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('history_articles.edit.mentions') ? ' font-bold underline' : '')
+                                }
+                                href={isEdit ? route('history_articles.edit.mentions', { historyArticle: historyArticle?.data }) : ''}
+                            >
+                                Menções
                             </Link>
                         </>
                     )}

@@ -35,7 +35,7 @@ export default function People({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('artwork.update.people', artwork.data), {
+        post(route('artworks.update.people', artwork.data), {
             preserveScroll: true,
             preserveState: false,
         });

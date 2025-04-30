@@ -2,6 +2,7 @@ import { Activity } from "./activity";
 import { Artwork } from "./artwork";
 import { Category } from "./category";
 import { FileProps } from "./file";
+import { Mention } from "./mention";
 import { Person } from "./person";
 import { Tag } from "./tag";
 
@@ -22,6 +23,8 @@ export type Review = {
 
     mentioned_people: Person[];
     mentioned_artworks: Artwork[];
+
+    mentioned: Mention[];
 
     categories: Category[];
     tags: Tag[];

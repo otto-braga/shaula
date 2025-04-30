@@ -13,7 +13,7 @@ import Tabs from './tabs';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Críticas',
-        href: route('review.index'),
+        href: route('reviews.index'),
     },
 ];
 
@@ -30,7 +30,7 @@ export default function People({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('review.update.people', review.data), {
+        post(route('reviews.update.people', review.data), {
             preserveScroll: true,
             preserveState: false,
         });

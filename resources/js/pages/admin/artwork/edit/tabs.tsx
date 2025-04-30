@@ -40,7 +40,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('artwork.edit', { artwork: artwork?.data }) : ''}
+                                href={isEdit ? route('artworks.edit', { artwork: artwork?.data }) : ''}
                             >
                                 Dados
                             </Link>
@@ -48,7 +48,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.people') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('artwork.edit.people', { artwork: artwork?.data }) : ''}
+                                href={isEdit ? route('artworks.edit.people', { artwork: artwork?.data }) : ''}
                             >
                                 Pessoas
                             </Link>
@@ -56,7 +56,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.images') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('artwork.edit.images', { artwork: artwork?.data }) : ''}
+                                href={isEdit ? route('artworks.edit.images', { artwork: artwork?.data }) : ''}
                             >
                                 Imagens
                             </Link>
@@ -64,9 +64,17 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('artwork.edit.content', { artwork: artwork?.data }) : ''}
+                                href={isEdit ? route('artworks.edit.content', { artwork: artwork?.data }) : ''}
                             >
                                 Conteúdo
+                            </Link>
+                            <Link
+                                className={
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.mentions') ? ' font-bold underline' : '')
+                                }
+                                href={isEdit ? route('artworks.edit.mentions', { artwork: artwork?.data }) : ''}
+                            >
+                                Menções
                             </Link>
                         </>
                     )}

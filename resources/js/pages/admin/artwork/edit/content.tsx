@@ -42,7 +42,7 @@ export default function Content({
 
         setImages([]);
 
-        post(route('artwork.update.content', artwork.data), {
+        post(route('artworks.update.content', artwork.data), {
             preserveScroll: true,
             preserveState: true,
         });

@@ -38,27 +38,35 @@ export default function Tabs({ person, processing, className }: TabsProps) {
                         <>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('person.edit') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('people.edit') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('person.edit', { person: person?.data }) : ''}
+                                href={isEdit ? route('people.edit', { person: person?.data }) : ''}
                             >
                                 Dados
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('person.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('people.edit.images') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('person.edit.images', { person: person?.data }) : ''}
+                                href={isEdit ? route('people.edit.images', { person: person?.data }) : ''}
                             >
                                 Imagens
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('person.edit.content') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('people.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('person.edit.content', { person: person?.data }) : ''}
+                                href={isEdit ? route('people.edit.content', { person: person?.data }) : ''}
                             >
                                 Conteúdo
+                            </Link>
+                            <Link
+                                className={
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('people.edit.mentions') ? ' font-bold underline' : '')
+                                }
+                                href={isEdit ? route('people.edit.mentions', { person: person?.data }) : ''}
+                            >
+                                Menções
                             </Link>
                         </>
                     )}

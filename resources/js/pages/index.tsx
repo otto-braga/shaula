@@ -17,7 +17,7 @@ export default function Index({ reviews, artworks }: { reviews: { data: Review[]
                 </Link>
                 <div className="mt-6 grid w-full gap-8 md:grid-cols-3">
                     {reviews.data.map((review) => (
-                        <Link href={route('review-public.show', review.slug)} key={review.id} className="group">
+                        <Link href={route('public.reviews.show', review)} key={review.id} className="group">
                             <div key={review.id} className="">
                                 <div className="bg-pink-100">
                                     <img

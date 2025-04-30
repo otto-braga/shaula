@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Review } from '@/types/review';
+import { Person } from '@/types/person';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 import Select from 'react-select';
@@ -12,19 +12,19 @@ import { modelLabel } from '@/utils/model-label';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Obras',
-        href: route('reviews.index'),
+        href: route('people.index'),
     },
 ];
 
 export default function Mentions({
-    review,
+    person,
     mention_queries,
 }: {
-    review: { data: Review };
-    mention_queries: { data: MentionQuery[] };
+    person: { data: Person };
+        mention_queries: { data: MentionQuery[] };
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        mentions: review.data.mentioned as Mention[],
+        mentions: person.data.mentioned as Mention[],
     });
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function Mentions({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('reviews.update.mentions', review.data), {
+        post(route('people.update.mentions', person.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -46,10 +46,10 @@ export default function Mentions({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs review={review} processing={processing} />
+                            <Tabs person={person} processing={processing} />
 
                             {
-                                review.data.mentioned.map((mention) => {
+                                person.data.mentioned.map((mention) => {
                                     return (
                                         <div key={mention.id} className="mb-4">
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -84,7 +84,7 @@ export default function Mentions({
                                                 }
                                                 defaultValue={
 
-                                                    review.data.mentioned.filter(
+                                                    person.data.mentioned.filter(
                                                         (mentioned) => mentioned.mentioned_type === mention_query.type
                                                     ).map((mention) => ({
                                                         value: mention.mentioned_id,

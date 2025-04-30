@@ -12,18 +12,15 @@ return [
         'table' => 'artworks',
         'type' => Artwork::class,
         'resource' => ArtworkResource::class,
-        'label' => 'Obras',
     ],
     [
         'table' => 'people',
         'type' => Person::class,
         'resource' => PersonResource::class,
-        'label' => 'Pessoas',
     ],
     [
         'table' => 'reviews',
         'type' => Review::class,
         'resource' => ReviewResource::class,
-        'label' => 'Críticas',
     ],
 ];

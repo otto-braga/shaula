@@ -17,7 +17,7 @@ class HistoryArticlePublicController extends Controller
         //get the last 3 reviews
         $historyArticles = HistoryArticle::latest()->take(3)->get();
 
-        return Inertia::render('history-article/index', [
+        return Inertia::render('historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),
         ]);
     }
@@ -30,7 +30,7 @@ class HistoryArticlePublicController extends Controller
 
         $historyArticles = HistoryArticle::where('slug', $slug)->firstOrFail();
 
-        return Inertia::render('history-article/show', [
+        return Inertia::render('historyArticle/show', [
             'historyArticle' => new HistoryArticleResource($historyArticles),
         ]);
     }

@@ -3,6 +3,7 @@ import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Language } from "./language";
+import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
 import { Tag } from "./tag";
@@ -32,6 +33,8 @@ export type Artwork = {
     awards: Award[];
     dimensions: string;
     materials: string;
+
+    mentioned: Mention[];
 
     created_at: string;
     updated_at: string;

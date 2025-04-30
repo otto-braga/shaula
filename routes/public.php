@@ -11,11 +11,11 @@ Route::group(['prefix' => '', 'as' => 'public.'], function () {
     Route::get('/', [HomePublicController::class, 'index'])->name('home');
 
     // Route::resource('/critica', ReviewPublicController::class)->only(['index', 'show'])->names('review');
-    Route::get('/critica', [ReviewPublicController::class, 'index'])->name('review.index');
-    Route::get('/critica/{uuid}', [ReviewPublicController::class, 'show'])->name('review.show');
+    Route::get('/critica', [ReviewPublicController::class, 'index'])->name('reviews.index');
+    Route::get('/critica/{uuid}', [ReviewPublicController::class, 'show'])->name('reviews.show');
 
-    Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('person.index');
-    Route::get('/pessoas/{slug}', [PersonPublicController::class, 'show'])->name('person.show');
+    Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('people.index');
+    Route::get('/pessoas/{slug}', [PersonPublicController::class, 'show'])->name('people.show');
 
     Route::get('/obras', [ArtworkPublicController::class, 'index'])->name('artwork.index');
     Route::get('/obras/{uuid}', [ArtworkPublicController::class, 'show'])->name('artwork.show');

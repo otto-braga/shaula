@@ -24,7 +24,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                 <div>
                     <h2>autores</h2>
                     {artwork.data.authors.map((author) => (
-                        <Link href={route('person-public.show', { slug: author.slug })} className="flex items-center space-x-2" key={author.id}>
+                        <Link href={route('public.people.show', author.slug)} className="flex items-center space-x-2" key={author.id}>
                             <div key={author.id}>
                                 <p>{author.name}</p>
                             </div>

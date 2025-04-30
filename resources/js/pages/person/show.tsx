@@ -64,7 +64,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                             <h2 className="mb-6 text-xl font-medium">CRÍTICAS</h2>
                             <div className="group grid cursor-pointer grid-cols-1 gap-4">
                                 {person.data.reviews.map((review) => (
-                                    <Link href={route('review-public.show', review.slug)} key={review.id}>
+                                    <Link href={route('public.reviews.show', review)} key={review.id}>
                                         <div key={review.id} className="flex items-start gap-3">
                                             <img
                                                 src={`${review.primary_image ? review.primary_image.path : 'https://placehold.co/1280x900'}`}
@@ -91,7 +91,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                             <h2 className="mb-6 text-xl font-medium">OBRAS</h2>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
                                 {person.data.artworks.map((artwork) => (
-                                    <Link href={route('artwork-public.show', artwork.slug)} key={artwork.id}>
+                                    <Link href={route('public.artworks.show', artwork.slug)} key={artwork.id}>
                                         <div key={artwork.id} className="relative">
                                             <img
                                                 src={`${artwork.primary_image ? artwork.primary_image.path : 'https://placehold.co/1280x900'}`}

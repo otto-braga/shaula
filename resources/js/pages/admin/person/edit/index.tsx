@@ -50,12 +50,12 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            post(route('person.update', person.data), {
+            post(route('people.update', person.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('person.store'), {
+            post(route('people.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });

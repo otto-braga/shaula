@@ -13,15 +13,8 @@ export type Mention = {
     updated_at?: string;
 }
 
-export type MentionsByType = {
+export type MentionQuery = {
     type: string;
-    type_label: string;
-    mentions: Mention[];
-}
-
-export type MentionsQuery = {
-    type: string;
-    type_label: string;
     query: {
         id: number;
         name: string;

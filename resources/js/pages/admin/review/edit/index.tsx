@@ -49,12 +49,12 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            post(route('review.update', review.data), {
+            post(route('reviews.update', review.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('review.store'), {
+            post(route('reviews.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });

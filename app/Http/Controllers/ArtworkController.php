@@ -15,15 +15,18 @@ use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\Language;
+use App\Models\Mention;
 use App\Models\Person;
 use App\Models\Period;
 use App\Traits\HasFile;
+use App\Traits\HasMention;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile;
+    use HasFile, HasMention;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -82,7 +85,7 @@ class ArtworkController extends Controller
         $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('artwork.edit', $artwork->id);
+        return redirect()->route('artworks.edit', $artwork->id);
     }
 
     // -------------------------------------------------------------------------
@@ -278,6 +281,38 @@ class ArtworkController extends Controller
             session()->flash('success', false);
             return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT MENTIONS
+
+    public function editMentions(Artwork $artwork)
+    {
+        $artwork->load('mentioned');
+
+        $mentionQueries = $this->getMentionQueries();
+
+        return Inertia::render('admin/artwork/edit/mentions', [
+            'artwork' => new ArtworkResource($artwork),
+            'mention_queries' => new JsonResource($mentionQueries),
+        ]);
+    }
+
+    public function updateMentions(Request $request, Artwork $artwork)
+    {
+        $artwork->mentioned()->delete();
+
+        foreach ($request->mentions as $mention) {
+            Mention::create([
+                'mentioned_id' => $mention['mentioned_id'],
+                'mentioned_type' => $mention['mentioned_type'],
+                'mentioner_id' => $artwork->id,
+                'mentioner_type' => $artwork::class
+            ]);
+        }
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------

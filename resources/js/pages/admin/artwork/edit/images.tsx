@@ -17,7 +17,7 @@ registerPlugin(FilePondPluginImagePreview);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pessoas',
-        href: route('artwork.index'),
+        href: route('artworks.index'),
     },
 ];
 
@@ -35,7 +35,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('artwork.update.images', artwork.data), {
+        post(route('artworks.update.images', artwork.data), {
             preserveScroll: true,
             preserveState: false,
         });

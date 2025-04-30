@@ -10,7 +10,7 @@ import { Plus } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pessoas',
-        href: route('person.index'),
+        href: route('people.index'),
     },
 ];
 
@@ -19,7 +19,7 @@ export default function Index({ people }: { people: { data: Person[] } }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Profile settings" />
             <div className="mt-3 flex justify-end p-3">
-                <Link href={route('person.create')}>
+                <Link href={route('people.create')}>
                     <Button variant="secondary">
                         <div className="flex items-center gap-1">
                             <Plus className="h-4 w-4" />
@@ -42,7 +42,7 @@ export default function Index({ people }: { people: { data: Person[] } }) {
                             <CardTitle>{person.name}</CardTitle>
                         </CardHeader>
                         <CardFooter className="flex justify-end gap-2">
-                            <Link href={route('person.edit', { person: person })}>
+                            <Link href={route('people.edit', { person: person })}>
                                 <Button variant="secondary">Editar</Button>
                             </Link>
                             <DeleteDialog

@@ -7,7 +7,7 @@ import { Award } from '@/types/award';
 import { Category } from '@/types/category';
 import { Language } from '@/types/language';
 import { Person } from '@/types/person';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
@@ -50,12 +50,12 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            post(route('historyArticle.update', historyArticle.data), {
+            post(route('history_articles.update', historyArticle.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('historyArticle.store'), {
+            post(route('history_articles.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });

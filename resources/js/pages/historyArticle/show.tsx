@@ -1,6 +1,6 @@
 import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 
 import { Link } from '@inertiajs/react';
 
@@ -24,7 +24,7 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                         <h1 className="font-semibold text-white md:text-3xl">{historyArticle.data.title}</h1>
                         <div className="flex gap-1">
                             {historyArticle.data.authors.map((author) => (
-                                <Link href={route('person-public.show', author.slug)} key={author.id}>
+                                <Link href={route('public.people.show', author)} key={author.id}>
                                     <span className="text-gray-100 hover:underline md:text-lg">{author.name}</span>
                                 </Link>
                             ))}
@@ -37,7 +37,7 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                     <div>
                         <p className="font-semibold">Autoria</p>
                         {/* {historyArticle.data.authors.map((author) => (
-                            <Link href={route('person-public.show', author.slug)} key={author.id}>
+                            <Link href={route('public.people.show', author)} key={author.id}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))} */}

@@ -10,7 +10,7 @@ import { Edit, Eye } from 'lucide-react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Críticas',
-        href: route('review.index'),
+        href: route('reviews.index'),
     },
 ];
 
@@ -21,7 +21,7 @@ export default function Index({ reviews }: { reviews: { data: Review[] } }) {
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-end">
-                        <Link href={route('review.create')} prefetch>
+                        <Link href={route('reviews.create')} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>
@@ -47,12 +47,12 @@ export default function Index({ reviews }: { reviews: { data: Review[] } }) {
                                             deleteRoute="review.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('review.edit', { review: review })}>
+                                        <Link href={route('reviews.edit', { review: review })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
                                         </Link>
-                                        <Link href={route('review.show', { id: review.uuid })}>
+                                        <Link href={route('public.reviews.show', { review })}>
                                             <Button variant={'secondary'}>
                                                 <Eye className="h-5 w-5" />
                                             </Button>

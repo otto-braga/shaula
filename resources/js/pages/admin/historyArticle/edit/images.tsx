@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { HistoryArticle } from '@/types/history-article';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Tabs from './tabs';
@@ -17,7 +17,7 @@ registerPlugin(FilePondPluginImagePreview);
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pessoas',
-        href: route('historyArticle.index'),
+        href: route('history_articles.index'),
     },
 ];
 
@@ -35,7 +35,7 @@ export default function Images({
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         console.log('data', data);
-        post(route('historyArticle.update.images', historyArticle.data), {
+        post(route('history_articles.update.images', historyArticle.data), {
             preserveScroll: true,
             preserveState: false,
         });

@@ -102,7 +102,7 @@ export default function Index({
                 </div>
                 <div className="col-span-2 divide-y">
                     {reviews.data.map((review) => (
-                        <Link href={route('review-public.show', { slug: review.slug })}>
+                        <Link href={route('public.reviews.show', review)}>
                             <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
                                 <div>
                                     <img

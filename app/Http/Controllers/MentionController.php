@@ -3,47 +3,51 @@
 namespace App\Http\Controllers;
 
 use App\Models\Mention;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class MentionController extends Controller
 {
-    protected function castMentioner($resource)
+    protected function castMentioner($instance)
     {
         foreach (config('mention_types') as $mentionType) {
-            if ($resource->mentioner_type === $mentionType['type']) {
-                return new $mentionType['resource']($resource->mentioner);
+            if ($instance->mentioner_type === $mentionType['type']) {
+                return new $mentionType['resource']($instance->mentioner);
             }
         }
 
         return null;
     }
 
-    public function mentioner($id)
+    public function getMentioner(Mention $mention)
     {
-        $mention = Mention::find($id);
-
-        return Response()->json([
+        return response()->json([
             'data' => $this->castMentioner($mention)
         ]);
     }
 
-    protected function castMentioned($resource)
+    protected function castMentioned($instance)
     {
         foreach (config('mention_types') as $mentionType) {
-            if ($resource->mentioned_type === $mentionType['type']) {
-                return new $mentionType['resource']($resource->mentioned);
+            if ($instance->mentioned_type === $mentionType['type']) {
+                return new $mentionType['resource']($instance->mentioned);
             }
         }
 
         return null;
     }
 
-    public function mentioned($id)
+    public function getMentioned(Mention $mention)
     {
-        $mention = Mention::find($id);
-
         return response()->json([
             'data' => $this->castMentioned($mention)
         ]);
+    }
+
+    public function show(Mention $mention)
+    {
+        $model = new $mention->mentioned_type;
+        $route_name = 'public.' . $model->getTable() . '.show';
+
+        return Redirect::route($route_name, $mention->mentioned);
     }
 }

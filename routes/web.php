@@ -1,5 +1,28 @@
 <?php
 
+// -----------------------------------------------------------------------------
+// NOMENCLATURA
+//
+// Rotas devem ter nome igual ao nome de sua respectiva tabela, seguindo a regra
+// de pluralização do Laravel.
+// Exemplos:
+//      /obras -> artworks
+//      /pessoas -> people
+//
+// Rotas públicas devem ter prefixo "public".
+// Exemplos:
+//      /obras -> public.artworks
+//      /pessoas -> public.people
+//
+// Parâmetros de rotas devem ser uma instância do modelo correspondente, quando
+// aplicável. Preferencialmente, o atributo "slug" deve ser utilizado para
+// identificar o modelo.
+// Exemplos:
+//      /obras/{artwork:slug} -> public.artworks.show
+//      /pessoas/{person:slug} -> public.people.show
+//
+// -----------------------------------------------------------------------------
+
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -11,6 +34,7 @@ use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MentionController;
+use App\Http\Controllers\Public\MentionPublicController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
@@ -23,23 +47,22 @@ use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+Route::name('public.')->group(function () {
+    Route::get('/', [HomePublicController::class, 'index'])->name('home');
 
-// Route::get('/', function () {
-//     return Inertia::render('welcome');
-// })->name('home');
+    Route::get('/critica', [ReviewPublicController::class, 'index'])->name('reviews.index');
+    Route::get('/critica/{review:slug}', [ReviewPublicController::class, 'show'])->name('reviews.show');
 
-Route::get('/', [HomePublicController::class, 'index'])->name('home');
+    Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('people.index');
+    Route::get('/pessoas/{person:slug}', [PersonPublicController::class, 'show'])->name('people.show');
 
-Route::get('/critica', [ReviewPublicController::class, 'index'])->name('review-public.index');
-Route::get('/critica/{slug}', [ReviewPublicController::class, 'show'])->name('review-public.show');
+    Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
-Route::get('/pessoas', [PersonPublicController::class, 'index'])->name('person-public.index');
-Route::get('/pessoas/{slug}', [PersonPublicController::class, 'show'])->name('person-public.show');
+    Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('public.historyArticles.index');
+    Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('public.historyArticles.show');
 
-Route::get('/obras/${slug}', [ArtworkPublicController::class, 'show'])->name('artwork-public.show');
-
-Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('history-article-public.index');
-Route::get('/historia/{slug}', [HistoryArticlePublicController::class, 'show'])->name('history-article-public.show');
+    Route::get('/mencao/{mention}', [MentionPublicController::class, 'show'])->name('mentions.show');
+});
 
 Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
@@ -104,67 +127,73 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
 
     // People
-    Route::get('/pessoas', [PersonController::class, 'index'])->name('person.index');
-    Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('person.create');
-    Route::post('/pessoas/store', [PersonController::class, 'store'])->name('person.store');
-    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('person.show');
-    Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('person.edit');
-    Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('person.update');
-    Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('person.edit.images');
-    Route::post('/pessoas/{person:slug}/update/images', [PersonController::class, 'updateImages'])->name('person.update.images');
-    Route::get('/pessoas/{person:slug}/editar/conteudo', [PersonController::class, 'editContent'])->name('person.edit.content');
-    Route::post('/pessoas/{person:slug}/update/content', [PersonController::class, 'updateContent'])->name('person.update.content');
-    Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('person.destroy');
+    Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
+    Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('people.create');
+    Route::post('/pessoas/store', [PersonController::class, 'store'])->name('people.store');
+    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
+    Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('people.edit');
+    Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('people.update');
+    Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('people.edit.images');
+    Route::post('/pessoas/{person:slug}/update/images', [PersonController::class, 'updateImages'])->name('people.update.images');
+    Route::get('/pessoas/{person:slug}/editar/conteudo', [PersonController::class, 'editContent'])->name('people.edit.content');
+    Route::post('/pessoas/{person:slug}/update/content', [PersonController::class, 'updateContent'])->name('people.update.content');
+    Route::get('/pessoas/{person:slug}/editar/mencoes', [PersonController::class, 'editMentions'])->name('people.edit.mentions');
+    Route::post('/pessoas/{person:slug}/update/mentions', [PersonController::class, 'updateMentions'])->name('people.update.mentions');
+    Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('people.destroy');
 
     // Artworks
-    Route::get('/obras', [ArtworkController::class, 'index'])->name('artwork.index');
-    Route::get('/obras/criar', [ArtworkController::class, 'create'])->name('artwork.create');
-    Route::post('/obras/store', [ArtworkController::class, 'store'])->name('artwork.store');
-    Route::get('/obras/{artwork:slug}', [ArtworkController::class, 'show'])->name('artwork.show');
-    Route::get('/obras/{artwork:slug}/editar', [ArtworkController::class, 'edit'])->name('artwork.edit');
-    Route::post('/obras/{artwork:slug}/update', [ArtworkController::class, 'update'])->name('artwork.update');
-    Route::get('/obras/{artwork:slug}/editar/pessoas', [ArtworkController::class, 'editPeople'])->name('artwork.edit.people');
-    Route::post('/obras/{artwork:slug}/update/people', [ArtworkController::class, 'updatePeople'])->name('artwork.update.people');
-    Route::get('/obras/{artwork:slug}/editar/imagens', [ArtworkController::class, 'editImages'])->name('artwork.edit.images');
-    Route::post('/obras/{artwork:slug}/update/images', [ArtworkController::class, 'updateImages'])->name('artwork.update.images');
-    Route::get('/obras/{artwork:slug}/editar/conteudo', [ArtworkController::class, 'editContent'])->name('artwork.edit.content');
-    Route::post('/obras/{artwork:slug}/update/content', [ArtworkController::class, 'updateContent'])->name('artwork.update.content');
-    Route::delete('/obras/{artwork:slug}/delete', [ArtworkController::class, 'destroy'])->name('artwork.destroy');
+    Route::get('/obras', [ArtworkController::class, 'index'])->name('artworks.index');
+    Route::get('/obras/criar', [ArtworkController::class, 'create'])->name('artworks.create');
+    Route::post('/obras/store', [ArtworkController::class, 'store'])->name('artworks.store');
+    Route::get('/obras/{artwork:slug}', [ArtworkController::class, 'show'])->name('artworks.show');
+    Route::get('/obras/{artwork:slug}/editar', [ArtworkController::class, 'edit'])->name('artworks.edit');
+    Route::post('/obras/{artwork:slug}/update', [ArtworkController::class, 'update'])->name('artworks.update');
+    Route::get('/obras/{artwork:slug}/editar/pessoas', [ArtworkController::class, 'editPeople'])->name('artworks.edit.people');
+    Route::post('/obras/{artwork:slug}/update/people', [ArtworkController::class, 'updatePeople'])->name('artworks.update.people');
+    Route::get('/obras/{artwork:slug}/editar/imagens', [ArtworkController::class, 'editImages'])->name('artworks.edit.images');
+    Route::post('/obras/{artwork:slug}/update/images', [ArtworkController::class, 'updateImages'])->name('artworks.update.images');
+    Route::get('/obras/{artwork:slug}/editar/conteudo', [ArtworkController::class, 'editContent'])->name('artworks.edit.content');
+    Route::post('/obras/{artwork:slug}/update/content', [ArtworkController::class, 'updateContent'])->name('artworks.update.content');
+    Route::get('/obras/{artwork:slug}/editar/mencoes', [ArtworkController::class, 'editMentions'])->name('artworks.edit.mentions');
+    Route::post('/obras/{artwork:slug}/update/mentions', [ArtworkController::class, 'updateMentions'])->name('artworks.update.mentions');
+    Route::delete('/obras/{artwork:slug}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
 
     // Reviews
-    Route::get('/criticas', [ReviewController::class, 'index'])->name('review.index');
-    Route::get('/criticas/criar', [ReviewController::class, 'create'])->name('review.create');
-    Route::post('/criticas/store', [ReviewController::class, 'store'])->name('review.store');
-    Route::get('/criticas/{review:slug}', [ReviewController::class, 'show'])->name('review.show');
-    Route::get('/criticas/{review:slug}/editar', [ReviewController::class, 'edit'])->name('review.edit');
-    Route::post('/criticas/{review:slug}/update', [ReviewController::class, 'update'])->name('review.update');
-    Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('review.edit.people');
-    Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('review.update.people');
-    Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('review.edit.images');
-    Route::post('/criticas/{review:slug}/update/imagens', [ReviewController::class, 'updateImages'])->name('review.update.images');
-    Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('review.edit.content');
-    Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('review.update.content');
-    Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('review.destroy');
-
-    ROute::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('review.edit.mentions');
-    Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('review.update.mentions');
+    Route::get('/criticas', [ReviewController::class, 'index'])->name('reviews.index');
+    Route::get('/criticas/criar', [ReviewController::class, 'create'])->name('reviews.create');
+    Route::post('/criticas/store', [ReviewController::class, 'store'])->name('reviews.store');
+    Route::get('/criticas/{review:slug}', [ReviewController::class, 'show'])->name('reviews.show');
+    Route::get('/criticas/{review:slug}/editar', [ReviewController::class, 'edit'])->name('reviews.edit');
+    Route::post('/criticas/{review:slug}/update', [ReviewController::class, 'update'])->name('reviews.update');
+    Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('reviews.edit.people');
+    Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('reviews.update.people');
+    Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('reviews.edit.images');
+    Route::post('/criticas/{review:slug}/update/imagens', [ReviewController::class, 'updateImages'])->name('reviews.update.images');
+    Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('reviews.edit.content');
+    Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('reviews.update.content');
+    Route::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('reviews.edit.mentions');
+    Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('reviews.update.mentions');
+    Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('reviews.destroy');
 
     // History Articles
-    Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('historyArticle.index');
-    Route::get('/historia-da-arte/criar', [HistoryArticleController::class, 'create'])->name('historyArticle.create');
-    Route::post('/historia-da-arte/store', [HistoryArticleController::class, 'store'])->name('historyArticle.store');
-    Route::get('/historia-da-arte/{historyArticle:slug}', [HistoryArticleController::class, 'show'])->name('historyArticle.show');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('historyArticle.edit');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('historyArticle.update');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('historyArticle.edit.images');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/imagens', [HistoryArticleController::class, 'updateImages'])->name('historyArticle.update.images');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('historyArticle.edit.content');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('historyArticle.update.content');
-    Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('historyArticle.destroy');
+    Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('history_articles.index');
+    Route::get('/historia-da-arte/criar', [HistoryArticleController::class, 'create'])->name('history_articles.create');
+    Route::post('/historia-da-arte/store', [HistoryArticleController::class, 'store'])->name('history_articles.store');
+    Route::get('/historia-da-arte/{historyArticle:slug}', [HistoryArticleController::class, 'show'])->name('history_articles.show');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('history_articles.edit');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('history_articles.update');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('history_articles.edit.images');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/imagens', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('history_articles.edit.content');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('history_articles.update.content');
+    Route::get('/historia-da-arte/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/mentions', [HistoryArticleController::class, 'updateMentions'])->name('history_articles.update.mentions');
+    Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
 
     // Mentions
-    Route::get('/mencoes/{id}/mentioner', [MentionController::class, 'mentioner'])->name('mentions.fetch.mentioner');
-    Route::get('/mencoes/{id}/mentioned', [MentionController::class, 'mentioned'])->name('mentions.fetch.mentioned');
+    Route::get('/mencoes/{mention}', [MentionController::class, 'show'])->name('mentions.show');
+    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
+    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
 });
 
 // require __DIR__ . '/settings.php';

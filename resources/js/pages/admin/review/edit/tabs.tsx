@@ -38,41 +38,41 @@ export default function Tabs({ review, processing, className }: TabsProps) {
                         <>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('review.edit', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit', { review: review?.data }) : ''}
                             >
                                 Dados
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.images') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('review.edit.images', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit.images', { review: review?.data }) : ''}
                             >
                                 Imagens
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit.content') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('review.edit.content', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit.content', { review: review?.data }) : ''}
                             >
                                 Conteúdo
                             </Link>
                             {/* <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit.people') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.people') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('review.edit.people', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit.people', { review: review?.data }) : ''}
                             >
                                 Pessoas
                             </Link> */}
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('review.edit.mentions') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.mentions') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('review.edit.mentions', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit.mentions', { review: review?.data }) : ''}
                             >
                                 Menções
                             </Link>

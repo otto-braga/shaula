@@ -9,15 +9,18 @@ use App\Http\Resources\PeriodResource;
 use App\Http\Resources\PersonResource;
 use App\Models\HistoryArticle;
 use App\Models\Category;
+use App\Models\Mention;
 use App\Models\Period;
 use App\Models\Person;
 use App\Traits\HasFile;
+use App\Traits\HasMention;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class HistoryArticleController extends Controller
 {
-    use HasFile;
+    use HasFile, HasMention;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -72,7 +75,7 @@ class HistoryArticleController extends Controller
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
 
         session()->flash('success', true);
-        return redirect()->route('historyArticle.edit', $historyArticle->slug);
+        return redirect()->route('history_articles.edit', $historyArticle->slug);
     }
 
     // -------------------------------------------------------------------------
@@ -186,6 +189,38 @@ class HistoryArticleController extends Controller
             session()->flash('success', false);
             return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT MENTIONS
+
+    public function editMentions(HistoryArticle $historyArticle)
+    {
+        $historyArticle->load('mentioned');
+
+        $mentionQueries = $this->getMentionQueries();
+
+        return Inertia::render('admin/historyArticle/edit/mentions', [
+            'historyArticle' => new HistoryArticleResource($historyArticle),
+            'mention_queries' => new JsonResource($mentionQueries),
+        ]);
+    }
+
+    public function updateMentions(Request $request, HistoryArticle $historyArticle)
+    {
+        $historyArticle->mentioned()->delete();
+
+        foreach ($request->mentions as $mention) {
+            Mention::create([
+                'mentioned_id' => $mention['mentioned_id'],
+                'mentioned_type' => $mention['mentioned_type'],
+                'mentioner_id' => $historyArticle->id,
+                'mentioner_type' => $historyArticle::class
+            ]);
+        }
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------

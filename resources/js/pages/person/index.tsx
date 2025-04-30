@@ -27,7 +27,7 @@ export default function Index({ people, filters }: { people: PaginatedData<Perso
                 </form>
                 <div className="grid grid-cols-4 gap-4">
                     {people.data.map((person) => (
-                        <Link key={person.id} href={route('person-public.show', person.slug)} className="relative">
+                        <Link key={person.id} href={route('public.people.show', person)} className="relative">
                             <div>
                                 <div>
                                     <img
