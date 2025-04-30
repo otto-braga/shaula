@@ -75,7 +75,7 @@ export default function Index({
         }
     };
 
-    const fetchData = async (route: string = '', search: string = '', setFunction: (test: MultiValue<Option>) => void) => {
+    const fetchData = async (route: string = '', search: string = '', setterFunction: (options: MultiValue<Option>) => void) => {
         if (search.length < 1) {
             return;
         }
@@ -94,7 +94,7 @@ export default function Index({
             .then((res) => res.json())
             .then((data) => {
                 response = data;
-                setFunction(
+                setterFunction(
                     response.map((object: any) => ({
                         value: object.id,
                         label: object.name ?? object.title,
@@ -107,35 +107,6 @@ export default function Index({
 
     const [availablePeople, setAvailablePeople] = useState<MultiValue<Option>>([]);
     const [selectedPeople, setSelectedPeople] = useState<MultiValue<Option>>(artwork.data.authors?.map(author => ({ value: author.id, label: author.name })) ?? []);
-
-    const fetchPeople = async (search: string = '') => {
-        if (search.length < 1) {
-            return;
-        }
-
-        let response;
-
-        fetch(route('people.fetch', { search: search }),
-            {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                },
-            })
-            .then((res) => res.json())
-            .then((data) => {
-                response = data as Person[];
-                console.log('response', response);
-                setAvailablePeople(
-                    response.map((person) => ({
-                        value: person.id,
-                        label: person.name,
-                    }) as Option) as MultiValue<Option>
-                );
-            });
-        return response;
-    };
 
     const onPeopleChange = (options: MultiValue<Option>) => {
         setSelectedPeople(options);
@@ -173,6 +144,10 @@ export default function Index({
                                     onChange={onPeopleChange}
                                     styles={handleReactSelectStyling()}
                                     onInputChange={onPeopleInputChange}
+                                    isLoading={processing}
+                                    loadingMessage={() => 'Carregando... Digite para buscar.'}
+                                    noOptionsMessage={() => 'Nenhum cadastro encontrado. Digite para buscar.'}
+                                    placeholder="Digite para buscar..."
                                 />
                                 <InputError className="mt-2" message={errors.authors_ids} />
                             </div>

@@ -40,7 +40,6 @@ class PersonController extends Controller
     public function fetch(Request $request)
     {
         $people = Person::fetchSome($request->search)->get();
-
         return response()->json(PersonResource::collection($people));
     }
 
