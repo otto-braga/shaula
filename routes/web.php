@@ -27,6 +27,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\AwardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\GenderController;
@@ -67,7 +68,7 @@ Route::name('public.')->group(function () {
 Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
-    Route::get('/dashboard', function () {
+    Route::get('/', function () {
         return Inertia::render('admin/dashboard');
     })->name('dashboard');
 
@@ -85,52 +86,65 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     })->name('appearance');
 
     // Tags
-    Route::get('tags', [TagController::class, 'index'])->name('tags.index');
-    Route::post('tags', [TagController::class, 'store'])->name('tags.store');
-    Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
-    Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
+    // Route::get('tags', [TagController::class, 'index'])->name('tags.index');
+    // Route::post('tags', [TagController::class, 'store'])->name('tags.store');
+    // Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
+    // Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
     // Periods (Períodos históricos)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
     Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
     Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
     Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
     // Categories
     Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
     Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
     Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('categorias/fetch/options', [CategoryController::class, 'fetchSelectOptions'])->name('categories.fetch.options');
 
     // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
     Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
     Route::put('generos/{gender}', [GenderController::class, 'update'])->name('genders.update');
     Route::delete('generos/{gender}', [GenderController::class, 'destroy'])->name('genders.destroy');
+    Route::get('generos/fetch/options', [GenderController::class, 'fetchSelectOptions'])->name('genders.fetch.options');
+
+    // Awards
+    Route::get('premios', [AwardController::class, 'index'])->name('awards.index');
+    Route::post('premios', [AwardController::class, 'store'])->name('awards.store');
+    Route::put('premios/{award}', [AwardController::class, 'update'])->name('awards.update');
+    Route::delete('premios/{award}', [AwardController::class, 'destroy'])->name('awards.destroy');
+    Route::get('premios/fetch/options', [AwardController::class, 'fetchSelectOptions'])->name('awards.fetch.options');
 
     // Actitivies
     Route::get('atividades', [ActivityController::class, 'index'])->name('activities.index');
     Route::post('atividades', [ActivityController::class, 'store'])->name('activities.store');
     Route::put('atividades/{activity}', [ActivityController::class, 'update'])->name('activities.update');
     Route::delete('atividades/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+    Route::get('atividades/fetch/options', [ActivityController::class, 'fetchSelectOptions'])->name('activities.fetch.options');
 
     // Cities
     Route::get('cidades', [CityController::class, 'index'])->name('cities.index');
     Route::post('cidades', [CityController::class, 'store'])->name('cities.store');
     Route::put('cidades/{city}', [CityController::class, 'update'])->name('cities.update');
     Route::delete('cidades/{city}', [CityController::class, 'destroy'])->name('cities.destroy');
+    Route::get('cidades/fetch/options', [CityController::class, 'fetchSelectOptions'])->name('cities.fetch.options');
 
     // Languages
     Route::get('linguagens', [LanguageController::class, 'index'])->name('languages.index');
     Route::post('linguagens', [LanguageController::class, 'store'])->name('languages.store');
     Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
     Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
+    Route::get('linguagens/fetch/options', [LanguageController::class, 'fetchSelectOptions'])->name('languages.fetch.options');
 
     // People
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
     Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('people.create');
     Route::post('/pessoas/store', [PersonController::class, 'store'])->name('people.store');
-    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
+    // Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
     Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('people.edit');
     Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('people.update');
     Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('people.edit.images');
@@ -140,6 +154,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/pessoas/{person:slug}/editar/mencoes', [PersonController::class, 'editMentions'])->name('people.edit.mentions');
     Route::post('/pessoas/{person:slug}/update/mentions', [PersonController::class, 'updateMentions'])->name('people.update.mentions');
     Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('people.destroy');
+    Route::get('/pessoas/fetch/options', [PersonController::class, 'fetchSelectOptions'])->name('people.fetch.options');
 
     // Artworks
     Route::get('/obras', [ArtworkController::class, 'index'])->name('artworks.index');
@@ -157,6 +172,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/obras/{artwork:slug}/editar/mencoes', [ArtworkController::class, 'editMentions'])->name('artworks.edit.mentions');
     Route::post('/obras/{artwork:slug}/update/mentions', [ArtworkController::class, 'updateMentions'])->name('artworks.update.mentions');
     Route::delete('/obras/{artwork:slug}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
+    Route::get('/obras/fetch/options', [ArtworkController::class, 'fetchSelectOptions'])->name('artworks.fetch.options');
 
     // Reviews
     Route::get('/criticas', [ReviewController::class, 'index'])->name('reviews.index');
@@ -174,6 +190,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('reviews.edit.mentions');
     Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('reviews.update.mentions');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+    Route::get('/criticas/fetch/options', [ReviewController::class, 'fetchSelectOptions'])->name('reviews.fetch.options');
 
     // History Articles
     Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('history_articles.index');
@@ -189,6 +206,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/historia-da-arte/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
     Route::post('/historia-da-arte/{historyArticle:slug}/update/mentions', [HistoryArticleController::class, 'updateMentions'])->name('history_articles.update.mentions');
     Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
+    Route::get('/historia-da-arte/fetch/options', [HistoryArticleController::class, 'fetchSelectOptions'])->name('history_articles.fetch.options');
 
     // Mentions
     Route::get('/mencoes/{mention}', [MentionController::class, 'show'])->name('mentions.show');

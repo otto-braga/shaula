@@ -223,4 +223,13 @@ class ReviewController extends Controller
         session()->flash('success', true);
         return redirect()->back();
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Review::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

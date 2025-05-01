@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasFetching;
 use App\Traits\HasLabel;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Artwork extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching;
 
     protected $table = 'artworks';
 
@@ -46,7 +47,6 @@ class Artwork extends Model
     public function activities()
     {
         return $this->people()->get()->pluck('pivot.activity_id')
-        ->where('activity_id', '!=', 1)
         ->unique()
         ->map(function ($activity_id) {
             return Activity::find($activity_id);

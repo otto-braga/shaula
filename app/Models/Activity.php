@@ -2,27 +2,17 @@
 
 namespace App\Models;
 
+use App\Traits\HasFetching;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Activity extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFetching;
 
     protected $table = 'activities';
 
     protected $fillable = [
         'name',
     ];
-
-    // public function people(): BelongsToMany
-    // {
-    //     return $this->belongsToMany(Person::class, 'activity_person', 'activity_id', 'person_id');
-    // }
-
-    // public function peopleThroughArtworks()
-    // {
-    //     return $this->belongsToMany(Person::class, 'person_artwork', 'activity_id', 'person_id');
-    // }
 }

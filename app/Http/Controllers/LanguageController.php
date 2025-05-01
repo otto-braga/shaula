@@ -59,4 +59,13 @@ class LanguageController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar gender.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Language::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

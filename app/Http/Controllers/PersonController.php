@@ -34,10 +34,21 @@ class PersonController extends Controller
         ]);
     }
 
-    public function show(Person $person)
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
     {
-        //
+        $options = Person::fetchAsSelectOption($request->search);
+        return response()->json($options);
     }
+
+    // -------------------------------------------------------------------------
+    // SHOW
+
+    // public function show(Person $person)
+    // {
+    // }
 
     // -------------------------------------------------------------------------
     // CREATE

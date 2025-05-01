@@ -59,4 +59,13 @@ class GenderController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar identidade de gênero.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Gender::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

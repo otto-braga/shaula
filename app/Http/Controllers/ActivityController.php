@@ -59,4 +59,13 @@ class ActivityController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar atividade.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Activity::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

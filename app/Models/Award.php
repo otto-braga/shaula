@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Traits\HasFetching;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Award extends Model
 {
-    use HasFactory;
+    use HasFactory, HasFetching;
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
 
     protected $table = 'awards';
 
@@ -16,14 +21,4 @@ class Award extends Model
         'name',
         'promoter',
     ];
-
-    // public function works(): MorphToMany
-    // {
-    //     return $this->morphedByMany(Work::class, 'awardable');
-    // }
-
-    // public function people(): MorphToMany
-    // {
-    //     return $this->morphedByMany(Person::class, 'awardable');
-    // }
 }
