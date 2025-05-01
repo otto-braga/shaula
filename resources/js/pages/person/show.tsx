@@ -17,11 +17,10 @@ import 'lightgallery/scss/lightgallery.scss';
 import 'keen-slider/keen-slider.min.css';
 
 export default function Index({ person }: { person: { data: Person } }) {
-    console.log(person);
     return (
         <PublicLayout head={person.data.name}>
             {/* relative e object-cover para todos ficarem do mesmo tamanho. */}
-            <div className="grid divide-x-1 p-4 md:grid-cols-5 md:gap-6 md:p-8">
+            <div className="grid p-4 md:grid-cols-5 md:gap-6 md:divide-x-1 md:p-8">
                 {/* foto e info */}
                 <section className="md:pr-6">
                     <div className="md:sticky md:top-24">
@@ -32,10 +31,10 @@ export default function Index({ person }: { person: { data: Person } }) {
                                 className="aspect-square w-full object-cover"
                             />
                         </div>
-                        <div className="mt-6">
-                            <h2 className="text-xl font-medium">{person.data.name}</h2>
+                        <div className="mt-3 md:mt-6">
+                            <h2 className="text-2xl font-medium">{person.data.name}</h2>
                         </div>
-                        <div className="mt-6 space-y-2">
+                        <div className="mt-3 space-y-2">
                             {person.data.cities.length > 0 && (
                                 <div>
                                     <p className="font-medium">Cidades</p>
@@ -58,14 +57,14 @@ export default function Index({ person }: { person: { data: Person } }) {
                             )}
                             <div>
                                 <p className="font-medium">Links</p>
-                                <p>https://www.jotamombaca.com/</p>
-                                <p>https://instagram.com/jotamombaça</p>
+                                <p className="truncate">https://www.jotamombaca.com/</p>
+                                <p className="truncate">https://instagram.com/jotamombaça</p>
                             </div>
                         </div>
                     </div>
                 </section>
-                {/* vazio */}
-                <section className="md:col-span-2">
+                e{/* bio e crono */}
+                <section className="mt-6 border-t pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 md:pr-4">
                     <div className="md:sticky md:top-24">
                         <div className="space-y-1">
                             <h2 className="font-medium">Biografia</h2>
@@ -78,7 +77,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                     </div>
                 </section>
                 {/* 2cols com sobre e producoes */}
-                <section className="space-y-6 divide-y pb-3 md:col-span-2">
+                <section className="space-y-6 divide-y border-t pt-6 pb-3 md:col-span-2 md:border-0 md:pt-0">
                     {person.data.reviews.length > 0 && (
                         <div className="pb-6">
                             <h2 className="mb-6 text-xl font-medium">CRÍTICAS</h2>
