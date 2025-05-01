@@ -63,7 +63,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                         </div>
                     </div>
                 </section>
-                e{/* bio e crono */}
+                {/* bio e crono */}
                 <section className="mt-6 border-t pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 md:pr-4">
                     <div className="md:sticky md:top-24">
                         <div className="space-y-1">
