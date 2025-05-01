@@ -68,4 +68,13 @@ class PeriodController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar período.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Period::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

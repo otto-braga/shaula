@@ -5,23 +5,14 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
-use App\Http\Resources\AwardResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\LanguageResource;
 use App\Http\Resources\PersonResource;
-use App\Http\Resources\PeriodResource;
 use App\Models\Activity;
 use App\Models\Artwork;
-use App\Models\Award;
-use App\Models\Category;
-use App\Models\Language;
 use App\Models\Mention;
 use App\Models\Person;
-use App\Models\Period;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
@@ -52,22 +43,7 @@ class ArtworkController extends Controller
 
     public function create()
     {
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
-
-        $languages = Language::all();
-        $awards = Award::all();
-        $categories = Category::all();
-        $periods = Period::all();
-
-        return Inertia::render('admin/artwork/edit/index', [
-            'people' => PersonResource::collection($people),
-            'languages' => LanguageResource::collection($languages),
-            'awards' => AwardResource::collection($awards),
-            'categories' => CategoryResource::collection($categories),
-            'periods' => PeriodResource::collection($periods), // Pass periods to the view
-        ]);
+        return Inertia::render('admin/artwork/edit/index');
     }
 
     public function store(Request $request)
@@ -76,16 +52,19 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
+        $artwork->update($dataForm);
+
         $artwork->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
-        $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
-        $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
-        $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $artwork->languages()->sync($request->languages_ids);
+        $artwork->awards()->sync($request->awards_ids);
+        $artwork->categories()->sync($request->categories_ids);
+        $artwork->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
-        return redirect()->route('artworks.edit', $artwork->id);
+        return redirect()->route('artworks.edit', $artwork);
     }
 
     // -------------------------------------------------------------------------
@@ -95,22 +74,8 @@ class ArtworkController extends Controller
     {
         $artwork->load('authors');
 
-        // $people = Person::query()
-        //     ->orderBy('name')
-        //     ->get();
-
-        $languages = Language::all();
-        $awards = Award::all();
-        $categories = Category::all();
-        $periods = Period::all();
-
         return Inertia::render('admin/artwork/edit/index', [
             'artwork' => new ArtworkResource($artwork),
-            // 'people' => PersonResource::collection($people),
-            'languages' => LanguageResource::collection($languages),
-            'awards' => AwardResource::collection($awards),
-            'categories' => CategoryResource::collection($categories),
-            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
@@ -124,9 +89,10 @@ class ArtworkController extends Controller
             $request->authors_ids,
             ['is_author' => true]
         );
-        $artwork->languages()->sync(Arr::pluck($request->languages, 'id'));
-        $artwork->awards()->sync(Arr::pluck($request->awards, 'id'));
-        $artwork->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $artwork->languages()->sync($request->languages_ids);
+        $artwork->awards()->sync($request->awards_ids);
+        $artwork->categories()->sync($request->categories_ids);
+        $artwork->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
         return redirect()->back();
@@ -140,74 +106,32 @@ class ArtworkController extends Controller
         $artwork->load('people');
 
         $activities = Activity::query()
-            ->where('id', '!=', 1)
-            ->get();
-
-        $people = Person::query()
+            ->take(5)
             ->get();
 
         return Inertia::render('admin/artwork/edit/people', [
             'artwork' => new ArtworkResource($artwork),
             'activities' => ActivityResource::collection($activities),
-            'people' => PersonResource::collection($people),
         ]);
     }
 
     public function updatePeople(Request $request, Artwork $artwork)
     {
-        $activities = $request->activities;
+        $activitiesPeople = $request->activitiesPeople;
 
-        if ($activities) {
-            foreach ($activities as $activity) {
-                if ($activity['people'] === null || count($activity['people']) < 1) {
-                    $artwork->people()
-                        ->wherePivot('activity_id', $activity['id'])
-                        ->detach();
-                    continue;
-                }
+        if ($activitiesPeople) {
+            $artwork->people()->detach();
 
-                foreach ($activity['people'] as $person) {
-                    if (in_array($person['id'], $artwork->people->pluck('id')->toArray())) {
-                        if (
-                            !in_array(
-                                $activity['id'],
-                                $artwork->people->where('id', $person['id'])
-                                    ->pluck('pivot.activity_id')->toArray()
-                            )
-                        ) {
-                            $artwork->people()->attach(
-                                $person['id'],
-                                ['activity_id' => $activity['id']]
-                            );
-                        }
-                    } else {
-                        $artwork->people()->attach(
-                            $person['id'],
-                            ['activity_id' => $activity['id']]
-                        );
-                    }
-                }
+            foreach ($activitiesPeople as $activityPerson) {
+                $artwork->people()->attach(
+                    $activityPerson['person_id'],
+                    ['activity_id' => $activityPerson['activity_id']]
+                );
             }
 
-            $artwork->people()
-                ->wherePivotNotIn('activity_id', collect($activities)->pluck('id'))
-                ->detach();
-
-            foreach ($artwork->people as $person) {
-                if (
-                    !in_array(
-                        $person->id,
-                        collect($activities)->pluck('people')
-                            ->flatten(1)->pluck('id')->toArray()
-                    )
-                ) {
-                    $artwork->people()->detach($person->id);
-                }
-            }
+            session()->flash('success', true);
+            return redirect()->back();
         }
-
-        session()->flash('success', true);
-        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------
@@ -326,4 +250,12 @@ class ArtworkController extends Controller
         return redirect()->back();
     }
 
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Artwork::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

@@ -61,4 +61,13 @@ class CategoryController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar categoria.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Category::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

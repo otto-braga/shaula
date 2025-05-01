@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetch;
+use App\Traits\HasFetching;
 use App\Traits\HasLabel;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetch;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching;
 
     protected $table = 'people';
 

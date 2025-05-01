@@ -1,7 +1,9 @@
+import { Person } from "./person";
 
 export type Activity = {
     id: number;
     name: string;
+    person: Person;
 }
 
 // export function activityLabel(activity: Activity) {

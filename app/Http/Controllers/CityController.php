@@ -59,4 +59,13 @@ class CityController extends Controller
             return redirect()->back()->with('error', 'Erro ao deletar cidade.');
         }
     }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = City::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 }

@@ -37,10 +37,10 @@ class PersonController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetch(Request $request)
+    public function fetchSelectOptions(Request $request)
     {
-        $people = Person::fetchSome($request->search)->get();
-        return response()->json(PersonResource::collection($people));
+        $options = Person::fetchAsSelectOption($request->search);
+        return response()->json($options);
     }
 
     // -------------------------------------------------------------------------

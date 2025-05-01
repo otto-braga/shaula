@@ -1,14 +1,14 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Activity } from '@/types/activity';
-import { Person, personLabel } from '@/types/person';
+import { Label } from '@/components/ui/label';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { Trash } from 'lucide-react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import Select from 'react-select';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
+import { FormEventHandler, useState } from 'react';
 import Tabs from './tabs';
+import { Option } from '@/components/select/lazyLoadingMultiSelect';
+import { LazyLoadingSelect } from '@/components/select/lazyLoadingSelect';
+import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -17,20 +17,21 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type PersonInActivity = { id: number; name: string };
-type ActivityWithPeople = { id: number; name: string; people: PersonInActivity[] };
+type ActivityPerson = {
+    activity_id: number; activity_name: string; person_id: number; person_name: string; };
 
 export default function People({
     artwork,
-    activities,
-    people,
 }: {
     artwork: { data: Artwork };
-    activities?: { data: Activity[] };
-    people?: { data: Person[] };
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        activities: Array<ActivityWithPeople>(),
+        activitiesPeople: artwork.data.people.map((person) => ({
+            activity_id: person.activity.id,
+            activity_name: person.activity.name,
+            person_id: person.id,
+            person_name: person.name,
+        })) as ActivityPerson[],
     });
 
     const submit: FormEventHandler = (e) => {
@@ -41,31 +42,48 @@ export default function People({
         });
     };
 
-    const [availableActivities, setAvailableActivities] = useState<Activity[]>(activities?.data || []);
-    const [loadedActivities, setLoadedActivities] = useState<ActivityWithPeople[]>(
-        artwork.data.people
-            .map((person) => ({
-                id: person.activity.id,
-                name: person.activity.name,
-                people: artwork.data.people.filter((p) => p.activity.id == person.activity.id).map((p) => ({ id: p.id, name: p.name })),
-            }))
-            .flat()
-            .filter((activity, index, self) => self.findIndex((a) => a.id === activity.id) === index),
-    );
-    const [selectedActivities, setSelectedActivities] = useState<ActivityWithPeople[]>([]);
+    const [selectedPerson, setSelectedPerson] = useState<Option | null>(null);
+    const [selectedActivity, setSelectedActivity] = useState<Option | null>(null);
 
-    useEffect(() => {
-        setSelectedActivities(loadedActivities);
-        setAvailableActivities(
-            availableActivities.filter((activity) => !loadedActivities.map((loadedActivity) => loadedActivity.id).includes(activity.id)),
-        );
-    }, [loadedActivities]);
+    const onAddPersonActivity = () => {
+        if (selectedPerson && selectedActivity) {
+            const existingPersonActivity = data.activitiesPeople.find((pa) => (
+                pa.person_id === selectedPerson.value && pa.activity_id === selectedActivity.value
+            ));
 
-    useEffect(() => {
-        setData('activities', selectedActivities);
-    }, [selectedActivities]);
+            if (existingPersonActivity) {
+                return;
+            }
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
+            setData('activitiesPeople', [
+                ...data.activitiesPeople,
+                {
+                    activity_id: selectedActivity.value,
+                    activity_name: selectedActivity.label,
+                    person_id: selectedPerson.value,
+                    person_name: selectedPerson.label,
+                },
+            ]);
+        }
+    };
+
+    const onRemovePersonActivity = (personActivity: ActivityPerson) => {
+        setData('activitiesPeople', data.activitiesPeople.filter((pa) => (
+            pa.person_id !== personActivity.person_id || pa.activity_id !== personActivity.activity_id
+        )));
+    }
+
+    const getActivitiesList = (activitiesPeople: ActivityPerson[]) => {
+        const uniqueActivities = activitiesPeople.reduce((acc: ActivityPerson[], current) => {
+            const x = acc.find((item) => item.activity_id === current.activity_id);
+            if (!x) {
+                return acc.concat([current]);
+            } else {
+                return acc;
+            }
+        }, []);
+        return uniqueActivities;
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -77,70 +95,55 @@ export default function People({
                             <Tabs artwork={artwork} processing={processing} />
 
                             <div>
-                                <Select
-                                    id="activities_ids"
-                                    options={availableActivities.map((activity) => ({ value: activity.id, label: activity.name }))}
-                                    onChange={(option) => {
-                                        setSelectedActivities(
-                                            selectedActivities.concat(
-                                                availableActivities
-                                                    .filter((activity) => option?.value == activity.id)
-                                                    .map((activity) => ({ id: activity.id, name: activity.name, people: [] })),
-                                            ),
-                                        );
-                                        setAvailableActivities(availableActivities.filter((activity) => option?.value != activity.id));
+                                <Label>Pessoa</Label>
+                                <LazyLoadingSelect
+                                    initialOption={{ value: 0, label: '' }}
+                                    routeName="people.fetch.options"
+                                    setterFunction={(option) => {
+                                        setSelectedPerson(option);
                                     }}
-                                    styles={handleReactSelectStyling()}
                                 />
-                            </div>
 
-                            {selectedActivities.map((activity) => (
-                                <div key={activity.id}>
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSelectedActivities(
-                                                selectedActivities.filter((selectedActivity) => selectedActivity.id != activity.id),
-                                            );
-                                            setAvailableActivities(availableActivities.concat(activity));
-                                        }}
-                                    >
-                                        <Trash className="h-4 w-4 text-red-500" />
-                                    </button>
-                                    <span>{activity.name}</span>
-                                    <div>
-                                        <Select
-                                            id="people_ids"
-                                            isMulti
-                                            options={availablePeople
-                                                .filter((person) => !activity.people.map((person) => person.id).includes(person.id))
-                                                .map((person) => ({ value: person.id, label: personLabel(person) }))}
-                                            value={activity.people.map((person) => ({
-                                                value: person.id,
-                                                label: personLabel(
-                                                    availablePeople.find((availablePerson) => availablePerson.id == person.id) as Person,
-                                                ),
-                                            }))}
-                                            onChange={(options) => {
-                                                setSelectedActivities(
-                                                    selectedActivities.map((selectedActivity) => {
-                                                        if (selectedActivity.id == activity.id) {
-                                                            return {
-                                                                ...selectedActivity,
-                                                                people: availablePeople
-                                                                    .filter((person) => options.map((option) => option.value).includes(person.id))
-                                                                    .map((person) => ({ id: person.id, name: person.name })),
-                                                            };
-                                                        }
-                                                        return selectedActivity;
-                                                    }),
-                                                );
-                                            }}
-                                            styles={handleReactSelectStyling()}
-                                        />
-                                    </div>
+                                <Label>Atividade</Label>
+                                <LazyLoadingSelect
+                                    initialOption={{ value: 0, label: '' }}
+                                    routeName="activities.fetch.options"
+                                    setterFunction={(option) => {
+                                        setSelectedActivity(option);
+                                    }}
+                                />
+
+                                <Button
+                                    type="button"
+                                    variant="secondary"
+                                    className="mt-2"
+                                    onClick={onAddPersonActivity}
+                                >
+                                    Adicionar
+                                </Button>
+
+                                <div className="mt-4">
+                                    {getActivitiesList(data.activitiesPeople).map((activity) => (
+                                        <div key={activity.activity_id} className="flex flex-col gap-2 mb-4">
+                                            <Label className="text-lg">{activity.activity_name}</Label>
+                                            <div className="flex items-center gap-2">
+                                                {data.activitiesPeople.filter((pa) => pa.activity_id === activity.activity_id).map((person) => (
+                                                    <div key={person.person_id} className="flex items-center gap-2 border p-2 rounded-md bg-gray-100 dark:bg-gray-700">
+                                                        <span>{person.person_name}</span>
+                                                        <Button
+                                                            type="button"
+                                                            variant="destructive"
+                                                            onClick={() => onRemovePersonActivity(person)}
+                                                        >
+                                                            <Trash size={16} />
+                                                        </Button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </form>
                     </div>
                 </div>
