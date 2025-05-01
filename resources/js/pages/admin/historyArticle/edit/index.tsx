@@ -3,17 +3,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Award } from '@/types/award';
 import { Category } from '@/types/category';
-import { Language } from '@/types/language';
-import { Person } from '@/types/person';
 import { HistoryArticle } from '@/types/historyArticle';
+import { Period } from '@/types/period';
+import { Person } from '@/types/person';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
-import { Period } from '@/types/period';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -40,7 +38,9 @@ export default function Index({
         date: historyArticle ? historyArticle.data.date : '',
         authors: historyArticle ? historyArticle.data.authors : [],
 
-        categories: historyArticle ? historyArticle.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name })) : [],
+        categories: historyArticle
+            ? historyArticle.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name }))
+            : [],
         periods: historyArticle ? historyArticle.data.periods?.map((period) => ({ id: period.id, name: period.name, label: period.name })) : [],
     });
 

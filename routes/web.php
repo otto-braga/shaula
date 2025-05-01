@@ -58,8 +58,8 @@ Route::name('public.')->group(function () {
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
-    Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('public.historyArticles.index');
-    Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('public.historyArticles.show');
+    Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
+    Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
 
     Route::get('/mencao/{mention}', [MentionPublicController::class, 'show'])->name('mentions.show');
 });

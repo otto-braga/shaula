@@ -28,8 +28,10 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
         clearErrors,
     } = useForm({
         name: period ? period.name : '',
-        timespan: period ? period.timespan : '',
-        about: period ? period.about : '',
+        // timespan: period ? period.timespan : '',
+        start_date: period ? period.start_date : '',
+        end_date: period ? period.end_date : '',
+        content: period ? period.content : '',
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -61,7 +63,7 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
     };
 
     function onContentInput() {
-        setData('about', editorRef?.current?.getContent() ?? String());
+        setData('content', editorRef?.current?.getContent() ?? String());
     }
 
     const editorRef = useRef<TinyMCEEditor | null>(null);
@@ -103,29 +105,46 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
                     </div>
 
                     <div className="grid gap-2">
-                        <Label htmlFor="timespan" className="">
-                            Período de tempo
+                        <Label htmlFor="start_date" className="">
+                            Data de início
                         </Label>
 
                         <Input
-                            id="timespan"
+                            id="start_date"
                             type="text"
-                            name="timespan"
-                            value={data.timespan}
-                            onChange={(e) => setData('timespan', e.target.value)}
+                            name="start_date"
+                            value={data.start_date}
+                            onChange={(e) => setData('start_date', e.target.value)}
                             placeholder="Séc. XV - Séc. XVI"
                         />
 
-                        <InputError message={errors.timespan} />
+                        <InputError message={errors.start_date} />
+                    </div>
+
+                    <div className="grid gap-2">
+                        <Label htmlFor="end_date" className="">
+                            Data final
+                        </Label>
+
+                        <Input
+                            id="end_date"
+                            type="text"
+                            name="end_date"
+                            value={data.end_date}
+                            onChange={(e) => setData('end_date', e.target.value)}
+                            placeholder="Séc. XV - Séc. XVI"
+                        />
+
+                        <InputError message={errors.end_date} />
                     </div>
 
                     <div>
-                        <Label htmlFor="name">Biografia</Label>
+                        <Label htmlFor="name">Sobre</Label>
                         <Editor
                             tinymceScriptSrc="/tinymce/tinymce.min.js"
                             licenseKey="gpl"
                             onInit={(_evt, editor) => (editorRef.current = editor)}
-                            initialValue={(period?.about as string) || String()}
+                            initialValue={(period?.content as string) || String()}
                             init={{
                                 plugins: [
                                     'advlist',
@@ -186,7 +205,7 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
                             }}
                             onEditorChange={onContentInput}
                         />
-                        <InputError className="mt-2" message={errors.about} />
+                        <InputError className="mt-2" message={errors.content} />
                     </div>
 
                     <DialogFooter className="gap-2">

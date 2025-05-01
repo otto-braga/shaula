@@ -22,15 +22,17 @@ class PeriodController extends Controller
     {
         $request->validate([
             'name' => 'required|unique:periods',
-            'timespan' => '',
-            'about' => 'required',
+            'start_date' => '',
+            'end_data' => '',
+            'content' => 'required',
         ]);
 
         try {
             Period::create([
                 'name' => $request->name,
-                'timespan' => $request->timespan,
-                'about' => $request->about,
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'content' => $request->content,
             ]);
             return redirect()->back()->with('success', 'Período criada com sucesso.');
         } catch (\Exception $e) {
@@ -42,19 +44,22 @@ class PeriodController extends Controller
     public function update(Period $period)
     {
         request()->validate([
-            'name' => 'required|unique:periods',
-            'timespan' => '',
-            'about' => 'required',
+            'name' => 'required|unique:periods,name,' . $period->id,
+            'start_date' => '',
+            'end_data' => '',
+            'content' => 'required',
         ]);
 
         try {
             $period->update([
                 'name' => request('name'),
-                'timespan' => request('timespan'),
-                'about' => request('about'),
+                'start_date' => request('start_date'),
+                'end_date' => request('end_date'),
+                'content' => request('content'),
             ]);
             return redirect()->back()->with('success', 'Período atualizada com sucesso.');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             return redirect()->back()->with('error', 'Erro ao atualizar período.');
         }
     }

@@ -15,7 +15,7 @@ class HistoryArticlePublicController extends Controller
     public function index()
     {
         //get the last 3 reviews
-        $historyArticles = HistoryArticle::latest()->take(3)->get();
+        $historyArticles = HistoryArticle::get();
 
         return Inertia::render('historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),

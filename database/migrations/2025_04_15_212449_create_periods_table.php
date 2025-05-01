@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
 
+            $table->string('content')->nullable();
+
             $table->timestamps();
         });
     }

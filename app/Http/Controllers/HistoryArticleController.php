@@ -28,7 +28,6 @@ class HistoryArticleController extends Controller
     public function index()
     {
         $historyArticles = HistoryArticle::query()
-            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('admin/historyArticle/index', [
@@ -73,6 +72,7 @@ class HistoryArticleController extends Controller
             ['is_author' => true]
         );
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $historyArticle->periods()->sync(Arr::pluck($request->periods, 'id'));
 
         session()->flash('success', true);
         return redirect()->route('history_articles.edit', $historyArticle->slug);
@@ -113,6 +113,7 @@ class HistoryArticleController extends Controller
             ['is_author' => true]
         );
         $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $historyArticle->periods()->sync(Arr::pluck($request->periods, 'id'));
 
         session()->flash('success', true);
         return redirect()->back();
