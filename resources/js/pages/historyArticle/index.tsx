@@ -14,7 +14,7 @@ export default function Index({ historyArticles }: { historyArticles: { data: Hi
             <section className="grid gap-8 px-4 pt-8 md:grid-cols-3 md:px-8">
                 <div className="col-span-2 divide-y">
                     {historyArticles.data.map((article) => (
-                        <Link href={route('public.history_articles.show', { slug: article.slug })}>
+                        <Link href={route('public.historyArticles.show', article)}>
                             <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
                                 <div>
                                     <img

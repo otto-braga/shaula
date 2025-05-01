@@ -29,12 +29,16 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
                         </CardHeader>
                         <CardContent className="space-y-3">
                             <div>
-                                <p className="text-sm text-slate-500">Período de Tempo</p>
-                                <p>{period.timespan}</p>
+                                <p className="text-sm text-slate-500">Início</p>
+                                <p>{period.start_date ? period.start_date : 'Data de início não inserida'}</p>
+                            </div>
+                            <div>
+                                <p className="text-sm text-slate-500">Fim</p>
+                                <p>{period.end_date ? period.end_date : 'Data final não inserida'}</p>
                             </div>
                             <div>
                                 <p className="text-sm text-slate-500">Sobre</p>
-                                <div dangerouslySetInnerHTML={{ __html: period.about }} className="line-clamp-3" />
+                                <div dangerouslySetInnerHTML={{ __html: period.content }} className="line-clamp-3" />
                             </div>
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2">
