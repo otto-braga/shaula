@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Category;
+use App\Models\File;
 use App\Models\Person;
 use App\Models\Review;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -38,6 +39,17 @@ class ReviewFactory extends Factory
             foreach ($categories as $category) {
                 $review->categories()->attach($category);
             }
+
+            File::factory(rand(1, 4))->create([
+                'mime_type' => 'image/png',
+            ])->each(function ($file) use ($review) {
+                $file->update([
+                    'fileable_id' => $review->id,
+                    'fileable_type' => Review::class,
+                ]);
+            });
+
+            $review->images()->first()->update(['is_primary' => true]);
         });
     }
 }

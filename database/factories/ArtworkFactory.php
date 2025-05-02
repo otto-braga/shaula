@@ -6,6 +6,7 @@ use App\Models\Activity;
 use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
+use App\Models\File;
 use App\Models\Language;
 use App\Models\Period;
 use App\Models\Person;
@@ -67,6 +68,17 @@ class ArtworkFactory extends Factory
             foreach ($periods as $period) {
                 $artwork->periods()->attach($period);
             }
+
+            File::factory(rand(1, 4))->create([
+                'mime_type' => 'image/png',
+            ])->each(function ($file) use ($artwork) {
+                $file->update([
+                    'fileable_id' => $artwork->id,
+                    'fileable_type' => Artwork::class,
+                ]);
+            });
+
+            $artwork->images()->first()->update(['is_primary' => true]);
         });
     }
 }

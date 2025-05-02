@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('sources', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
+            $table->string('slug');
+            $table->string('title');
+            $table->string('date')->nullable();
+            $table->string('url')->nullable();
+            $table->text('content')->nullable();
             $table->timestamps();
         });
     }

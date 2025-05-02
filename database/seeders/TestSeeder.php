@@ -22,5 +22,6 @@ class TestSeeder extends Seeder
         $this->call(ArtworkSeeder::class);
         $this->call(ReviewSeeder::class);
         $this->call(HistoryArticleSeeder::class);
+        $this->call(SourceSeeder::class);
     }
 }

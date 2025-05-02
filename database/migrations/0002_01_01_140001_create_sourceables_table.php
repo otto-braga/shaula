@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('reviews', function (Blueprint $table) {
+        Schema::create('sourceables', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('slug');
-            $table->string('title');
-            $table->date('date')->nullable();
-            $table->text('content')->nullable();
-
+            $table->foreignId('source_id')->constrained('sources')->onDelete('cascade');
+            $table->morphs('sourceable');
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('reviews');
+        Schema::dropIfExists('sourceables');
     }
 };
