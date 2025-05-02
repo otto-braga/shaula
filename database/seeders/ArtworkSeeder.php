@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Artwork;
+use App\Models\File;
 use Illuminate\Database\Seeder;
 
 class ArtworkSeeder extends Seeder
@@ -12,6 +13,6 @@ class ArtworkSeeder extends Seeder
      */
     public function run(): void
     {
-        Artwork::factory(50)->create();
+        Artwork::factory(20)->create();
     }
 }

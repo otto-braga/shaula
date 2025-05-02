@@ -18,6 +18,6 @@ class PersonSeeder extends Seeder
         Person::factory()->create(['name' => 'Same Name Test Person']);
         Person::factory()->create(['name' => 'Same Name Test Person']);
         Person::factory()->create(['name' => 'Same Name Test Person']);
-        Person::factory(30)->create();
+        Person::factory(20)->create();
     }
 }

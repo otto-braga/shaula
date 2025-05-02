@@ -29,13 +29,6 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                         {artworks?.data?.map((artwork) => (
                             <Card key={artwork.id} className="flex flex-col justify-between">
                                 <CardHeader>
-                                    {artwork.primary_image?.path ? (
-                                        <img src={`${artwork.primary_image.path}`} alt={artwork.title} className="mb-3 aspect-square rounded-t object-cover" />
-                                    ) : (
-                                        <div className="text- mb-3 flex aspect-square items-center justify-center rounded-t bg-gray-800/50 text-white/50">
-                                            Sem imagem
-                                        </div>
-                                    )}
                                     <CardTitle>
                                         <h3 className="line-clamp-1 font-semibold">{artwork.title}</h3>
                                     </CardTitle>
