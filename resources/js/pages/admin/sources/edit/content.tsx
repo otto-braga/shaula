@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { Artwork } from '@/types/artwork';
+import { Source } from '@/types/source';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import Tabs from './tabs';
@@ -27,12 +27,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Content({
-    artwork,
+    source,
 }: {
-    artwork: { data: Artwork }
+    source: { data: Source }
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        content: artwork.data.content as string ?? String(),
+        content: source.data.content as string ?? String(),
         files: Array<File>(),
         filesToRemove: Array<number>(),
     });
@@ -42,7 +42,7 @@ export default function Content({
 
         setImages([]);
 
-        post(route('artworks.update.content', artwork.data), {
+        post(route('sources.update.content', source.data), {
             preserveScroll: true,
             preserveState: true,
         });
@@ -95,7 +95,7 @@ export default function Content({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs artwork={artwork} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
+                            <Tabs source={source} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
 
                             <div className='sticky top-96'>
 
@@ -103,7 +103,7 @@ export default function Content({
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorRef.current = editor}
-                                    initialValue={artwork.data.content as string || String()}
+                                    initialValue={source.data.content as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',
@@ -167,7 +167,7 @@ export default function Content({
                                     />
 
                                     <div className="flex flex-row gap-2">
-                                        {artwork.data.content_images.map((image, index) => (
+                                        {source.data.content_images.map((image, index) => (
                                             <div key={image.id} className='flex flex-col items-center'>
                                                 <img key={image.id + 'image'} src={image.path} alt={image.path}
                                                     className={

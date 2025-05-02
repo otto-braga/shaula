@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Artwork;
 use App\Models\File;
+use App\Models\Person;
 use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -44,10 +46,29 @@ class SourceFactory extends Factory
                 $source->periods()->attach($period);
             }
 
-            $mentions = \App\Models\Mention::inRandomOrder()->take(rand(0, 5))->get();
-            foreach ($mentions as $mention) {
-                $source->mentions()->attach($mention);
+            $mentioned = \App\Models\Person::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($mentioned as $person) {
+                $mention = \App\Models\Mention::create([
+                    'mentioner_id' => $source->id,
+                    'mentioner_type' => Source::class,
+                    'mentioned_id' => $person->id,
+                    'mentioned_type' => Person::class,
+                ]);
+                $mention->save();
             }
+            $source->save();
+
+            $mentioned = \App\Models\Artwork::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($mentioned as $artwork) {
+                $mention = \App\Models\Mention::create([
+                    'mentioner_id' => $source->id,
+                    'mentioner_type' => Source::class,
+                    'mentioned_id' => $artwork->id,
+                    'mentioned_type' => Artwork::class,
+                ]);
+                $mention->save();
+            }
+            $source->save();
 
             File::factory(rand(1, 4))->create([
                 'mime_type' => 'application/pdf',

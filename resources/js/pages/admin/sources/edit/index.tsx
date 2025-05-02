@@ -3,7 +3,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { type BreadcrumbItem } from '@/types';
-import { Artwork } from '@/types/artwork';
+import { Source } from '@/types/source';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import Tabs from './tabs';
@@ -12,29 +12,29 @@ import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSele
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Obras',
-        href: '/admin/artwork',
+        href: '/admin/source',
     },
 ];
 
 export default function Index({
-    artwork,
+    source,
 }: {
-    artwork: { data: Artwork },
+    source: { data: Source },
 }) {
-    const isEdit = !!artwork;
+    const isEdit = !!source;
 
     const { data, setData, post, patch, errors, processing } = useForm({
-        title: artwork ? artwork.data.title : '' as string,
-        date: artwork ? artwork.data.date : '' as string,
+        title: source ? source.data.title : '' as string,
+        date: source ? source.data.date : '' as string,
 
-        authors_ids: artwork ? artwork.data.authors.map((author) => author.id) : [] as number[],
-        languages_ids: artwork ? artwork.data.languages?.map((language) => language.id) : [] as number[],
-        awards_ids: artwork ? artwork.data.awards?.map((award) => award.id) : [] as number[],
-        categories_ids: artwork ? artwork.data.categories?.map((category) => category.id) : [] as number[],
-        periods_ids: artwork ? artwork.data.periods?.map((period) => period.id) : [] as number[],
+        authors_ids: source ? source.data.authors.map((author) => author.id) : [] as number[],
+        languages_ids: source ? source.data.languages?.map((language) => language.id) : [] as number[],
+        awards_ids: source ? source.data.awards?.map((award) => award.id) : [] as number[],
+        categories_ids: source ? source.data.categories?.map((category) => category.id) : [] as number[],
+        periods_ids: source ? source.data.periods?.map((period) => period.id) : [] as number[],
 
-        dimensions: artwork ? artwork.data.dimensions : '',
-        materials: artwork ? artwork.data.materials : '',
+        dimensions: source ? source.data.dimensions : '',
+        materials: source ? source.data.materials : '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -43,12 +43,12 @@ export default function Index({
         console.log('data', data);
 
         if (isEdit) {
-            post(route('artworks.update', artwork.data), {
+            post(route('sources.update', source.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('artworks.store'), {
+            post(route('sources.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });
@@ -62,7 +62,7 @@ export default function Index({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs artwork={artwork} processing={processing} />
+                            <Tabs source={source} processing={processing} />
                             {isEdit}
 
                             <div>
@@ -75,7 +75,7 @@ export default function Index({
                                 <Label htmlFor="authors_ids">Autores</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
-                                        artwork?.data.authors?.map(
+                                        source?.data.authors?.map(
                                             author => ({ value: author.id, label: author.name })
                                         ) ?? []
                                     }
@@ -107,70 +107,10 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="dimensions">Dimensões</Label>
-                                <Input
-                                    id="title"
-                                    value={data.dimensions ?? ''}
-                                    onChange={(e) => setData('dimensions', e.target.value)}
-                                />
-                                <InputError className="mt-2" message={errors.dimensions} />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="materials">Materiais</Label>
-                                <Input
-                                    id="materials"
-                                    value={data.materials ?? ''}
-                                    onChange={(e) => setData('materials', e.target.value)}
-                                />
-                                <InputError className="mt-2" message={errors.materials} />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="languages">Linguagens</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.languages?.map(
-                                            language => ({ value: language.id, label: language.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'languages.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('languages_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
-                                />
-                                <InputError className="mt-2" message={errors.languages_ids} />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="awards">Prêmios</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.awards?.map(
-                                            award => ({ value: award.id, label: award.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'awards.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('awards_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
-                                />
-                                <InputError className="mt-2" message={errors.awards_ids} />
-                            </div>
-
-                            <div>
                                 <Label htmlFor="categories">Categorias</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
-                                        artwork?.data.categories?.map(
+                                        source?.data.categories?.map(
                                             category => ({ value: category.id, label: category.name })
                                         ) ?? []
                                     }
@@ -190,7 +130,7 @@ export default function Index({
                                 <Label htmlFor="periods">Períodos</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
-                                        artwork?.data.periods?.map(
+                                        source?.data.periods?.map(
                                             period => ({ value: period.id, label: period.name })
                                         ) ?? []
                                     }
