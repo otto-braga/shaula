@@ -4,7 +4,6 @@ import { City } from "./city";
 import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
-import { Link } from "./link";
 import { Mention } from "./mention";
 import { Period } from "./period";
 import { Review } from "./review";
@@ -17,6 +16,7 @@ export type Person = {
     date_of_birth: string | null;
     date_of_death: string | null;
     content: string;
+    cronology: string;
 
     images: FileProps[];
     primary_image: FileProps | null;

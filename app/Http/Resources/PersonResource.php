@@ -25,6 +25,7 @@ class PersonResource extends JsonResource
             'date_of_birth' => $this->date_of_birth,
             'date_of_death' => $this->date_of_death,
             'content' => $this->content,
+            'cronology' => $this->cronology,
 
             'images' => FileResource::collection($this->images),
             'primary_image' => new FileResource($this->primaryImage()),
