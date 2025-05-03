@@ -19,6 +19,8 @@ class SourceResource extends JsonResource
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
 
+            'files' => FileResource::collection($this->files),
+            'primary_file' => new FileResource($this->primaryFile()),
             'images' => FileResource::collection($this->images),
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),

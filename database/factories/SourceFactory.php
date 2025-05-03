@@ -88,7 +88,9 @@ class SourceFactory extends Factory
                 ]);
             });
 
-            $source->images()->first()->update(['is_primary' => true]);
+            $source->files()->inRandomOrder()->first()->update([
+                'is_primary' => true,
+            ]);
         });
     }
 }

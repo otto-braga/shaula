@@ -13,6 +13,8 @@ export type Source = {
     authors: Person[];
     content: string;
 
+    files: FileProps[];
+    primary_file: FileProps | null;
     images: FileProps[];
     primary_image: FileProps | null;
     content_images: FileProps[];
