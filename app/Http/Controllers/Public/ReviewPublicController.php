@@ -50,6 +50,7 @@ class ReviewPublicController extends Controller
 
         $review->load([
             'mentioned',
+            'mentioners',
         ]);
 
         return Inertia::render('review/show', [

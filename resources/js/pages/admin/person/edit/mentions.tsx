@@ -54,7 +54,7 @@ export default function Mentions({
                                         <div key={mention.id} className="mb-4">
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 <Link
-                                                    href={route('mentions.show', { mention: mention })}
+                                                    href={route('mentions.show.mentioned', { mention: mention })}
                                                     className="text-blue-500 hover:text-blue-700"
                                                 >
                                                     {mention.mentioned_name}

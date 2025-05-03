@@ -26,11 +26,24 @@ import 'keen-slider/keen-slider.min.css';
 export default function Index({ review }: { review: { data: Review } }) {
     console.log(review);
 
-    const [mentionsByType, setMentionsByType] = useState<{
+    const [mentionedByType, setMentionedByType] = useState<{
         [key: string]: Mention[];
     }>(
         review.data.mentioned.reduce((acc: { [key: string]: Mention[] }, mention: Mention) => {
             const type = mention.mentioned_type || '';
+            if (!acc[type]) {
+                acc[type] = [];
+            }
+            acc[type].push(mention);
+            return acc;
+        }, {}),
+    );
+
+    const [mentionersByType, setMentionersByType] = useState<{
+        [key: string]: Mention[];
+    }>(
+        review.data.mentioners.reduce((acc: { [key: string]: Mention[] }, mention: Mention) => {
+            const type = mention.mentioner_type || '';
             if (!acc[type]) {
                 acc[type] = [];
             }
@@ -118,7 +131,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div className="mt-4">
                         <p className="font-semibold">Menções (EX: todas juntas)</p>
                         {review.data.mentioned.map((mention) => (
-                            <Link href={route('public.mentions.show', mention)} key={mention.id + 'juntas'}>
+                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'juntas'}>
                                 <p className="hover:underline">{mention.mentioned_name}</p>
                             </Link>
                         ))}
@@ -126,12 +139,35 @@ export default function Index({ review }: { review: { data: Review } }) {
 
                     <div className="mt-4">
                         <p className="font-semibold">Menções (EX: sep. por tipo)</p>
-                        {Object.entries(mentionsByType).map(([type, mentions]) => (
+                        {Object.entries(mentionedByType).map(([type, mentions]) => (
                             <div key={type} className="mb-4">
-                                <p className="text-sm font-semibold">{modelLabelPlural(type)}</p>
+                                <p className="text-sm font-semibold text-center">{modelLabelPlural(type)}</p>
                                 {mentions.map((mention) => (
-                                    <Link href={route('public.mentions.show', mention)} key={mention.id + 'separadas'}>
+                                    <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
                                         <p className="hover:underline">{mention.mentioned_name}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-4">
+                        <p className="font-semibold">Mencionada em (EX: tudo junto)</p>
+                        {review.data.mentioners.map((mention) => (
+                            <Link href={route('public.mentions.show.mentioner', mention)} key={mention.id + 'junto'}>
+                                <p className="hover:underline">{mention.mentioner_name}</p>
+                            </Link>
+                        ))}
+                    </div>
+
+                    <div className="mt-4">
+                        <p className="font-semibold">Mencionada em (EX: sep. por tipo)</p>
+                        {Object.entries(mentionersByType).map(([type, mentions]) => (
+                            <div key={type} className="mb-4">
+                                <p className="text-sm font-semibold text-center">{modelLabelPlural(type)}</p>
+                                {mentions.map((mention) => (
+                                    <Link href={route('public.mentions.show.mentioner', mention)} key={mention.id + 'separadas'}>
+                                        <p className="hover:underline">{mention.mentioner_name}</p>
                                     </Link>
                                 ))}
                             </div>

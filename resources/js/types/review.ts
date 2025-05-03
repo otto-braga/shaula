@@ -26,6 +26,7 @@ export type Review = {
     mentioned_artworks: Artwork[];
 
     mentioned: Mention[];
+    mentioners: Mention[];
 
     sources: Source[];
 

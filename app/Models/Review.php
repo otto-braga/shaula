@@ -69,7 +69,7 @@ class Review extends Model
         return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
     }
 
-    public function mentioner(): MorphMany
+    public function mentioners(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
@@ -78,7 +78,7 @@ class Review extends Model
     {
         return Source::whereHas('mentioned', function ($query) {
             $query->where('mentioned_type', 'App\Models\Review')
-                ->where('mentioner_id', $this->id);
+                ->where('mentioned_id', $this->id);
         })->get();
     }
 
