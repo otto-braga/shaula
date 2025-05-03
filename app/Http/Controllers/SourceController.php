@@ -93,16 +93,16 @@ class SourceController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT IMAGES
+    // EDIT FILES
 
-    public function editImages(Source $source)
+    public function editFiles(Source $source)
     {
-        return Inertia::render('admin/sources/edit/images', [
+        return Inertia::render('admin/sources/edit/files', [
             'source' => new SourceResource($source),
         ]);
     }
 
-    public function updateImages(Request $request, Source $source)
+    public function updateFiles(Request $request, Source $source)
     {
         try {
             if ($request->has('files') && count($request->files) > 0) {
@@ -115,12 +115,12 @@ class SourceController extends Controller
                 }
             }
 
-            if ($source->images()->count() > 0) {
-                $source->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $source->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+            if ($source->files()->count() > 0) {
+                $source->files()->update(['is_primary' => false]);
+                if ($request->primaryFileId > 0) {
+                    $source->files()->where('id', $request->primaryFileId)->update(['is_primary' => true]);
                 } else {
-                    $source->images()->first()->update(['is_primary' => true]);
+                    $source->files()->first()->update(['is_primary' => true]);
                 }
             }
 

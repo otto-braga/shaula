@@ -145,7 +145,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
     Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('people.create');
     Route::post('/pessoas/store', [PersonController::class, 'store'])->name('people.store');
-    // Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
+    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
     Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('people.edit');
     Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('people.update');
     Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('people.edit.images');
@@ -216,10 +216,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/fontes/{source:slug}', [SourceController::class, 'show'])->name('sources.show');
     Route::get('/fontes/{source:slug}/editar', [SourceController::class, 'edit'])->name('sources.edit');
     Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
-    Route::get('/fontes/{source:slug}/editar/imagens', [SourceController::class, 'editImages'])->name('sources.edit.images');
-    Route::post('/fontes/{source:slug}/update/images', [SourceController::class, 'updateImages'])->name('sources.update.images');
-    // Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
-    // Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
+    Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
+    Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
     Route::get('/fontes/{source:slug}/editar/conteudo', [SourceController::class, 'editContent'])->name('sources.edit.content');
     Route::post('/fontes/{source:slug}/update/content', [SourceController::class, 'updateContent'])->name('sources.update.content');
     Route::get('/fontes/{source:slug}/editar/mencoes', [SourceController::class, 'editMentions'])->name('sources.edit.mentions');

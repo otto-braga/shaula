@@ -137,6 +137,15 @@ export default function Index({ review }: { review: { data: Review } }) {
                             </div>
                         ))}
                     </div>
+
+                    <div className="mt-4">
+                        <p className="font-semibold">Fontes</p>
+                        {review.data.sources.map((source) => (
+                            // <Link href={route('public.sources.show', source)} key={source.id}>
+                                <p className="hover:underline">{source.title}</p>
+                            // </Link>
+                        ))}
+                    </div>
                 </section>
                 <section className="md:col-span-2 md:pr-6 lg:col-span-3 lg:pr-8">
                     <div>

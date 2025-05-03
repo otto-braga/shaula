@@ -4,6 +4,7 @@ import { Category } from "./category";
 import { FileProps } from "./file";
 import { Mention } from "./mention";
 import { Person } from "./person";
+import { Source } from "./source";
 import { Tag } from "./tag";
 
 export type Review = {
@@ -25,6 +26,8 @@ export type Review = {
     mentioned_artworks: Artwork[];
 
     mentioned: Mention[];
+
+    sources: Source[];
 
     categories: Category[];
     tags: Tag[];

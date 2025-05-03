@@ -112,4 +112,12 @@ class Artwork extends Model
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
+
+    public function sources()
+    {
+        return Source::whereHas('mentioned', function ($query) {
+            $query->where('mentioned_type', 'App\Models\Review')
+                ->where('mentioner_id', $this->id);
+        })->get();
+    }
 }

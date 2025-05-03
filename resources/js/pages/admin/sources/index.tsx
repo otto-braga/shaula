@@ -1,6 +1,7 @@
 import DeleteDialog from '@/components/common/delete-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { FileCard } from '@/components/ui/file-card';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Source } from '@/types/source';
@@ -29,11 +30,10 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                         {sources?.data?.map((source) => (
                             <Card key={source.id} className="flex flex-col justify-between">
                                 <CardHeader>
-                                    {source.primary_image?.path ? (
-                                        <img src={`${source.primary_image.path}`} alt={source.title} className="mb-3 aspect-square rounded-t object-cover" />
-                                    ) : (
-                                        <></>
-                                    )}
+                                    <FileCard
+                                        file={source.primary_file ?? null}
+                                        className="h-32 w-full"
+                                    />
                                     <CardTitle>
                                         <h3 className="line-clamp-1 font-semibold">{source.title}</h3>
                                     </CardTitle>

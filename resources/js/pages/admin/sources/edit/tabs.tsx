@@ -46,11 +46,11 @@ export default function Tabs({ source, processing, className }: TabsProps) {
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('source.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('source.edit.files') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('sources.edit.images', { source: source?.data }) : ''}
+                                href={isEdit ? route('sources.edit.files', { source: source?.data }) : ''}
                             >
-                                Imagens
+                                Arquivos
                             </Link>
                             <Link
                                 className={
