@@ -63,7 +63,8 @@ Route::name('public.')->group(function () {
     Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
     Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
 
-    Route::get('/mencao/{mention}', [MentionPublicController::class, 'show'])->name('mentions.show');
+    Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
+    Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
 });
 
 Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
@@ -226,9 +227,10 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
 
     // Mentions
-    Route::get('/mencoes/{mention}', [MentionController::class, 'show'])->name('mentions.show');
-    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
-    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
+    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'showMentioned'])->name('mentions.show.mentioned');
+    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'showMentioner'])->name('mentions.show.mentioner');
+    Route::get('/mencoes/{mention}/fetch/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
+    Route::get('/mencoes/{mention}/fetch/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
 });
 
 // require __DIR__ . '/settings.php';

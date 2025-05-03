@@ -43,11 +43,19 @@ class MentionController extends Controller
         ]);
     }
 
-    public function show(Mention $mention)
+    public function showMentioned(Mention $mention)
     {
         $model = new $mention->mentioned_type;
         $route_name = 'public.' . $model->getTable() . '.show';
 
         return Redirect::route($route_name, $mention->mentioned);
+    }
+
+    public function showMentioner(Mention $mention)
+    {
+        $model = new $mention->mentioner_type;
+        $route_name = 'public.' . $model->getTable() . '.show';
+
+        return Redirect::route($route_name, $mention->mentioner);
     }
 }
