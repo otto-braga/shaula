@@ -29,6 +29,13 @@ export default function Index({ reviews }: { reviews: { data: Review[] } }) {
                         {reviews?.data?.map((review) => (
                             <Card key={review.id} className="flex flex-col justify-between">
                                 <CardHeader>
+                                    {review.primary_image?.path ? (
+                                        <img src={`${review.primary_image.path}`} alt={review.title} className="mb-3 aspect-square rounded-t object-cover" />
+                                    ) : (
+                                        <div className="text- mb-3 flex aspect-square items-center justify-center rounded-t bg-gray-800/50 text-white/50">
+                                            Sem imagem
+                                        </div>
+                                    )}
                                     <CardTitle>
                                         <h3 className="line-clamp-1 font-semibold">{review.title}</h3>
                                     </CardTitle>

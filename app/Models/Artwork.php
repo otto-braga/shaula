@@ -75,6 +75,11 @@ class Artwork extends Model
 
     // files
 
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function images(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable')
@@ -106,5 +111,13 @@ class Artwork extends Model
     public function mentioner(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+    }
+
+    public function sources()
+    {
+        return Source::whereHas('mentioned', function ($query) {
+            $query->where('mentioned_type', 'App\Models\Review')
+                ->where('mentioner_id', $this->id);
+        })->get();
     }
 }

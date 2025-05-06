@@ -6,6 +6,8 @@ export function modelLabel(type: string): string {
             return 'Crítica';
         case 'App\\Models\\Person':
             return 'Pessoa';
+        case 'App\\Models\\Source':
+            return 'Fonte';
         default:
             return type;
     }
@@ -19,6 +21,8 @@ export function modelLabelPlural(type: string): string {
             return 'Críticas';
         case 'App\\Models\\Person':
             return 'Pessoas';
+        case 'App\\Models\\Source':
+            return 'Fontes';
         default:
             return type;
     }

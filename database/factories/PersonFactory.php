@@ -3,8 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\City;
+use App\Models\File;
 use App\Models\Gender;
 use App\Models\Period;
+use App\Models\Person;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -37,6 +39,17 @@ class PersonFactory extends Factory
             foreach ($periods as $period) {
                 $person->periods()->attach($period);
             }
+
+            File::factory(rand(1, 4))->create([
+                'mime_type' => 'image/png',
+            ])->each(function ($file) use ($person) {
+                $file->update([
+                    'fileable_id' => $person->id,
+                    'fileable_type' => Person::class,
+                ]);
+            });
+
+            $person->images()->first()->update(['is_primary' => true]);
         });
     }
 }

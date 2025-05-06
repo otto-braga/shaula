@@ -36,6 +36,11 @@ class Review extends Model
 
     // files
 
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function images(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable')
@@ -64,10 +69,20 @@ class Review extends Model
         return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
     }
 
-    public function mentioner(): MorphMany
+    public function mentioners(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }
+
+    public function sources()
+    {
+        return Source::whereHas('mentioned', function ($query) {
+            $query->where('mentioned_type', 'App\Models\Review')
+                ->where('mentioned_id', $this->id);
+        })->get();
+    }
+
+    // filters
 
     public function scopeFilter($query, array $filters)
     {

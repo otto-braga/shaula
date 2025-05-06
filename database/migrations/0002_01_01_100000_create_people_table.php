@@ -21,6 +21,8 @@ return new class extends Migration
             $table->string('date_of_birth')->nullable();
             $table->string('date_of_death')->nullable();
 
+            $table->text('content')->nullable();
+
             $table->longText('content')->nullable();
             $table->longText('cronology')->nullable();
 

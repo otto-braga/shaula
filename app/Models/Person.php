@@ -77,6 +77,11 @@ class Person extends Model
 
     // files
 
+    public function files(): MorphMany
+    {
+        return $this->morphMany(File::class, 'fileable');
+    }
+
     public function images(): MorphMany
     {
         return $this->morphMany(File::class, 'fileable')

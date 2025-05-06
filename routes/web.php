@@ -44,6 +44,7 @@ use App\Http\Controllers\Public\PersonPublicController;
 use App\Http\Controllers\Public\ReviewPublicController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SourceController;
 use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -62,7 +63,8 @@ Route::name('public.')->group(function () {
     Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
     Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
 
-    Route::get('/mencao/{mention}', [MentionPublicController::class, 'show'])->name('mentions.show');
+    Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
+    Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
 });
 
 Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
@@ -144,7 +146,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
     Route::get('/pessoas/criar', [PersonController::class, 'create'])->name('people.create');
     Route::post('/pessoas/store', [PersonController::class, 'store'])->name('people.store');
-    // Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
+    Route::get('/pessoas/{person:slug}', [PersonController::class, 'show'])->name('people.show');
     Route::get('/pessoas/{person:slug}/editar', [PersonController::class, 'edit'])->name('people.edit');
     Route::post('/pessoas/{person:slug}/update', [PersonController::class, 'update'])->name('people.update');
     Route::get('/pessoas/{person:slug}/editar/imagens', [PersonController::class, 'editImages'])->name('people.edit.images');
@@ -184,7 +186,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('reviews.edit.people');
     Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('reviews.update.people');
     Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('reviews.edit.images');
-    Route::post('/criticas/{review:slug}/update/imagens', [ReviewController::class, 'updateImages'])->name('reviews.update.images');
+    Route::post('/criticas/{review:slug}/update/images', [ReviewController::class, 'updateImages'])->name('reviews.update.images');
     Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('reviews.edit.content');
     Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('reviews.update.content');
     Route::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('reviews.edit.mentions');
@@ -200,7 +202,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/historia-da-arte/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('history_articles.edit');
     Route::post('/historia-da-arte/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('history_articles.update');
     Route::get('/historia-da-arte/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('history_articles.edit.images');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/imagens', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
+    Route::post('/historia-da-arte/{historyArticle:slug}/update/images', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
     Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('history_articles.edit.content');
     Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('history_articles.update.content');
     Route::get('/historia-da-arte/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
@@ -208,10 +210,27 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
     Route::get('/historia-da-arte/fetch/options', [HistoryArticleController::class, 'fetchSelectOptions'])->name('history_articles.fetch.options');
 
+    // Sources
+    Route::get('/fontes', [SourceController::class, 'index'])->name('sources.index');
+    Route::get('/fontes/criar', [SourceController::class, 'create'])->name('sources.create');
+    Route::post('/fontes/store', [SourceController::class, 'store'])->name('sources.store');
+    Route::get('/fontes/{source:slug}', [SourceController::class, 'show'])->name('sources.show');
+    Route::get('/fontes/{source:slug}/editar', [SourceController::class, 'edit'])->name('sources.edit');
+    Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
+    Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
+    Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
+    Route::get('/fontes/{source:slug}/editar/conteudo', [SourceController::class, 'editContent'])->name('sources.edit.content');
+    Route::post('/fontes/{source:slug}/update/content', [SourceController::class, 'updateContent'])->name('sources.update.content');
+    Route::get('/fontes/{source:slug}/editar/mencoes', [SourceController::class, 'editMentions'])->name('sources.edit.mentions');
+    Route::post('/fontes/{source:slug}/update/mentions', [SourceController::class, 'updateMentions'])->name('sources.update.mentions');
+    Route::delete('/fontes/{source:slug}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
+    Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
+
     // Mentions
-    Route::get('/mencoes/{mention}', [MentionController::class, 'show'])->name('mentions.show');
-    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
-    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
+    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'showMentioned'])->name('mentions.show.mentioned');
+    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'showMentioner'])->name('mentions.show.mentioner');
+    Route::get('/mencoes/{mention}/fetch/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
+    Route::get('/mencoes/{mention}/fetch/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
 });
 
 // require __DIR__ . '/settings.php';

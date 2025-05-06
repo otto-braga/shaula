@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
-import { HistoryArticle } from '@/types/historyArticle';
+import { Source } from '@/types/source';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 import Select from 'react-select';
@@ -12,19 +12,19 @@ import { modelLabel } from '@/utils/model-label';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Obras',
-        href: route('history_articles.index'),
+        href: route('sources.index'),
     },
 ];
 
 export default function Mentions({
-    historyArticle,
+    source,
     mention_queries,
 }: {
-    historyArticle: { data: HistoryArticle };
+    source: { data: Source };
         mention_queries: { data: MentionQuery[] };
 }) {
     const { data, setData, post, errors, processing } = useForm({
-        mentions: historyArticle.data.mentioned as Mention[],
+        mentions: source.data.mentioned as Mention[],
     });
 
     useEffect(() => {
@@ -33,7 +33,7 @@ export default function Mentions({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('history_articles.update.mentions', historyArticle.data), {
+        post(route('sources.update.mentions', source.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -46,10 +46,10 @@ export default function Mentions({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <Tabs historyArticle={historyArticle} processing={processing} />
+                            <Tabs source={source} processing={processing} />
 
                             {
-                                historyArticle.data.mentioned.map((mention) => {
+                                source.data.mentioned.map((mention) => {
                                     return (
                                         <div key={mention.id} className="mb-4">
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -84,7 +84,7 @@ export default function Mentions({
                                                 }
                                                 defaultValue={
 
-                                                    historyArticle.data.mentioned.filter(
+                                                    source.data.mentioned.filter(
                                                         (mentioned) => mentioned.mentioned_type === mention_query.type
                                                     ).map((mention) => ({
                                                         value: mention.mentioned_id,

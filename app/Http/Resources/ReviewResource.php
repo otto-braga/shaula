@@ -46,6 +46,9 @@ class ReviewResource extends JsonResource
             )),
 
             'mentioned' => MentionResource::collection($this->whenLoaded('mentioned')),
+            'mentioners' => MentionResource::collection($this->whenLoaded('mentioners')),
+
+            'sources' => SourceResource::collection($this->sources()),
 
             'categories' => CategoryResource::collection($this->categories),
 

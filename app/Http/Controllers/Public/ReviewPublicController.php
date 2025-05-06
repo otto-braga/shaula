@@ -49,7 +49,8 @@ class ReviewPublicController extends Controller
         $review = Review::where('slug', $slug)->firstOrFail();
 
         $review->load([
-            'mentioned'
+            'mentioned',
+            'mentioners',
         ]);
 
         return Inertia::render('review/show', [

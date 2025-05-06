@@ -1,13 +1,10 @@
-import { Activity } from "./activity";
-import { Artwork } from "./artwork";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Mention } from "./mention";
+import { Period } from "./period";
 import { Person } from "./person";
-import { Source } from "./source";
-import { Tag } from "./tag";
 
-export type Review = {
+export type Source = {
     id: number;
     uuid: string;
     slug: string;
@@ -16,24 +13,16 @@ export type Review = {
     authors: Person[];
     content: string;
 
+    files: FileProps[];
+    primary_file: FileProps | null;
     images: FileProps[];
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    people: Person[];
-
-    mentioned_people: Person[];
-    mentioned_artworks: Artwork[];
+    categories: Category[];
+    periods: Period[];
 
     mentioned: Mention[];
-    mentioners: Mention[];
-
-    sources: Source[];
-
-    categories: Category[];
-    tags: Tag[];
-
-    activity: Activity | null;
 
     created_at: string;
     updated_at: string;
