@@ -70,13 +70,19 @@ class PersonController extends Controller
     {
         $dataForm = $request->all();
 
-        $person = Person::create($dataForm);
 
-        $person->genders()->sync(Arr::pluck($request->genders, 'id'));
-        $person->cities()->sync(Arr::pluck($request->cities, 'id'));
+        try {
+            $person = Person::create($dataForm);
 
-        session()->flash('success', true);
-        return redirect()->route('people.edit', $person->id);
+            $person->genders()->sync(Arr::pluck($request->genders, 'id'));
+            $person->cities()->sync(Arr::pluck($request->cities, 'id'));
+
+            session()->flash('success', true);
+            return redirect()->route('people.edit', $person->slug);
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -133,11 +139,10 @@ class PersonController extends Controller
             }
 
             if ($person->images()->count() > 0) {
-                    $person->images()->update(['is_primary' => false]);
+                $person->images()->update(['is_primary' => false]);
                 if ($request->primaryImageId > 0) {
                     $person->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                }
-                else {
+                } else {
                     $person->images()->first()->update(['is_primary' => true]);
                 }
             }
@@ -173,7 +178,10 @@ class PersonController extends Controller
                 }
             }
 
-            $person->update(['content' => $request->content]);
+            $person->update([
+                'content' => $request->content,
+                'cronology' => $request->cronology,
+            ]);
 
             session()->flash('success', true);
             return redirect()->back();
