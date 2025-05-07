@@ -24,6 +24,8 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->longText('cronology')->nullable();
 
+            $table->longText('links')->nullable();
+
             $table->timestamps();
         });
     }

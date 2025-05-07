@@ -17,18 +17,48 @@ class SearchController extends Controller
         $results = [];
 
         if ($query) {
-            //serch for name or term in content for review, history article and artwork
-            $results['reviews'] = Review::where('title', 'like', '%' . $query . '%')
+
+            $historyArticlesQuery = HistoryArticle::with('authors')
+                ->where('title', 'like', '%' . $query . '%')
                 ->orWhere('content', 'like', '%' . $query . '%')
                 ->get();
 
-            $results['historyArticles'] = HistoryArticle::where('title', 'like', '%' . $query . '%')
+            foreach ($historyArticlesQuery as $historyArticle) {
+                $results[] = [
+                    'title' => $historyArticle->title,
+                    'authors' => $historyArticle->authors,
+                    'date' => $historyArticle->date,
+                    'type' => 'Artigo'
+                ];
+            }
+
+            $reviewsQuery = Review::with('authors')
+                ->where('title', 'like', '%' . $query . '%')
                 ->orWhere('content', 'like', '%' . $query . '%')
                 ->get();
 
-            $results['artworks'] = Artwork::where('title', 'like', '%' . $query . '%')
+            foreach ($reviewsQuery as $review) {
+                $results[] = [
+                    'title' => $review->title,
+                    'authors' => $review->authors,
+                    'date' => $review->date,
+                    'type' => 'Crítica'
+                ];
+            }
+
+            $artworksQuery = Artwork::with('authors')
+                ->where('title', 'like', '%' . $query . '%')
                 ->orWhere('content', 'like', '%' . $query . '%')
                 ->get();
+
+            foreach ($artworksQuery as $artwork) {
+                $results[] = [
+                    'title' => $artwork->title,
+                    'authors' => $artwork->authors,
+                    'date' => $artwork->date,
+                    'type' => 'Obra'
+                ];
+            }
         }
 
         return Inertia::render('search', [
