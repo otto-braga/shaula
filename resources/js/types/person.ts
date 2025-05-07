@@ -15,8 +15,10 @@ export type Person = {
     name: string;
     date_of_birth: string | null;
     date_of_death: string | null;
+
     content: string;
     cronology: string;
+    links: string;
 
     images: FileProps[];
     primary_image: FileProps | null;

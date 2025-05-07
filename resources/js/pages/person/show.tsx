@@ -17,6 +17,7 @@ import 'lightgallery/scss/lightgallery.scss';
 import 'keen-slider/keen-slider.min.css';
 
 export default function Index({ person }: { person: { data: Person } }) {
+    console.log(person.data);
     return (
         <PublicLayout head={person.data.name}>
             {/* relative e object-cover para todos ficarem do mesmo tamanho. */}
@@ -55,11 +56,12 @@ export default function Index({ person }: { person: { data: Person } }) {
                                     <p>{formatDate(person.data.date_of_death)}</p>
                                 </div>
                             )}
-                            <div>
-                                <p className="font-medium">Links</p>
-                                <p className="truncate">https://www.jotamombaca.com/</p>
-                                <p className="truncate">https://instagram.com/jotamombaça</p>
-                            </div>
+                            {person.data.links && (
+                                <div>
+                                    <p className="font-medium">Links</p>
+                                    <div dangerouslySetInnerHTML={{ __html: person.data.links }} />
+                                </div>
+                            )}
                         </div>
                     </div>
                 </section>

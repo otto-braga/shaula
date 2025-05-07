@@ -25,6 +25,7 @@ class Person extends Model
         'date_of_death',
         'content',
         'cronology',
+        'links',
     ];
 
     public function genders(): BelongsToMany
