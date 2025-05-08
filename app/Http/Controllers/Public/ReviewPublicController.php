@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
 use App\Models\Person;
 use App\Models\Review;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Request;
 use Inertia\Inertia;
 
@@ -17,24 +18,27 @@ class ReviewPublicController extends Controller
     public function index(Request $request)
     {
 
-        $query = Review::query();
+        // Faz a busca paginada e separa os resultados
+        // do paginação. Isso é feito para que 
+        // o scroll infinito funcione. No momomento desta
+        // implementação Inertia::merge(para dar merge na pagination
+        // e resultados da query) não está funcionando.
+        // Para tutorial: https://laracasts.com/series/inertia-2-unleashed/episodes/5?autoplay=true
 
-        $reviews = $query->latest()
+
+        $reviews = Review::latest()
             ->filter(Request::only('search'))
-            ->paginate(12)
+            ->paginate(4)
             ->withQueryString();
 
         $lastReviews = Review::latest()
             ->take(3)
             ->get();
 
-        $authors = Person::whereHas('reviews', function ($query) {
-            $query->where('is_author', true);
-        })->get();
-
-
         return Inertia::render('review/index', [
-            'reviews' => ReviewResource::collection($reviews),
+            // 'reviews' => Inertia::merge($reviews->items()),
+            'reviews' => ReviewResource::collection($reviews->items()),
+            'pagination' => Arr::except($reviews->toArray(), 'data'),
             'lastReviews' => ReviewResource::collection($lastReviews),
             'filters' => Request::all('search'),
         ]);

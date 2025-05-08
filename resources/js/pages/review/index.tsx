@@ -2,21 +2,23 @@ import PublicLayout from '@/layouts/public-layout';
 
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
-import { PaginatedData } from '@/types/paginated-data';
+import { InfiniteScrollData } from '@/types/paginated-data';
 import { Review } from '@/types/review';
-import { Link, router } from '@inertiajs/react';
+import { Link, router, WhenVisible } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
 import { Search, Users } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Index({
     reviews,
     filters,
+    pagination,
     lastReviews,
 }: {
-    reviews: PaginatedData<Review>;
+    reviews: { data: Review[] };
     filters: { search: string };
+    pagination: InfiniteScrollData;
     lastReviews: { data: Review[] };
 }) {
     const [search, setSearch] = useState(filters.search || '');
@@ -24,8 +26,16 @@ export default function Index({
     function handleSearch(e: React.FormEvent) {
         e.preventDefault();
 
-        router.get('/critica', { search }, { preserveState: true });
+        router.get('/critica', { search, page: '' }, { preserveState: false });
     }
+
+    const [reachEnd, setReachEnd] = useState(pagination.current_page >= pagination.last_page);
+
+    useEffect(() => {
+        setReachEnd(pagination.current_page >= pagination.last_page);
+    }, [pagination]);
+
+    console.log(reviews);
 
     return (
         <PublicLayout head="Crítica">
@@ -125,7 +135,8 @@ export default function Index({
                             </div>
                         </Link>
                     ))}
-                    <div className="mt-8 flex flex-wrap gap-2">
+
+                    {/* <div className="mt-8 flex flex-wrap gap-2">
                         {reviews.meta.links.map((link, index) =>
                             link.url ? (
                                 <Link
@@ -141,8 +152,21 @@ export default function Index({
                                 </span>
                             ),
                         )}
-                    </div>
+                    </div> */}
                 </div>
+                <WhenVisible
+                    buffer={100}
+                    params={{
+                        only: ['reviews', 'pagination'],
+                        data: {
+                            page: pagination.current_page + 1,
+                        },
+                    }}
+                    fallback={'Carregando...'}
+                    always={!reachEnd}
+                >
+                    test
+                </WhenVisible>
             </section>
         </PublicLayout>
     );

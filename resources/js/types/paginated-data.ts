@@ -1,22 +1,14 @@
-export type PaginatedData<T> = {
-    data: T[];
+export type InfiniteScrollData = {
     links: {
         first: string;
         last: string;
         next: string | null;
         prev: string | null;
     };
-    meta: {
-        current_page: number;
-        from: number;
-        last_page: number;
-        per_page: number;
-        to: number;
-        total: number;
-        links: Array<{
-            active: boolean;
-            label: string;
-            url: string | null;
-        }>;
-    };
+    current_page: number;
+    from: number;
+    last_page: number;
+    per_page: number;
+    to: number;
+    total: number;
 };
