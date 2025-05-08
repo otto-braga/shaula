@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Facades\Schema;
 
 class Mention extends Model
 {
@@ -18,6 +20,11 @@ class Mention extends Model
         'mentioned_type',
     ];
 
+    public function getNameAttribute()
+    {
+        return $this->mentioned->name ?? $this->mentioned->title;
+    }
+
     public function getMentionedNameAttribute()
     {
         return $this->mentioned->name ?? $this->mentioned->title;
@@ -27,6 +34,17 @@ class Mention extends Model
     {
         return $this->mentioner->name ?? $this->mentioner->title;
     }
+
+    // public function mentionedArtworks(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Artwork::class, 'mentioned', 'mentions');
+    // }
+
+    // public function mentionerArtworks(): MorphToMany
+    // {
+    //     return $this->morphedByMany(Artwork::class, 'mentioner', 'mentions');
+    // }
+
 
     public function mentioned()
     {

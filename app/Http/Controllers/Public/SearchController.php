@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Artwork;
 use App\Models\HistoryArticle;
+use App\Models\Person;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -35,5 +36,23 @@ class SearchController extends Controller
             'query' => $query,
             'results' => $results,
         ]);
+    }
+
+    public function search(Request $request)
+    {
+        $key = $request->key;
+
+        $results = [];
+        $results['artworks'] = Artwork::search($key);
+        $results['reviews'] = Review::search($key);
+        $results['people'] = Person::search($key);
+
+        $test = $results['artworks']
+            ->union($results['reviews'])
+            ->union($results['people']) // Não pode ser a primeira da lista, pois possui coluna name ao invés de title.
+            ->orderBy('title')
+            ->simplePaginate(15);
+
+        return response()->json($test);
     }
 }

@@ -87,6 +87,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
         return Inertia::render('settings/appearance');
     })->name('appearance');
 
+    // Search
+    Route::get('search', [SearchController::class, 'search'])->name('search');
+
     // Tags
     // Route::get('tags', [TagController::class, 'index'])->name('tags.index');
     // Route::post('tags', [TagController::class, 'store'])->name('tags.store');

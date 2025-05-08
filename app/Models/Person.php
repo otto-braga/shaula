@@ -4,8 +4,10 @@ namespace App\Models;
 
 use App\Traits\HasFetching;
 use App\Traits\HasLabel;
+use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -15,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching;
 
     protected $table = 'people';
 
@@ -25,6 +27,17 @@ class Person extends Model
         'date_of_death',
         'content',
     ];
+
+    // protected $maps = [
+    //     'name' => 'title',
+    // ];
+
+    // protected $appends = ['title'];
+
+    public function getTitleAttribute()
+    {
+        return $this->name;
+    }
 
     public function genders(): BelongsToMany
     {
@@ -109,7 +122,7 @@ class Person extends Model
         return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
     }
 
-    public function mentioner(): MorphMany
+    public function mentioners(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }

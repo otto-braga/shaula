@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\HasFetching;
 use App\Traits\HasLabel;
+use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Review extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching;
 
     protected $fillable = [
         'title',
