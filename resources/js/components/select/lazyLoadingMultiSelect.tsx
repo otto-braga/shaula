@@ -52,6 +52,7 @@ async function fetchDataForMultiSelect({
 type LazyLoadingMultiSelectProps = {
     initialOptions: MultiValue<Option>;
     routeName: string;
+    type?: string;
     setterFunction: (options: MultiValue<Option>) => void;
 }
 
@@ -71,6 +72,7 @@ const CustomMenuList = (props: any) => {
 function LazyLoadingMultiSelect({
     initialOptions,
     routeName,
+    type = '',
     setterFunction,
     ...props
 } : LazyLoadingMultiSelectProps) {
@@ -85,9 +87,9 @@ function LazyLoadingMultiSelect({
         setterFunction(options);
     };
 
-    const onOptionSelectInputChange = (inputValue: string) => {
+    const onOptionSelectInputChange = (inputValue: string, type: string = '') => {
         fetchDataForMultiSelect({
-            route: route(routeName, { search: inputValue }),
+            route: route(routeName, { search: inputValue, type: type }),
             search: inputValue,
             setterFunction: setFetchedOptions,
         });
@@ -99,7 +101,9 @@ function LazyLoadingMultiSelect({
             options={fetchedOptions}
             value={selectedOptions}
             onChange={onOptionSelectChange}
-            onInputChange={onOptionSelectInputChange}
+            onInputChange={(inputValue: string) => {
+                onOptionSelectInputChange(inputValue, type);
+            }}
             loadingMessage={() => 'Carregando...'}
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."

@@ -35,15 +35,6 @@ class PersonController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // FETCH
-
-    public function fetchSelectOptions(Request $request)
-    {
-        $options = Person::fetchAsSelectOption($request->search);
-        return response()->json($options);
-    }
-
-    // -------------------------------------------------------------------------
     // SHOW
 
     // public function show(Person $person)
@@ -232,5 +223,14 @@ class PersonController extends Controller
 
         session()->flash('success', true);
         return redirect()->back();
+    }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $options = Person::fetchAsSelectOption($request->search);
+        return response()->json($options);
     }
 }
