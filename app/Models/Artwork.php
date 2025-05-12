@@ -130,7 +130,7 @@ class Artwork extends Model
     public function sources()
     {
         return Source::whereHas('mentioned', function ($query) {
-            $query->where('mentioned_type', 'App\Models\Review')
+            $query->where('mentioned_type', 'App\Models\Artwork')
                 ->where('mentioned_id', $this->id);
         })->get();
     }

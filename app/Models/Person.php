@@ -120,7 +120,7 @@ class Person extends Model
     public function sources()
     {
         return Source::whereHas('mentioned', function ($query) {
-            $query->where('mentioned_type', 'App\Models\Review')
+            $query->where('mentioned_type', 'App\Models\Person')
                 ->where('mentioned_id', $this->id);
         })->get();
     }
