@@ -3,8 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
-use App\Models\Artwork;
-use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
