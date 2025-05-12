@@ -15,6 +15,7 @@ export type Mention = {
 
 export type MentionQuery = {
     type: string;
+    routeName: string;
     query: {
         id: number;
         name: string;

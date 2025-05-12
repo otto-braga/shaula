@@ -8,6 +8,8 @@ export function modelLabel(type: string): string {
             return 'Pessoa';
         case 'App\\Models\\Source':
             return 'Fonte';
+        case 'App\\Models\\HistoryArticle':
+            return 'História da Arte';
         default:
             return type;
     }
@@ -23,6 +25,8 @@ export function modelLabelPlural(type: string): string {
             return 'Pessoas';
         case 'App\\Models\\Source':
             return 'Fontes';
+        case 'App\\Models\\HistoryArticle':
+            return 'História da Arte';
         default:
             return type;
     }

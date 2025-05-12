@@ -234,6 +234,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'showMentioner'])->name('mentions.show.mentioner');
     Route::get('/mencoes/{mention}/fetch/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
     Route::get('/mencoes/{mention}/fetch/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
+    Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
 });
 
 // require __DIR__ . '/settings.php';

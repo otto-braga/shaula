@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use App\Models\Mention;
 use Illuminate\Support\Facades\Redirect;
 
@@ -57,5 +58,15 @@ class MentionController extends Controller
         $route_name = 'public.' . $model->getTable() . '.show';
 
         return Redirect::route($route_name, $mention->mentioner);
+    }
+
+    // -------------------------------------------------------------------------
+    // FETCH
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $type = $request->type;
+        $options = $type::FetchAsSelectOption($request->search);
+        return response()->json($options);
     }
 }
