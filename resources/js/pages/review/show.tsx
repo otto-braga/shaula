@@ -120,10 +120,10 @@ export default function Index({ review }: { review: { data: Review } }) {
                     )}
 
                     {/* --------------------------------------------------------
-                        FONTES ACESSADAS DIRETAMENTE
+                        FONTES ACESSADAS DIRETAMENTE (DEPRECATED: acessar atraves de menções)
                      */}
 
-                    {review.data.sources.length > 0 && (
+                    {/* {review.data.sources.length > 0 && (
                         <div className="">
                             <p className="font-semibold">Fontes</p>
                             {review.data.sources.map((source) => (
@@ -132,7 +132,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                                 // </Link>
                             ))}
                         </div>
-                    )}
+                    )} */}
 
                     {/* --------------------------------------------------------
                         EXEMPLOS DE LISTAGEM DE MENÇÕES QUE ESSA CRÍTICA FAZ

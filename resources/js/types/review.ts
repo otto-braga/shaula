@@ -22,13 +22,8 @@ export type Review = {
 
     people: Person[];
 
-    mentioned_people: Person[];
-    mentioned_artworks: Artwork[];
-
     mentioned: Mention[];
     mentioners: Mention[];
-
-    sources: Source[];
 
     categories: Category[];
     tags: Tag[];
