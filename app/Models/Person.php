@@ -7,7 +7,6 @@ use App\Traits\HasLabel;
 use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -27,17 +26,6 @@ class Person extends Model
         'date_of_death',
         'content',
     ];
-
-    // protected $maps = [
-    //     'name' => 'title',
-    // ];
-
-    // protected $appends = ['title'];
-
-    public function getTitleAttribute()
-    {
-        return $this->name;
-    }
 
     public function genders(): BelongsToMany
     {

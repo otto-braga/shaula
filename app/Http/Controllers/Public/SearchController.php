@@ -7,6 +7,7 @@ use App\Models\Artwork;
 use App\Models\HistoryArticle;
 use App\Models\Person;
 use App\Models\Review;
+use App\Models\Source;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -43,16 +44,23 @@ class SearchController extends Controller
         $key = $request->key;
 
         $results = [];
-        $results['artworks'] = Artwork::search($key);
-        $results['reviews'] = Review::search($key);
-        $results['people'] = Person::search($key);
 
-        $test = $results['artworks']
-            ->union($results['reviews'])
-            ->union($results['people']) // Não pode ser a primeira da lista, pois possui coluna name ao invés de title.
-            ->orderBy('title')
-            ->simplePaginate(15);
+        foreach (config('searchable_types') as $searchable_type) {
+            $model = $searchable_type['type'];
+            $results[] = $model::search($key);
+        }
 
-        return response()->json($test);
+        $retval = $results[0];
+
+        foreach ($results as $key => $result) {
+            if ($key == 0) {
+                continue;
+            }
+            $retval = $retval->union($result);
+        }
+
+        $retval = $retval->orderBy('title')->simplePaginate(15);
+
+        return response()->json($retval);
     }
 }

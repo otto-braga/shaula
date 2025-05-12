@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasFetching;
+use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -12,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class HistoryArticle extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasFetching;
+    use HasFactory, HasUuid, HasSlug, HasFetching, HasSearching;
 
     protected $fillable = [
         'title',
@@ -73,7 +74,7 @@ class HistoryArticle extends Model
         return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
     }
 
-    public function mentioner(): MorphMany
+    public function mentioners(): MorphMany
     {
         return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
     }

@@ -25,6 +25,19 @@ trait HasSearching
         // add $this::class column to te query without escaping the \ character
         $query = $query->selectRaw("'".str_replace('\\', '\\\\', $this::class) ."' as type");
 
+        $query->with('authors');
+
+        // add date column to the query if it exists
+        if (Schema::hasColumn($this->getTable(), 'date')) {
+            $query->addSelect('date');
+        }
+        elseif (Schema::hasColumn($this->getTable(), 'date_of_birth')) {
+            $query->addSelect('date_of_birth as date');
+        }
+        else {
+            $query->addSelect('created_at as date');
+        }
+
         return $query;
     }
 }
