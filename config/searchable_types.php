@@ -18,11 +18,6 @@ return [
         'resource' => ArtworkResource::class,
     ],
     [
-        'table' => 'people',
-        'type' => Person::class,
-        'resource' => PersonResource::class,
-    ],
-    [
         'table' => 'reviews',
         'type' => Review::class,
         'resource' => ReviewResource::class,
@@ -36,6 +31,12 @@ return [
         'table' => 'sources',
         'type' => Source::class,
         'resource' => SourceResource::class,
+    ],
+
+    [
+        'table' => 'people', // Não pode ser o primeiro da lista, pois possui coluna name ao invés de title.
+        'type' => Person::class,
+        'resource' => PersonResource::class,
     ],
 
 ];
