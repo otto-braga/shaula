@@ -32,8 +32,6 @@ class ReviewResource extends JsonResource
             'mentioned' => MentionResource::collection($this->whenLoaded('mentioned')),
             'mentioners' => MentionResource::collection($this->whenLoaded('mentioners')),
 
-            'sources' => SourceResource::collection($this->sources()),
-
             'categories' => CategoryResource::collection($this->categories),
 
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
