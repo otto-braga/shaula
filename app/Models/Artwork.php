@@ -7,7 +7,6 @@ use App\Traits\HasLabel;
 use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -28,18 +27,6 @@ class Artwork extends Model
         'dimensions',
         'materials',
     ];
-
-    // protected function type(): Attribute
-    // {
-
-    //     return Attribute::make(
-
-    //         get: fn(mixed $value, array $attributes) => (
-    //             $this::class
-    //         ),
-
-    //     );
-    // }
 
     public function authors(): MorphToMany
     {
