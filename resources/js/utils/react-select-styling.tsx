@@ -56,6 +56,7 @@ export const handleReactSelectStyling = (isDisabled: boolean = false) => {
                 ...base,
                 backgroundColor: 'black',
                 color: 'white',
+                zIndex: 3,
             }),
             menuList: (base: CSSObjectWithLabel) => ({
                 ...base,
@@ -91,6 +92,14 @@ export const handleReactSelectStyling = (isDisabled: boolean = false) => {
                 ...base,
                 backgroundColor: 'black',
                 color: 'white',
+            }),
+        }
+    }
+    else {
+        return {
+            menu: (base: CSSObjectWithLabel) => ({
+                ...base,
+                zIndex: 3,
             }),
         }
     }

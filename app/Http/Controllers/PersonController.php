@@ -46,27 +46,19 @@ class PersonController extends Controller
 
     public function create()
     {
-        $genders = Gender::all();
-        $cities = City::all();
-        $periods = Period::all();
-
-        return Inertia::render('admin/person/edit/index', [
-            'genders' => JsonResource::collection($genders),
-            'cities' => JsonResource::collection($cities),
-            'periods' => PeriodResource::collection($periods),
-        ]);
+        return Inertia::render('admin/person/edit/index');
     }
 
     public function store(Request $request)
     {
         $dataForm = $request->all();
 
-
         try {
             $person = Person::create($dataForm);
 
-            $person->genders()->sync(Arr::pluck($request->genders, 'id'));
-            $person->cities()->sync(Arr::pluck($request->cities, 'id'));
+            $person->genders()->sync($request->genders_ids);
+            $person->cities()->sync($request->cities_ids);
+            $person->periods()->sync($request->periods_ids);
 
             session()->flash('success', true);
             return redirect()->route('people.edit', $person->slug);
@@ -81,15 +73,8 @@ class PersonController extends Controller
 
     public function edit(Person $person)
     {
-        $genders = Gender::all();
-        $cities = City::all();
-        $periods = Period::all();
-
         return Inertia::render('admin/person/edit/index', [
             'person' => new PersonResource($person),
-            'genders' => JsonResource::collection($genders),
-            'cities' => JsonResource::collection($cities),
-            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
@@ -99,8 +84,9 @@ class PersonController extends Controller
 
         $person->update($dataForm);
 
-        $person->genders()->sync(Arr::pluck($request->genders, 'id'));
-        $person->cities()->sync(Arr::pluck($request->cities, 'id'));
+        $person->genders()->sync($request->genders_ids);
+        $person->cities()->sync($request->cities_ids);
+        $person->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
         return redirect()->back();
@@ -171,7 +157,7 @@ class PersonController extends Controller
 
             $person->update([
                 'content' => $request->content,
-                'cronology' => $request->cronology,
+                'chronology' => $request->chronology,
             ]);
 
             session()->flash('success', true);

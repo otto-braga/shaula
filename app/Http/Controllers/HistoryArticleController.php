@@ -45,20 +45,7 @@ class HistoryArticleController extends Controller
 
     public function create()
     {
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
-
-        $categories = Category::all();
-        $periods = Period::all();
-
-        $periods = Period::all();
-
-        return Inertia::render('admin/historyArticle/edit/index', [
-            'people' => PersonResource::collection($people),
-            'categories' => CategoryResource::collection($categories),
-            'periods' => PeriodResource::collection($periods),
-        ]);
+        return Inertia::render('admin/historyArticle/edit/index');
     }
 
     public function store(Request $request)
@@ -68,11 +55,11 @@ class HistoryArticleController extends Controller
         $historyArticle = HistoryArticle::create($dataForm);
 
         $historyArticle->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
-        $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
-        $historyArticle->periods()->sync(Arr::pluck($request->periods, 'id'));
+        $historyArticle->categories()->sync($request->categories_ids);
+        $historyArticle->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
         return redirect()->route('history_articles.edit', $historyArticle->slug);
@@ -85,20 +72,8 @@ class HistoryArticleController extends Controller
     {
         $historyArticle->load('authors');
 
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
-
-        $categories = Category::all();
-        $periods = Period::all();
-
-        $periods = Period::all();
-
         return Inertia::render('admin/historyArticle/edit/index', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
-            'people' => PersonResource::collection($people),
-            'categories' => CategoryResource::collection($categories),
-            'periods' => PeriodResource::collection($periods),
         ]);
     }
 
@@ -109,11 +84,11 @@ class HistoryArticleController extends Controller
         $historyArticle->update($dataForm);
 
         $historyArticle->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
-        $historyArticle->categories()->sync(Arr::pluck($request->categories, 'id'));
-        $historyArticle->periods()->sync(Arr::pluck($request->periods, 'id'));
+        $historyArticle->categories()->sync($request->categories_ids);
+        $historyArticle->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
         return redirect()->back();

@@ -13,6 +13,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
+import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -39,10 +40,9 @@ export default function Index({
     const { data, setData, post, patch, errors, processing } = useForm({
         title: review ? review.data.title : '',
         date: review ? review.data.date : '',
-        // authors_ids: review ? review.data.authors.map((author) => author.id) : [],
-        authors: review ? review.data.authors : [],
 
-        categories: review ? review.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name })) : [],
+        authors_ids: review ? review.data.authors.map((author) => author.id) : [] as number[],
+        categories_ids: review ? review.data.categories?.map((category) => category.id) : [] as number[],
     });
 
     const submit: FormEventHandler = (e) => {
@@ -60,13 +60,6 @@ export default function Index({
             });
         }
     };
-
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
-    const [selectedPeople, setSelectedPeople] = useState<Person[]>(review?.data.authors || []);
-
-    useEffect(() => {
-        setData('authors', selectedPeople);
-    }, [selectedPeople]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -86,19 +79,22 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
-                                <Select
-                                    id="authors"
-                                    isMulti
-                                    options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => {
-                                        setSelectedPeople(
-                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        review?.data.authors?.map(
+                                            author => ({ value: author.id, label: author.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'people.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('authors_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.authors} />
+                                <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
 
                             <div className="flex flex-row gap-3">
@@ -118,20 +114,22 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="categories">Categorias</Label>
-                                <Select
-                                    id="categories"
-                                    isMulti
-                                    options={categories?.data.map((category) => ({ value: category.id, label: category.name }))}
-                                    value={data.categories.map((category) => ({ value: category.id, label: category.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'categories',
-                                            options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        review?.data.categories?.map(
+                                            category => ({ value: category.id, label: category.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'categories.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('categories_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.categories} />
+                                <InputError className="mt-2" message={errors.categories_ids} />
                             </div>
                         </form>
                     </div>

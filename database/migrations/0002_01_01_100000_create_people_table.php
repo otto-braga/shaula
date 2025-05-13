@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('date_of_death')->nullable();
 
             $table->text('content')->nullable();
-            $table->longText('cronology')->nullable();
+            $table->longText('chronology')->nullable();
 
             $table->longText('links')->nullable();
 

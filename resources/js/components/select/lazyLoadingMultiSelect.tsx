@@ -20,10 +20,6 @@ async function fetchDataForMultiSelect({
     search,
     setterFunction,
 } : FetchDataForMultiSelectProps): Promise<Option[] | undefined> {
-    if (search.length < 1) {
-        return;
-    }
-
     let response;
 
     fetch(
@@ -97,12 +93,16 @@ function LazyLoadingMultiSelect({
 
     return (<>
         <Select
+            {...props}
             isMulti
             options={fetchedOptions}
             value={selectedOptions}
             onChange={onOptionSelectChange}
             onInputChange={(inputValue: string) => {
                 onOptionSelectInputChange(inputValue, type);
+            }}
+            onFocus={() => {
+                onOptionSelectInputChange('', type);
             }}
             loadingMessage={() => 'Carregando...'}
             noOptionsMessage={() => 'Nenhum resultado.'}

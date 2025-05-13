@@ -17,7 +17,7 @@ export type Person = {
     date_of_death: string | null;
 
     content: string;
-    cronology: string;
+    chronology: string;
     links: string;
 
     images: FileProps[];

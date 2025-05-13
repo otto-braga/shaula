@@ -3,8 +3,6 @@ import { type BreadcrumbItem } from '@/types';
 import { Artwork } from '@/types/artwork';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
-import Select from 'react-select';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
 import { Mention, MentionQuery } from '@/types/mention';
 import { modelLabel } from '@/utils/model-label';

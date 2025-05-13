@@ -9,7 +9,10 @@ trait HasFetching
 {
     public function scopeFetchAsSelectOption(Builder $query, $search = null, $search_key = null, $quantity = 5)
     {
-        if ($search) {
+        if ($search && $search == '') {
+            $query->where('id', '>', 0);
+        }
+        elseif ($search) {
             if ($search_key && Schema::hasColumn($this->getTable(), $search_key)) {
                 $query->where($search_key, 'like', "%$search%");
             } else if (Schema::hasColumn($this->getTable(), 'name')) {

@@ -74,7 +74,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                         </div>
                         <div className="space-y-1">
                             <h2 className="font-medium">Cronologia</h2>
-                            <div dangerouslySetInnerHTML={{ __html: person.data.cronology }} className="pb-6 text-lg" />
+                            <div dangerouslySetInnerHTML={{ __html: person.data.chronology }} className="pb-6 text-lg" />
                         </div>
                     </div>
                 </section>
