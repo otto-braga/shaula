@@ -12,6 +12,7 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
+import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -36,12 +37,10 @@ export default function Index({
     const { data, setData, post, patch, errors, processing } = useForm({
         title: historyArticle ? historyArticle.data.title : '',
         date: historyArticle ? historyArticle.data.date : '',
-        authors: historyArticle ? historyArticle.data.authors : [],
 
-        categories: historyArticle
-            ? historyArticle.data.categories?.map((category) => ({ id: category.id, name: category.name, label: category.name }))
-            : [],
-        periods: historyArticle ? historyArticle.data.periods?.map((period) => ({ id: period.id, name: period.name, label: period.name })) : [],
+        authors_ids: historyArticle ? historyArticle.data.authors.map((author) => author.id) : [] as number[],
+        categories_ids: historyArticle ? historyArticle.data.categories?.map((category) => category.id) : [] as number[],
+        periods_ids: historyArticle ? historyArticle.data.periods?.map((period) => period.id) : [] as number[],
     });
 
     console.log('historyArticle', periods);
@@ -62,13 +61,6 @@ export default function Index({
         }
     };
 
-    const [availablePeople, setAvailablePeople] = useState<Person[]>(people?.data || []);
-    const [selectedPeople, setSelectedPeople] = useState<Person[]>(historyArticle?.data.authors || []);
-
-    useEffect(() => {
-        setData('authors', selectedPeople);
-    }, [selectedPeople]);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />
@@ -87,19 +79,22 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="authors_ids">Autores</Label>
-                                <Select
-                                    id="authors"
-                                    isMulti
-                                    options={availablePeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    value={selectedPeople.map((person) => ({ value: person.id, label: person.name }))}
-                                    onChange={(options) => {
-                                        setSelectedPeople(
-                                            availablePeople.filter((person) => options.map((option) => option.value).includes(person.id)),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        historyArticle?.data.authors?.map(
+                                            author => ({ value: author.id, label: author.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'people.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('authors_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.authors} />
+                                <InputError className="mt-2" message={errors.authors_ids} />
                             </div>
 
                             <div className="flex flex-row gap-3">
@@ -119,38 +114,42 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="categories">Categorias</Label>
-                                <Select
-                                    id="categories"
-                                    isMulti
-                                    options={categories?.data.map((category) => ({ value: category.id, label: category.name }))}
-                                    value={data.categories.map((category) => ({ value: category.id, label: category.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'categories',
-                                            options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        historyArticle?.data.categories?.map(
+                                            category => ({ value: category.id, label: category.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'categories.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('categories_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.categories} />
+                                <InputError className="mt-2" message={errors.categories_ids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="periods">Períodos</Label>
-                                <Select
-                                    id="periods"
-                                    isMulti
-                                    options={periods?.data.map((period) => ({ value: period.id, label: period.name }))}
-                                    value={data.periods.map((period) => ({ value: period.id, label: period.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'periods',
-                                            options.map((option) => ({ id: option.value, name: option.label, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        historyArticle?.data.periods?.map(
+                                            period => ({ value: period.id, label: period.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'periods.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('periods_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.periods} />
+                                <InputError className="mt-2" message={errors.periods_ids} />
                             </div>
                         </form>
                     </div>

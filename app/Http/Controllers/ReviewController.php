@@ -43,16 +43,7 @@ class ReviewController extends Controller
 
     public function create()
     {
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
-
-        $categories = Category::all();
-
-        return Inertia::render('admin/review/edit/index', [
-            'people' => PersonResource::collection($people),
-            'categories' => CategoryResource::collection($categories),
-        ]);
+        return Inertia::render('admin/review/edit/index');
     }
 
     public function store(Request $request)
@@ -62,10 +53,10 @@ class ReviewController extends Controller
         $review = Review::create($dataForm);
 
         $review->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
-        $review->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review->slug);
@@ -78,17 +69,8 @@ class ReviewController extends Controller
     {
         $review->load('authors');
 
-        $people = Person::query()
-            ->orderBy('name')
-            ->get();
-
-        $categories = Category::all();
-
         return Inertia::render('admin/review/edit/index', [
             'review' => new ReviewResource($review),
-            'people' => PersonResource::collection($people),
-
-            'categories' => CategoryResource::collection($categories),
         ]);
     }
 
@@ -99,10 +81,10 @@ class ReviewController extends Controller
         $review->update($dataForm);
 
         $review->authors()->syncWithPivotValues(
-            Arr::pluck($request->authors, 'id'),
+            $request->authors_ids,
             ['is_author' => true]
         );
-        $review->categories()->sync(Arr::pluck($request->categories, 'id'));
+        $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
         return redirect()->back();

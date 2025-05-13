@@ -25,7 +25,7 @@ class Person extends Model
         'date_of_birth',
         'date_of_death',
         'content',
-        'cronology',
+        'chronology',
         'links',
     ];
 

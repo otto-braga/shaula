@@ -8,6 +8,7 @@ import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
 import { Mention, MentionQuery } from '@/types/mention';
 import { modelLabel } from '@/utils/model-label';
+import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -72,28 +73,24 @@ export default function Mentions({
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 {modelLabel(mention_query.type)}
                                             </label>
-                                            <Select
-                                                id={mention_query.type}
-                                                isMulti
-                                                isClearable
-                                                options={
-                                                    mention_query.query.map((instance) => ({
-                                                        value: instance.id,
-                                                        label: instance.name,
-                                                    }))
-                                                }
-                                                defaultValue={
-
-                                                    review.data.mentioned.filter(
+                                            <LazyLoadingMultiSelect
+                                                initialOptions={
+                                                    review.data.mentioned?.filter(
                                                         (mentioned) => mentioned.mentioned_type === mention_query.type
                                                     ).map((mention) => ({
-                                                        value: mention.mentioned_id,
-                                                        label: mention.mentioned_name,
-                                                    }))
+                                                        value: mention.mentioned_id ?? 0,
+                                                        label: mention.mentioned_name ?? '',
+                                                    })) ?? []
                                                 }
-                                                onChange={
-                                                    (selectedOptions) => {
-                                                        const selectedMentions = selectedOptions.map((option) => ({
+                                                routeName={
+                                                    'mentions.fetch.options'
+                                                }
+                                                type={
+                                                    mention_query.type
+                                                }
+                                                setterFunction={
+                                                    (options) => {
+                                                        const selectedMentions = options.map((option) => ({
                                                             mentioned_id: option.value,
                                                             mentioned_type: mention_query.type,
                                                         }));
@@ -106,8 +103,7 @@ export default function Mentions({
                                                         ]);
                                                     }
                                                 }
-                                                styles={handleReactSelectStyling()}
-                                            ></Select>
+                                            />
                                         </div>
                                     );
                                 })

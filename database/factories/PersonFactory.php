@@ -26,6 +26,8 @@ class PersonFactory extends Factory
             'date_of_birth' => $this->faker->date(),
             'date_of_death' => rand(0, 1) ? $this->faker->date() : null,
             'content' => json_encode($this->faker->text),
+            'chronology' => json_encode($this->faker->text),
+            'links' => "wikipedia",
         ];
     }
 

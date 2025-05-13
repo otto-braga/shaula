@@ -15,6 +15,7 @@ import Tabs from './tabs';
 
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
+import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -40,10 +41,13 @@ export default function Index({
         name: person ? person.data.name : '',
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
-        genders: person ? person.data.genders?.map((gender) => ({ id: gender.id, label: gender.name })) : [],
-        cities: person ? person.data.cities?.map((city) => ({ id: city.id, label: city.name })) : [],
-        periods: person ? person.data.periods?.map((period) => ({ id: period.id, label: period.name })) : [],
+
+        genders_ids: person ? person.data.genders?.map((gender) => gender.id) : [] as number[],
+        cities_ids: person ? person.data.cities?.map((city) => city.id) : [] as number[],
+        periods_ids: person ? person.data.periods?.map((period) => period.id) : [] as number[],
+
         links: person ? person.data.links : '',
+        chronology: person ? person.data.chronology : '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -62,10 +66,16 @@ export default function Index({
         }
     };
 
-    const editorRef = useRef<TinyMCEEditor | null>(null);
+    const editorLinksRef = useRef<TinyMCEEditor | null>(null);
 
     function onLinksInput(e: any) {
-        setData('links', editorRef?.current?.getContent() ?? String());
+        setData('links', editorLinksRef?.current?.getContent() ?? String());
+    }
+
+    const editorChronologyRef = useRef<TinyMCEEditor | null>(null);
+
+    function onChronologyInput(e: any) {
+        setData('chronology', editorChronologyRef?.current?.getContent() ?? String());
     }
 
     return (
@@ -114,106 +124,90 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="genders"></Label>
-                                <Select
-                                    id="genders"
-                                    isMulti
-                                    options={genders?.data.map((gender) => ({ value: gender.id, label: gender.name }))}
-                                    value={data.genders?.map((gender) => ({ value: gender.id, label: gender.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'genders',
-                                            options.map((option) => ({ id: option.value, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        person?.data.genders?.map(
+                                            gender => ({ value: gender.id, label: gender.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'genders.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('genders_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.genders} />
+                                <InputError className="mt-2" message={errors.genders_ids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="cities">Cidades</Label>
-                                <Select
-                                    id="cities"
-                                    isMulti
-                                    options={cities?.data.map((city) => ({ value: city.id, label: city.name }))}
-                                    value={data.cities?.map((city) => ({ value: city.id, label: city.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'cities',
-                                            options.map((option) => ({ id: option.value, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        person?.data.cities?.map(
+                                            city => ({ value: city.id, label: city.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'cities.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('cities_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.cities} />
+                                <InputError className="mt-2" message={errors.cities_ids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="periods">Períodos</Label>
-                                <Select
-                                    id="periods"
-                                    isMulti
-                                    options={periods?.data.map((period) => ({ value: period.id, label: period.name }))}
-                                    value={data.periods?.map((period) => ({ value: period.id, label: period.label }))}
-                                    onChange={(options) => {
-                                        setData(
-                                            'periods',
-                                            options.map((option) => ({ id: option.value, label: option.label })),
-                                        );
-                                    }}
-                                    styles={handleReactSelectStyling()}
+                                <LazyLoadingMultiSelect
+                                    initialOptions={
+                                        person?.data.periods?.map(
+                                            period => ({ value: period.id, label: period.name })
+                                        ) ?? []
+                                    }
+                                    routeName={
+                                        'periods.fetch.options'
+                                    }
+                                    setterFunction={
+                                        (options) => {
+                                            setData('periods_ids', options.map((option) => (option.value)));
+                                        }
+                                    }
                                 />
-                                <InputError className="mt-2" message={errors.periods} />
+                                <InputError className="mt-2" message={errors.periods_ids} />
                             </div>
 
-                            <div className="max-w-sm">
+                            <div>
                                 <Label htmlFor="links">Links relacionados</Label>
                                 <Editor
-                                    tinymceScriptSrc="/tinymce/tinymce.min.js"
-                                    licenseKey="gpl"
-                                    onInit={(_evt, editor) => (editorRef.current = editor)}
-                                    initialValue={(person.data.links as string) || String()}
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorLinksRef.current = editor}
+                                    initialValue={person.data.links as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist',
-                                            'autolink',
-                                            'lists',
-                                            'link',
-                                            'charmap',
-                                            'anchor',
-                                            'searchreplace',
-                                            'visualblocks',
-                                            'code',
-                                            'fullscreen',
-                                            'insertdatetime',
-                                            'media',
-                                            'table',
-                                            'preview',
-                                            'help',
-                                            'wordcount',
+                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
                                             'autoresize',
                                         ],
 
-                                        toolbar_sticky: false,
-                                        // toolbar_sticky_offset: 100,
-
-                                        min_height: 500,
+                                        min_height: 150,
                                         autoresize_bottom_margin: 0,
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                                        toolbar:
-                                            'undo redo | ' +
-                                            // 'gallery | ' +
-                                            'bold italic forecolor | alignleft aligncenter ' +
-                                            'alignright alignjustify |  outdent indent | ' +
-                                            'removeformat',
+                                        toolbar: 'undo redo | link',
 
-                                        content_style:
-                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
                                         paste_preprocess: (editor, args) => {
                                             const blob = args.content.match(/<img src="blob:.*">/g);
@@ -226,6 +220,50 @@ export default function Index({
                                         paste_block_drop: true,
                                     }}
                                     onEditorChange={onLinksInput}
+                                />
+                            </div>
+
+                            <div>
+                                <Label htmlFor="chronology">Cronologia</Label>
+                                <Editor
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorChronologyRef.current = editor}
+                                    initialValue={person.data.chronology as string || String()}
+                                    init={{
+                                        plugins: [
+                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                                            'autoresize',
+                                        ],
+
+                                        min_height: 400,
+                                        autoresize_bottom_margin: 0,
+
+                                        menubar: false,
+
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+
+                                        toolbar: 'undo redo | ' +
+                                            'bold italic forecolor | alignleft aligncenter ' +
+                                            'alignright alignjustify |  outdent indent | ' +
+                                            'removeformat',
+
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+
+                                        paste_preprocess: (editor, args) => {
+                                            const blob = args.content.match(/<img src="blob:.*">/g);
+
+                                            if (blob) {
+                                                args.content = '';
+                                            }
+                                        },
+
+                                        paste_block_drop: true,
+                                    }}
+                                    onEditorChange={onChronologyInput}
                                 />
                             </div>
                         </form>
