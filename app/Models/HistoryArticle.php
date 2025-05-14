@@ -19,6 +19,7 @@ class HistoryArticle extends Model
         'title',
         'date',
         'content',
+        'links',
     ];
 
     public function authors(): MorphToMany

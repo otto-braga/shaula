@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     // Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     // Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
-    // Periods (Períodos históricos)
+    // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
     Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
     Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
@@ -198,20 +198,20 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/fetch/options', [ReviewController::class, 'fetchSelectOptions'])->name('reviews.fetch.options');
 
     // History Articles
-    Route::get('/historia-da-arte', [HistoryArticleController::class, 'index'])->name('history_articles.index');
-    Route::get('/historia-da-arte/criar', [HistoryArticleController::class, 'create'])->name('history_articles.create');
-    Route::post('/historia-da-arte/store', [HistoryArticleController::class, 'store'])->name('history_articles.store');
-    Route::get('/historia-da-arte/{historyArticle:slug}', [HistoryArticleController::class, 'show'])->name('history_articles.show');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('history_articles.edit');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('history_articles.update');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('history_articles.edit.images');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/images', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('history_articles.edit.content');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('history_articles.update.content');
-    Route::get('/historia-da-arte/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
-    Route::post('/historia-da-arte/{historyArticle:slug}/update/mentions', [HistoryArticleController::class, 'updateMentions'])->name('history_articles.update.mentions');
-    Route::delete('/historia-da-arte/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
-    Route::get('/historia-da-arte/fetch/options', [HistoryArticleController::class, 'fetchSelectOptions'])->name('history_articles.fetch.options');
+    Route::get('/artigos-de-historia', [HistoryArticleController::class, 'index'])->name('history_articles.index');
+    Route::get('/artigos-de-historia/criar', [HistoryArticleController::class, 'create'])->name('history_articles.create');
+    Route::post('/artigos-de-historia/store', [HistoryArticleController::class, 'store'])->name('history_articles.store');
+    Route::get('/artigos-de-historia/{historyArticle:slug}', [HistoryArticleController::class, 'show'])->name('history_articles.show');
+    Route::get('/artigos-de-historia/{historyArticle:slug}/editar', [HistoryArticleController::class, 'edit'])->name('history_articles.edit');
+    Route::post('/artigos-de-historia/{historyArticle:slug}/update', [HistoryArticleController::class, 'update'])->name('history_articles.update');
+    Route::get('/artigos-de-historia/{historyArticle:slug}/editar/imagens', [HistoryArticleController::class, 'editImages'])->name('history_articles.edit.images');
+    Route::post('/artigos-de-historia/{historyArticle:slug}/update/images', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
+    Route::get('/artigos-de-historia/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('history_articles.edit.content');
+    Route::post('/artigos-de-historia/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('history_articles.update.content');
+    Route::get('/artigos-de-historia/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
+    Route::post('/artigos-de-historia/{historyArticle:slug}/update/mentions', [HistoryArticleController::class, 'updateMentions'])->name('history_articles.update.mentions');
+    Route::delete('/artigos-de-historia/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
+    Route::get('/artigos-de-historia/fetch/options', [HistoryArticleController::class, 'fetchSelectOptions'])->name('history_articles.fetch.options');
 
     // Sources
     Route::get('/fontes', [SourceController::class, 'index'])->name('sources.index');

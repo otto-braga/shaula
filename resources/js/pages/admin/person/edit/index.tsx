@@ -163,7 +163,7 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="periods">Períodos</Label>
+                                <Label htmlFor="periods">Periodização</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
                                         person?.data.periods?.map(
@@ -188,7 +188,7 @@ export default function Index({
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorLinksRef.current = editor}
-                                    initialValue={person.data.links as string || String()}
+                                    initialValue={person?.data.links as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',
@@ -229,7 +229,7 @@ export default function Index({
                                     tinymceScriptSrc='/tinymce/tinymce.min.js'
                                     licenseKey='gpl'
                                     onInit={(_evt, editor) => editorChronologyRef.current = editor}
-                                    initialValue={person.data.chronology as string || String()}
+                                    initialValue={person?.data.chronology as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist', 'autolink', 'lists', 'link', 'charmap',

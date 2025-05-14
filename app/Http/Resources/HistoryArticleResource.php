@@ -27,6 +27,8 @@ class HistoryArticleResource extends JsonResource
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
 
+            'links' => $this->links,
+
             'images' => FileResource::collection($this->images),
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
