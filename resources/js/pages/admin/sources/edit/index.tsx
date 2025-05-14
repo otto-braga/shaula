@@ -127,7 +127,7 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="periods">Períodos</Label>
+                                <Label htmlFor="periods">Periodização</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
                                         source?.data.periods?.map(

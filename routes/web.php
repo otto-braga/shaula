@@ -96,7 +96,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     // Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
     // Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
-    // Periods (Períodos históricos)
+    // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
     Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
     Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');

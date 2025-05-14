@@ -9,9 +9,12 @@ import { Period } from '@/types/period';
 import { Person } from '@/types/person';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useEffect, useState } from 'react';
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import Select from 'react-select';
 import Tabs from './tabs';
+
+import { Editor } from '@tinymce/tinymce-react';
+import { Editor as TinyMCEEditor } from 'tinymce';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -41,7 +44,10 @@ export default function Index({
         authors_ids: historyArticle ? historyArticle.data.authors.map((author) => author.id) : [] as number[],
         categories_ids: historyArticle ? historyArticle.data.categories?.map((category) => category.id) : [] as number[],
         periods_ids: historyArticle ? historyArticle.data.periods?.map((period) => period.id) : [] as number[],
+
+        links: historyArticle ? historyArticle.data.links : '',
     });
+
 
     console.log('historyArticle', periods);
 
@@ -60,6 +66,12 @@ export default function Index({
             });
         }
     };
+
+    const editorLinksRef = useRef<TinyMCEEditor | null>(null);
+
+    function onLinksInput(e: any) {
+        setData('links', editorLinksRef?.current?.getContent() ?? String());
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -133,7 +145,7 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="periods">Períodos</Label>
+                                <Label htmlFor="periods">Periodização</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={
                                         historyArticle?.data.periods?.map(
@@ -150,6 +162,48 @@ export default function Index({
                                     }
                                 />
                                 <InputError className="mt-2" message={errors.periods_ids} />
+                            </div>
+
+
+                            <div>
+                                <Label htmlFor="links">Links relacionados</Label>
+                                <Editor
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorLinksRef.current = editor}
+                                    initialValue={historyArticle?.data.links as string || String()}
+                                    init={{
+                                        plugins: [
+                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
+                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
+                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                                            'autoresize',
+                                        ],
+
+                                        min_height: 150,
+                                        autoresize_bottom_margin: 0,
+
+                                        menubar: false,
+
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+
+                                        toolbar: 'undo redo | link',
+
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+
+                                        paste_preprocess: (editor, args) => {
+                                            const blob = args.content.match(/<img src="blob:.*">/g);
+
+                                            if (blob) {
+                                                args.content = '';
+                                            }
+                                        },
+
+                                        paste_block_drop: true,
+                                    }}
+                                    onEditorChange={onLinksInput}
+                                />
                             </div>
                         </form>
                     </div>

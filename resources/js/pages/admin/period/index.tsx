@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Períodos',
+        title: 'Periodização',
         href: '/admin/periodos',
     },
 ];
@@ -17,7 +17,7 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
     console.log(periods);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Períodos" />
+            <Head title="Periodização" />
             <div className="mt-3 flex justify-end p-3">
                 <PeriodDialogForm />
             </div>

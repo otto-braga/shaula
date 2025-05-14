@@ -76,7 +76,7 @@ const auxNavItems: NavItem[] = [
         icon: CircleDashed,
     },
     {
-        title: 'Períodos Históricos',
+        title: 'Perodização',
         href: route('periods.index'),
         icon: Clock,
     },
