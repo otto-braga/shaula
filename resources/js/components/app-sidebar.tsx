@@ -42,7 +42,7 @@ const mainNavItems: NavItem[] = [
         icon: Text,
     },
     {
-        title: 'História da Arte',
+        title: 'Artigos de História',
         href: route('history_articles.index'),
         icon: BookOpen,
     },
