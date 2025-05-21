@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sources', function (Blueprint $table) {
+        Schema::create('source_categories', function (Blueprint $table) {
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('slug');
-            $table->string('title')->unique();
-            $table->longText('content')->nullable();
+            $table->string('name')->unique();
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sources');
+        Schema::dropIfExists('source_categories');
     }
 };

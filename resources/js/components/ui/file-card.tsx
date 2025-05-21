@@ -102,11 +102,11 @@ function FileCard({
             <iframe
                 key={file.id + 'pdf'}
                 src={file.path}
-                className={'object-cover w-full h-32 rounded-lg'}
+                className={'object-cover w-full h-full rounded-lg'}
             />
         ) : (
             <img key={file?.id + 'file'} src={file?.path} alt={file?.path}
-                className={'object-cover w-full h-32 rounded-lg'}
+                className={'object-cover w-full h-full rounded-lg'}
             />
         )}
       </div>

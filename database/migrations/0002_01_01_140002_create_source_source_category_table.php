@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sources', function (Blueprint $table) {
+        Schema::create('source_source_category', function (Blueprint $table) {
             $table->id();
-            $table->uuid('uuid')->unique();
-            $table->string('slug');
-            $table->string('title')->unique();
-            $table->longText('content')->nullable();
+            $table->foreignId('source_id')->constrained('sources')->onDelete('cascade');
+            $table->foreignId('source_category_id')->constrained('source_categories')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sources');
+        Schema::dropIfExists('source_source_category');
     }
 };
