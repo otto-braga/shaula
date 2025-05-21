@@ -1,3 +1,5 @@
+import { FileProps } from "./file";
+
 export type Period = {
     id: number;
     uuid: string;
@@ -6,6 +8,8 @@ export type Period = {
     content: string;
     start_date: string;
     end_date: string;
+    image: FileProps;
+    primary_image: FileProps | null;
     created_at: string;
     updated_at: string;
 }

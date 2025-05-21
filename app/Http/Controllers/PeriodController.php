@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
+use App\Traits\HasFile;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PeriodController extends Controller
 {
+    use HasFile;
+
     public function index()
     {
         $periods = Period::all();
@@ -20,20 +23,36 @@ class PeriodController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:periods',
-            'start_date' => '',
-            'end_data' => '',
-            'content' => 'required',
-        ]);
+        // $request->validate([
+        //     'name' => 'required|unique:periods',
+        //     'start_date' => '',
+        //     'end_data' => '',
+        //     'content' => 'required',
+        // ]);
 
         try {
-            Period::create([
+            $period = Period::create([
                 'name' => $request->name,
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
                 'content' => $request->content,
             ]);
+
+            if ($request->has('deleteImage') && $request->deleteImage) {
+                if ($period->image) {
+                    $this->deleteFile($period->image->id);
+                }
+            }
+
+            if ($request->has('files') && count($request->files) > 0) {
+                if ($period->image) {
+                    $this->deleteFile($period->image->id);
+                }
+                $this->storeFile($request, $period, 'general');
+                $period->image()->update(['is_primary' => true]);
+            }
+
+            session()->flash('success', true);
             return redirect()->back()->with('success', 'Período criada com sucesso.');
         } catch (\Exception $e) {
             dd($e->getMessage());
@@ -41,14 +60,14 @@ class PeriodController extends Controller
         }
     }
 
-    public function update(Period $period)
+    public function update(Request $request, Period $period)
     {
-        request()->validate([
-            'name' => 'required|unique:periods,name,' . $period->id,
-            'start_date' => '',
-            'end_data' => '',
-            'content' => 'required',
-        ]);
+        // request()->validate([
+        //     'name' => 'required|unique:periods,name,' . $period->id,
+        //     'start_date' => '',
+        //     'end_data' => '',
+        //     'content' => 'required',
+        // ]);
 
         try {
             $period->update([
@@ -57,6 +76,22 @@ class PeriodController extends Controller
                 'end_date' => request('end_date'),
                 'content' => request('content'),
             ]);
+
+            if ($request->has('deleteImage') && $request->deleteImage) {
+                if ($period->image) {
+                    $this->deleteFile($period->image->id);
+                }
+            }
+
+            if ($request->has('files') && count($request->files) > 0) {
+                if ($period->image) {
+                    $this->deleteFile($period->image->id);
+                }
+                $this->storeFile($request, $period, 'general');
+                $period->image()->update(['is_primary' => true]);
+            }
+
+            session()->flash('success', true);
             return redirect()->back()->with('success', 'Período atualizada com sucesso.');
         } catch (\Exception $e) {
             dd($e->getMessage());
