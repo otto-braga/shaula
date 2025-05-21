@@ -45,7 +45,6 @@ use App\Http\Controllers\Public\ReviewPublicController;
 use App\Http\Controllers\Public\SearchController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SourceController;
-use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -89,12 +88,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
 
     // Search
     Route::get('search', [SearchController::class, 'search'])->name('search');
-
-    // Tags
-    // Route::get('tags', [TagController::class, 'index'])->name('tags.index');
-    // Route::post('tags', [TagController::class, 'store'])->name('tags.store');
-    // Route::put('tags/{tag}', [TagController::class, 'update'])->name('tags.update');
-    // Route::delete('tags/{tag}', [TagController::class, 'destroy'])->name('tags.destroy');
 
     // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
@@ -220,14 +213,17 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/fontes/{source:slug}', [SourceController::class, 'show'])->name('sources.show');
     Route::get('/fontes/{source:slug}/editar', [SourceController::class, 'edit'])->name('sources.edit');
     Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
-    Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
-    Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
-    Route::get('/fontes/{source:slug}/editar/conteudo', [SourceController::class, 'editContent'])->name('sources.edit.content');
-    Route::post('/fontes/{source:slug}/update/content', [SourceController::class, 'updateContent'])->name('sources.update.content');
-    Route::get('/fontes/{source:slug}/editar/mencoes', [SourceController::class, 'editMentions'])->name('sources.edit.mentions');
-    Route::post('/fontes/{source:slug}/update/mentions', [SourceController::class, 'updateMentions'])->name('sources.update.mentions');
+    // Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
+    // Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
+    // Route::get('/fontes/{source:slug}/editar/conteudo', [SourceController::class, 'editContent'])->name('sources.edit.content');
+    // Route::post('/fontes/{source:slug}/update/content', [SourceController::class, 'updateContent'])->name('sources.update.content');
+    // Route::get('/fontes/{source:slug}/editar/mencoes', [SourceController::class, 'editMentions'])->name('sources.edit.mentions');
+    // Route::post('/fontes/{source:slug}/update/mentions', [SourceController::class, 'updateMentions'])->name('sources.update.mentions');
     Route::delete('/fontes/{source:slug}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
+
+    // Source Categories
+    Route::get('/categorias-fontes/fetch/options', [SourceController::class, 'fetchCategorySelectOptions'])->name('source_categories.fetch.options');
 
     // Mentions
     Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'showMentioned'])->name('mentions.show.mentioned');

@@ -36,15 +36,15 @@ export default function Tabs({ source, processing, className }: TabsProps) {
                 <div className={'flex flex-wrap gap-2 divide-x' + (!isEdit ? ' pointer-events-none' : '')}>
                     {isEdit && (
                         <>
-                            <Link
+                            {/* <Link
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('source.edit') ? ' font-bold underline' : '')
                                 }
                                 href={isEdit ? route('sources.edit', { source: source?.data }) : ''}
                             >
                                 Dados
-                            </Link>
-                            <Link
+                            </Link> */}
+                            {/* <Link
                                 className={
                                     'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('source.edit.files') ? ' font-bold underline' : '')
                                 }
@@ -67,7 +67,7 @@ export default function Tabs({ source, processing, className }: TabsProps) {
                                 href={isEdit ? route('sources.edit.mentions', { source: source?.data }) : ''}
                             >
                                 Menções
-                            </Link>
+                            </Link> */}
                         </>
                     )}
                 </div>

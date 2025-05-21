@@ -10,7 +10,7 @@ import { Edit, Eye } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Obras',
+        title: 'Fontes',
         href: '/admin/sources',
     },
 ];
@@ -28,10 +28,11 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {sources?.data?.map((source) => (
+                            console.log('source', source),
                             <Card key={source.id} className="flex flex-col justify-between">
                                 <CardHeader>
                                     <FileCard
-                                        file={source.primary_file ?? null}
+                                        file={source.file ?? null}
                                         className="h-32 w-full"
                                     />
                                     <CardTitle>
@@ -40,8 +41,7 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                                 </CardHeader>
                                 <CardContent>
                                     <div>
-                                        <p className="text-sm">Autores</p>
-                                        <p>{source.authors.map((author) => author.name).join(', ')}</p>
+                                        <p>{source.content}</p>
                                     </div>
                                 </CardContent>
                                 <CardFooter>
@@ -49,10 +49,10 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                                         <DeleteDialog
                                             resourceId={source.id}
                                             resourceName={source.title}
-                                            deleteRoute="source.destroy"
+                                            deleteRoute="sources.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
-                                        <Link href={route('sources.edit', { source })}>
+                                        <Link href={route('sources.edit', { source: source })}>
                                             <Button variant={'secondary'}>
                                                 <Edit className="h-5 w-5" />
                                             </Button>
