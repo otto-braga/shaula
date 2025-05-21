@@ -7,8 +7,16 @@ import { Period } from '@/types/period';
 import { useForm } from '@inertiajs/react';
 import { Editor } from '@tinymce/tinymce-react';
 import { Plus } from 'lucide-react';
-import { FormEventHandler, useRef, useState } from 'react';
+import { FormEventHandler, useEffect, useRef, useState } from 'react';
 import { Editor as TinyMCEEditor } from 'tinymce';
+
+import { FilePondFile, FilePondInitialFile } from 'filepond';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import { FilePond, registerPlugin } from 'react-filepond';
+import { CheckIcon, DeleteIcon } from 'lucide-react';
+registerPlugin(FilePondPluginImagePreview);
 
 interface PeriodDialogFormProps {
     period?: Period;
@@ -32,6 +40,8 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
         start_date: period ? period.start_date : '',
         end_date: period ? period.end_date : '',
         content: period ? period.content : '',
+        files: Array<File>(),
+        deleteImage: false as boolean,
     });
 
     const handleSubmit: FormEventHandler = (e) => {
@@ -67,6 +77,19 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
     }
 
     const editorRef = useRef<TinyMCEEditor | null>(null);
+
+    const [images, setImages] = useState<Array<FilePondInitialFile | File | Blob | string>>([]);
+
+    useEffect(() => {
+        setData('files', images as File[]);
+    }, [images]);
+
+    const [deleteImage, setDeleteImage] = useState<boolean>(false);
+
+    useEffect(() => {
+        setData('deleteImage', deleteImage);
+        console.log('deleteImage', deleteImage);
+    }, [deleteImage]);
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -137,6 +160,34 @@ export default function PeriodDialogForm({ period }: PeriodDialogFormProps) {
 
                         <InputError message={errors.end_date} />
                     </div>
+
+                    <FilePond
+                        files={images}
+                        onupdatefiles={(imageItems: FilePondFile[]) => {
+                            setImages(imageItems.map((imageItem) => imageItem.file as File));
+                        }}
+                        allowMultiple={false}
+                    />
+
+                    {period?.image?.path && (
+                        <div className="flex flex-row gap-2">
+                            <img
+                                src={period?.image?.path}
+                                alt={period?.image?.name}
+                                className="w-32 h-32 object-cover rounded-md"
+                            />
+                            <Button
+                                key={period?.image.id + 'delete_button'}
+                                type="button"
+                                className={
+                                    (deleteImage ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                }
+                                onClick={() => { deleteImage ? setDeleteImage(false) : setDeleteImage(true); }}
+                            >
+                                <DeleteIcon /> Deletar
+                            </Button>
+                        </div>
+                    )}
 
                     <div>
                         <Label htmlFor="name">Sobre</Label>
