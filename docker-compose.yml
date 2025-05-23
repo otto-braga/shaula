@@ -64,6 +64,31 @@ services:
         networks:
             - application
 
+    redis:
+        container_name: ${APP_NAME}-redis
+        image: redis:alpine
+        restart: unless-stopped
+        ports:
+            - ${REDIS_PORT}:6379
+        networks:
+            - application
+
+    meilisearch:
+        container_name: ${APP_NAME}-meilisearch
+        image: getmeili/meilisearch:latest
+        restart: unless-stopped
+        ports:
+            - 7720:7700
+        environment:
+            MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
+            MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
+            MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+        volumes:
+            - ./.meilisearch-data:/meilisearch-data
+        networks:
+            - application
+
+
 networks:
   application:
     name: ${APP_NAME}

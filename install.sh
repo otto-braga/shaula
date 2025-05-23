@@ -21,6 +21,21 @@ echo
 docker compose exec app php artisan config:cache
 
 echo
+echo Installing scout...
+echo
+docker compose exec app composer require laravel/scout
+
+echo
+echo Installing scout driver...
+echo
+docker compose exec app php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
+
+echo
+echo Installing predis...
+echo
+docker compose exec app composer require predis/predis
+
+echo
 echo Installing composer dependencies...
 echo
 docker compose exec app composer install
