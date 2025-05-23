@@ -36,6 +36,11 @@ echo
 docker compose exec app composer require predis/predis
 
 echo
+echo Installing meilisearch...
+echo
+docker compose exec app composer require meilisearch/meilisearch-php http-interop/http-factory-guzzle
+
+echo
 echo Installing composer dependencies...
 echo
 docker compose exec app composer install
