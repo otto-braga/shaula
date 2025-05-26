@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\SourceResource;
-use App\Models\Mention;
 use App\Models\Source;
+use App\Models\SourceCategory;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 
 class SourceController extends Controller
@@ -50,13 +49,15 @@ class SourceController extends Controller
 
         $source->update($dataForm);
 
-        $source->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $source->sourceCategories()->sync($request->source_categories_ids);
 
-        $source->categories()->sync($request->categories_ids);
-        $source->periods()->sync($request->periods_ids);
+        if ($request->has('files') && count($request->files) > 0) {
+            if ($source->file) {
+                $this->deleteFile($source->file->id);
+            }
+            $this->storeFile($request, $source, 'general');
+            $source->file->update(['is_primary' => true]);
+        }
 
         session()->flash('success', true);
         return redirect()->route('sources.edit', $source);
@@ -67,8 +68,6 @@ class SourceController extends Controller
 
     public function edit(Source $source)
     {
-        $source->load('authors');
-
         return Inertia::render('admin/sources/edit/index', [
             'source' => new SourceResource($source),
         ]);
@@ -80,117 +79,20 @@ class SourceController extends Controller
 
         $source->update($dataForm);
 
-        $source->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $source->sourceCategories()->sync($request->source_categories_ids);
 
-        $source->categories()->sync($request->categories_ids);
-        $source->periods()->sync($request->periods_ids);
-
-        session()->flash('success', true);
-        return redirect()->back();
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT FILES
-
-    public function editFiles(Source $source)
-    {
-        return Inertia::render('admin/sources/edit/files', [
-            'source' => new SourceResource($source),
-        ]);
-    }
-
-    public function updateFiles(Request $request, Source $source)
-    {
-        try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $source, 'general');
+        if ($request->has('delete_file') && $request->delete_file) {
+            if ($source->file) {
+                $this->deleteFile($source->file->id);
             }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($source->files()->count() > 0) {
-                $source->files()->update(['is_primary' => false]);
-                if ($request->primaryFileId > 0) {
-                    $source->files()->where('id', $request->primaryFileId)->update(['is_primary' => true]);
-                } else {
-                    $source->files()->first()->update(['is_primary' => true]);
-                }
-            }
-
-            session()->flash('success', true);
-            return redirect()->back();
-        } catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
         }
-    }
 
-    // -------------------------------------------------------------------------
-    // EDIT CONTENT
-
-    public function editContent(Source $source)
-    {
-        return Inertia::render('admin/sources/edit/content', [
-            'source' => new SourceResource($source),
-        ]);
-    }
-
-    public function updateContent(Request $request, Source $source)
-    {
-        try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $source, 'content');
+        if ($request->has('files') && count($request->files) > 0) {
+            if ($source->file) {
+                $this->deleteFile($source->file->id);
             }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $source->update(['content' => $request->content]);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        } catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT MENTIONS
-
-    public function editMentions(Source $source)
-    {
-        $source->load('mentioned');
-
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/sources/edit/mentions', [
-            'source' => new SourceResource($source),
-            'mention_queries' => new JsonResource($mentionQueries),
-        ]);
-    }
-
-    public function updateMentions(Request $request, Source $source)
-    {
-        $source->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $source->id,
-                'mentioner_type' => $source::class
-            ]);
+            $this->storeFile($request, $source, 'general');
+            $source->file->update(['is_primary' => true]);
         }
 
         session()->flash('success', true);
@@ -214,6 +116,12 @@ class SourceController extends Controller
     public function fetchSelectOptions(Request $request)
     {
         $options = Source::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
+
+    public function fetchCategorySelectOptions(Request $request)
+    {
+        $options = SourceCategory::fetchAsSelectOption($request->search);
         return response()->json($options);
     }
 }

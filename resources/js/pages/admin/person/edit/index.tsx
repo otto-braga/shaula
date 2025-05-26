@@ -151,7 +151,7 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="periods">Períodos</Label>
+                                <Label htmlFor="periods">Periodização</Label>
                                 <LazyLoadingMultiSelect
                                     initialOptions={person?.data.periods?.map((period) => ({ value: period.id, label: period.name })) ?? []}
                                     routeName={'periods.fetch.options'}
@@ -168,10 +168,10 @@ export default function Index({
                             <div>
                                 <Label htmlFor="links">Links relacionados</Label>
                                 <Editor
-                                    tinymceScriptSrc="/tinymce/tinymce.min.js"
-                                    licenseKey="gpl"
-                                    onInit={(_evt, editor) => (editorLinksRef.current = editor)}
-                                    initialValue={(person?.data.links as string) || String()}
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorLinksRef.current = editor}
+                                    initialValue={person?.data.links as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist',
@@ -223,10 +223,10 @@ export default function Index({
                             <div>
                                 <Label htmlFor="chronology">Cronologia</Label>
                                 <Editor
-                                    tinymceScriptSrc="/tinymce/tinymce.min.js"
-                                    licenseKey="gpl"
-                                    onInit={(_evt, editor) => (editorChronologyRef.current = editor)}
-                                    initialValue={(person?.data.chronology as string) || String()}
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorChronologyRef.current = editor}
+                                    initialValue={person?.data.chronology as string || String()}
                                     init={{
                                         plugins: [
                                             'advlist',

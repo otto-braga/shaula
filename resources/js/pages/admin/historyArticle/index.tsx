@@ -9,7 +9,7 @@ import { Edit, Eye } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'História da Arte',
+        title: 'Artigos de História',
         href: '/admin/historyArticle',
     },
 ];
