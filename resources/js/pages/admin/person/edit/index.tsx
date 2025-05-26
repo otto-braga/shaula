@@ -7,15 +7,13 @@ import { City } from '@/types/city';
 import { Gender } from '@/types/gender';
 import { Period } from '@/types/period';
 import { Person } from '@/types/person';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import Select from 'react-select';
 import Tabs from './tabs';
 
+import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -42,9 +40,9 @@ export default function Index({
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
 
-        genders_ids: person ? person.data.genders?.map((gender) => gender.id) : [] as number[],
-        cities_ids: person ? person.data.cities?.map((city) => city.id) : [] as number[],
-        periods_ids: person ? person.data.periods?.map((period) => period.id) : [] as number[],
+        genders_ids: person ? person.data.genders?.map((gender) => gender.id) : ([] as number[]),
+        cities_ids: person ? person.data.cities?.map((city) => city.id) : ([] as number[]),
+        periods_ids: person ? person.data.periods?.map((period) => period.id) : ([] as number[]),
 
         links: person ? person.data.links : '',
         chronology: person ? person.data.chronology : '',
@@ -125,19 +123,14 @@ export default function Index({
                             <div>
                                 <Label htmlFor="genders"></Label>
                                 <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        person?.data.genders?.map(
-                                            gender => ({ value: gender.id, label: gender.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'genders.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('genders_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                    initialOptions={person?.data.genders?.map((gender) => ({ value: gender.id, label: gender.name })) ?? []}
+                                    routeName={'genders.fetch.options'}
+                                    setterFunction={(options) => {
+                                        setData(
+                                            'genders_ids',
+                                            options.map((option) => option.value),
+                                        );
+                                    }}
                                 />
                                 <InputError className="mt-2" message={errors.genders_ids} />
                             </div>
@@ -145,19 +138,14 @@ export default function Index({
                             <div>
                                 <Label htmlFor="cities">Cidades</Label>
                                 <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        person?.data.cities?.map(
-                                            city => ({ value: city.id, label: city.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'cities.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('cities_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                    initialOptions={person?.data.cities?.map((city) => ({ value: city.id, label: city.name })) ?? []}
+                                    routeName={'cities.fetch.options'}
+                                    setterFunction={(options) => {
+                                        setData(
+                                            'cities_ids',
+                                            options.map((option) => option.value),
+                                        );
+                                    }}
                                 />
                                 <InputError className="mt-2" message={errors.cities_ids} />
                             </div>
@@ -165,19 +153,14 @@ export default function Index({
                             <div>
                                 <Label htmlFor="periods">Periodização</Label>
                                 <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        person?.data.periods?.map(
-                                            period => ({ value: period.id, label: period.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'periods.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('periods_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                    initialOptions={person?.data.periods?.map((period) => ({ value: period.id, label: period.name })) ?? []}
+                                    routeName={'periods.fetch.options'}
+                                    setterFunction={(options) => {
+                                        setData(
+                                            'periods_ids',
+                                            options.map((option) => option.value),
+                                        );
+                                    }}
                                 />
                                 <InputError className="mt-2" message={errors.periods_ids} />
                             </div>
@@ -191,9 +174,22 @@ export default function Index({
                                     initialValue={person?.data.links as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
-                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                                            'advlist',
+                                            'autolink',
+                                            'lists',
+                                            'link',
+                                            'charmap',
+                                            'anchor',
+                                            'searchreplace',
+                                            'visualblocks',
+                                            'code',
+                                            'fullscreen',
+                                            'insertdatetime',
+                                            'media',
+                                            'table',
+                                            'preview',
+                                            'help',
+                                            'wordcount',
                                             'autoresize',
                                         ],
 
@@ -202,12 +198,13 @@ export default function Index({
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
-                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
 
                                         toolbar: 'undo redo | link',
 
-                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                                        content_style:
+                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
                                         paste_preprocess: (editor, args) => {
                                             const blob = args.content.match(/<img src="blob:.*">/g);
@@ -232,9 +229,22 @@ export default function Index({
                                     initialValue={person?.data.chronology as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
-                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                                            'advlist',
+                                            'autolink',
+                                            'lists',
+                                            'link',
+                                            'charmap',
+                                            'anchor',
+                                            'searchreplace',
+                                            'visualblocks',
+                                            'code',
+                                            'fullscreen',
+                                            'insertdatetime',
+                                            'media',
+                                            'table',
+                                            'preview',
+                                            'help',
+                                            'wordcount',
                                             'autoresize',
                                         ],
 
@@ -243,15 +253,17 @@ export default function Index({
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
-                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
 
-                                        toolbar: 'undo redo | ' +
+                                        toolbar:
+                                            'undo redo | ' +
                                             'bold italic forecolor | alignleft aligncenter ' +
                                             'alignright alignjustify |  outdent indent | ' +
                                             'removeformat',
 
-                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                                        content_style:
+                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
                                         paste_preprocess: (editor, args) => {
                                             const blob = args.content.match(/<img src="blob:.*">/g);

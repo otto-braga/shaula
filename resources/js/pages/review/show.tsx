@@ -58,23 +58,42 @@ export default function Index({ review }: { review: { data: Review } }) {
         <PublicLayout head="Crítica">
             {/* barra inferior para informações da crítica, apenas mobile */}
             <MobileDetailBar>
-                <div className="space-y-1">
+                <div className="space-y-2">
                     <div>
-                        <p className="font-medium">Autoria</p>
+                        <p className="font-semibold">Autoria</p>
                         {review.data.authors.map((author) => (
                             <Link href={route('public.people.show', author)} key={author.id}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))}
                     </div>
-                    <div>
-                        <p className="font-medium">Autoria</p>
-                        {review.data.authors.map((author) => (
-                            <Link href={route('public.people.show', author)} key={author.id}>
-                                <p className="hover:underline">{author.name}</p>
-                            </Link>
-                        ))}
-                    </div>
+                    {review.data.categories.length > 0 && (
+                        <div className="">
+                            <p className="font-semibold">Categorias</p>
+                            {review.data.categories.map((category) => (
+                                <p key={category.id} className="line-clamp-1">
+                                    {category.name}
+                                </p>
+                            ))}
+                        </div>
+                    )}
+                    {review.data.mentioned.length > 0 && (
+                        <div className="">
+                            <p className="font-semibold">Menções</p>
+                            <div className="mt-2 space-y-3">
+                                {Object.entries(mentionedByType).map(([type, mentions]) => (
+                                    <div key={type} className="">
+                                        <p className="text-sm text-slate-400">{modelLabelPlural(type)}</p>
+                                        {mentions.map((mention) => (
+                                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
+                                                <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
+                                            </Link>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </MobileDetailBar>
 
@@ -151,10 +170,10 @@ export default function Index({ review }: { review: { data: Review } }) {
                     {review.data.mentioned.length > 0 && (
                         <div className="">
                             <p className="font-semibold">Menções</p>
-                            <div className="mt-1 space-y-3">
+                            <div className="mt-2 space-y-3">
                                 {Object.entries(mentionedByType).map(([type, mentions]) => (
                                     <div key={type} className="">
-                                        <p className="font-medium">{modelLabelPlural(type)}</p>
+                                        <p className="text-sm text-slate-400">{modelLabelPlural(type)}</p>
                                         {mentions.map((mention) => (
                                             <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
                                                 <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
