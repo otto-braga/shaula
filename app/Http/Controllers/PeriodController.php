@@ -21,15 +21,13 @@ class PeriodController extends Controller
         ]);
     }
 
+    public function create()
+    {
+        return Inertia::render('admin/period/edit');
+    }
+
     public function store(Request $request)
     {
-        // $request->validate([
-        //     'name' => 'required|unique:periods',
-        //     'start_date' => '',
-        //     'end_data' => '',
-        //     'content' => 'required',
-        // ]);
-
         try {
             $period = Period::create([
                 'name' => $request->name,
@@ -53,11 +51,18 @@ class PeriodController extends Controller
             }
 
             session()->flash('success', true);
-            return redirect()->back()->with('success', 'Período criada com sucesso.');
+            return redirect()->route('periods.index')->with('success', 'Período criada com sucesso.');
         } catch (\Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with('error', 'Erro ao criar período.');
         }
+    }
+
+    public function edit(Period $period)
+    {
+        return Inertia::render('admin/period/edit', [
+            'period' => new PeriodResource($period),
+        ]);
     }
 
     public function update(Request $request, Period $period)
@@ -68,6 +73,8 @@ class PeriodController extends Controller
         //     'end_data' => '',
         //     'content' => 'required',
         // ]);
+
+        // dd($request->all());
 
         try {
             $period->update([
@@ -92,7 +99,7 @@ class PeriodController extends Controller
             }
 
             session()->flash('success', true);
-            return redirect()->back()->with('success', 'Período atualizada com sucesso.');
+            return redirect()->route('periods.index')->with('success', 'Período atualizada com sucesso.');
         } catch (\Exception $e) {
             dd($e->getMessage());
             return redirect()->back()->with('error', 'Erro ao atualizar período.');
