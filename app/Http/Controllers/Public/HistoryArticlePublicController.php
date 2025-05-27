@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\HistoryArticleResource;
+use App\Http\Resources\PeriodResource;
 use App\Models\HistoryArticle;
+use App\Models\Period;
 use Inertia\Inertia;
 
 class HistoryArticlePublicController extends Controller
@@ -14,11 +16,16 @@ class HistoryArticlePublicController extends Controller
      */
     public function index()
     {
-        //get the last 3 reviews
-        $historyArticles = HistoryArticle::get();
+        $historyArticles = HistoryArticle::query()
+            ->latest()
+            ->get();
+
+        $periods = Period::latest()
+            ->paginate(9);
 
         return Inertia::render('historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),
+            'periods' => PeriodResource::collection($periods),
         ]);
     }
 

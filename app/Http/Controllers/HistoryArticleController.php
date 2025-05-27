@@ -4,18 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\HistoryArticleResource;
-use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PeriodResource;
-use App\Http\Resources\PersonResource;
 use App\Models\HistoryArticle;
-use App\Models\Category;
 use App\Models\Mention;
 use App\Models\Period;
-use App\Models\Person;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class HistoryArticleController extends Controller
@@ -31,8 +26,11 @@ class HistoryArticleController extends Controller
             ->latest()
             ->get();
 
+        $periods = Period::latest()->get();
+
         return Inertia::render('admin/historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),
+            'periods' => PeriodResource::collection($periods)
         ]);
     }
 
