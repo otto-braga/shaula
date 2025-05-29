@@ -5,22 +5,28 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Traits\HasFile;
+use App\Traits\HasMention;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PeriodController extends Controller
 {
-    use HasFile;
+    use HasFile, HasMention;
+
+    // -------------------------------------------------------------------------
+    // INDEX
 
     public function index()
     {
-        $periods = Period::all();
+        $periods = Period::query()
+            ->latest()
+            ->get();
 
         return Inertia::render('admin/period/index', [
-            'periods' => PeriodResource::collection($periods),
+            'periods' => PeriodResource::collection($periods)
         ]);
     }
-
+  
     public function create()
     {
         return Inertia::render('admin/period/edit');

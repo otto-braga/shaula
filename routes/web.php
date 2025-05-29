@@ -37,6 +37,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MentionController;
 use App\Http\Controllers\Public\MentionPublicController;
 use App\Http\Controllers\PeriodController;
+use App\Http\Controllers\Public\PeriodPublicController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
 use App\Http\Controllers\Public\HistoryArticlePublicController;
@@ -59,8 +60,11 @@ Route::name('public.')->group(function () {
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
-    Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
-    Route::get('/historia/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
+    Route::get('/historia', [PeriodPublicController::class, 'index'])->name('periods.index');
+    Route::get('/historia/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
+
+    // Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
+    // Route::get('/historia/{periodSlug}/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
 
     Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
     Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
@@ -97,6 +101,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
     Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
     Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
+
 
     // Categories
     Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
@@ -191,6 +196,30 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('reviews.update.mentions');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     Route::get('/criticas/fetch/options', [ReviewController::class, 'fetchSelectOptions'])->name('reviews.fetch.options');
+
+
+    // Periods (Periodização)
+    // Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
+    // Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
+    // Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
+    // Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    // Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
+
+    //Periods
+    Route::get('/periodos', [PeriodController::class, 'index'])->name('periods.index');
+    Route::get('/periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
+    Route::post('/periodos/store', [PeriodController::class, 'store'])->name('periods.store');
+    Route::get('/periodos/{period:slug}', [PeriodController::class, 'show'])->name('periods.show');
+    Route::get('/periodos/{period:slug}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
+    Route::post('/periodos/{period:slug}/update', [PeriodController::class, 'update'])->name('periods.update');
+    Route::get('/periodos/{period:slug}/editar/imagens', [PeriodController::class, 'editImages'])->name('periods.edit.images');
+    Route::post('/periodos/{period:slug}/update/images', [PeriodController::class, 'updateImages'])->name('periods.update.images');
+    Route::get('/periodos/{period:slug}/editar/conteudo', [PeriodController::class, 'editContent'])->name('periods.edit.content');
+    Route::post('/periodos/{period:slug}/update/content', [PeriodController::class, 'updateContent'])->name('periods.update.content');
+    Route::get('/periodos/{period:slug}/editar/mencoes', [PeriodController::class, 'editMentions'])->name('periods.edit.mentions');
+    Route::post('/periodos/{period:slug}/update/mentions', [PeriodController::class, 'updateMentions'])->name('periods.update.mentions');
+    Route::delete('/periodos/{period:slug}/delete', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::get('/periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
     // History Articles
     Route::get('/artigos-de-historia', [HistoryArticleController::class, 'index'])->name('history_articles.index');

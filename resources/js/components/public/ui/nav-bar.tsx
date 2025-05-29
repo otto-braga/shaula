@@ -17,6 +17,7 @@ const navItems: NavItem[] = [
         title: 'Pessoas',
         href: '/pessoas',
     },
+    //listagem de períodos históricos
     {
         title: 'História',
         href: '/historia',
