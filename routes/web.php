@@ -93,6 +93,14 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     // Search
     Route::get('search', [SearchController::class, 'search'])->name('search');
 
+    // Periods (Periodização)
+    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
+    Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
+    Route::get('periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
+    Route::get('periodos/{period}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
+    Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
+    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
 
     // Categories
