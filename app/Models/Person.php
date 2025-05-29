@@ -13,10 +13,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Laravel\Scout\Searchable;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching,
+        Searchable;
 
     protected $table = 'people';
 
@@ -28,6 +30,28 @@ class Person extends Model
         'chronology',
         'links',
     ];
+
+    public function searchableAs(): string
+    {
+        return $this->getTable();
+    }
+
+    public function toSearchableArray()
+    {
+        // Needs to ensure data is in the correct type for Meilisearch filtering.
+
+        return [
+            'id' => (int) $this->id,
+
+            'uuid' => $this->uuid,
+            'slug' => $this->slug,
+            'route' => route('public.people.show', $this),
+
+            'name' => $this->name ?? '',
+            // 'date_of_birth' => $this->date_of_birth ?? '',
+            'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+        ];
+    }
 
     public function genders(): BelongsToMany
     {

@@ -10,6 +10,13 @@ use App\Models\Review;
 use App\Models\Source;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Laravel\Scout\Scout;
+use Meilisearch\Client;
+use Meilisearch\Contracts\MultiSearchFederation;
+use Meilisearch\Contracts\SearchQuery;
+use Meilisearch\Meilisearch;
+
+use function Laravel\Prompts\search;
 
 class SearchController extends Controller
 {
@@ -69,28 +76,58 @@ class SearchController extends Controller
         ]);
     }
 
+    // public function search(Request $request)
+    // {
+    //     $key = $request->key;
+
+    //     $results = [];
+
+    //     foreach (config('searchable_types') as $searchable_type) {
+    //         $model = $searchable_type['type'];
+    //         $results[] = $model::search($key);
+    //     }
+
+    //     $retval = $results[0];
+
+    //     foreach ($results as $key => $result) {
+    //         if ($key == 0) {
+    //             continue;
+    //         }
+    //         $retval = $retval->union($result);
+    //     }
+
+    //     $retval = $retval->orderBy('title')->simplePaginate(15);
+
+    //     return response()->json($retval);
+    // }
+
     public function search(Request $request)
     {
         $key = $request->key;
 
-        $results = [];
+        $client = new Client(
+            config('scout.meilisearch.host'),
+            config('scout.meilisearch.key')
+        );
 
-        foreach (config('searchable_types') as $searchable_type) {
-            $model = $searchable_type['type'];
-            $results[] = $model::search($key);
-        }
+        // $result = Artwork::search($key)->raw();
 
-        $retval = $results[0];
+        $result = $client->multiSearch(
+            [
+                (new SearchQuery())
+                    ->setIndexUid('artworks')
+                    ->setQuery($key),
+                (new SearchQuery())
+                    ->setIndexUid('people')
+                    ->setQuery($key),
+            ],
+            (new MultiSearchFederation())
+                ->setLimit(10)
+        );
 
-        foreach ($results as $key => $result) {
-            if ($key == 0) {
-                continue;
-            }
-            $retval = $retval->union($result);
-        }
+        dd($result)->getResults();
 
-        $retval = $retval->orderBy('title')->simplePaginate(15);
+        return response()->json($result);
 
-        return response()->json($retval);
     }
 }

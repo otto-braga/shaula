@@ -7,15 +7,19 @@ use App\Traits\HasLabel;
 use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Laravel\Scout\Searchable;
 
 class Artwork extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching,
+        Searchable;
 
     protected $table = 'artworks';
 
@@ -27,6 +31,34 @@ class Artwork extends Model
         'dimensions',
         'materials',
     ];
+
+    public function searchableAs(): string
+    {
+        return $this->getTable();
+    }
+
+    public function toSearchableArray()
+    {
+        // Needs to ensure data is in the correct type for Meilisearch filtering.
+
+        return [
+            'id' => (int) $this->id,
+
+            'uuid' => $this->uuid,
+            'slug' => $this->slug,
+            'route' => route('public.artworks.show', $this),
+
+            'title' => $this->title ?? '',
+            'authors' => $this->authors->pluck('name')->toArray(),
+            // 'date' => $this->date ?? '',
+            'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+        ];
+    }
+
+    public function makeSearchableUsing(Collection $models): Collection
+    {
+        return $models->load('authors');
+    }
 
     public function authors(): MorphToMany
     {

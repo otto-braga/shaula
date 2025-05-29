@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Artwork;
+use App\Models\Person;
+
 return [
 
     /*
@@ -43,13 +46,9 @@ return [
     */
 
     // 'queue' => env('SCOUT_QUEUE', false),
-
     'queue' => [
-
         'connection' => 'redis',
-
         'queue' => 'scout'
-
     ],
 
     /*
@@ -148,9 +147,16 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
-            // 'users' => [
-            //     'filterableAttributes'=> ['id', 'name', 'email'],
-            // ],
+            'artworks' => [
+                'searchableAttributes' => ['title', 'content'],
+                // 'filterableAttributes' => ['date'],
+                // 'sortableAttributes' => ['title', 'date'],
+            ],
+            'people' => [
+                'searchableAttributes' => ['name', 'content'],
+                // 'filterableAttributes' => ['date_of_birth'],
+                // 'sortableAttributes' => ['name', 'date_of_birth'],
+            ],
         ],
     ],
 

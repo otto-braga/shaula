@@ -67,6 +67,13 @@ echo
 sleep 15
 docker compose exec app php artisan migrate
 docker compose exec app php artisan db:seed
+echo
+
+echo Setting up Scout...
+echo
+docker compose exec app php artisan scout:sync-index-settings
+docker compose exec app php artisan scout:import "App\Models\Artwork"
+docker compose exec app php artisan scout:import "App\Models\Person"
 
 echo
 echo Starting...
