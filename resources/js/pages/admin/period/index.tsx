@@ -1,12 +1,11 @@
 import DeleteDialog from '@/components/common/delete-dialog';
-import PeriodDialogForm from '@/components/period/period-dialog-form';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { BreadcrumbItem } from '@/types';
 import { Period } from '@/types/period';
 import { Head, Link } from '@inertiajs/react';
-import { Edit, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -21,9 +20,6 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Periodização" />
             <div className="mt-3 flex justify-end p-3">
-                <PeriodDialogForm />
-            </div>
-            <div>
                 <Link href={route('periods.create')}>
                     <Button>
                         <Plus size={16} className="mr-2" />
@@ -31,6 +27,7 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
                     </Button>
                 </Link>
             </div>
+            <div></div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {periods.data.map((period) => (
                     <Card className="rounded" key={period.id}>
@@ -59,10 +56,9 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
                             </div>
                         </CardContent>
                         <CardFooter className="flex justify-end gap-2">
-                            <PeriodDialogForm period={period} />
                             <Link href={route('periods.edit', period)}>
                                 <Button variant="secondary" size="sm">
-                                    <Edit size={16} className="mr-1" /> Editar
+                                    Editar
                                 </Button>
                             </Link>
                             <DeleteDialog

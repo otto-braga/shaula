@@ -181,7 +181,7 @@ export default function EditPeriodPage({ period }: { period: { data: Period } })
                                 )}
                             </div>
 
-                            <div>
+                            <div className="max-w-5xl">
                                 <Label htmlFor="content-editor">Sobre</Label>
                                 <Editor
                                     tinymceScriptSrc="/tinymce/tinymce.min.js"
