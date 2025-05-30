@@ -44,8 +44,8 @@ class Artwork extends Model
         return [
             'id' => (int) $this->id,
 
-            'uuid' => $this->uuid,
-            'slug' => $this->slug,
+            // 'uuid' => $this->uuid,
+            // 'slug' => $this->slug,
             'route' => route('public.artworks.show', $this),
 
             'title' => $this->title ?? '',

@@ -65,9 +65,13 @@ Route::name('public.')->group(function () {
 
     Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
     Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
+
+    // Search
+    Route::get('busca', [SearchController::class, 'search'])->name('search');
+    Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
 });
 
-Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
+// Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
     Route::get('/', function () {

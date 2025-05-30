@@ -15,8 +15,11 @@ class SearchResultResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'label' => $this->name ?? $this->title,
+            'route' => $this['route'] ?? null,
+            'name' => $this['name'] ?? null,
+            'title' => $this['title'] ?? null,
+            'authors' => $this['authors'] ?? null,
+            'content' => $this['content'] ?? null,
         ];
     }
 }

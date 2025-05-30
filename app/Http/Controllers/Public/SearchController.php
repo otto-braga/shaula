@@ -3,131 +3,145 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artwork;
-use App\Models\HistoryArticle;
-use App\Models\Person;
-use App\Models\Review;
-use App\Models\Source;
+use App\Http\Resources\SearchResultResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Laravel\Scout\Scout;
 use Meilisearch\Client;
 use Meilisearch\Contracts\MultiSearchFederation;
 use Meilisearch\Contracts\SearchQuery;
-use Meilisearch\Meilisearch;
-
-use function Laravel\Prompts\search;
 
 class SearchController extends Controller
 {
-    public function index(Request $request)
+    public function search(Request $request)
     {
-        $query = $request['search'];
-        $results = [];
+        $query = $request->q ?? null;
+        $page = $request->page ?? 1;
+        $page_size = $request->page_size ?? 5;
+        $offset = $page_size * ($page - 1);
+        $estimated_total_hits = $request->total ?? null;
+        $last_page = $request->last_page ?? null;
+        $result = ['hits' => []];
 
         if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
 
-            $historyArticlesQuery = HistoryArticle::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset($offset);
 
-            foreach ($historyArticlesQuery as $historyArticle) {
-                $results[] = [
-                    'title' => $historyArticle->title,
-                    'authors' => $historyArticle->authors,
-                    'date' => $historyArticle->date,
-                    'type' => 'Artigo'
-                ];
-            }
+            $result = $client->multiSearch(
+                [
+                    (new SearchQuery())
+                        ->setIndexUid('artworks')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('people')
+                        ->setQuery($query),
+                ],
+                $federation
+            );
 
-            $reviewsQuery = Review::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
+            if ($estimated_total_hits == null) {
+                $estimated_total_hits = $result['estimatedTotalHits'];
+                $last_page = intdiv($estimated_total_hits, $page_size);
 
-            foreach ($reviewsQuery as $review) {
-                $results[] = [
-                    'title' => $review->title,
-                    'authors' => $review->authors,
-                    'date' => $review->date,
-                    'type' => 'Crítica'
-                ];
-            }
+                if ($page > $last_page) {
+                    $offset = $last_page * $page_size;
+                    $federation->setOffset($offset);
+                }
 
-            $artworksQuery = Artwork::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
-
-            foreach ($artworksQuery as $artwork) {
-                $results[] = [
-                    'title' => $artwork->title,
-                    'authors' => $artwork->authors,
-                    'date' => $artwork->date,
-                    'type' => 'Obra'
-                ];
+                $result = $client->multiSearch(
+                    [
+                        (new SearchQuery())
+                            ->setIndexUid('artworks')
+                            ->setQuery($query),
+                        (new SearchQuery())
+                            ->setIndexUid('people')
+                            ->setQuery($query),
+                    ],
+                    $federation
+                );
             }
         }
 
+        // dd($result);
+
         return Inertia::render('search', [
-            'query' => $query,
-            'results' => $results,
+            'q' => $query,
+            'result' => SearchResultResource::collection($result['hits']),
+            'total' => $estimated_total_hits,
+            'last_page' => $last_page,
+            'currentPage' => $page,
         ]);
+
     }
 
-    // public function search(Request $request)
-    // {
-    //     $key = $request->key;
-
-    //     $results = [];
-
-    //     foreach (config('searchable_types') as $searchable_type) {
-    //         $model = $searchable_type['type'];
-    //         $results[] = $model::search($key);
-    //     }
-
-    //     $retval = $results[0];
-
-    //     foreach ($results as $key => $result) {
-    //         if ($key == 0) {
-    //             continue;
-    //         }
-    //         $retval = $retval->union($result);
-    //     }
-
-    //     $retval = $retval->orderBy('title')->simplePaginate(15);
-
-    //     return response()->json($retval);
-    // }
-
-    public function search(Request $request)
+    public function fetch(Request $request)
     {
-        $key = $request->key;
+        $query = $request->q ?? null;
+        $page = (int) $request->page ?? 1;
+        $page_size = $request->page_size ?? 5;
+        $offset = $page_size * ($page - 1);
+        $estimated_total_hits = $request->total ?? null;
+        $last_page = $request->last_page ?? null;
+        $result = ['hits' => []];
 
-        $client = new Client(
-            config('scout.meilisearch.host'),
-            config('scout.meilisearch.key')
-        );
+        if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
 
-        // $result = Artwork::search($key)->raw();
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset($offset);
 
-        $result = $client->multiSearch(
-            [
-                (new SearchQuery())
-                    ->setIndexUid('artworks')
-                    ->setQuery($key),
-                (new SearchQuery())
-                    ->setIndexUid('people')
-                    ->setQuery($key),
-            ],
-            (new MultiSearchFederation())
-                ->setLimit(10)
-        );
+            $result = $client->multiSearch(
+                [
+                    (new SearchQuery())
+                        ->setIndexUid('artworks')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('people')
+                        ->setQuery($query),
+                ],
+                $federation
+            );
 
-        dd($result)->getResults();
+            if ($estimated_total_hits == null) {
+                $estimated_total_hits = $result['estimatedTotalHits'];
+                $last_page = intdiv($estimated_total_hits, $page_size);
 
-        return response()->json($result);
+                if ($page > $last_page) {
+                    $offset = $last_page * $page_size;
+                    $federation->setOffset($offset);
+                }
 
+                $result = $client->multiSearch(
+                    [
+                        (new SearchQuery())
+                            ->setIndexUid('artworks')
+                            ->setQuery($query),
+                        (new SearchQuery())
+                            ->setIndexUid('people')
+                            ->setQuery($query),
+                    ],
+                    $federation
+                );
+            }
+        }
+
+        return response()->json([
+            'q' => $query,
+            'result' => SearchResultResource::collection($result['hits']),
+            'total' => $estimated_total_hits,
+            'last_page' => $last_page,
+            'currentPage' => $page,
+        ]);
     }
 }

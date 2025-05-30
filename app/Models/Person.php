@@ -43,8 +43,8 @@ class Person extends Model
         return [
             'id' => (int) $this->id,
 
-            'uuid' => $this->uuid,
-            'slug' => $this->slug,
+            // 'uuid' => $this->uuid,
+            // 'slug' => $this->slug,
             'route' => route('public.people.show', $this),
 
             'name' => $this->name ?? '',
