@@ -21,7 +21,7 @@ class ReviewPublicController extends Controller
 
         $reviews = $query->latest()
             ->filter(Request::only('search'))
-            ->paginate(12)
+            ->paginate(8)
             ->withQueryString();
 
         $lastReviews = Review::latest()

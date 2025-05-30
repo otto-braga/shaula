@@ -3,8 +3,6 @@ import { formatDate } from '@/lib/utils';
 import { Person } from '@/types/person';
 import { Link } from '@inertiajs/react';
 
-import LightGallery from 'lightgallery/react';
-
 // import styles
 import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-zoom.css';
@@ -110,9 +108,9 @@ export default function Index({ person }: { person: { data: Person } }) {
                     {person.data.artworks.length > 0 && (
                         <div>
                             <h2 className="mb-6 text-xl font-medium">OBRAS</h2>
-                            <LightGallery speed={500} elementClassNames="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
                                 {person.data.artworks.map((artwork) => (
-                                    <Link href={route('public.artworks.show', artwork.slug)} key={artwork.id}>
+                                    <Link href={route('public.artworks.show', artwork.slug)} className="group" key={artwork.id}>
                                         <div key={artwork.id} className="relative">
                                             <img
                                                 src={`${artwork.primary_image ? artwork.primary_image.path : 'https://placehold.co/1280x900'}`}
@@ -120,12 +118,12 @@ export default function Index({ person }: { person: { data: Person } }) {
                                                 className="w-full"
                                             />
                                             <div className="mt-3">
-                                                <h3 className="text-lg">{artwork.title}</h3>
+                                                <h3 className="text-lg group-hover:underline">{artwork.title}</h3>
                                             </div>
                                         </div>
                                     </Link>
                                 ))}
-                            </LightGallery>
+                            </div>
                         </div>
                         // <div className="pb-6">
                         //     <h2 className="mb-6 text-xl font-medium">OBRAS</h2>

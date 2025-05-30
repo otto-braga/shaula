@@ -28,6 +28,7 @@ class HistoryArticleController extends Controller
     public function index()
     {
         $historyArticles = HistoryArticle::query()
+            ->latest()
             ->get();
 
         return Inertia::render('admin/historyArticle/index', [
