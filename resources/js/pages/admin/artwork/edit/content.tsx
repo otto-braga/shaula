@@ -18,6 +18,8 @@ import { Editor as TinyMCEEditor } from 'tinymce';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
+import { LazyLoadingSelect } from '@/components/select/lazyLoadingSelect';
+import Select from 'react-select';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -79,6 +81,42 @@ export default function Content({
     const timedMessageDuration: number = 3000;
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
 
+    const [showMentions, setShowMentions] = useState<boolean>(false);
+
+    async function fetchMentions(search: string): Promise<{ label: string, value: number }[]> {
+        if (search.length < 1) {
+            return [];
+        }
+
+        let response;
+
+        fetch(
+            route('public.search.fetch.options') + '?q=' + encodeURIComponent(search) + '&type=people',
+            {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                response = data as { options:
+                {
+                    label: string, value: number
+                }[]};
+                console.log('response', response);
+                setFetchedMentions(
+                    response.options.map((object: { label: string, value: number }) => ({
+                        value: object.value,
+                        label: object.label,
+                    }))
+                );
+            });
+
+        return response || [];
+    }
+
     useEffect(() => {
         if (flash?.success != undefined && !isTimedMessageShown) {
             setIsTimedMessageShown(true);
@@ -87,6 +125,40 @@ export default function Content({
             }, timedMessageDuration);
         }
     }, [flash]);
+
+    const [fetchedMentions, setFetchedMentions] = useState<{ label: string, value: number }[]>([]);
+    const [selectedMention, setSelectedMention] = useState<{ label: string, value: number } | null>(null);
+
+    const openMentionModal = () => {
+        setShowMentions(true);
+        setFetchedMentions([]);
+        setSelectedMention(null);
+        // set focus on the select input
+        setTimeout(() => {
+            const selectInput = document.querySelector('.react-select__input input');
+            if (selectInput) {
+                (selectInput as HTMLInputElement).focus();
+            }
+        }, 100);
+    }
+
+    const closeMentionModal = () => {
+        if (!selectedMention) {
+            editorRef?.current?.execCommand(
+                'mceInsertContent',
+                false,
+                '@'
+            );
+            editorRef?.current?.focus();
+        }
+        setShowMentions(false);
+        setSelectedMention(null);
+        setFetchedMentions([]);
+    }
+
+    useEffect(() => {
+        console.log('fetchedMentions', fetchedMentions);
+    }, [fetchedMentions]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -148,6 +220,15 @@ export default function Content({
                                                 onAction: () => {
                                                     setShowGallery(true);
                                                 },
+                                            });
+
+                                            // Handle @ mentions
+                                            editor.on('keydown', (e) => {
+                                                if (e.key === '@') {
+                                                    e.preventDefault();
+                                                    // setShowMentions(true);
+                                                    openMentionModal();
+                                                }
                                             });
                                         },
                                     }}
@@ -258,6 +339,35 @@ export default function Content({
                                             }
                                         </Button>
                                     </div>
+                                </div>
+                            </Modal>
+
+                            <Modal show={showMentions} onClose={closeMentionModal}>
+                                <div className="p-4">
+                                    <h2 className="text-lg font-semibold mb-4">Mencionar Pessoas</h2>
+                                    <p className="mb-2">Digite o nome da pessoa que deseja mencionar:</p>
+                                    <Select
+                                        options={fetchedMentions}
+                                        value={selectedMention}
+                                        onChange={(option) => {
+                                            if (option) {
+                                                editorRef?.current?.execCommand(
+                                                    'mceInsertContent',
+                                                    false,
+                                                    `<a href="${option.value}">${option.label}</a>`
+                                                );
+                                                setSelectedMention(null);
+                                                setShowMentions(false);
+                                            }
+                                        }}
+                                        onInputChange={(inputValue) => {
+                                            fetchMentions(inputValue);
+                                        }}
+                                        placeholder="Digite para buscar..."
+                                        isClearable
+                                        className="mb-4"
+                                    />
+                                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir a menção.</p>
                                 </div>
                             </Modal>
 

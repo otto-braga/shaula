@@ -87,4 +87,55 @@ class SearchController extends Controller
             'currentPage' => $page,
         ];
     }
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $query = $request->q ?? null;
+        $page_size = $request->page_size ?? 5;
+
+        if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
+
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset(0);
+
+            $result = $client->multiSearch(
+                [
+                    (new SearchQuery())
+                        ->setIndexUid('artworks')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('people')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('reviews')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('history_articles')
+                        ->setQuery($query),
+                ],
+                $federation
+            );
+
+            $options = [];
+
+            foreach ($result['hits'] as $hit) {
+                $options[] = [
+                    'value' => $hit['route'] ?? '',
+                    'label' => $hit['name'] ?? $hit['title'] ?? '',
+                ];
+            }
+
+            return response()->json([
+                'options' => $options,
+            ]);
+        }
+
+        return response()->json([]);
+    }
 }

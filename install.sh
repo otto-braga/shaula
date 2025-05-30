@@ -21,29 +21,29 @@ echo
 docker compose exec app php artisan config:cache
 
 echo
-echo Installing scout...
+echo Installing scout, predis, and meilisearch...
 echo
-docker compose exec app composer require laravel/scout
+docker compose exec app composer require laravel/scout predis/predis meilisearch/meilisearch-php http-interop/http-factory-guzzle
 
 echo
 echo Installing scout driver...
 echo
 docker compose exec app php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
 
-echo
-echo Installing predis...
-echo
-docker compose exec app composer require predis/predis
+# echo
+# echo Installing predis...
+# echo
+# docker compose exec app composer require predis/predis
 
-echo
-echo Installing meilisearch...
-echo
-docker compose exec app composer require meilisearch/meilisearch-php http-interop/http-factory-guzzle
+# echo
+# echo Installing meilisearch...
+# echo
+# docker compose exec app composer require meilisearch/meilisearch-php http-interop/http-factory-guzzle
 
-echo
-echo Installing composer dependencies...
-echo
-docker compose exec app composer install
+# echo
+# echo Installing composer dependencies...
+# echo
+# docker compose exec app composer install
 
 echo
 echo Generating key...
@@ -69,6 +69,10 @@ docker compose exec app php artisan migrate
 docker compose exec app php artisan db:seed
 echo
 
+# echo Starting Queue Worker...
+# docker compose exec app php artisan queue:work redis --queue=scout --daemon --timeout=30
+# echo
+
 echo Setting up Scout...
 echo
 docker compose exec app php artisan scout:sync-index-settings
@@ -80,4 +84,4 @@ docker compose exec app php artisan scout:import "App\Models\HistoryArticle"
 echo
 echo Starting...
 echo
-docker compose up -d
+docker compose up -d --force-recreate

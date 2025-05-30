@@ -1,4 +1,4 @@
-FROM php:8.2-fpm AS php
+FROM php:8.2-fpm AS supervisor
 
 # Install system dependencies
 RUN apt-get update -y
@@ -12,6 +12,7 @@ RUN apt-get install -y \
     zip \
     unzip \
     libzip-dev \
+    supervisor \
     fish
 
 # Install PHP extensions
@@ -47,11 +48,6 @@ RUN chmod -R 775 /var/www/bootstrap
 # Set the user for the container
 USER $user
 
-# Expose ports
-ARG app_port
-EXPOSE $app_port
-ARG vite_port
-EXPOSE $vite_port
-
-# Start php-fpm server
-CMD ["php-fpm"]
+# Supervisor
+COPY .docker/supervisor/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# CMD ["/usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf"]
