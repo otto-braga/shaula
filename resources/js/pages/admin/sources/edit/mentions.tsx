@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
 import { Mention, MentionQuery } from '@/types/mention';
-import { modelLabel } from '@/utils/model-label';
+import { typeLabel } from '@/utils/model-label';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -71,7 +71,7 @@ export default function Mentions({
                                     return (
                                         <div key={mention_query.type} className="mb-4">
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                {modelLabel(mention_query.type)}
+                                                {typeLabel(mention_query.type)}
                                             </label>
                                             <LazyLoadingMultiSelect
                                                 initialOptions={

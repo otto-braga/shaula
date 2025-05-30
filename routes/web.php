@@ -67,7 +67,7 @@ Route::name('public.')->group(function () {
     Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
 
     // Search
-    Route::get('busca', [SearchController::class, 'search'])->name('search');
+    Route::get('busca', [SearchController::class, 'index'])->name('search');
     Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
 });
 
@@ -92,7 +92,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     })->name('appearance');
 
     // Search
-    Route::get('search', [SearchController::class, 'search'])->name('search');
+    // Route::get('search', [SearchController::class, 'search'])->name('search');
 
     // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');

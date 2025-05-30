@@ -15,6 +15,7 @@ class SearchResultResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'type' => $this['_federation']['indexUid'] ?? null,
             'route' => $this['route'] ?? null,
             'name' => $this['name'] ?? null,
             'title' => $this['title'] ?? null,

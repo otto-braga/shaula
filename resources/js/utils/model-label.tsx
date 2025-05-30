@@ -1,4 +1,4 @@
-export function modelLabel(type: string): string {
+export function typeLabel(type: string): string {
     switch (type) {
         case 'App\\Models\\Artwork':
             return 'Obra';
@@ -15,7 +15,7 @@ export function modelLabel(type: string): string {
     }
 }
 
-export function modelLabelPlural(type: string): string {
+export function typeLabelPlural(type: string): string {
     switch (type) {
         case 'App\\Models\\Artwork':
             return 'Obras';
@@ -27,6 +27,23 @@ export function modelLabelPlural(type: string): string {
             return 'Fontes';
         case 'App\\Models\\HistoryArticle':
             return 'Artigos de História';
+        default:
+            return type;
+    }
+}
+
+export function typeLabelSearch(type: string): string {
+    switch (type) {
+        case 'artworks':
+            return 'Obra';
+        case 'reviews':
+            return 'Crítica';
+        case 'people':
+            return 'Pessoa';
+        case 'sources':
+            return 'Fonte';
+        case 'history-articles':
+            return 'Artigo de História';
         default:
             return type;
     }

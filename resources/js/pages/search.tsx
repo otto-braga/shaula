@@ -1,7 +1,9 @@
 import PublicLayout from '@/layouts/public-layout';
+import { typeLabelSearch } from '@/utils/model-label';
 import { useEffect, useState } from 'react';
 
 type SearchResult = {
+    type?: string | null;
     route?: string | null;
     name?: string | null;
     title?: string | null;
@@ -10,21 +12,11 @@ type SearchResult = {
 };
 
 export default function Index(
-    {
-        q,
-        // result,
-        // total,
-        // last_page,
-        // currentPage,
-    }: {
-        q: string;
-        // result: { data: SearchResult[] };
-        // total: number;
-        // last_page: number;
-        // currentPage: number;
-    }) {
-
-    // const [q, setQ] = useState('');
+{
+    q,
+}: {
+    q: string;
+}) {
     const [result, setResult] = useState<{ data: SearchResult[] }>({ data: [] });
     const [total, setTotal] = useState(0);
     const [last_page, setLastPage] = useState(1);
@@ -48,19 +40,25 @@ export default function Index(
     };
 
     useEffect(() => {
-        setCurrentPage(1);
-        FetchData();
+        if (currentPage == 1) {
+            FetchData();
+        }
+        else {
+            setCurrentPage(1);
+        }
     }, [q]);
 
     const HandlePreviousPage = () => {
         setCurrentPage(currentPage - 1);
-        FetchData();
     }
 
     const HandleNextPage = () => {
         setCurrentPage(currentPage + 1);
-        FetchData();
     }
+
+    useEffect(() => {
+        FetchData();
+    }, [currentPage]);
 
     return (
         <PublicLayout head="SHAULA">
@@ -96,6 +94,9 @@ export default function Index(
                 <ul className="space-y-4">
                     {result.data?.map((item: SearchResult, index: number) => (
                         <li key={index} className="border-b pb-4">
+                            <p className="text-gray-500">
+                                {item.type ? typeLabelSearch(item.type) : ''}
+                            </p>
                             <a
                                 href={item.route || '#'}
                                 className="text-lg font-semibold text-blue-600 hover:underline"

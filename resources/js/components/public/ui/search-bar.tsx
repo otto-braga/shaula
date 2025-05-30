@@ -3,12 +3,14 @@ import { Search } from 'lucide-react';
 import { useState } from 'react';
 
 export default function SearchBar() {
-    const [q, setQ] = useState('');
+    const [q, setQ] = useState(
+        typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('q') || '' : ''
+    );
 
     function handleSearch(e: React.FormEvent) {
         e.preventDefault();
 
-        router.get('/busca', { q }, { preserveState: true });
+        router.get(route('public.search'), { q }, { preserveState: true });
     }
 
     return (
