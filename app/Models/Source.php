@@ -4,17 +4,17 @@ namespace App\Models;
 
 use App\Traits\HasFetching;
 use App\Traits\HasFile;
-use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Laravel\Scout\Searchable;
 
 class Source extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasFetching, HasFile, HasSearching;
+    use HasFactory, HasUuid, HasSlug, HasFetching, HasFile, Searchable;
 
     protected $fillable = [
         'title',

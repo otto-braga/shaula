@@ -23,6 +23,7 @@
 //
 // -----------------------------------------------------------------------------
 
+use App\Helpers\ConnectionChecker;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -67,9 +68,14 @@ Route::name('public.')->group(function () {
 
     Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
     Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
+
+    // Search
+    Route::get('busca', [SearchController::class, 'index'])->name('search');
+    Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
+    Route::get('busca/fetch/options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.options');
 });
 
-Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
+// Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
     Route::get('/', function () {
@@ -90,7 +96,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     })->name('appearance');
 
     // Search
-    Route::get('search', [SearchController::class, 'search'])->name('search');
+    // Route::get('search', [SearchController::class, 'search'])->name('search');
 
     // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
@@ -236,6 +242,10 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/mencoes/{mention}/fetch/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
     Route::get('/mencoes/{mention}/fetch/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
     Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
+
+    // Connection Checks
+    Route::get('/check/db', [ConnectionChecker::class, 'isDatabaseReady'])->name('check.db');
+    Route::get('/check/redis', [ConnectionChecker::class, 'isRedisReady'])->name('check.redis');
 });
 
 // require __DIR__ . '/settings.php';

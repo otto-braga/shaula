@@ -3,94 +3,139 @@
 namespace App\Http\Controllers\Public;
 
 use App\Http\Controllers\Controller;
-use App\Models\Artwork;
-use App\Models\HistoryArticle;
-use App\Models\Person;
-use App\Models\Review;
-use App\Models\Source;
+use App\Http\Resources\SearchResultResource;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Meilisearch\Client;
+use Meilisearch\Contracts\MultiSearchFederation;
+use Meilisearch\Contracts\SearchQuery;
 
 class SearchController extends Controller
 {
     public function index(Request $request)
     {
-        $query = $request['search'];
-        $results = [];
-
-        if ($query) {
-
-            $historyArticlesQuery = HistoryArticle::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
-
-            foreach ($historyArticlesQuery as $historyArticle) {
-                $results[] = [
-                    'title' => $historyArticle->title,
-                    'authors' => $historyArticle->authors,
-                    'date' => $historyArticle->date,
-                    'type' => 'Artigo'
-                ];
-            }
-
-            $reviewsQuery = Review::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
-
-            foreach ($reviewsQuery as $review) {
-                $results[] = [
-                    'title' => $review->title,
-                    'authors' => $review->authors,
-                    'date' => $review->date,
-                    'type' => 'Crítica'
-                ];
-            }
-
-            $artworksQuery = Artwork::with('authors')
-                ->where('title', 'like', '%' . $query . '%')
-                ->orWhere('content', 'like', '%' . $query . '%')
-                ->get();
-
-            foreach ($artworksQuery as $artwork) {
-                $results[] = [
-                    'title' => $artwork->title,
-                    'authors' => $artwork->authors,
-                    'date' => $artwork->date,
-                    'type' => 'Obra'
-                ];
-            }
-        }
-
         return Inertia::render('search', [
-            'query' => $query,
-            'results' => $results,
+            'q' => $request->q ?? null,
+        ]);
+    }
+
+    public function fetch(Request $request)
+    {
+        $retval = $this->search($request);
+
+        return response()->json([
+            'q' => $retval['q'],
+            'result' => SearchResultResource::collection($retval['result']),
+            'total' => $retval['total'],
+            'last_page' => $retval['last_page'],
+            'currentPage' => $retval['currentPage'],
         ]);
     }
 
     public function search(Request $request)
     {
-        $key = $request->key;
+        $query = $request->q ?? null;
+        $page = (int) $request->page ?? 1;
+        $page_size = $request->page_size ?? 5;
 
-        $results = [];
+        $offset = $page_size * ($page - 1) < 0 ? 0 : $page_size * ($page - 1);
+        $result = ['hits' => []];
 
-        foreach (config('searchable_types') as $searchable_type) {
-            $model = $searchable_type['type'];
-            $results[] = $model::search($key);
-        }
+        if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
 
-        $retval = $results[0];
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset($offset);
 
-        foreach ($results as $key => $result) {
-            if ($key == 0) {
-                continue;
+            $result = $client->multiSearch(
+                [
+                    (new SearchQuery())
+                        ->setIndexUid('artworks')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('people')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('reviews')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('history_articles')
+                        ->setQuery($query),
+                ],
+                $federation
+            );
+
+            $estimated_total_hits = $result['estimatedTotalHits'];
+            $last_page = intdiv($estimated_total_hits, $page_size);
+
+            if ($page > $last_page) {
+                $offset = $last_page * $page_size;
+                $federation->setOffset($offset);
             }
-            $retval = $retval->union($result);
         }
 
-        $retval = $retval->orderBy('title')->simplePaginate(15);
+        return [
+            'q' => $query,
+            'result' => SearchResultResource::collection($result['hits']),
+            'total' => $estimated_total_hits,
+            'last_page' => $last_page,
+            'currentPage' => $page,
+        ];
+    }
 
-        return response()->json($retval);
+    public function fetchSelectOptions(Request $request)
+    {
+        $query = $request->q ?? null;
+        $page_size = $request->page_size ?? 5;
+
+        if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
+
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset(0);
+
+            $result = $client->multiSearch(
+                [
+                    (new SearchQuery())
+                        ->setIndexUid('artworks')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('people')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('reviews')
+                        ->setQuery($query),
+                    (new SearchQuery())
+                        ->setIndexUid('history_articles')
+                        ->setQuery($query),
+                ],
+                $federation
+            );
+
+            $options = [];
+
+            foreach ($result['hits'] as $hit) {
+                $options[] = [
+                    'value' => $hit['route'] ?? '',
+                    'label' => $hit['name'] ?? $hit['title'] ?? '',
+                ];
+            }
+
+            return response()->json([
+                'options' => $options,
+            ]);
+        }
+
+        return response()->json([]);
     }
 }
