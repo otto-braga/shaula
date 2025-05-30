@@ -8,6 +8,7 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Period extends Model
 {
@@ -19,6 +20,11 @@ class Period extends Model
         'end_date',
         'content',
     ];
+
+    public function historyArticles(): MorphToMany
+    {
+        return $this->morphedByMany(HistoryArticle::class, 'periodizable');
+    }
 
     // files
 
