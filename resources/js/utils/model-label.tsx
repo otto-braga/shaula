@@ -42,7 +42,7 @@ export function typeLabelSearch(type: string): string {
             return 'Pessoa';
         case 'sources':
             return 'Fonte';
-        case 'history-articles':
+        case 'history_articles':
             return 'Artigo de História';
         default:
             return type;

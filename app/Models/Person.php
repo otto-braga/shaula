@@ -4,9 +4,9 @@ namespace App\Models;
 
 use App\Traits\HasFetching;
 use App\Traits\HasLabel;
-use App\Traits\HasSearching;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -17,8 +17,7 @@ use Laravel\Scout\Searchable;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, HasSearching,
-        Searchable;
+    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, Searchable;
 
     protected $table = 'people';
 
@@ -39,18 +38,18 @@ class Person extends Model
     public function toSearchableArray()
     {
         // Needs to ensure data is in the correct type for Meilisearch filtering.
-
         return [
             'id' => (int) $this->id,
-
-            // 'uuid' => $this->uuid,
-            // 'slug' => $this->slug,
             'route' => route('public.people.show', $this),
-
             'name' => $this->name ?? '',
-            // 'date_of_birth' => $this->date_of_birth ?? '',
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+            'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
         ];
+    }
+
+    protected function makeAllSearchableUsing(Builder $query): Builder
+    {
+        return $query->with(['images']);
     }
 
     public function genders(): BelongsToMany
