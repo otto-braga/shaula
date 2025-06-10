@@ -37,6 +37,7 @@ class SearchController extends Controller
         $query = $request->q ?? null;
         $page = (int) $request->page ?? 1;
         $page_size = $request->page_size ?? 5;
+        $filter = $request->filter ?? null;
 
         $offset = $page_size * ($page - 1) < 0 ? 0 : $page_size * ($page - 1);
         $result = ['hits' => []];
@@ -52,23 +53,7 @@ class SearchController extends Controller
                 ->setLimit($page_size)
                 ->setOffset($offset);
 
-            $result = $client->multiSearch(
-                [
-                    (new SearchQuery())
-                        ->setIndexUid('artworks')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('people')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('reviews')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('history_articles')
-                        ->setQuery($query),
-                ],
-                $federation
-            );
+            $result = $this->handleSearch($client, $query, $federation, $filter);
 
             $estimated_total_hits = $result['estimatedTotalHits'];
             $last_page = intdiv($estimated_total_hits, $page_size);
@@ -92,6 +77,7 @@ class SearchController extends Controller
     {
         $query = $request->q ?? null;
         $page_size = $request->page_size ?? 5;
+        $filter = $request->filter ?? null;
 
         if ($query) {
             $client = new Client(
@@ -104,23 +90,7 @@ class SearchController extends Controller
                 ->setLimit($page_size)
                 ->setOffset(0);
 
-            $result = $client->multiSearch(
-                [
-                    (new SearchQuery())
-                        ->setIndexUid('artworks')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('people')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('reviews')
-                        ->setQuery($query),
-                    (new SearchQuery())
-                        ->setIndexUid('history_articles')
-                        ->setQuery($query),
-                ],
-                $federation
-            );
+            $result = $this->handleSearch($client, $query, $federation, $filter);
 
             $options = [];
 
@@ -137,5 +107,57 @@ class SearchController extends Controller
         }
 
         return response()->json([]);
+    }
+
+    public function handleSearch($client, $query, $federation, $filter)
+    {
+        // ---------------------------------------------------------------------
+        // Filter example (uncomment to test):
+        //
+        // $filter['periods'] = [
+        //     'periodo tempora',
+        //     'periodo aut',
+        // ];
+        //
+        // $filter['cities'] = [
+        //     'cidade Saulmouth',
+        // ];
+
+        $indexUids = config('scout.meilisearch.index-settings');
+        $filterStrings = array_fill_keys(array_keys($indexUids), '');
+
+        foreach ($indexUids as $indexUid => $indexUidData) {
+            $filterableAttributes = $indexUidData['filterableAttributes'] ?? [];
+            foreach ($filterableAttributes as $attribute) {
+                if (isset($filter[$attribute])) {
+                    $filterStrings[$indexUid] = '';
+                    foreach ($filter[$attribute] as $value) {
+                        $filterStrings[$indexUid] .= $attribute . ' = "' . $value . '" OR ';
+                    }
+                    $filterStrings[$indexUid] = rtrim($filterStrings[$indexUid], ' OR '); // Remove the last ' OR '
+                }
+            }
+        }
+
+        $multisearchQueries = [];
+
+        foreach ($indexUids as $indexUid => $indexUidData) {
+            $filterString = $filterStrings[$indexUid] ?? '';
+
+            $searchQuery = (new SearchQuery())
+                ->setIndexUid($indexUid)
+                ->setFilter([$filterString])
+                ->setQuery($query);
+
+            array_push($multisearchQueries, $searchQuery);
+        }
+
+
+        return $client->multiSearch(
+            $multisearchQueries,
+            $federation
+        );
+
+        return $result;
     }
 }

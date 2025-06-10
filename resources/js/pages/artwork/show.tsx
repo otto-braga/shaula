@@ -39,6 +39,14 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                         </div>
                     ))}
                 </div>
+                <div>
+                    <h2>periodos</h2>
+                    {artwork.data.periods.map((period) => (
+                        <div key={period.id}>
+                            <p>{period.name}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </PublicLayout>
     );
