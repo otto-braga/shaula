@@ -37,9 +37,13 @@ class HistoryArticle extends Model
             'id' => (int) $this->id,
             'route' => route('public.artworks.show', $this),
             'title' => $this->title ?? '',
-            'authors' => $this->authors->pluck('name')->toArray(),
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
+
+            'periods' => $this->periods->pluck('name')->toArray(),
+            'categories' => $this->categories->pluck('name')->toArray(),
+
+            'authors' => $this->authors->pluck('name')->toArray(),
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Resources\PeriodResource;
 use App\Traits\HasFetching;
 use App\Traits\HasLabel;
 use App\Traits\HasSlug;
@@ -41,15 +42,23 @@ class Artwork extends Model
             'id' => (int) $this->id,
             'route' => route('public.artworks.show', $this),
             'title' => $this->title ?? '',
-            'authors' => $this->authors->pluck('name')->toArray(),
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
+
+            'periods' => $this->periods->pluck('name')->toArray(),
+            'categories' => $this->categories->pluck('name')->toArray(),
+
+            'authors' => $this->authors->pluck('name')->toArray(),
         ];
     }
 
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['authors', 'images']);
+        return $query->with([
+            'authors',
+            'images',
+            'periods',
+        ]);
     }
 
     public function authors(): MorphToMany

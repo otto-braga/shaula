@@ -146,18 +146,51 @@ return [
     'meilisearch' => [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
-        // 'index-settings' => [
-        //     'artworks' => [
-        //         'searchableAttributes' => ['title', 'content'],
-        //         // 'filterableAttributes' => ['date'],
-        //         // 'sortableAttributes' => ['title', 'date'],
-        //     ],
-        //     'people' => [
-        //         'searchableAttributes' => ['name', 'content'],
-        //         // 'filterableAttributes' => ['date_of_birth'],
-        //         // 'sortableAttributes' => ['name', 'date_of_birth'],
-        //     ],
-        // ],
+        'index-settings' => [
+            'artworks' => [
+                'searchableAttributes' => [
+                    'title',
+                    'authors',
+                    'periods'
+                ],
+                'filterableAttributes' => [
+                    'periods',
+                    'categories'
+                ],
+            ],
+            'people' => [
+                'searchableAttributes' => [
+                    'name',
+                    'artworks',
+                    'periods'
+                ],
+                'filterableAttributes' => [
+                    'periods',
+                    'cities',
+                ],
+            ],
+            'reviews' => [
+                'searchableAttributes' => [
+                    'title',
+                    'authors',
+                    'artworks',
+                ],
+                'filterableAttributes' => [
+                    'categories',
+                ],
+            ],
+            'history_articles' => [
+                'searchableAttributes' => [
+                    'title',
+                    'authors',
+                    'periods',
+                ],
+                'filterableAttributes' => [
+                    'periods',
+                    'categories',
+                ],
+            ],
+        ],
     ],
 
     /*
