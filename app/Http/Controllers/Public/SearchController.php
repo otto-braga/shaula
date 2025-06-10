@@ -37,7 +37,7 @@ class SearchController extends Controller
         $query = $request->q ?? null;
         $page = (int) $request->page ?? 1;
         $page_size = $request->page_size ?? 5;
-        $filter = $request->filter ?? null;
+        $filter = json_decode($request->filter, true) ?? [];
 
         $offset = $page_size * ($page - 1) < 0 ? 0 : $page_size * ($page - 1);
         $result = ['hits' => []];
@@ -70,6 +70,7 @@ class SearchController extends Controller
             'total' => $estimated_total_hits,
             'last_page' => $last_page,
             'currentPage' => $page,
+            'filter' => $filter,
         ];
     }
 
@@ -125,6 +126,7 @@ class SearchController extends Controller
 
         $indexUids = config('scout.meilisearch.index-settings');
         $filterStrings = array_fill_keys(array_keys($indexUids), '');
+        $hasFilter = false;
 
         foreach ($indexUids as $indexUid => $indexUidData) {
             $filterableAttributes = $indexUidData['filterableAttributes'] ?? [];
@@ -137,12 +139,19 @@ class SearchController extends Controller
                     $filterStrings[$indexUid] = rtrim($filterStrings[$indexUid], ' OR '); // Remove the last ' OR '
                 }
             }
+            if ($filterStrings[$indexUid] != '') {
+                $hasFilter = true; // At least one filter is set
+            }
         }
 
         $multisearchQueries = [];
 
         foreach ($indexUids as $indexUid => $indexUidData) {
             $filterString = $filterStrings[$indexUid] ?? '';
+
+            if ($hasFilter && $filterString == '') {
+                continue; // Skip if no filter for this index
+            }
 
             $searchQuery = (new SearchQuery())
                 ->setIndexUid($indexUid)
