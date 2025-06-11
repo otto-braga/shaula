@@ -19,6 +19,7 @@ class SearchResultResource extends JsonResource
         return [
             'type' => $this['_federation']['indexUid'] ?? null,
             'route' => $this['route'] ?? null,
+            'mention' => $this['mention'] ?? null,
             'name' => $this['name'] ?? null,
             'title' => $this['title'] ?? null,
             'content' => $this['content'] ?? null,

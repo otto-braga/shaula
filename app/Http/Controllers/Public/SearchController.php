@@ -75,42 +75,6 @@ class SearchController extends Controller
         ];
     }
 
-    public function fetchSelectOptions(Request $request)
-    {
-        $query = $request->q ?? null;
-        $page_size = $request->page_size ?? 5;
-        $filter = $request->filter ?? null;
-
-        if ($query) {
-            $client = new Client(
-                config('scout.meilisearch.host'),
-                config('scout.meilisearch.key')
-            );
-
-            $federation = new MultiSearchFederation();
-            $federation
-                ->setLimit($page_size)
-                ->setOffset(0);
-
-            $result = $this->handleSearch($client, $query, $federation, $filter);
-
-            $options = [];
-
-            foreach ($result['hits'] as $hit) {
-                $options[] = [
-                    'value' => $hit['route'] ?? '',
-                    'label' => $hit['name'] ?? $hit['title'] ?? '',
-                ];
-            }
-
-            return response()->json([
-                'options' => $options,
-            ]);
-        }
-
-        return response()->json([]);
-    }
-
     public function handleSearch($client, $query, $federation, $request_filter)
     {
         // ---------------------------------------------------------------------
@@ -224,5 +188,57 @@ class SearchController extends Controller
         return response()->json([
             'data' => $filterOptions,
         ]);
+    }
+
+    public function fetchSelectOptions(Request $request)
+    {
+        $query = $request->q ?? null;
+        $page_size = $request->page_size ?? 5;
+        $filter = $request->filter ?? null;
+
+        if ($query) {
+            $client = new Client(
+                config('scout.meilisearch.host'),
+                config('scout.meilisearch.key')
+            );
+
+            $federation = new MultiSearchFederation();
+            $federation
+                ->setLimit($page_size)
+                ->setOffset(0);
+
+            $result = $this->handleSearch($client, $query, $federation, []);
+
+            $options = [];
+
+            foreach ($result['hits'] as $hit) {
+                $options[] = [
+                    'value' => $hit['id'] ?? '',
+                    'label' => $hit['name'] ?? $hit['title'] ?? '',
+                    // 'id' => $hit['id'] ?? null,
+                    'type' => $hit['_federation']['indexUid'] ?? '',
+                ];
+            }
+
+            return response()->json([
+                'options' => $options,
+            ]);
+        }
+
+        return response()->json([]);
+    }
+
+    public function redirectMention(Request $request)
+    {
+        $type = $request->type ?? null;
+        $id = (int) $request->id;
+
+        $model = DB::table($type)->find($id);
+
+        if ($model) {
+            return redirect()->route('public.' . $type . '.show', $model->slug);
+        }
+
+        // return redirect()->route('public.search.index', ['q' => $query]);
     }
 }
