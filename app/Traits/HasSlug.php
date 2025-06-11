@@ -28,4 +28,15 @@ trait HasSlug
             }
         });
     }
+
+    protected static function booted()
+    {
+        // Update the slug on update if title or name is set
+        static::updating(function ($model) {
+            if (isset($model->title) || isset($model->name)) {
+                $slug = (string) Str::slug($model->title ?? $model->name);
+                $model->slug = $slug;
+            }
+        });
+    }
 }

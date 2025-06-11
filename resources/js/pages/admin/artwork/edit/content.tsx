@@ -360,7 +360,7 @@ export default function Content({
                                                 editorRef?.current?.execCommand(
                                                     'mceInsertContent',
                                                     false,
-                                                    `<a href="${route('public.search.redirect_mention')}?id=${option.value}&type=${option.type}">@${option.label}</a>`
+                                                    `<a href="${route('public.search.redirect_mention')}?id=${option.value}&type=${option.type}">${option.label}</a>`
                                                 );
                                                 setSelectedMention(null);
                                                 setShowMentions(false);
