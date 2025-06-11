@@ -150,69 +150,6 @@ export default function Index(
                                 ))
                             )}
 
-
-                            {/* <h2 className="text-lg font-semibold mb-2">Períodos</h2>
-                            <div className="flex items-center">
-
-                                <input
-                                    type="checkbox"
-                                    value="periodo tempora"
-                                    checked={filter?.periods?.includes('periodo tempora')}
-                                    onChange={(e) => {
-                                        const newFilter = e.target.checked
-                                            ? [...filter.periods, e.target.value]
-                                            : filter.periods.filter(f => f !== e.target.value);
-                                        setFilter({
-                                            ...filter,
-                                            periods: newFilter,
-                                        });
-                                        setCurrentPage(1); // Reset to first page on filter change
-                                    }}
-                                    className="mr-2"
-                                />
-                                <label>periodo tempora</label>
-
-                                <input
-                                    type="checkbox"
-                                    value="periodo aut"
-                                    checked={filter.periods.includes('periodo aut')}
-                                    onChange={(e) => {
-                                        const newFilter = e.target.checked
-                                            ? [...filter.periods, e.target.value]
-                                            : filter.periods.filter(f => f !== e.target.value);
-                                        setFilter({
-                                            ...filter,
-                                            periods: newFilter,
-                                        });
-                                        setCurrentPage(1); // Reset to first page on filter change
-                                    }}
-                                    className="ml-4 mr-2"
-                                />
-                                <label>periodo aut</label>
-
-                            </div>
-
-                            <h2 className="text-lg font-semibold mb-2 mt-4">Cidades</h2>
-                            <div className="flex items-center">
-                                <input
-                                    type="checkbox"
-                                    checked={filter.cities.includes('cidade Saulmouth')}
-                                    onChange={(e) => {
-                                        const newFilter = e.target.checked
-                                            ? [...filter.cities, e.target.value]
-                                            : filter.cities.filter(f => f !== e.target.value);
-                                        setFilter({
-                                            ...filter,
-                                            cities: newFilter,
-                                        });
-                                        setCurrentPage(1); // Reset to first page on filter change
-                                    }}
-                                    className="mr-2"
-                                    value="cidade Saulmouth"
-                                />
-                                <label>cidade Saulmouth</label>
-                            </div> */}
-
                         </div>
                     </div>
 
