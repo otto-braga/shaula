@@ -73,6 +73,7 @@ Route::name('public.')->group(function () {
     Route::get('busca', [SearchController::class, 'index'])->name('search');
     Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
     Route::get('busca/fetch/options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.options');
+    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
 });
 
 // Route::get('/busca', [SearchController::class, 'index'])->name('search.index');

@@ -147,28 +147,31 @@ return [
         'host' => env('MEILISEARCH_HOST', 'http://localhost:7700'),
         'key' => env('MEILISEARCH_KEY'),
         'index-settings' => [
+
             'artworks' => [
                 'searchableAttributes' => [
                     'title',
                     'authors',
-                    'periods'
+                    'periods',
                 ],
                 'filterableAttributes' => [
                     'periods',
                     'categories'
                 ],
             ],
+
             'people' => [
                 'searchableAttributes' => [
                     'name',
                     'artworks',
-                    'periods'
+                    'periods',
                 ],
                 'filterableAttributes' => [
                     'periods',
                     'cities',
                 ],
             ],
+
             'reviews' => [
                 'searchableAttributes' => [
                     'title',
@@ -179,6 +182,7 @@ return [
                     'categories',
                 ],
             ],
+
             'history_articles' => [
                 'searchableAttributes' => [
                     'title',
@@ -190,6 +194,7 @@ return [
                     'categories',
                 ],
             ],
+
         ],
     ],
 

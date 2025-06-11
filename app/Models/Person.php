@@ -54,7 +54,13 @@ class Person extends Model
 
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['images']);
+        return $query->with([
+            'images',
+            'files',
+            'periods',
+            'cities',
+            'artworks',
+        ]);
     }
 
     public function genders(): BelongsToMany

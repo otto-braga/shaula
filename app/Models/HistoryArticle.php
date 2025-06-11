@@ -49,7 +49,13 @@ class HistoryArticle extends Model
 
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['authors', 'images', 'files']);
+        return $query->with([
+            'images',
+            'files',
+            'periods',
+            'categories',
+            'authors',
+        ]);
     }
 
     public function authors(): MorphToMany

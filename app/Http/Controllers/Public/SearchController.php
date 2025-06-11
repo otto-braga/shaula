@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SearchResultResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Meilisearch\Client;
 use Meilisearch\Contracts\MultiSearchFederation;
@@ -110,7 +111,7 @@ class SearchController extends Controller
         return response()->json([]);
     }
 
-    public function handleSearch($client, $query, $federation, $filter)
+    public function handleSearch($client, $query, $federation, $request_filter)
     {
         // ---------------------------------------------------------------------
         // Filter example (uncomment to test):
@@ -124,23 +125,44 @@ class SearchController extends Controller
         //     'cidade Saulmouth',
         // ];
 
+        $filter = [];
+
+        foreach ($request_filter as $item) {
+            $filter[$item['name']] = is_array($item['value']) ? $item['value'] : [$item['value']];
+        }
+
+        // dd($filter);
+
         $indexUids = config('scout.meilisearch.index-settings');
-        $filterStrings = array_fill_keys(array_keys($indexUids), '');
+        $filterStrings = [];
         $hasFilter = false;
 
         foreach ($indexUids as $indexUid => $indexUidData) {
-            $filterableAttributes = $indexUidData['filterableAttributes'] ?? [];
+            $filterableAttributes = $indexUidData['filterableAttributes'];
+
+            if (empty($filterableAttributes)) {
+                continue; // Skip if no filterable attributes
+            }
+
             foreach ($filterableAttributes as $attribute) {
                 if (isset($filter[$attribute])) {
-                    $filterStrings[$indexUid] = '';
+                    if (!isset($filterStrings[$indexUid])) {
+                        $filterStrings[$indexUid] = '';
+                    }
+
                     foreach ($filter[$attribute] as $value) {
                         $filterStrings[$indexUid] .= $attribute . ' = "' . $value . '" OR ';
                     }
+
                     $filterStrings[$indexUid] = rtrim($filterStrings[$indexUid], ' OR '); // Remove the last ' OR '
                 }
             }
-            if ($filterStrings[$indexUid] != '') {
-                $hasFilter = true; // At least one filter is set
+        }
+
+        foreach ($filterStrings as $filterString) {
+            if ($filterString != '') {
+                $hasFilter = true;
+                break;
             }
         }
 
@@ -168,5 +190,39 @@ class SearchController extends Controller
         );
 
         return $result;
+    }
+
+    public function fetchFilterOptions(Request $request)
+    {
+        $indexUids = config('scout.meilisearch.index-settings');
+        $filterableAttributes = [];
+
+        foreach ($indexUids as $indexUid => $indexUidData) {
+            if (
+                !isset($indexUidData['filterableAttributes'])
+                || in_array($filterableAttributes, $indexUidData['filterableAttributes'])
+            ) {
+                continue; // Skip if already added
+            }
+            array_push($filterableAttributes, ...$indexUidData['filterableAttributes']);
+        }
+
+        $filterOptions = [];
+        foreach ($filterableAttributes as $attribute) {
+            // Skip if attribute is already in the options
+            if (in_array($attribute, array_column($filterOptions, 'name'))) {
+                continue;
+            }
+
+            $filterOptions[] = [
+                'value' => DB::table($attribute)->select('name')->get()->pluck('name')->toArray(),
+                'name' => $attribute,
+                'label' => config("filterable_attributes")[$attribute] ?? $attribute,
+            ];
+        }
+
+        return response()->json([
+            'data' => $filterOptions,
+        ]);
     }
 }

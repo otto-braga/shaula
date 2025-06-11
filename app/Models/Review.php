@@ -43,13 +43,17 @@ class Review extends Model
             'categories' => $this->categories->pluck('name')->toArray(),
 
             'authors' => $this->authors->pluck('name')->toArray(),
-            'artworks' => $this->artworks->pluck('title')->toArray(),
         ];
     }
 
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['authors', 'images']);
+        return $query->with([
+            'images',
+            'files',
+            'categories',
+            'authors',
+        ]);
     }
 
     public function authors(): MorphToMany

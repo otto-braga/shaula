@@ -13,27 +13,57 @@ type SearchResult = {
     primary_image_url?: string | null;
 };
 
-type Filter = {
-    periods: string[];
-    cities: string[];
+type FilterOption = {
+    name: string;
+    value: Array<string>;
+    label?: string;
 };
 
 export default function Index(
 {
     q,
-    // input_filter,
 }: {
     q: string;
-    // input_filter?: Filter;
 }) {
     const [result, setResult] = useState<{ data: SearchResult[] }>({ data: [] });
     const [last_page, setLastPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const [filter, setFilter] = useState({
-        periods: new Array<string>(),
-        cities: new Array<string>(),
-    });
+    const [fetchedFilter, setFetchedFilter] = useState([] as FilterOption[]);
+    const [filter, setFilter] = useState([] as FilterOption[]);
+
+    const fetchFilter = () => {
+        let route_name = route('public.search.filter.fetch.options');
+
+        fetch(route_name, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                setFetchedFilter(data.data || []);
+
+                setFilter(data.data.map((option: FilterOption) => ({
+                    name: option.name,
+                    value: new Array<string>(),
+                })));
+            })
+            .catch(error => console.error('Error fetching filter data:', error));
+    };
+
+    useEffect(() => {
+        fetchFilter();
+    }, []);
+
+    useEffect(() => {
+        console.log('Fetched filter options:', fetchedFilter);
+    }, [fetchedFilter]);
+
+    useEffect(() => {
+        console.log('Filter state updated:', filter);
+    }, [filter]);
 
     const fetchData = () => {
         let route_name = route('public.search.fetch') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
@@ -50,7 +80,6 @@ export default function Index(
                 console.log('Search results:', data);
                 setResult({ data: data.result });
                 setLastPage(data.last_page);
-                setFilter(data.filter || filter);
             })
             .catch(error => console.error('Error fetching search results:', error));
     };
@@ -90,13 +119,45 @@ export default function Index(
                         <h1 className="text-2xl font-bold mb-4">Filtros</h1>
                         <div className="space-y-2">
 
-                            <h2 className="text-lg font-semibold mb-2">Períodos</h2>
+                            {fetchedFilter && fetchedFilter.length > 0 && (
+                                fetchedFilter.map((filterOption, index) => (
+                                    <div key={index} className="mb-4">
+                                        <h2 className="text-lg font-semibold mb-2">{filterOption.label || ''}</h2>
+                                        <div className="flex flex-col space-y-1">
+                                            {filterOption.value.map((value, valueIndex) => (
+                                                <label key={valueIndex} className="flex items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={value}
+                                                        checked={filter[index]?.value?.includes(value)}
+                                                        onChange={(e) => {
+                                                            const newFilter = [...filter];
+                                                            if (e.target.checked) {
+                                                                newFilter[index].value.push(e.target.value);
+                                                            } else {
+                                                                newFilter[index].value = newFilter[index].value.filter(v => v !== e.target.value);
+                                                            }
+                                                            setFilter(newFilter);
+                                                            setCurrentPage(1); // Reset to first page on filter change
+                                                        }}
+                                                        className="mr-2"
+                                                    />
+                                                    {value}
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+
+
+                            {/* <h2 className="text-lg font-semibold mb-2">Períodos</h2>
                             <div className="flex items-center">
 
                                 <input
                                     type="checkbox"
                                     value="periodo tempora"
-                                    checked={filter.periods.includes('periodo tempora')}
+                                    checked={filter?.periods?.includes('periodo tempora')}
                                     onChange={(e) => {
                                         const newFilter = e.target.checked
                                             ? [...filter.periods, e.target.value]
@@ -150,7 +211,7 @@ export default function Index(
                                     value="cidade Saulmouth"
                                 />
                                 <label>cidade Saulmouth</label>
-                            </div>
+                            </div> */}
 
                         </div>
                     </div>

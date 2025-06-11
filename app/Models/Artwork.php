@@ -55,9 +55,11 @@ class Artwork extends Model
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
         return $query->with([
-            'authors',
             'images',
+            'files',
             'periods',
+            'categories',
+            'authors',
         ]);
     }
 
