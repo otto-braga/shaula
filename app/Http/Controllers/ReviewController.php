@@ -59,7 +59,7 @@ class ReviewController extends Controller
         $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
-        return redirect()->route('reviews.edit', $review->slug);
+        return redirect()->route('reviews.edit', $review);
     }
 
     // -------------------------------------------------------------------------
@@ -87,7 +87,7 @@ class ReviewController extends Controller
         $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
-        return redirect()->back();
+        return redirect()->route('reviews.edit', $review);
     }
 
     // -------------------------------------------------------------------------
