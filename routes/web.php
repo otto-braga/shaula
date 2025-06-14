@@ -68,6 +68,8 @@ Route::name('public.')->group(function () {
     Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
 
+    Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
+
     Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
     Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
 
@@ -75,6 +77,8 @@ Route::name('public.')->group(function () {
     Route::get('busca', [SearchController::class, 'index'])->name('search');
     Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
     Route::get('busca/fetch/options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.options');
+    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
+    Route::get('busca/redirect-mention', [SearchController::class, 'redirectMention'])->name('search.redirect_mention');
 });
 
 // Route::get('/busca', [SearchController::class, 'index'])->name('search.index');

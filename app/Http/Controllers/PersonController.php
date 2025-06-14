@@ -61,7 +61,7 @@ class PersonController extends Controller
             $person->periods()->sync($request->periods_ids);
 
             session()->flash('success', true);
-            return redirect()->route('people.edit', $person->slug);
+            return redirect()->route('people.edit', $person);
         } catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
@@ -89,7 +89,7 @@ class PersonController extends Controller
         $person->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
-        return redirect()->back();
+        return redirect()->route('people.edit', $person);
     }
 
     // -------------------------------------------------------------------------

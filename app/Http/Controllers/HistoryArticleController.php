@@ -63,7 +63,7 @@ class HistoryArticleController extends Controller
         $historyArticle->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
-        return redirect()->route('history_articles.edit', $historyArticle->slug);
+        return redirect()->route('history_articles.edit', $historyArticle);
     }
 
     // -------------------------------------------------------------------------
@@ -92,7 +92,7 @@ class HistoryArticleController extends Controller
         $historyArticle->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
-        return redirect()->back();
+        return redirect()->route('history_articles.edit', $historyArticle);
     }
 
     // -------------------------------------------------------------------------

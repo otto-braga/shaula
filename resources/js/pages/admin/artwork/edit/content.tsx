@@ -21,6 +21,13 @@ import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 import { LazyLoadingSelect } from '@/components/select/lazyLoadingSelect';
 import Select from 'react-select';
 
+type SearchResultOption = {
+    label: string;
+    value: number;
+    // id?: number;
+    type?: string;
+}
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Pessoas',
@@ -83,7 +90,7 @@ export default function Content({
 
     const [showMentions, setShowMentions] = useState<boolean>(false);
 
-    async function fetchMentions(search: string): Promise<{ label: string, value: number }[]> {
+    async function fetchMentions(search: string): Promise<SearchResultOption[]> {
         if (search.length < 1) {
             return [];
         }
@@ -101,15 +108,13 @@ export default function Content({
             })
             .then((res) => res.json())
             .then((data) => {
-                response = data as { options:
-                {
-                    label: string, value: number
-                }[]};
+                response = data as { options: SearchResultOption[] };
                 console.log('response', response);
                 setFetchedMentions(
-                    response.options.map((object: { label: string, value: number }) => ({
+                    response.options.map((object: SearchResultOption) => ({
                         value: object.value,
                         label: object.label,
+                        type: object.type || '',
                     }))
                 );
             });
@@ -126,8 +131,8 @@ export default function Content({
         }
     }, [flash]);
 
-    const [fetchedMentions, setFetchedMentions] = useState<{ label: string, value: number }[]>([]);
-    const [selectedMention, setSelectedMention] = useState<{ label: string, value: number } | null>(null);
+    const [fetchedMentions, setFetchedMentions] = useState<SearchResultOption[]>([]);
+    const [selectedMention, setSelectedMention] = useState<SearchResultOption | null>(null);
 
     const openMentionModal = () => {
         setShowMentions(true);
@@ -343,18 +348,19 @@ export default function Content({
                             </Modal>
 
                             <Modal show={showMentions} onClose={closeMentionModal}>
-                                <div className="p-4">
-                                    <h2 className="text-lg font-semibold mb-4">Mencionar Pessoas</h2>
-                                    <p className="mb-2">Digite o nome da pessoa que deseja mencionar:</p>
+                                <div className="p-4 h-100">
+                                    <h2 className="text-lg font-semibold mb-4">Mencionar</h2>
+                                    <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
                                     <Select
                                         options={fetchedMentions}
                                         value={selectedMention}
                                         onChange={(option) => {
                                             if (option) {
+                                                option = fetchedMentions.find((mention) => mention.value === option?.value) || option;
                                                 editorRef?.current?.execCommand(
                                                     'mceInsertContent',
                                                     false,
-                                                    `<a href="${option.value}">${option.label}</a>`
+                                                    `<a href="${route('public.search.redirect_mention')}?id=${option.value}&type=${option.type}">${option.label}</a>`
                                                 );
                                                 setSelectedMention(null);
                                                 setShowMentions(false);

@@ -19,12 +19,19 @@ class SearchResultResource extends JsonResource
         return [
             'type' => $this['_federation']['indexUid'] ?? null,
             'route' => $this['route'] ?? null,
+            'mention' => $this['mention'] ?? null,
             'name' => $this['name'] ?? null,
             'title' => $this['title'] ?? null,
-            'authors' => $this['authors'] ?? null,
             'content' => $this['content'] ?? null,
             'primary_image_path' => $image_path ?? null,
             'primary_image_url' => asset(Storage::url($image_path)) ?? null,
+
+            'periods' => $this['periods'] ?? null, // for Artwork, Person and HistoryArticle
+            'categories' => $this['categories'] ?? null, // for Artwork, Review and HistoryArticle
+
+            'authors' => $this['authors'] ?? null, // for Review, HistoryArticle and Artwork
+            'cities' => $this['cities'] ?? null, // for Person
+            'artworks' => $this['artworks'] ?? null, // for Person and Review
         ];
     }
 }

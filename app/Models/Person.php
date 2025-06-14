@@ -44,12 +44,23 @@ class Person extends Model
             'name' => $this->name ?? '',
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
+
+            'periods' => $this->periods->pluck('name')->toArray(),
+            'cities' => $this->cities->pluck('name')->toArray(),
+
+            'artworks' => $this->artworks->pluck('title')->toArray(),
         ];
     }
 
     protected function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with(['images']);
+        return $query->with([
+            'images',
+            'files',
+            'periods',
+            'cities',
+            'artworks',
+        ]);
     }
 
     public function genders(): BelongsToMany

@@ -93,7 +93,7 @@ class ArtworkController extends Controller
         $artwork->periods()->sync($request->periods_ids);
 
         session()->flash('success', true);
-        return redirect()->back();
+        return redirect()->route('artworks.edit', $artwork);
     }
 
     // -------------------------------------------------------------------------
