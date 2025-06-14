@@ -83,7 +83,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                             <div className="mt-2 space-y-3">
                                 {Object.entries(mentionedByType).map(([type, mentions]) => (
                                     <div key={type} className="">
-                                        <p className="text-sm text-slate-400">{modelLabelPlural(type)}</p>
+                                        <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
                                         {mentions.map((mention) => (
                                             <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
                                                 <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
