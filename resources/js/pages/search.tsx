@@ -1,5 +1,7 @@
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import PublicLayout from '@/layouts/public-layout';
 import { typeLabelSearch } from '@/utils/model-label';
+import { Link } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 
 type SearchResult = {
@@ -19,12 +21,7 @@ type FilterOption = {
     label?: string;
 };
 
-export default function Index(
-{
-    q,
-}: {
-    q: string;
-}) {
+export default function Index({ q }: { q: string }) {
     const [result, setResult] = useState<{ data: SearchResult[] }>({ data: [] });
     const [last_page, setLastPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
@@ -33,7 +30,7 @@ export default function Index(
     const [filter, setFilter] = useState([] as FilterOption[]);
 
     const fetchFilter = () => {
-        let route_name = route('public.search.filter.fetch.options');
+        const route_name = route('public.search.filter.fetch.options');
 
         fetch(route_name, {
             method: 'GET',
@@ -41,16 +38,18 @@ export default function Index(
                 'Content-Type': 'application/json',
             },
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 setFetchedFilter(data.data || []);
 
-                setFilter(data.data.map((option: FilterOption) => ({
-                    name: option.name,
-                    value: new Array<string>(),
-                })));
+                setFilter(
+                    data.data.map((option: FilterOption) => ({
+                        name: option.name,
+                        value: new Array<string>(),
+                    })),
+                );
             })
-            .catch(error => console.error('Error fetching filter data:', error));
+            .catch((error) => console.error('Error fetching filter data:', error));
     };
 
     useEffect(() => {
@@ -66,29 +65,28 @@ export default function Index(
     }, [filter]);
 
     const fetchData = () => {
-        let route_name = route('public.search.fetch') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        const route_name =
+            route('public.search.fetch') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
 
-        fetch(route_name
-        , {
+        fetch(route_name, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
             },
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 console.log('Search results:', data);
                 setResult({ data: data.result });
                 setLastPage(data.last_page);
             })
-            .catch(error => console.error('Error fetching search results:', error));
+            .catch((error) => console.error('Error fetching search results:', error));
     };
 
     useEffect(() => {
         if (currentPage == 1) {
             fetchData();
-        }
-        else {
+        } else {
             setCurrentPage(1);
         }
     }, [q]);
@@ -111,19 +109,17 @@ export default function Index(
 
     return (
         <PublicLayout head="SHAULA">
-            <div className="container mx-auto px-4">
-
-                <div className='flex justify-center items-top mt-4 mb-6'>
-
-                    <div>
-                        <h1 className="text-2xl font-bold mb-4">Filtros</h1>
-                        <div className="space-y-2">
-
-                            {fetchedFilter && fetchedFilter.length > 0 && (
-                                fetchedFilter.map((filterOption, index) => (
-                                    <div key={index} className="mb-4">
-                                        <h2 className="text-lg font-semibold mb-2">{filterOption.label || ''}</h2>
-                                        <div className="flex flex-col space-y-1">
+            <div className="grid grid-cols-5 divide-x px-4 md:px-8 md:pt-4">
+                <section className="col-span-1 space-y-3">
+                    <h1 className="">Filtros</h1>
+                    <div className="space-y-2 divide-y pr-6">
+                        {fetchedFilter &&
+                            fetchedFilter.length > 0 &&
+                            fetchedFilter.map((filterOption, index) => (
+                                <Accordion type="single" collapsible>
+                                    <AccordionItem value={filterOption.name}>
+                                        <AccordionTrigger className="text-xl hover:cursor-pointer">{filterOption.label || ''}</AccordionTrigger>
+                                        <AccordionContent>
                                             {filterOption.value.map((value, valueIndex) => (
                                                 <label key={valueIndex} className="flex items-center">
                                                     <input
@@ -135,7 +131,7 @@ export default function Index(
                                                             if (e.target.checked) {
                                                                 newFilter[index].value.push(e.target.value);
                                                             } else {
-                                                                newFilter[index].value = newFilter[index].value.filter(v => v !== e.target.value);
+                                                                newFilter[index].value = newFilter[index].value.filter((v) => v !== e.target.value);
                                                             }
                                                             setFilter(newFilter);
                                                             setCurrentPage(1); // Reset to first page on filter change
@@ -145,82 +141,70 @@ export default function Index(
                                                     {value}
                                                 </label>
                                             ))}
-                                        </div>
-                                    </div>
-                                ))
-                            )}
-
-                        </div>
-                    </div>
-
-                    <div>
-                        <h1 className="text-2xl font-bold mb-4">Resultados da busca por "{q}"</h1>
-                        {last_page > 1 && (
-                            <div className="mt-6 flex justify-center items-center space-x-2">
-                                <button
-                                    onClick={() => setCurrentPage(currentPage - 1)}
-                                    disabled={currentPage === 1}
-                                    className={`px-4 py-2 border rounded ${currentPage === 1
-                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                            : 'text-blue-600 border-blue-600 hover:bg-blue-100'
-                                        }`}
-                                >
-                                    Anterior
-                                </button>
-                                <span className="text-sm text-gray-600">
-                                    Página {currentPage} de {last_page}
-                                </span>
-                                <button
-                                    onClick={(e) => setCurrentPage(currentPage + 1)}
-                                    disabled={currentPage === last_page}
-                                    className={`px-4 py-2 border rounded ${currentPage === last_page
-                                            ? 'text-gray-400 border-gray-300 cursor-not-allowed'
-                                            : 'text-blue-600 border-blue-600 hover:bg-blue-100'
-                                        }`}
-                                >
-                                    Próxima
-                                </button>
-                            </div>
-                        )}
-                        <ul className="space-y-4">
-                            {result.data?.map((item: SearchResult, index: number) => (
-                                <li key={index} className="border-b pb-4">
-                                    <div className="flex flex-row items-center space-x-2 mb-2">
-                                        {item.primary_image_path && (
-                                            <img
-                                                src={item.primary_image_url || '/default-image.png'}
-                                                alt={item.title || item.name || 'Imagem'}
-                                                className="w-32 h-32 object-cover aspect-square rounded"
-                                            />
-                                        )}
-                                        <div className="flex flex-col">
-                                            <p className="text-gray-500">
-                                                {item.type ? typeLabelSearch(item.type) : ''}
-                                            </p>
-                                            <a
-                                                href={item.route || '#'}
-                                                className="text-lg font-semibold text-blue-600 hover:underline"
-                                            >
-                                                {item.title || item.name || '[Sem título]'}
-                                            </a>
-                                            {item.authors && (
-                                                <p className="text-sm text-gray-600">
-                                                    {item.authors.join(', ')}
-                                                </p>
-                                            )}
-                                            {item.content && (
-                                                <p className="text-gray-800 mt-2">
-                                                    {item.content.substring(0, 150)}...
-                                                </p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </li>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
                             ))}
-                        </ul>
                     </div>
+                </section>
 
-                </div>
+                <section className="col-span-4 space-y-8 pl-8">
+                    <h1 className="">Resultados da busca por "{q}"</h1>
+                    <div className="space-y-4">
+                        {result.data?.map((item: SearchResult, index: number) => (
+                            <div key={index} className="flex items-start gap-4 border-b pb-4">
+                                {item.primary_image_path && (
+                                    <img
+                                        src={item.primary_image_url || '/default-image.png'}
+                                        alt={item.title || item.name || 'Imagem'}
+                                        className="aspect-square max-w-sm object-cover"
+                                    />
+                                )}
+                                <div className="space-y-3">
+                                    <p className="text-gray-500">{item.type ? typeLabelSearch(item.type) : ''}</p>
+                                    <div>
+                                        <Link href={item.route || '#'} className="text-2xl font-semibold hover:underline">
+                                            {item.title || item.name || '[Sem título]'}
+                                        </Link>
+                                        {item.authors && <p className="text-slate-600">{item.authors.join(', ')}</p>}
+                                        {item.content && (
+                                            <div dangerouslySetInnerHTML={{ __html: item.content }} className="mt-3 line-clamp-5 no-underline" />
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {last_page > 1 && (
+                        <div className="mt-6 flex items-center justify-center space-x-2">
+                            <button
+                                onClick={() => setCurrentPage(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                className={`rounded border px-4 py-2 ${
+                                    currentPage === 1
+                                        ? 'cursor-not-allowed border-gray-300 text-gray-400'
+                                        : 'border-blue-600 text-blue-600 hover:bg-blue-100'
+                                }`}
+                            >
+                                Anterior
+                            </button>
+                            <span className="text-sm text-gray-600">
+                                Página {currentPage} de {last_page}
+                            </span>
+                            <button
+                                onClick={(e) => setCurrentPage(currentPage + 1)}
+                                disabled={currentPage === last_page}
+                                className={`rounded border px-4 py-2 ${
+                                    currentPage === last_page
+                                        ? 'cursor-not-allowed border-gray-300 text-gray-400'
+                                        : 'border-blue-600 text-blue-600 hover:bg-blue-100'
+                                }`}
+                            >
+                                Próxima
+                            </button>
+                        </div>
+                    )}
+                </section>
             </div>
         </PublicLayout>
     );
