@@ -7,7 +7,6 @@ import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
 import { Source } from "./source";
-import { Tag } from "./tag";
 
 export type Artwork = {
     id: number;
@@ -35,10 +34,8 @@ export type Artwork = {
     dimensions: string;
     materials: string;
 
-    mentioned: Mention[];
-    mentioners: Mention[];
-
-    mentions: string[];
+    // mentions: string[];
+    mentions: Mention[];
 
     sources: Source[];
 

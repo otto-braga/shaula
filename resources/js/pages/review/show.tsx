@@ -26,32 +26,6 @@ import 'keen-slider/keen-slider.min.css';
 export default function Index({ review }: { review: { data: Review } }) {
     console.log(review);
 
-    const [mentionedByType, setMentionedByType] = useState<{
-        [key: string]: Mention[];
-    }>(
-        review.data.mentioned.reduce((acc: { [key: string]: Mention[] }, mention: Mention) => {
-            const type = mention.mentioned_type || '';
-            if (!acc[type]) {
-                acc[type] = [];
-            }
-            acc[type].push(mention);
-            return acc;
-        }, {}),
-    );
-
-    const [mentionersByType, setMentionersByType] = useState<{
-        [key: string]: Mention[];
-    }>(
-        review.data.mentioners.reduce((acc: { [key: string]: Mention[] }, mention: Mention) => {
-            const type = mention.mentioner_type || '';
-            if (!acc[type]) {
-                acc[type] = [];
-            }
-            acc[type].push(mention);
-            return acc;
-        }, {}),
-    );
-
     // const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -77,32 +51,6 @@ export default function Index({ review }: { review: { data: Review } }) {
                             ))}
                         </div>
                     )}
-                    {/* {review.data.mentioned.length > 0 && ( */}
-                        {/* <div className="">
-                            <p className="font-semibold">Menções</p>
-                            <div className="mt-2 space-y-3"> */}
-                                {/* {Object.entries(mentionedByType).map(([type, mentions]) => (
-                                    <div key={type} className="">
-                                        <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
-                                        {mentions.map((mention) => (
-                                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
-                                                <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                ))} */}
-                                {/* {review.data.mentions.map((mention, index) => (
-                                    <div key={'mention' + index}>
-                                        <p>
-                                            <div
-                                                dangerouslySetInnerHTML={{ __html: mention }}
-                                            />
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div> */}
-                    {/* )} */}
                 </div>
             </MobileDetailBar>
 
@@ -147,93 +95,22 @@ export default function Index({ review }: { review: { data: Review } }) {
                         </div>
                     )}
 
-                    {/* --------------------------------------------------------
-                        FONTES ACESSADAS DIRETAMENTE (DEPRECATED: acessar atraves de menções)
-                     */}
 
-                    {/* {review.data.sources.length > 0 && (
-                        <div className="">
-                            <p className="font-semibold">Fontes</p>
-                            {review.data.sources.map((source) => (
-                                // <Link href={route('public.sources.show', source)} key={source.id}>
-                                <p className="line-clamp-1 hover:underline">{source.title}</p>
-                                // </Link>
-                            ))}
-                        </div>
-                    )} */}
-
-                    {/* --------------------------------------------------------
-                        EXEMPLOS DE LISTAGEM DE MENÇÕES QUE ESSA CRÍTICA FAZ
-                        (junto e separadas)
-                     */}
-
-                    {/* <div className="mt-4">
-                        <p className="font-semibold">Menções (junto)</p>
-                        {review.data.mentioned.map((mention) => (
-                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'juntas'}>
-                                <p className="hover:underline">{mention.mentioned_name}</p>
-                            </Link>
-                        ))}
-                    </div> */}
-
-                    {/* {review.data.mentioned.length > 0 && ( */}
                         <div className="">
                             <p className="font-semibold">Menções</p>
                             <div className="mt-2 space-y-3">
-                                {/* {Object.entries(mentionedByType).map(([type, mentions]) => (
-                                    <div key={type} className="">
-                                        <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
-                                        {mentions.map((mention) => (
-                                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
-                                                <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
-                                            </Link>
-                                        ))}
-                                    </div>
-                                ))} */}
                                 {review.data.mentions.map((mention, index) => (
                                     <div key={'mention' + index}>
                                         <p>
-                                            <div
-                                                dangerouslySetInnerHTML={{ __html: mention }}
-                                            />
+                                            <Link href={mention['route']} className="hover:underline">
+                                                {mention['name']}
+                                            </Link>
                                         </p>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                    {/* )} */}
 
-                    {/* --------------------------------------------------------
-                        EXEMPLOS DE LISTAGEM DE MENÇÕES FEITAS A ESSA CRÍTICA
-                        (junto e separadas)
-                        (inclui fontes novamente)
-                     */}
-
-                    {/* <div className="mt-4">
-                        <p className="font-semibold">Mencionada em (junto)</p>
-                        {review.data.mentioners.map((mention) => (
-                            <Link href={route('public.mentions.show.mentioner', mention)} key={mention.id + 'junto'}>
-                                <p className="line-clamp-1 hover:underline">{mention.mentioner_name}</p>
-                            </Link>
-                        ))}
-                    </div> */}
-
-                    {/* <div className="mt-4">
-                        <p className="font-semibold">Mencionada em</p>
-                        {Object.entries(mentionersByType).map(([type, mentions]) => (
-                            <div key={type} className="mb-4">
-                                <p className="text-center text-sm font-semibold">{typeLabelPlural(type)}</p>
-                                {mentions.map((mention) => (
-                                    <Link href={route('public.mentions.show.mentioner', mention)} key={mention.id + 'separadas'}>
-                                        <p className="hover:underline">{mention.mentioner_name}</p>
-                                    </Link>
-                                ))}
-                            </div>
-                        ))}
-                    </div> */}
-
-                    {/* --------------------------------------------------------
-                     */}
                 </section>
                 <section className="md:col-span-2 md:pr-6 lg:col-span-3 lg:pr-8">
                     <div>

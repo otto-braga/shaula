@@ -52,9 +52,9 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                     {artwork.data.mentions.map((mention, index) => (
                         <div key={'mention' + index}>
                             <p>
-                                <div
-                                    dangerouslySetInnerHTML={{ __html: mention }}
-                                />
+                                <Link href={mention.route} className="hover:underline">
+                                    {mention.name}
+                                </Link>
                             </p>
                         </div>
                     ))}

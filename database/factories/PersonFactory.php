@@ -42,7 +42,7 @@ class PersonFactory extends Factory
                 $person->periods()->attach($period);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($person) {
                 $file->update([
@@ -51,7 +51,9 @@ class PersonFactory extends Factory
                 ]);
             });
 
-            $person->images()->first()->update(['is_primary' => true]);
+            if ($person->images()->count() > 0) {
+                $person->images()->first()->update(['is_primary' => true]);
+            }
         });
     }
 }

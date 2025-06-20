@@ -38,7 +38,6 @@ class ArtworkFactory extends Factory
         return $this->afterCreating(function ($artwork) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                // $artwork->authors()->attach($author, ['is_author' => true]);
                 $artwork->authors()->attach($author);
             }
 
@@ -70,7 +69,7 @@ class ArtworkFactory extends Factory
                 $artwork->periods()->attach($period);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($artwork) {
                 $file->update([
@@ -79,7 +78,9 @@ class ArtworkFactory extends Factory
                 ]);
             });
 
-            $artwork->images()->first()->update(['is_primary' => true]);
+            if ($artwork->images()->count() > 0) {
+                $artwork->images()->first()->update(['is_primary' => true]);
+            }
         });
     }
 }

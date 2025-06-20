@@ -4,21 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\PersonResource;
 use App\Models\Review;
-use App\Models\Category;
-use App\Models\Mention;
-use App\Models\Person;
 use App\Traits\HasFile;
-use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    use HasFile, HasMention;
+    use HasFile;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -52,10 +45,7 @@ class ReviewController extends Controller
 
         $review = Review::create($dataForm);
 
-        $review->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $review->authors()->sync($request->authors_ids);
         $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
@@ -80,10 +70,7 @@ class ReviewController extends Controller
 
         $review->update($dataForm);
 
-        $review->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $review->authors()->sync($request->authors_ids);
         $review->categories()->sync($request->categories_ids);
 
         session()->flash('success', true);
@@ -164,32 +151,20 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(Review $review)
+    public function editSources(Review $review)
     {
-        $review->load('mentioned');
+        $review->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/review/edit/mentions', [
+        return Inertia::render('admin/review/edit/sources', [
             'review' => new ReviewResource($review),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, Review $review)
+    public function updateSources(Request $request, Review $review)
     {
-        $review->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $review->id,
-                'mentioner_type' => $review::class
-            ]);
-        }
+        $review->sources()->sync($request->sources_ids);
 
         session()->flash('success', true);
         return redirect()->back();

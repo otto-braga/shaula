@@ -36,10 +36,6 @@ class ArtworkResource extends JsonResource
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
 
-            'mentioned' => MentionResource::collection($this->whenLoaded('mentioned')),
-            'mentioners' => MentionResource::collection($this->whenLoaded('mentioners')),
-
-            // 'mentions' => JsonResource::collection($this->mentions()),
             'mentions' => $this->mentions(),
 
             'sources' => SourceResource::collection($this->whenLoaded('sources')),

@@ -194,7 +194,6 @@ class SearchController extends Controller
     {
         $query = $request->q ?? null;
         $page_size = $request->page_size ?? 5;
-        $filter = $request->filter ?? null;
 
         if ($query) {
             $client = new Client(
@@ -212,12 +211,30 @@ class SearchController extends Controller
             $options = [];
 
             foreach ($result['hits'] as $hit) {
-                $options[] = [
-                    'value' => $hit['uuid'] ?? '',
-                    'label' => $hit['name'] ?? $hit['title'] ?? '',
-                    // 'id' => $hit['id'] ?? null,
-                    'type' => $hit['_federation']['indexUid'] ?? '',
-                ];
+                $uuid = $hit['uuid'] ?? null;
+                $type = $hit['_federation']['indexUid'] ?? null;
+
+                if ($type && $uuid) {
+                    $model = DB::table($type)
+                        ->where('uuid', $hit['uuid'])
+                        ->first();
+
+                    if ($model) {
+                        $name = $model->name ?? $model->title ?? null;
+                        $route = route('public.' . $type . '.show', $model->slug);
+
+                        if ($name && $route) {
+                            $options[] = [
+                                'type' => $type,
+                                'key' => $uuid,
+                                'name' => $name,
+                                'route' => $route,
+                                'value' => $uuid,
+                                'label' => $name,
+                            ];
+                        }
+                    }
+                }
             }
 
             return response()->json([
@@ -226,19 +243,5 @@ class SearchController extends Controller
         }
 
         return response()->json([]);
-    }
-
-    public function redirectMention(Request $request)
-    {
-        $type = $request->type ?? null;
-        $uuid = $request->key;
-
-        $model = DB::table($type)->where('uuid', $uuid)->firstOrFail();
-
-        if ($model) {
-            return redirect()->route('public.' . $type . '.show', $model->slug);
-        }
-
-        // return redirect()->route('public.search.index', ['q' => $query]);
     }
 }

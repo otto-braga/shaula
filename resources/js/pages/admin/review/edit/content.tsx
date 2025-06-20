@@ -117,9 +117,10 @@ export default function Content({
                 console.log('response', response);
                 setFetchedMentions(
                     response.options.map((object: SearchResultOption) => ({
-                        value: object.value,
-                        label: object.label,
                         type: object.type || '',
+                        key: object.key || '',
+                        name: object.name || '',
+                        route: object.route || '',
                     }))
                 );
             });
@@ -178,7 +179,6 @@ export default function Content({
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <Tabs review={review} processing={processing} className='sticky top-0 z-50 text-gray-800 bg-white dark:bg-black dark:text-gray-200' />
-
                             <div className='sticky top-96'>
 
                                 <Editor
@@ -365,7 +365,7 @@ export default function Content({
                                                 editorRef?.current?.execCommand(
                                                     'mceInsertContent',
                                                     false,
-                                                    `<span class="shaula-mention"><a href="${route('public.search.redirect_mention')}?key=${option.value}&type=${option.type}">${option.label}</a></span>`
+                                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.key}" href="${option.route}">${option.name}</a></span>`
                                                 );
                                                 setSelectedMention(null);
                                                 setShowMentions(false);

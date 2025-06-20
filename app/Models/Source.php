@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
+use App\Traits\Fetchable;
 use App\Traits\HasFile;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
@@ -14,7 +14,12 @@ use Laravel\Scout\Searchable;
 
 class Source extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasFetching, HasFile, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        Fetchable,
+        Searchable;
 
     protected $fillable = [
         'title',

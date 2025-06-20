@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Resources\PeriodResource;
-use App\Traits\HasFetching;
-use App\Traits\HasLabel;
+use App\Traits\Fetchable;
 use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
@@ -18,7 +16,13 @@ use Laravel\Scout\Searchable;
 
 class Artwork extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, Searchable, HasMentions;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Fetchable,
+        Searchable;
 
     protected $table = 'artworks';
 
@@ -26,7 +30,6 @@ class Artwork extends Model
         'title',
         'date',
         'content',
-
         'dimensions',
         'materials',
     ];
@@ -38,7 +41,6 @@ class Artwork extends Model
 
     public function toSearchableArray()
     {
-        // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
@@ -67,11 +69,6 @@ class Artwork extends Model
 
     public function authors(): MorphToMany
     {
-        // return $this->morphToMany(Person::class, 'personable', 'personables')
-        //     ->withPivot('is_author')
-        //     ->where('is_author', true)
-        //     ->orderBy('name');
-
         return $this->morphToMany(Person::class, 'authorable', 'authorables')
             ->orderBy('name');
     }
@@ -79,8 +76,6 @@ class Artwork extends Model
     public function people(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            // ->withPivot('is_author')
-            // ->where('is_author', false)
             ->withPivot('activity_id')
             ->orderBy('name');
     }
@@ -114,7 +109,7 @@ class Artwork extends Model
         return $this->belongsToMany(Award::class, 'artwork_award', 'artwork_id', 'award_id');
     }
 
-    // files
+    // Files.
 
     public function files(): MorphMany
     {
@@ -142,7 +137,7 @@ class Artwork extends Model
             ->where('collection', 'content');
     }
 
-    // sources
+    // Sources.
 
     public function sources(): MorphToMany
     {

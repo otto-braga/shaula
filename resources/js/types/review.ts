@@ -1,11 +1,8 @@
 import { Activity } from "./activity";
-import { Artwork } from "./artwork";
 import { Category } from "./category";
 import { FileProps } from "./file";
-import { Mention } from "./mention";
 import { Person } from "./person";
 import { Source } from "./source";
-import { Tag } from "./tag";
 
 export type Review = {
     id: number;
@@ -22,15 +19,13 @@ export type Review = {
 
     people: Person[];
 
-    mentioned: Mention[];
-    mentioners: Mention[];
+    categories: Category[];
+
+    activity: Activity | null;
 
     mentions: string[];
 
-    categories: Category[];
-    tags: Tag[];
-
-    activity: Activity | null;
+    sources: Source[];
 
     created_at: string;
     updated_at: string;

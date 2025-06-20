@@ -32,7 +32,6 @@ class ReviewFactory extends Factory
         return $this->afterCreating(function ($review) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                // $review->authors()->attach($author, ['is_author' => true]);
                 $review->authors()->attach($author);
             }
 
@@ -41,7 +40,7 @@ class ReviewFactory extends Factory
                 $review->categories()->attach($category);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($review) {
                 $file->update([
@@ -50,7 +49,9 @@ class ReviewFactory extends Factory
                 ]);
             });
 
-            $review->images()->first()->update(['is_primary' => true]);
+            if ($review->images()->count() > 0) {
+                $review->images()->first()->update(['is_primary' => true]);
+            }
         });
     }
 }

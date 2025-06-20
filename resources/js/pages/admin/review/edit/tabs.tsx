@@ -60,21 +60,13 @@ export default function Tabs({ review, processing, className }: TabsProps) {
                             >
                                 Conteúdo
                             </Link>
-                            {/* <Link
-                                className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.people') ? ' font-bold underline' : '')
-                                }
-                                href={isEdit ? route('reviews.edit.people', { review: review?.data }) : ''}
-                            >
-                                Pessoas
-                            </Link> */}
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.mentions') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.sources') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('reviews.edit.mentions', { review: review?.data }) : ''}
+                                href={isEdit ? route('reviews.edit.sources', { review: review?.data }) : ''}
                             >
-                                Menções
+                                Fontes
                             </Link>
                         </>
                     )}

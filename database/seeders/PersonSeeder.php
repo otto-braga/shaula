@@ -14,10 +14,6 @@ class PersonSeeder extends Seeder
      */
     public function run(): void
     {
-        // Person::factory()->create(['name' => 'Same Name Test Person']);
-        // Person::factory()->create(['name' => 'Same Name Test Person']);
-        // Person::factory()->create(['name' => 'Same Name Test Person']);
-        // Person::factory()->create(['name' => 'Same Name Test Person']);
         Person::factory(20)->create();
     }
 }
