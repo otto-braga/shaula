@@ -2,6 +2,7 @@ import { FileProps } from "./file";
 
 export type Source = {
     id: number;
+    uuid: string;
     slug: string;
 
     title: string;

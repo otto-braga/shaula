@@ -19,10 +19,13 @@ import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
+import Select from 'react-select';
+import { SearchResultOption } from '@/types/search-result-option';
+
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pessoas',
-        href: '/admin/pessoas',
+        title: 'Crítica',
+        href: route('reviews.index'),
     },
 ];
 
@@ -31,6 +34,8 @@ export default function Content({
 }: {
     review: { data: Review }
 }) {
+    console.log('mentions', review.data.mentions);
+
     const { data, setData, post, errors, processing } = useForm({
         content: review.data.content as string ?? String(),
         files: Array<File>(),
@@ -87,6 +92,83 @@ export default function Content({
             }, timedMessageDuration);
         }
     }, [flash]);
+
+    const [showMentions, setShowMentions] = useState<boolean>(false);
+
+    async function fetchMentions(search: string): Promise<SearchResultOption[]> {
+        if (search.length < 1) {
+            return [];
+        }
+
+        let response;
+
+        fetch(
+            route('public.search.fetch.options') + '?q=' + encodeURIComponent(search) + '&type=people',
+            {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+            })
+            .then((res) => res.json())
+            .then((data) => {
+                response = data as { options: SearchResultOption[] };
+                console.log('response', response);
+                setFetchedMentions(
+                    response.options.map((object: SearchResultOption) => ({
+                        value: object.value,
+                        label: object.label,
+                        type: object.type || '',
+                    }))
+                );
+            });
+
+        return response || [];
+    }
+
+    useEffect(() => {
+        if (flash?.success != undefined && !isTimedMessageShown) {
+            setIsTimedMessageShown(true);
+            setTimeout(() => {
+                setIsTimedMessageShown(false);
+            }, timedMessageDuration);
+        }
+    }, [flash]);
+
+    const [fetchedMentions, setFetchedMentions] = useState<SearchResultOption[]>([]);
+    const [selectedMention, setSelectedMention] = useState<SearchResultOption | null>(null);
+
+    const openMentionModal = () => {
+        setShowMentions(true);
+        setFetchedMentions([]);
+        setSelectedMention(null);
+        // set focus on the select input
+        setTimeout(() => {
+            const selectInput = document.querySelector('.react-select__input input');
+            if (selectInput) {
+                (selectInput as HTMLInputElement).focus();
+            }
+        }, 100);
+    }
+
+    const closeMentionModal = () => {
+        if (!selectedMention) {
+            editorRef?.current?.execCommand(
+                'mceInsertContent',
+                false,
+                '@'
+            );
+            editorRef?.current?.focus();
+        }
+        setShowMentions(false);
+        setSelectedMention(null);
+        setFetchedMentions([]);
+    }
+
+    useEffect(() => {
+        console.log('fetchedMentions', fetchedMentions);
+    }, [fetchedMentions]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -148,6 +230,15 @@ export default function Content({
                                                 onAction: () => {
                                                     setShowGallery(true);
                                                 },
+                                            });
+
+                                            // Handle @ mentions
+                                            editor.on('keydown', (e) => {
+                                                if (e.key === '@') {
+                                                    e.preventDefault();
+                                                    // setShowMentions(true);
+                                                    openMentionModal();
+                                                }
                                             });
                                         },
                                     }}
@@ -258,6 +349,36 @@ export default function Content({
                                             }
                                         </Button>
                                     </div>
+                                </div>
+                            </Modal>
+
+                            <Modal show={showMentions} onClose={closeMentionModal}>
+                                <div className="p-4 h-100">
+                                    <h2 className="text-lg font-semibold mb-4">Mencionar</h2>
+                                    <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
+                                    <Select
+                                        options={fetchedMentions}
+                                        value={selectedMention}
+                                        onChange={(option) => {
+                                            if (option) {
+                                                option = fetchedMentions.find((mention) => mention.value === option?.value) || option;
+                                                editorRef?.current?.execCommand(
+                                                    'mceInsertContent',
+                                                    false,
+                                                    `<span class="shaula-mention"><a href="${route('public.search.redirect_mention')}?key=${option.value}&type=${option.type}">${option.label}</a></span>`
+                                                );
+                                                setSelectedMention(null);
+                                                setShowMentions(false);
+                                            }
+                                        }}
+                                        onInputChange={(inputValue) => {
+                                            fetchMentions(inputValue);
+                                        }}
+                                        placeholder="Digite para buscar..."
+                                        isClearable
+                                        className="mb-4"
+                                    />
+                                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir a menção.</p>
                                 </div>
                             </Modal>
 

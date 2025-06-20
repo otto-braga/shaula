@@ -1,5 +1,5 @@
 import PublicLayout from '@/layouts/public-layout';
-import { typeLabelSearch } from '@/utils/model-label';
+import { typeLabelSearch } from '@/utils/type-label';
 import { useEffect, useState } from 'react';
 
 type SearchResult = {

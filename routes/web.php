@@ -180,6 +180,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/obras/{artwork:slug}/update/images', [ArtworkController::class, 'updateImages'])->name('artworks.update.images');
     Route::get('/obras/{artwork:slug}/editar/conteudo', [ArtworkController::class, 'editContent'])->name('artworks.edit.content');
     Route::post('/obras/{artwork:slug}/update/content', [ArtworkController::class, 'updateContent'])->name('artworks.update.content');
+    Route::get('/obras/{artwork:slug}/editar/fontes', [ArtworkController::class, 'editSources'])->name('artworks.edit.sources');
+    Route::post('/obras/{artwork:slug}/update/sources', [ArtworkController::class, 'updateSources'])->name('artworks.update.sources');
     Route::get('/obras/{artwork:slug}/editar/mencoes', [ArtworkController::class, 'editMentions'])->name('artworks.edit.mentions');
     Route::post('/obras/{artwork:slug}/update/mentions', [ArtworkController::class, 'updateMentions'])->name('artworks.update.mentions');
     Route::delete('/obras/{artwork:slug}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');

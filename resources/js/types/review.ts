@@ -25,6 +25,8 @@ export type Review = {
     mentioned: Mention[];
     mentioners: Mention[];
 
+    mentions: string[];
+
     categories: Category[];
     tags: Tag[];
 

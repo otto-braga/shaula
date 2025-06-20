@@ -22,7 +22,7 @@ class HistoryArticleFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
         ];
     }
 
@@ -31,7 +31,8 @@ class HistoryArticleFactory extends Factory
         return $this->afterCreating(function ($review) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $review->authors()->attach($author, ['is_author' => true]);
+                // $review->authors()->attach($author, ['is_author' => true]);
+                $review->authors()->attach($author);
             }
 
             $categories = Category::inRandomOrder()->take(rand(0, 5))->get();

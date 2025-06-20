@@ -18,20 +18,14 @@ import { Editor as TinyMCEEditor } from 'tinymce';
 import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
-import { LazyLoadingSelect } from '@/components/select/lazyLoadingSelect';
-import Select from 'react-select';
 
-type SearchResultOption = {
-    label: string;
-    value: number;
-    // id?: number;
-    type?: string;
-}
+import Select from 'react-select';
+import { SearchResultOption } from '@/types/search-result-option';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Pessoas',
-        href: '/admin/pessoas',
+        title: 'Obra',
+        href: route('artworks.index'),
     },
 ];
 
@@ -40,6 +34,8 @@ export default function Content({
 }: {
     artwork: { data: Artwork }
 }) {
+    console.log('mentions', artwork.data.mentions);
+
     const { data, setData, post, errors, processing } = useForm({
         content: artwork.data.content as string ?? String(),
         files: Array<File>(),
@@ -87,6 +83,15 @@ export default function Content({
 
     const timedMessageDuration: number = 3000;
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (flash?.success != undefined && !isTimedMessageShown) {
+            setIsTimedMessageShown(true);
+            setTimeout(() => {
+                setIsTimedMessageShown(false);
+            }, timedMessageDuration);
+        }
+    }, [flash]);
 
     const [showMentions, setShowMentions] = useState<boolean>(false);
 
@@ -360,7 +365,7 @@ export default function Content({
                                                 editorRef?.current?.execCommand(
                                                     'mceInsertContent',
                                                     false,
-                                                    `<a href="${route('public.search.redirect_mention')}?id=${option.value}&type=${option.type}">${option.label}</a>`
+                                                    `<span class="shaula-mention"><a href="${route('public.search.redirect_mention')}?key=${option.value}&type=${option.type}">${option.label}</a></span>`
                                                 );
                                                 setSelectedMention(null);
                                                 setShowMentions(false);

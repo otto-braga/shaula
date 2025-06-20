@@ -5,7 +5,7 @@ import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 import Tabs from './tabs';
 import { Mention, MentionQuery } from '@/types/mention';
-import { typeLabel } from '@/utils/model-label';
+import { typeLabel } from '@/utils/type-label';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [

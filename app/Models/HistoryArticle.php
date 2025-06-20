@@ -35,6 +35,7 @@ class HistoryArticle extends Model
         // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
+            'uuid' => $this->uuid,
             'route' => route('public.artworks.show', $this),
             'title' => $this->title ?? '',
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
@@ -60,9 +61,7 @@ class HistoryArticle extends Model
 
     public function authors(): MorphToMany
     {
-        return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('is_author')
-            ->where('is_author', true)
+        return $this->morphToMany(Person::class, 'authorable', 'authorables')
             ->orderBy('name');
     }
 

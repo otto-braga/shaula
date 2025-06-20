@@ -7,10 +7,8 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
-use App\Models\Mention;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
@@ -52,10 +50,7 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $artwork->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $artwork->authors()->sync($request->authors_ids);
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
@@ -83,10 +78,7 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $artwork->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $artwork->authors()->sync($request->authors_ids);
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
@@ -117,14 +109,25 @@ class ArtworkController extends Controller
     {
         $activitiesPeople = $request->activitiesPeople;
 
-        if ($activitiesPeople) {
-            $artwork->people()->detach();
+        if ($activitiesPeople && count($activitiesPeople) > 0) {
+            foreach ($artwork->people as $person) {
+                if (!in_array($person->id, array_column($activitiesPeople, 'person_id'))) {
+                    $artwork->people()->detach($person->id);
+                }
+            }
 
             foreach ($activitiesPeople as $activityPerson) {
-                $artwork->people()->attach(
-                    $activityPerson['person_id'],
-                    ['activity_id' => $activityPerson['activity_id']]
-                );
+                if (
+                    !$artwork->people()
+                    ->where('person_id', $activityPerson['person_id'])
+                    ->where('activity_id', $activityPerson['activity_id'])
+                    ->first()
+                ) {
+                    $artwork->people()->attach(
+                        $activityPerson['person_id'],
+                        ['activity_id' => $activityPerson['activity_id']]
+                    );
+                }
             }
 
             session()->flash('success', true);
@@ -206,32 +209,20 @@ class ArtworkController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(Artwork $artwork)
+    public function editSources(Artwork $artwork)
     {
-        $artwork->load('mentioned');
+        $artwork->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/artwork/edit/mentions', [
+        return Inertia::render('admin/artwork/edit/sources', [
             'artwork' => new ArtworkResource($artwork),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, Artwork $artwork)
+    public function updateSources(Request $request, Artwork $artwork)
     {
-        $artwork->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $artwork->id,
-                'mentioner_type' => $artwork::class
-            ]);
-        }
+        $artwork->sources()->sync($request->sources_ids);
 
         session()->flash('success', true);
         return redirect()->back();

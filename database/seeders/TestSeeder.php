@@ -23,6 +23,6 @@ class TestSeeder extends Seeder
         $this->call(ReviewSeeder::class);
         $this->call(HistoryArticleSeeder::class);
         $this->call(SourceSeeder::class);
-        $this->call(MentionSeeder::class);
+        // $this->call(MentionSeeder::class);
     }
 }

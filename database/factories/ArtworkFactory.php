@@ -27,7 +27,7 @@ class ArtworkFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
             'dimensions' => $this->faker->word,
             'materials' => $this->faker->word,
         ];
@@ -38,7 +38,8 @@ class ArtworkFactory extends Factory
         return $this->afterCreating(function ($artwork) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $artwork->authors()->attach($author, ['is_author' => true]);
+                // $artwork->authors()->attach($author, ['is_author' => true]);
+                $artwork->authors()->attach($author);
             }
 
             $activities = Activity::inRandomOrder()->take(rand(0, 3))->get();

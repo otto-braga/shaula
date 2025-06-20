@@ -6,6 +6,7 @@ import { Language } from "./language";
 import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
+import { Source } from "./source";
 import { Tag } from "./tag";
 
 export type Artwork = {
@@ -36,6 +37,10 @@ export type Artwork = {
 
     mentioned: Mention[];
     mentioners: Mention[];
+
+    mentions: string[];
+
+    sources: Source[];
 
     created_at: string;
     updated_at: string;

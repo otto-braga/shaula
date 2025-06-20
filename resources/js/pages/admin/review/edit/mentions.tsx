@@ -7,7 +7,7 @@ import Select from 'react-select';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import Tabs from './tabs';
 import { Mention, MentionQuery } from '@/types/mention';
-import { typeLabel } from '@/utils/model-label';
+import { typeLabel } from '@/utils/type-label';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 
 const breadcrumbs: BreadcrumbItem[] = [

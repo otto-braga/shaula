@@ -213,7 +213,7 @@ class SearchController extends Controller
 
             foreach ($result['hits'] as $hit) {
                 $options[] = [
-                    'value' => $hit['id'] ?? '',
+                    'value' => $hit['uuid'] ?? '',
                     'label' => $hit['name'] ?? $hit['title'] ?? '',
                     // 'id' => $hit['id'] ?? null,
                     'type' => $hit['_federation']['indexUid'] ?? '',
@@ -231,9 +231,9 @@ class SearchController extends Controller
     public function redirectMention(Request $request)
     {
         $type = $request->type ?? null;
-        $id = (int) $request->id;
+        $uuid = $request->key;
 
-        $model = DB::table($type)->find($id);
+        $model = DB::table($type)->where('uuid', $uuid)->firstOrFail();
 
         if ($model) {
             return redirect()->route('public.' . $type . '.show', $model->slug);

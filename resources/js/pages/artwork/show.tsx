@@ -47,6 +47,18 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                         </div>
                     ))}
                 </div>
+                <div>
+                    <h2>menções</h2>
+                    {artwork.data.mentions.map((mention, index) => (
+                        <div key={'mention' + index}>
+                            <p>
+                                <div
+                                    dangerouslySetInnerHTML={{ __html: mention }}
+                                />
+                            </p>
+                        </div>
+                    ))}
+                </div>
             </div>
         </PublicLayout>
     );

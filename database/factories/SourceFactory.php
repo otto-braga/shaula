@@ -22,7 +22,7 @@ class SourceFactory extends Factory
     {
         return [
             'title' => $this->faker->unique()->sentence,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
         ];
     }
 

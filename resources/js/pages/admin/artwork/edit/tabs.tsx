@@ -38,7 +38,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                         <>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artworks.edit') ? ' font-bold underline' : '')
                                 }
                                 href={isEdit ? route('artworks.edit', { artwork: artwork?.data }) : ''}
                             >
@@ -46,7 +46,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.people') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artworks.edit.people') ? ' font-bold underline' : '')
                                 }
                                 href={isEdit ? route('artworks.edit.people', { artwork: artwork?.data }) : ''}
                             >
@@ -54,7 +54,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artworks.edit.images') ? ' font-bold underline' : '')
                                 }
                                 href={isEdit ? route('artworks.edit.images', { artwork: artwork?.data }) : ''}
                             >
@@ -62,7 +62,7 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.content') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artworks.edit.content') ? ' font-bold underline' : '')
                                 }
                                 href={isEdit ? route('artworks.edit.content', { artwork: artwork?.data }) : ''}
                             >
@@ -70,11 +70,11 @@ export default function Tabs({ artwork, processing, className }: TabsProps) {
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artwork.edit.mentions') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('artworks.edit.sources') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('artworks.edit.mentions', { artwork: artwork?.data }) : ''}
+                                href={isEdit ? route('artworks.edit.sources', { artwork: artwork?.data }) : ''}
                             >
-                                Menções
+                                Fontes
                             </Link>
                         </>
                     )}

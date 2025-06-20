@@ -40,6 +40,7 @@ class Person extends Model
         // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
+            'uuid' => $this->uuid,
             'route' => route('public.people.show', $this),
             'name' => $this->name ?? '',
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
@@ -83,7 +84,7 @@ class Person extends Model
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')
             ->withPivot([
-                'is_author',
+                // 'is_author',
                 'is_mention',
                 'activity_id',
             ])

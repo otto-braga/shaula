@@ -3,7 +3,7 @@ import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
 import { Mention } from '@/types/mention';
 import { Review } from '@/types/review';
-import { typeLabelPlural } from '@/utils/model-label';
+import { typeLabelPlural } from '@/utils/type-label';
 
 import { Link } from '@inertiajs/react';
 
@@ -77,23 +77,32 @@ export default function Index({ review }: { review: { data: Review } }) {
                             ))}
                         </div>
                     )}
-                    {review.data.mentioned.length > 0 && (
-                        <div className="">
+                    {/* {review.data.mentioned.length > 0 && ( */}
+                        {/* <div className="">
                             <p className="font-semibold">Menções</p>
-                            <div className="mt-2 space-y-3">
-                                {Object.entries(mentionedByType).map(([type, mentions]) => (
+                            <div className="mt-2 space-y-3"> */}
+                                {/* {Object.entries(mentionedByType).map(([type, mentions]) => (
                                     <div key={type} className="">
-                                        <p className="text-sm text-slate-400">{modelLabelPlural(type)}</p>
+                                        <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
                                         {mentions.map((mention) => (
                                             <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
                                                 <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
                                             </Link>
                                         ))}
                                     </div>
+                                ))} */}
+                                {/* {review.data.mentions.map((mention, index) => (
+                                    <div key={'mention' + index}>
+                                        <p>
+                                            <div
+                                                dangerouslySetInnerHTML={{ __html: mention }}
+                                            />
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
-                        </div>
-                    )}
+                        </div> */}
+                    {/* )} */}
                 </div>
             </MobileDetailBar>
 
@@ -167,11 +176,11 @@ export default function Index({ review }: { review: { data: Review } }) {
                         ))}
                     </div> */}
 
-                    {review.data.mentioned.length > 0 && (
+                    {/* {review.data.mentioned.length > 0 && ( */}
                         <div className="">
                             <p className="font-semibold">Menções</p>
                             <div className="mt-2 space-y-3">
-                                {Object.entries(mentionedByType).map(([type, mentions]) => (
+                                {/* {Object.entries(mentionedByType).map(([type, mentions]) => (
                                     <div key={type} className="">
                                         <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
                                         {mentions.map((mention) => (
@@ -180,10 +189,19 @@ export default function Index({ review }: { review: { data: Review } }) {
                                             </Link>
                                         ))}
                                     </div>
+                                ))} */}
+                                {review.data.mentions.map((mention, index) => (
+                                    <div key={'mention' + index}>
+                                        <p>
+                                            <div
+                                                dangerouslySetInnerHTML={{ __html: mention }}
+                                            />
+                                        </p>
+                                    </div>
                                 ))}
                             </div>
                         </div>
-                    )}
+                    {/* )} */}
 
                     {/* --------------------------------------------------------
                         EXEMPLOS DE LISTAGEM DE MENÇÕES FEITAS A ESSA CRÍTICA
