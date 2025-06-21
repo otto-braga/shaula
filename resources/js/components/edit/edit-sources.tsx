@@ -10,7 +10,6 @@ import { Button } from '@/components/ui/button';
 
 type EditSourcesProps = {
     model: { data: { sources?: Source[] } },
-    type: string,
     data: any,
     setData: (key: string, value: any) => void,
     errors?: Record<string, string>,
@@ -19,7 +18,6 @@ type EditSourcesProps = {
 
 export default function EditSources({
     model,
-    type,
     data,
     setData,
     errors,

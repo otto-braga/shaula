@@ -33,7 +33,6 @@ export default function Sources({
                             <Tabs artwork={artwork} processing={processing} />
                             <EditSources
                                 model={artwork}
-                                type={'artworks'}
                                 data={data}
                                 setData={setData}
                             />
