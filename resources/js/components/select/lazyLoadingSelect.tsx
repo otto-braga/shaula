@@ -55,7 +55,7 @@ type LazyLoadingSelectProps = {
     setterFunction: (option: Option) => void;
 }
 
-const CustomMenuList = (props: any) => {
+export const CustomMenuList = (props: any) => {
     return (
         <>
             <components.MenuList {...props}>

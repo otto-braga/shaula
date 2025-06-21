@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\File;
 use App\Models\Person;
 use App\Models\Review;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -51,6 +52,11 @@ class ReviewFactory extends Factory
 
             if ($review->images()->count() > 0) {
                 $review->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $review->sources()->attach($source);
             }
         });
     }

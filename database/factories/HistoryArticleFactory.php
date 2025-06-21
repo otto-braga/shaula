@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\File;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -56,6 +57,11 @@ class HistoryArticleFactory extends Factory
 
             if ($article->images()->count() > 0) {
                 $article->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $article->sources()->attach($source);
             }
         });
     }

@@ -103,15 +103,10 @@ class HistoryArticle extends Model
             ->where('collection', 'content');
     }
 
-    // mentions
+    // Sources.
 
-    public function mentioned(): MorphMany
+    public function sources(): MorphToMany
     {
-        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
-    }
-
-    public function mentioners(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+        return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
     }
 }

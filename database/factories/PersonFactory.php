@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Gender;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -53,6 +54,11 @@ class PersonFactory extends Factory
 
             if ($person->images()->count() > 0) {
                 $person->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $person->sources()->attach($source);
             }
         });
     }

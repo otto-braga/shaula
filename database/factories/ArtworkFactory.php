@@ -10,6 +10,7 @@ use App\Models\File;
 use App\Models\Language;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -80,6 +81,11 @@ class ArtworkFactory extends Factory
 
             if ($artwork->images()->count() > 0) {
                 $artwork->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $artwork->sources()->attach($source);
             }
         });
     }

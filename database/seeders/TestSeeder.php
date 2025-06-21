@@ -19,9 +19,9 @@ class TestSeeder extends Seeder
         $this->call(LanguageSeeder::class);
         $this->call(AwardSeeder::class);
         $this->call(PersonSeeder::class);
+        $this->call(SourceSeeder::class);
         $this->call(ArtworkSeeder::class);
         $this->call(ReviewSeeder::class);
         $this->call(HistoryArticleSeeder::class);
-        $this->call(SourceSeeder::class);
     }
 }

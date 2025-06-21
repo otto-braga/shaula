@@ -215,6 +215,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
     Route::delete('/fontes/{source:slug}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
+    Route::get('/fontes/fetch/{id}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
 
     // Source Categories
     Route::get('/categorias-fontes/fetch/options', [SourceController::class, 'fetchCategorySelectOptions'])->name('source_categories.fetch.options');

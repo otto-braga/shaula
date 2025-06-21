@@ -113,6 +113,19 @@ class SourceController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
+    public function fetchSingle($id)
+    {
+        $source = Source::find($id);
+
+        if (!$source) {
+            return response()->json(['error' => 'Source not found'], 404);
+        }
+
+        $source->load('file', 'sourceCategories');
+
+        return response()->json(new SourceResource($source));
+    }
+
     public function fetchSelectOptions(Request $request)
     {
         $options = Source::fetchAsSelectOption($request->search);
