@@ -38,7 +38,7 @@ class ArtworkResource extends JsonResource
 
             'mentions' => $this->mentions(),
 
-            'sources' => SourceResource::collection($this->whenLoaded('sources')),
+            'sources' => SourceResource::collection($this->sources),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -67,9 +67,9 @@ export default function Sources({
             setFetchedSources(
                 response
                 .filter((object: Option) => !sources?.map((source) => source.id).includes(object.value))
-                .map((object: Option) => ({
+                .map((object: { value: number; label: string; description?: string }) => ({
                     value: object.value,
-                    label: object.label,
+                    label: object.label + ' - ' + object.description,
                 }) as Option) as Option[]
             );
         });

@@ -7,9 +7,11 @@ use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\File;
+use App\Models\HistoryArticle;
 use App\Models\Language;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Review;
 use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -87,6 +89,8 @@ class ArtworkFactory extends Factory
             foreach ($sources as $source) {
                 $artwork->sources()->attach($source);
             }
+
+            MentionFactory::generateMentions($artwork);
         });
     }
 }

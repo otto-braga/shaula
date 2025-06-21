@@ -17,11 +17,11 @@ trait Fetchable
                 $query->where($search_key, 'like', "%$search%");
             } else if (Schema::hasColumn($this->getTable(), 'name')) {
                 $query->where('name', 'like', "%$search%")
-                    ->select('id', 'name');
+                    ->select('id', 'name', 'content');
             }
             else if (Schema::hasColumn($this->getTable(), 'title')) {
                 $query->where('title', 'like', "%$search%")
-                    ->select('id', 'title');
+                    ->select('id', 'title', 'content');
             }
         }
 
@@ -30,6 +30,7 @@ trait Fetchable
             return [
                 'value' => $item->id,
                 'label' => $item->name ?? $item->title,
+                'description' => $item->content ? substr(strip_tags($item->content), 0, 100) : '',
             ];
         });
         $retval = $retval->toArray();

@@ -83,11 +83,7 @@ class Person extends Model
     public function artworks(): MorphToMany
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')
-            ->withPivot([
-                // 'is_author',
-                'is_mention',
-                'activity_id',
-            ])
+            ->withPivot('activity_id')
             ->orderBy('date');
     }
 
