@@ -3,7 +3,7 @@ import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import Tabs from './tabs';
-import EditSources from '@/components/edit/sources';
+import EditSources from '@/components/edit/edit-sources';
 
 export default function Sources({
     artwork,
