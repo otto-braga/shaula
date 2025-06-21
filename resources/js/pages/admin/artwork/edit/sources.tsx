@@ -1,9 +1,9 @@
 import AppLayout from '@/layouts/app-layout';
-import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import Tabs from './tabs';
+import EditTabs from '@/components/edit/edit-tabs';
 import EditSources from '@/components/edit/edit-sources';
+import { Artwork } from '@/types/artwork';
 
 export default function Sources({
     artwork,
@@ -30,7 +30,11 @@ export default function Sources({
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs artwork={artwork} processing={processing} />
+                            <EditTabs
+                                model={artwork}
+                                route_base_name="artworks"
+                                processing={processing}
+                            />
                             <EditSources
                                 model={artwork}
                                 data={data}

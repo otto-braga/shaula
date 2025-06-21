@@ -10,7 +10,9 @@ import { Button } from '@/components/ui/button';
 
 type EditSourcesProps = {
     model: { data: { sources?: Source[] } },
-    data: any,
+    data: {
+        sources_ids: number[],
+    },
     setData: (key: string, value: any) => void,
     errors?: Record<string, string>,
     processing?: boolean,
