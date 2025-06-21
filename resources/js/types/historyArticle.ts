@@ -4,6 +4,7 @@ import { FileProps } from "./file";
 import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
+import { Source } from "./source";
 
 export type HistoryArticle = {
     id: number;
@@ -26,8 +27,9 @@ export type HistoryArticle = {
 
     activity: Activity | null;
 
-    mentioned: Mention[];
-    mentioners: Mention[];
+    mentions: Mention[];
+
+    sources: Source[];
 
     created_at: string;
     updated_at: string;

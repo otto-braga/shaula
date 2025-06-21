@@ -7,6 +7,7 @@ import { Language } from "./language";
 import { Mention } from "./mention";
 import { Period } from "./period";
 import { Review } from "./review";
+import { Source } from "./source";
 
 export type Person = {
     id: number;
@@ -37,8 +38,9 @@ export type Person = {
     artworks: Artwork[];
     reviews: Review[];
 
-    mentioned: Mention[];
-    mentioners: Mention[];
+    mentions: Mention[];
+
+    sources: Source[];
 
     created_at: string;
     updated_at: string;
