@@ -110,9 +110,16 @@ class ArtworkController extends Controller
         $activitiesPeople = $request->activitiesPeople;
 
         if ($activitiesPeople && count($activitiesPeople) > 0) {
-            foreach ($artwork->people as $person) {
-                if (!in_array($person->id, array_column($activitiesPeople, 'person_id'))) {
-                    $artwork->people()->detach($person->id);
+            foreach ($activitiesPeople as $activityPerson) {
+                foreach ($artwork->people as $person) {
+                    if (
+                        $person->id == $activityPerson['person_id']
+                        && $person->pivot->activity_id == $activityPerson['activity_id']
+                    ) {
+                        continue;
+                    }
+
+                    $artwork->people()->detach($person->id, ['activity_id' => $person->pivot->activity_id]);
                 }
             }
 
