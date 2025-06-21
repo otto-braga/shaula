@@ -215,13 +215,8 @@ class ArtworkController extends Controller
     {
         $artwork->load('sources');
 
-        // return Inertia::render('admin/artwork/edit/sources', [
-        //     'artwork' => new ArtworkResource($artwork),
-        // ]);
-
-        return Inertia::render('admin/edit-common/sources', [
-            'model' => new ArtworkResource($artwork),
-            'type' => 'artworks',
+        return Inertia::render('admin/artwork/edit/sources', [
+            'artwork' => new ArtworkResource($artwork),
         ]);
     }
 
