@@ -92,7 +92,6 @@ class SourceController extends Controller
                 $this->deleteFile($source->file->id);
             }
             $this->storeFile($request, $source, 'general');
-            $source->file->update(['is_primary' => true]);
         }
 
         session()->flash('success', true);

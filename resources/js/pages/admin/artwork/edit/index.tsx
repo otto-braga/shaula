@@ -6,15 +6,8 @@ import { type BreadcrumbItem } from '@/types';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import Tabs from './tabs';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Obras',
-        href: '/admin/artwork',
-    },
-];
+import EditTabs from '@/components/edit/edit-tabs';
 
 export default function Index({
     artwork,
@@ -56,13 +49,18 @@ export default function Index({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs artwork={artwork} processing={processing} />
+                            <EditTabs
+                                model={artwork}
+                                route_base_name="artworks"
+                                processing={processing}
+                            />
+
                             {isEdit}
 
                             <div>

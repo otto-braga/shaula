@@ -124,13 +124,14 @@ export default function EditSources({
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {sources?.map((source) => (
-                    <div key={source.id + source.title} className="mt-2 p-4 border rounded-lg bg-white dark:bg-gray-800 max-h-content flex justify-between">
-                        <div className="flex flex-col space-x-2">
+                    <div key={source.id + source.title} className="mt-2 p-4 border rounded-lg bg-white dark:bg-gray-800 flex flex-col justify-between">
                             <p className="text-sm font-semibold">{source.title}</p>
-                            <p className="text-sm text-gray-500">{source.content}</p>
+                            <p className="text-sm text-gray-500 h-32 overflow-hidden mb-2"
+                                dangerouslySetInnerHTML={{ __html: source.content ?? '' }}
+                            />
                             <FileCard
                                 file={source.file ?? null}
-                                className="w-full h-full mt-2"
+                                className="h-32"
                             />
                             <Button
                                 type="button"
@@ -142,7 +143,6 @@ export default function EditSources({
                             >
                                 Remover Fonte
                             </Button>
-                        </div>
                     </div>
                 ))}
             </div>

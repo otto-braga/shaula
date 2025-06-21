@@ -101,19 +101,18 @@ function FileCard({
             <div className={`flex flex-col items-center justify-items-center ${className}`}>
             </div>
         ) : (
-            <div className={`flex flex-col items-center justify-items-center ${className}`}>
-            {file?.mime_type === 'application/pdf' ? (
+            file?.mime_type === 'application/pdf' ? (
                 <iframe
                     key={file.id + 'pdf'}
                     src={file.path}
-                    className={'object-cover w-full h-full rounded-lg'}
+                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
+                    title={file.path}
                 />
             ) : (
                 <img key={file?.id + 'file'} src={file?.path} alt={file?.path}
-                    className={'object-cover w-full h-full rounded-lg'}
+                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
                 />
-            )}
-            </div>
+            )
         )
     )
 }

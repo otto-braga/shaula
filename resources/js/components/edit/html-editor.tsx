@@ -30,6 +30,10 @@ type HtmlEditorProps = {
     errors?: Record<string, string>;
     processing?: boolean;
     submit: FormEventHandler;
+
+    hasGallery?: boolean;
+    hasMentions?: boolean;
+    hasImageUpload?: boolean;
 };
 
 export default function HtmlEditor({
@@ -40,7 +44,18 @@ export default function HtmlEditor({
     errors,
     processing,
     submit,
+
+    hasGallery = true,
+    hasMentions = true,
 }: HtmlEditorProps) {
+    const toolbar = 'undo redo | ' +
+        (hasGallery ? 'gallery | ' : '') +
+        (hasMentions ? 'mentions | ' : '') +
+        'bold italic forecolor | alignleft aligncenter ' +
+        'alignright alignjustify |  outdent indent | ' +
+        'removeformat';
+
+
     const [images, setImages] = useState<Array<FilePondInitialFile | File | Blob | string>>([]);
 
     useEffect(() => {
@@ -129,6 +144,7 @@ export default function HtmlEditor({
 
     const [fetchedMentions, setFetchedMentions] = useState<SearchResultOption[]>([]);
     const [selectedMention, setSelectedMention] = useState<SearchResultOption | null>(null);
+    const [shouldAddCharacter, setShouldAddCharacter] = useState<boolean>(true);
 
     const openMentionModal = () => {
         setShowMentions(true);
@@ -144,7 +160,7 @@ export default function HtmlEditor({
     }
 
     const closeMentionModal = () => {
-        if (!selectedMention) {
+        if (!selectedMention && shouldAddCharacter) {
             editorRef?.current?.execCommand(
                 'mceInsertContent',
                 false,
@@ -152,6 +168,7 @@ export default function HtmlEditor({
             );
             editorRef?.current?.focus();
         }
+        setShouldAddCharacter(false);
         setShowMentions(false);
         setSelectedMention(null);
         setFetchedMentions([]);
@@ -189,11 +206,7 @@ export default function HtmlEditor({
                         skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
                         content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                        toolbar: 'undo redo | ' +
-                            'gallery | ' +
-                            'bold italic forecolor | alignleft aligncenter ' +
-                            'alignright alignjustify |  outdent indent | ' +
-                            'removeformat',
+                        toolbar: toolbar,
 
                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
@@ -209,21 +222,33 @@ export default function HtmlEditor({
 
                         setup: (editor) => {
 
-                            editor.ui.registry.addButton('gallery', {
-                                text: 'Galeria',
-                                onAction: () => {
-                                    setShowGallery(true);
-                                },
-                            });
+                            if (hasGallery) {
+                                editor.ui.registry.addButton('gallery', {
+                                    text: 'Imagens',
+                                    onAction: () => {
+                                        setShowGallery(true);
+                                    },
+                                });
+                            }
 
                             // Handle @ mentions
-                            editor.on('keydown', (e) => {
-                                if (e.key === '@') {
-                                    e.preventDefault();
-                                    // setShowMentions(true);
-                                    openMentionModal();
-                                }
-                            });
+                            if (hasMentions) {
+                                editor.ui.registry.addButton('mentions', {
+                                    text: 'Mencionar',
+                                    onAction: () => {
+                                        setShouldAddCharacter(false);
+                                        openMentionModal();
+                                    },
+                                });
+
+                                editor.on('keydown', (e) => {
+                                    if (e.key === '@') {
+                                        e.preventDefault();
+                                        setShouldAddCharacter(true);
+                                        openMentionModal();
+                                    }
+                                });
+                            }
                         },
                     }}
                     onEditorChange={onContentInput}
