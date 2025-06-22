@@ -35,6 +35,7 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MentionController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
@@ -42,7 +43,9 @@ use App\Http\Controllers\Public\HistoryArticlePublicController;
 use App\Http\Controllers\Public\PeriodPublicController;
 use App\Http\Controllers\Public\PersonPublicController;
 use App\Http\Controllers\Public\ReviewPublicController;
-use App\Http\Controllers\Public\SearchController;
+use App\Http\Controllers\Public\SearchPublicController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\SourceController;
 use Illuminate\Support\Facades\Route;
@@ -62,13 +65,12 @@ Route::name('public.')->group(function () {
     Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');
     Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('history_articles.show');
 
+    Route::get('/fontes/{source:slug}', [SourcePublicController::class, 'show'])->name('sources.show');
+
     Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
     // Search
-    Route::get('busca', [SearchController::class, 'index'])->name('search');
-    Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
-    Route::get('busca/fetch/options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.options');
-    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
+    Route::get('busca', [SearchPublicController::class, 'index'])->name('search');
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
@@ -88,6 +90,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('settings/appearance', function () {
         return Inertia::render('settings/appearance');
     })->name('appearance');
+
+    // Search
+    Route::get('busca/fetch/search', [SearchController::class, 'fetchSearch'])->name('search.fetch.search');
+    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
+    Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
 
     // Periods (Periodização)
     Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
@@ -215,10 +222,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
     Route::delete('/fontes/{source:slug}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
-    Route::get('/fontes/fetch/{id}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
+    Route::get('/fontes/fetch/{uuid}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
 
     // Source Categories
     Route::get('/categorias-fontes/fetch/options', [SourceController::class, 'fetchCategorySelectOptions'])->name('source_categories.fetch.options');
+
+    // Mentions
+    Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
 
     // Connection Checks
     Route::get('/check/db', [ConnectionChecker::class, 'isDatabaseReady'])->name('check.db');

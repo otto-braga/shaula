@@ -16,7 +16,7 @@ import Modal from '@/components/common/modal';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
 import Select from 'react-select';
-import { SearchResultOption } from '@/types/search-result-option';
+import { SearchResult } from '@/types/search-result';
 
 type HtmlEditorProps = {
     content: string;
@@ -98,7 +98,7 @@ export default function HtmlEditor({
 
     const [showMentions, setShowMentions] = useState<boolean>(false);
 
-    async function fetchMentions(search: string): Promise<SearchResultOption[]> {
+    async function fetchMentions(search: string): Promise<SearchResult[]> {
         if (search.length < 1) {
             return [];
         }
@@ -106,7 +106,7 @@ export default function HtmlEditor({
         let response;
 
         fetch(
-            route('public.search.fetch.options') + '?q=' + encodeURIComponent(search),
+            route('mentions.fetch.options') + '?q=' + encodeURIComponent(search),
             {
                 method: 'GET',
                 headers: {
@@ -116,15 +116,12 @@ export default function HtmlEditor({
             })
             .then((res) => res.json())
             .then((data) => {
-                response = data as { options: SearchResultOption[] };
-                console.log('response', response);
+                response = data as { results: SearchResult[] };
                 setFetchedMentions(
-                    response.options.map((object: SearchResultOption) => ({
+                    response.results.map((object: SearchResult) => ({
                         type: object.type || '',
-                        key: object.key || '',
-                        name: object.name || '',
+                        uuid: object.uuid || '',
                         route: object.route || '',
-                        value: object.value || '',
                         label: object.label || '',
                     }))
                 );
@@ -142,8 +139,8 @@ export default function HtmlEditor({
         }
     }, [flash]);
 
-    const [fetchedMentions, setFetchedMentions] = useState<SearchResultOption[]>([]);
-    const [selectedMention, setSelectedMention] = useState<SearchResultOption | null>(null);
+    const [fetchedMentions, setFetchedMentions] = useState<SearchResult[]>([]);
+    const [selectedMention, setSelectedMention] = useState<SearchResult | null>(null);
     const [shouldAddCharacter, setShouldAddCharacter] = useState<boolean>(true);
 
     const openMentionModal = () => {
@@ -373,11 +370,11 @@ export default function HtmlEditor({
                         value={selectedMention}
                         onChange={(option) => {
                             if (option) {
-                                option = fetchedMentions.find((mention) => mention.value === option?.value) || option;
+                                option = fetchedMentions.find((mention) => mention.uuid === option?.uuid) || option;
                                 editorRef?.current?.execCommand(
                                     'mceInsertContent',
                                     false,
-                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.key}" href="${option.route}">${option.name}</a></span>`
+                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.uuid}" href="${option.route}">${option.label}</a></span>`
                                 );
                                 setSelectedMention(null);
                                 setShowMentions(false);

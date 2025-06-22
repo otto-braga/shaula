@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Public\SearchPublicController;
+use App\Http\Resources\SearchResultResource;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
@@ -112,28 +114,25 @@ class SourceController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSingle($id)
+    public function fetchCategorySelectOptions(Request $request)
     {
-        $source = Source::find($id);
+        $options = SourceCategory::fetchAsSelectOption($request->search);
+        return response()->json($options);
+    }
 
-        if (!$source) {
-            return response()->json(['error' => 'Source not found'], 404);
-        }
-
-        $source->load('file', 'sourceCategories');
-
+    public function fetchSingle($uuid)
+    {
+        $source = Source::where('uuid', $uuid)->firstOrFail();
         return response()->json(new SourceResource($source));
     }
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Source::fetchAsSelectOption($request->search);
-        return response()->json($options);
-    }
-
-    public function fetchCategorySelectOptions(Request $request)
-    {
-        $options = SourceCategory::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return SearchPublicController::fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['sources'],
+            ])
+        );
     }
 }

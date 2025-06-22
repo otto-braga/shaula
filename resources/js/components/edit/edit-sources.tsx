@@ -7,6 +7,7 @@ import { Option } from '@/utils/selectHelpers';
 import { CustomMenuList } from '@/components/select/lazyLoadingSelect';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Button } from '@/components/ui/button';
+import { SearchResult } from '@/types/search-result';
 
 type EditSourcesProps = {
     model: { data: { sources?: Source[] } },
@@ -26,7 +27,7 @@ export default function EditSources({
     processing
 }: EditSourcesProps) {
     const [sources, setSources] = useState<Source[]>(model?.data.sources || []);
-    const [fetchedSources, setFetchedSources] = useState<Option[]>([]);
+    const [fetchedSources, setFetchedSources] = useState<SearchResult[]>([]);
 
     function loadOptions(inputValue: string)  {
         if (inputValue.length < 1) {
@@ -36,7 +37,7 @@ export default function EditSources({
         let response;
 
         fetch(
-            route('sources.fetch.options', { search: inputValue }),
+            route('sources.fetch.options', { q: inputValue }),
             {
                 method: 'GET',
                 headers: {
@@ -47,32 +48,31 @@ export default function EditSources({
         )
         .then((res) => res.json())
         .then((data) => {
-            response = data as Option[];
-            console.log('response', response);
+            response = data as { results: SearchResult[] };
             setFetchedSources(
-                response
-                .filter((object: Option) => !sources?.map((source) => source.id).includes(object.value))
-                .map((object: { value: number; label: string; description?: string }) => ({
-                    value: object.value,
-                    label: object.label + ' - ' + object.description,
-                }) as Option) as Option[]
+                response.results
+                .filter((object: SearchResult) => !sources?.map((source) => source.uuid).includes(object.uuid ?? ''))
+                .map((object: SearchResult) => ({
+                    value: object.uuid,
+                    label: object.label + ' - ' + object.content,
+                }))
             );
         });
 
         return response;
     };
 
-    function loadSelectedSource(inputValue: number) {
+    function loadSelectedSource(inputValue: string) {
         setFetchedSources([]);
 
-        if (inputValue < 1) {
+        if (inputValue === '' || inputValue === null) {
             return;
         }
 
         let response;
 
         fetch(
-            route('sources.fetch.single', { id: inputValue }),
+            route('sources.fetch.single', { uuid: inputValue }),
             {
                 method: 'GET',
                 headers: {
@@ -91,9 +91,9 @@ export default function EditSources({
         return response;
     };
 
-    async function selectSource(option: SingleValue<Option>) {
+    async function selectSource(option: SingleValue<SearchResult>) {
         if (option) {
-            const source = loadSelectedSource(option.value) as Source | undefined;
+            const source = loadSelectedSource(option.uuid ?? '') as Source | undefined;
         }
     }
 
@@ -106,7 +106,7 @@ export default function EditSources({
             <Select
                 options={fetchedSources}
                 onChange={
-                    (option: SingleValue<Option>) => {
+                    (option: SingleValue<SearchResult>) => {
                         if (option) {
                             selectSource(option);
                         }
@@ -138,7 +138,7 @@ export default function EditSources({
                                 variant="secondary"
                                 className="mt-2"
                                 onClick={() => {
-                                    setSources(sources.filter((s) => s.id !== source.id));
+                                    setSources(sources.filter((s) => s.uuid !== source.uuid));
                                 }}
                             >
                                 Remover Fonte

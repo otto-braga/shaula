@@ -36,11 +36,14 @@ class Source extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
+
+            'label' => $this->title ?? '',
             'title' => $this->title ?? '',
+
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+
             'file_path' => $this->file() ? $this->file->path : null,
             'source_categories' => $this->sourceCategories->pluck('name')->toArray(),
-
         ];
     }
 

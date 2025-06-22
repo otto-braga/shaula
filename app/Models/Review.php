@@ -42,12 +42,14 @@ class Review extends Model
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
             'route' => route('public.artworks.show', $this),
+
+            'label' => $this->title ?? '',
             'title' => $this->title ?? '',
+
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
 
             'categories' => $this->categories->pluck('name')->toArray(),
-
             'authors' => $this->authors->pluck('name')->toArray(),
         ];
     }
