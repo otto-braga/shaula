@@ -12,7 +12,7 @@ use Meilisearch\Contracts\SearchQuery;
 
 class SearchController extends Controller
 {
-    static public function handleSearch(
+    public function handleSearch(
         $client,
         $query,
         $federation,
@@ -145,7 +145,7 @@ class SearchController extends Controller
         ]);
     }
 
-    static public function fetchMulti(Request $request)
+    public function fetchMulti(Request $request)
     {
         $query = $request->q ?? null;
         $limit = $request->limit ?? ($request->page_size ?? 5);
@@ -164,7 +164,7 @@ class SearchController extends Controller
                 ->setLimit($limit)
                 ->setOffset(0);
 
-            $results = SearchController::handleSearch(
+            $results = $this->handleSearch(
                 client: $client,
                 query: $query,
                 federation: $federation,
@@ -179,7 +179,7 @@ class SearchController extends Controller
         }
     }
 
-    static public function fetchSearch(Request $request)
+    public function fetchSearch(Request $request)
     {
         $query = $request->q ?? null;
         $page = (int) $request->page ?? 1;
@@ -203,7 +203,7 @@ class SearchController extends Controller
                 ->setLimit($page_size)
                 ->setOffset(0);
 
-            $results = SearchController::handleSearch(
+            $results = $this->handleSearch(
                 client: $client,
                 query: $query,
                 federation: $federation,

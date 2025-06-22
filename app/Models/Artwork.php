@@ -21,7 +21,6 @@ class Artwork extends Model
         HasUuid,
         HasSlug,
         HasMentions,
-        Fetchable,
         Searchable;
 
     protected $table = 'artworks';

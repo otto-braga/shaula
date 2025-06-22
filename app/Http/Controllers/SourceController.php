@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Public\SearchPublicController;
-use App\Http\Resources\SearchResultResource;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
@@ -128,7 +126,7 @@ class SourceController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        return SearchPublicController::fetchMulti(
+        return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,
                 'only' => ['sources'],

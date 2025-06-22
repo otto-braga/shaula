@@ -18,7 +18,6 @@ class Source extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        Fetchable,
         Searchable;
 
     protected $fillable = [

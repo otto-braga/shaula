@@ -251,7 +251,11 @@ class ArtworkController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Artwork::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['artworks'],
+            ])
+        );
     }
 }
