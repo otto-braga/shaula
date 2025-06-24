@@ -18,7 +18,7 @@ class ReviewController extends Controller
     public function index()
     {
         $reviews = Review::latest()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return Inertia::render('admin/review/index', [

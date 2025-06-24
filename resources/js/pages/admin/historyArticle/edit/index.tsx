@@ -2,38 +2,19 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Category } from '@/types/category';
 import { HistoryArticle } from '@/types/historyArticle';
-import { Period } from '@/types/period';
-import { Person } from '@/types/person';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useEffect, useRef, useState } from 'react';
-import Select from 'react-select';
-import Tabs from './tabs';
+import { FormEventHandler, useRef } from 'react';
 
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Críticas',
-        href: '/admin/historyArticle',
-    },
-];
+import EditTabs from '@/components/edit/edit-tabs';
 
 export default function Index({
     historyArticle,
-    people,
-    categories,
-    periods,
 }: {
     historyArticle: { data: HistoryArticle };
-    people?: { data: Person[] };
-    categories?: { data: Category[] };
-    periods?: { data: Period[] };
 }) {
     const isEdit = !!historyArticle;
 
@@ -45,14 +26,13 @@ export default function Index({
         categories_ids: historyArticle ? historyArticle.data.categories?.map((category) => category.id) : [] as number[],
         periods_ids: historyArticle ? historyArticle.data.periods?.map((period) => period.id) : [] as number[],
 
-        links: historyArticle ? historyArticle.data.links : '',
+        links: historyArticle ? historyArticle.data.links : String(),
     });
-
-
-    console.log('historyArticle', periods);
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        console.log('data', data);
 
         if (isEdit) {
             post(route('history_articles.update', historyArticle.data), {
@@ -74,13 +54,18 @@ export default function Index({
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs historyArticle={historyArticle} processing={processing} />
+                            <EditTabs
+                                model={historyArticle}
+                                route_base_name="history_articles"
+                                processing={processing}
+                            />
+
                             {isEdit}
 
                             <div>
@@ -174,9 +159,7 @@ export default function Index({
                                     initialValue={historyArticle?.data.links as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist', 'autolink', 'lists', 'link', 'charmap',
-                                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                                            'autolink', 'lists', 'link',
                                             'autoresize',
                                         ],
 
@@ -188,19 +171,9 @@ export default function Index({
                                         skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
                                         content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                                        toolbar: 'undo redo | link',
+                                        toolbar: 'link | undo redo',
 
                                         content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
-
-                                        paste_preprocess: (editor, args) => {
-                                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                                            if (blob) {
-                                                args.content = '';
-                                            }
-                                        },
-
-                                        paste_block_drop: true,
                                     }}
                                     onEditorChange={onLinksInput}
                                 />

@@ -60,7 +60,7 @@ class MentionFactory extends Factory
         $models = HistoryArticle::inRandomOrder()->take(rand(0, 4))->get();
         foreach ($models as $model) {
             $mentions[] = [
-                'type' => 'history-articles',
+                'type' => 'history_articles',
                 'key' => $model->uuid,
                 'name' => $model->title,
                 'route' => route('public.history_articles.show', $model->slug),

@@ -20,7 +20,7 @@ class SourceController extends Controller
     public function index()
     {
         $sources = Source::query()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return inertia('admin/sources/index', [

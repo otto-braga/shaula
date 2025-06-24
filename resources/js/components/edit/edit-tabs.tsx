@@ -46,7 +46,7 @@ export default function EditTabs({
             hasContentTab = hasContentTab || true;
             hasSourcesTab = hasSourcesTab || true;
             break;
-        case 'history-articles':
+        case 'history_articles':
             hasImagesTab = hasImagesTab || true;
             hasContentTab = hasContentTab || true;
             hasSourcesTab = hasSourcesTab || true;

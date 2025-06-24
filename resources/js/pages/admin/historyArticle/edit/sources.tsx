@@ -1,30 +1,25 @@
 import AppLayout from '@/layouts/app-layout';
-import { HistoryArticle } from '@/types/historyArticle';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-
 import EditTabs from '@/components/edit/edit-tabs';
-import HtmlEditor from '@/components/edit/html-editor';
+import EditSources from '@/components/edit/edit-sources';
+import { HistoryArticle } from '@/types/historyArticle';
 
-export default function Content({
+export default function Sources({
     historyArticle,
 }: {
-        historyArticle: { data: HistoryArticle }
+    historyArticle: { data: HistoryArticle },
 }) {
-    console.log('mentions', historyArticle.data.mentions);
-
-    const { data, setData, post, errors, processing } = useForm({
-        content: historyArticle.data.content as string ?? String(),
-        files: Array<File>(),
-        filesToRemove: Array<number>(),
+    const { data, setData, post, patch, errors, processing } = useForm({
+        sources_ids: historyArticle ? historyArticle.data.sources?.map((source) => source.id) : [] as number[],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('history_articles.update.content', historyArticle.data), {
+        post(route('history_articles.update.sources', historyArticle.data), {
             preserveScroll: true,
-            preserveState: true,
+            preserveState: false,
         });
     };
 
@@ -40,17 +35,11 @@ export default function Content({
                                 route_base_name="history_articles"
                                 processing={processing}
                             />
-
-                            <HtmlEditor
-                                content={historyArticle.data.content}
-                                content_images={historyArticle.data.content_images}
+                            <EditSources
+                                model={historyArticle}
                                 data={data}
                                 setData={setData}
-                                errors={errors}
-                                processing={processing}
-                                submit={submit}
                             />
-
                         </form>
                     </div>
                 </div>

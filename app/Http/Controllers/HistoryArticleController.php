@@ -55,10 +55,7 @@ class HistoryArticleController extends Controller
 
         $historyArticle = HistoryArticle::create($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $historyArticle->authors()->sync($request->authors_ids);
         $historyArticle->categories()->sync($request->categories_ids);
         $historyArticle->periods()->sync($request->periods_ids);
 
@@ -84,10 +81,7 @@ class HistoryArticleController extends Controller
 
         $historyArticle->update($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
+        $historyArticle->authors()->sync($request->authors_ids);
         $historyArticle->categories()->sync($request->categories_ids);
         $historyArticle->periods()->sync($request->periods_ids);
 
@@ -169,32 +163,20 @@ class HistoryArticleController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(HistoryArticle $historyArticle)
+    public function editSources(HistoryArticle $historyArticle)
     {
-        $historyArticle->load('mentioned');
+        $historyArticle->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/historyArticle/edit/mentions', [
+        return Inertia::render('admin/historyArticle/edit/sources', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, HistoryArticle $historyArticle)
+    public function updateSources(Request $request, HistoryArticle $historyArticle)
     {
-        $historyArticle->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $historyArticle->id,
-                'mentioner_type' => $historyArticle::class
-            ]);
-        }
+        $historyArticle->sources()->sync($request->sources_ids);
 
         session()->flash('success', true);
         return redirect()->back();
@@ -216,7 +198,11 @@ class HistoryArticleController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = HistoryArticle::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['history_articles'],
+            ])
+        );
     }
 }

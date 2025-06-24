@@ -33,7 +33,6 @@ class ArtworkResource extends JsonResource
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
 
             'categories' => CategoryResource::collection($this->categories),
-
             'periods' => PeriodResource::collection($this->periods),
             'languages' => LanguageResource::collection($this->languages),
             'awards' => AwardResource::collection($this->awards),

@@ -16,20 +16,20 @@ export type HistoryArticle = {
     authors: Person[];
     content: string;
 
-    links: string;
-
     images: FileProps[];
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    categories: Category[];
-    periods: Period[];
-
-    activity: Activity | null;
-
     mentions: Mention[];
 
     sources: Source[];
+
+    activity: Activity | null;
+
+    categories: Category[];
+    periods: Period[];
+
+    links: string;
 
     created_at: string;
     updated_at: string;

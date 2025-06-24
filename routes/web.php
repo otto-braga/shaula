@@ -186,8 +186,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}', [ReviewController::class, 'show'])->name('reviews.show');
     Route::get('/criticas/{review:slug}/editar', [ReviewController::class, 'edit'])->name('reviews.edit');
     Route::post('/criticas/{review:slug}/update', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('reviews.edit.people');
-    Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('reviews.update.people');
     Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('reviews.edit.images');
     Route::post('/criticas/{review:slug}/update/images', [ReviewController::class, 'updateImages'])->name('reviews.update.images');
     Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('reviews.edit.content');

@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +14,12 @@ use Laravel\Scout\Searchable;
 
 class HistoryArticle extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasFetching, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Searchable;
 
     protected $table = 'history_articles';
 

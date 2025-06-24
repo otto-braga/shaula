@@ -20,7 +20,7 @@ class ArtworkController extends Controller
     public function index()
     {
         $artworks = Artwork::query()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return Inertia::render('admin/artwork/index', [
