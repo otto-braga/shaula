@@ -8,12 +8,11 @@ use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
 use App\Traits\HasFile;
-use App\Traits\HasMention;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile, HasMention;
+    use HasFile;
 
     // -------------------------------------------------------------------------
     // INDEX

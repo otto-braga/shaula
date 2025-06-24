@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Traits\HasFile;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
@@ -19,6 +18,7 @@ class ReviewController extends Controller
     public function index()
     {
         $reviews = Review::latest()
+            ->orderBy('created_at', 'desc')
             ->get();
 
         return Inertia::render('admin/review/index', [
@@ -186,7 +186,11 @@ class ReviewController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Review::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['reviews'],
+            ])
+        );
     }
 }

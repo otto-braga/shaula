@@ -2,38 +2,16 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { Award } from '@/types/award';
-import { Category } from '@/types/category';
-import { Language } from '@/types/language';
-import { Person } from '@/types/person';
 import { Review } from '@/types/review';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useEffect, useState } from 'react';
-import Select from 'react-select';
-import Tabs from './tabs';
+import { FormEventHandler } from 'react';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Críticas',
-        href: '/admin/review',
-    },
-];
+import EditTabs from '@/components/edit/edit-tabs';
 
 export default function Index({
     review,
-    people,
-    languages,
-    awards,
-    categories,
 }: {
     review: { data: Review };
-    people?: { data: Person[] };
-    languages?: { data: Language[] };
-    awards?: { data: Award[] };
-    categories?: { data: Category[] };
 }) {
     const isEdit = !!review;
 
@@ -62,13 +40,18 @@ export default function Index({
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs review={review} processing={processing} />
+                            <EditTabs
+                                model={review}
+                                route_base_name="reviews"
+                                processing={processing}
+                            />
+
                             {isEdit}
 
                             <div>

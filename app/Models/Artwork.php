@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\Fetchable;
 use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;

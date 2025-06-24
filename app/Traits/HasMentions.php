@@ -2,7 +2,6 @@
 
 namespace App\Traits;
 
-use App\Http\Resources\MentionResource;
 use Illuminate\Support\Facades\DB;
 
 trait HasMentions
@@ -51,6 +50,6 @@ trait HasMentions
             $limit--;
         }
 
-        return MentionResource::collection(collect($mentions));
+        return collect($mentions);
     }
 }

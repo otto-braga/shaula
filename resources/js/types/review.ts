@@ -8,6 +8,7 @@ export type Review = {
     id: number;
     uuid: string;
     slug: string;
+
     title: string;
     date: string;
     authors: Person[];
@@ -17,15 +18,13 @@ export type Review = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    people: Person[];
-
-    categories: Category[];
-
-    activity: Activity | null;
-
     mentions: string[];
 
     sources: Source[];
+
+    activity: Activity | null;
+
+    categories: Category[];
 
     created_at: string;
     updated_at: string;

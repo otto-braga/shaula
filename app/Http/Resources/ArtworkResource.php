@@ -24,21 +24,21 @@ class ArtworkResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
-            'categories' => CategoryResource::collection($this->categories),
-            'periods' => PeriodResource::collection($this->periods),
+            'mentions' => MentionResource::collection($this->mentions()),
+
+            'sources' => SourceResource::collection($this->sources),
 
             'people' => PersonResource::collection($this->people),
             'activities' => ActivityResource::collection($this->activities()), // Todas as atividades dessa artwork
             'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
 
+            'categories' => CategoryResource::collection($this->categories),
+
+            'periods' => PeriodResource::collection($this->periods),
             'languages' => LanguageResource::collection($this->languages),
             'awards' => AwardResource::collection($this->awards),
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
-
-            'mentions' => $this->mentions(),
-
-            'sources' => SourceResource::collection($this->sources),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

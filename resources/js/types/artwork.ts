@@ -12,6 +12,7 @@ export type Artwork = {
     id: number;
     uuid: string;
     slug: string;
+
     title: string;
     date: string;
     authors: Person[];
@@ -21,23 +22,22 @@ export type Artwork = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    categories: Category[];
-    periods: Period[];
+    mentions: Mention[];
+
+    sources: Source[];
 
     people: Person[];
     activities: Activity[];
 
     activity: Activity | null;
 
+    categories: Category[];
+
+    periods: Period[];
     languages: Language[];
     awards: Award[];
     dimensions: string;
     materials: string;
-
-    // mentions: string[];
-    mentions: Mention[];
-
-    sources: Source[];
 
     created_at: string;
     updated_at: string;

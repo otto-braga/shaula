@@ -2,7 +2,6 @@ import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { type BreadcrumbItem } from '@/types';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
