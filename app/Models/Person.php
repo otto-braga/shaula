@@ -2,8 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
-use App\Traits\HasLabel;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +16,12 @@ use Laravel\Scout\Searchable;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Searchable;
 
     protected $table = 'people';
 
@@ -97,11 +101,7 @@ class Person extends Model
     public function reviews(): MorphToMany
     {
         return $this->morphedByMany(Review::class, 'personable', 'personables')
-            ->withPivot([
-                'is_author',
-                'is_mention',
-                'activity_id',
-            ])
+            ->withPivot('activity_id')
             ->orderBy('date');
     }
 
@@ -143,18 +143,5 @@ class Person extends Model
     public function sources(): MorphToMany
     {
         return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
-    }
-
-    // filter
-
-    public function scopeFilter($query, array $filters)
-    {
-        $search = $filters['search'] ?? '';
-
-        if ($search != '') {
-            $query->where('name', 'like', '%' . $search . '%');
-        }
-
-        return $query;
     }
 }

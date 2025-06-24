@@ -26,7 +26,7 @@ class PersonController extends Controller
     public function index()
     {
         $people = Person::query()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return Inertia::render('admin/person/index', [
@@ -34,12 +34,10 @@ class PersonController extends Controller
         ]);
     }
 
-    // -------------------------------------------------------------------------
-    // SHOW
-
-    // public function show(Person $person)
-    // {
-    // }
+    public function show(Person $person)
+    {
+        //
+    }
 
     // -------------------------------------------------------------------------
     // CREATE
@@ -53,19 +51,14 @@ class PersonController extends Controller
     {
         $dataForm = $request->all();
 
-        try {
-            $person = Person::create($dataForm);
+        $person = Person::create($dataForm);
 
-            $person->genders()->sync($request->genders_ids);
-            $person->cities()->sync($request->cities_ids);
-            $person->periods()->sync($request->periods_ids);
+        $person->genders()->sync($request->genders_ids);
+        $person->cities()->sync($request->cities_ids);
+        $person->periods()->sync($request->periods_ids);
 
-            session()->flash('success', true);
-            return redirect()->route('people.edit', $person);
-        } catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
+        session()->flash('success', true);
+        return redirect()->route('people.edit', $person);
     }
 
     // -------------------------------------------------------------------------
@@ -73,6 +66,12 @@ class PersonController extends Controller
 
     public function edit(Person $person)
     {
+        // $person->load([
+        //     'artworks',
+        //     'languages',
+        //     'reviews',
+        // ]);
+
         return Inertia::render('admin/person/edit/index', [
             'person' => new PersonResource($person),
         ]);
@@ -155,10 +154,7 @@ class PersonController extends Controller
                 }
             }
 
-            $person->update([
-                'content' => $request->content,
-                'chronology' => $request->chronology,
-            ]);
+            $person->update(['content' => $request->content]);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -169,32 +165,20 @@ class PersonController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(Person $person)
+    public function editSources(Person $person)
     {
-        $person->load('mentioned');
+        $person->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/person/edit/mentions', [
+        return Inertia::render('admin/person/edit/sources', [
             'person' => new PersonResource($person),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, Person $person)
+    public function updateSources(Request $request, Person $person)
     {
-        $person->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $person->id,
-                'mentioner_type' => $person::class
-            ]);
-        }
+        $person->sources()->sync($request->sources_ids);
 
         session()->flash('success', true);
         return redirect()->back();
@@ -216,7 +200,11 @@ class PersonController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Person::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['people'],
+            ])
+        );
     }
 }

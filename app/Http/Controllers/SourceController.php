@@ -47,8 +47,6 @@ class SourceController extends Controller
 
         $source = Source::create($dataForm);
 
-        $source->update($dataForm);
-
         $source->sourceCategories()->sync($request->source_categories_ids);
 
         if ($request->has('files') && count($request->files) > 0) {

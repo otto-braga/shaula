@@ -47,8 +47,6 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
-        $artwork->update($dataForm);
-
         $artwork->authors()->sync($request->authors_ids);
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);

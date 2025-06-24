@@ -1,25 +1,23 @@
 import AppLayout from '@/layouts/app-layout';
-import { Person } from '@/types/person';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
-import EditImages from '@/components/edit/edit-images';
+import EditSources from '@/components/edit/edit-sources';
+import { Person } from '@/types/person';
 
-export default function Images({
+export default function Sources({
     person,
 }: {
-    person: { data: Person };
+    person: { data: Person },
 }) {
-    const { data, setData, post, errors, processing } = useForm({
-        files: Array<File>(),
-        filesToRemove: Array<number>(),
-        primaryImageId: person.data.primary_image?.id || 0,
+    const { data, setData, post, patch, errors, processing } = useForm({
+        sources_ids: person ? person.data.sources?.map((source) => source.id) : [] as number[],
     });
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        console.log('data', data);
-        post(route('people.update.images', person.data), {
+
+        post(route('people.update.sources', person.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -31,20 +29,16 @@ export default function Images({
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
-                        <form onSubmit={submit} className="space-y-6 bg-inherit">
+                        <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <EditTabs
                                 model={person}
                                 route_base_name="people"
                                 processing={processing}
                             />
-
-                            <EditImages
-                                stored_images={person.data.images}
-                                stored_primary_image_id={person.data.primary_image?.id}
+                            <EditSources
+                                model={person}
                                 data={data}
                                 setData={setData}
-                                errors={errors}
-                                processing={processing}
                             />
                         </form>
                     </div>
@@ -53,4 +47,3 @@ export default function Images({
         </AppLayout>
     );
 }
-

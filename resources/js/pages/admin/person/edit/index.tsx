@@ -2,36 +2,19 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { City } from '@/types/city';
-import { Gender } from '@/types/gender';
-import { Period } from '@/types/period';
 import { Person } from '@/types/person';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import Tabs from './tabs';
 
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Pessoas',
-        href: '/admin/pessoas',
-    },
-];
+import EditTabs from '@/components/edit/edit-tabs';
 
 export default function Index({
     person,
-    genders,
-    cities,
-    periods,
 }: {
     person: { data: Person };
-    genders: { data: Gender[] };
-    cities: { data: City[] };
-    periods: { data: Period[] };
 }) {
     const isEdit = !!person;
 
@@ -50,6 +33,8 @@ export default function Index({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
+
+        console.log('data', data);
 
         if (isEdit) {
             post(route('people.update', person.data), {
@@ -70,20 +55,19 @@ export default function Index({
         setData('links', editorLinksRef?.current?.getContent() ?? String());
     }
 
-    const editorChronologyRef = useRef<TinyMCEEditor | null>(null);
-
-    function onChronologyInput(e: any) {
-        setData('chronology', editorChronologyRef?.current?.getContent() ?? String());
-    }
-
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs person={person} processing={processing} />
+                            <EditTabs
+                                model={person}
+                                route_base_name="people"
+                                processing={processing}
+                            />
+
                             {isEdit}
 
                             <div>
@@ -174,22 +158,7 @@ export default function Index({
                                     initialValue={person?.data.links as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist',
-                                            'autolink',
-                                            'lists',
-                                            'link',
-                                            'charmap',
-                                            'anchor',
-                                            'searchreplace',
-                                            'visualblocks',
-                                            'code',
-                                            'fullscreen',
-                                            'insertdatetime',
-                                            'media',
-                                            'table',
-                                            'preview',
-                                            'help',
-                                            'wordcount',
+                                            'autolink', 'lists', 'link',
                                             'autoresize',
                                         ],
 
@@ -198,84 +167,14 @@ export default function Index({
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                                        toolbar: 'undo redo | link',
+                                        toolbar: 'link | undo redo',
 
-                                        content_style:
-                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
-
-                                        paste_preprocess: (editor, args) => {
-                                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                                            if (blob) {
-                                                args.content = '';
-                                            }
-                                        },
-
-                                        paste_block_drop: true,
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
                                     }}
                                     onEditorChange={onLinksInput}
-                                />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="chronology">Cronologia</Label>
-                                <Editor
-                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
-                                    licenseKey='gpl'
-                                    onInit={(_evt, editor) => editorChronologyRef.current = editor}
-                                    initialValue={person?.data.chronology as string || String()}
-                                    init={{
-                                        plugins: [
-                                            'advlist',
-                                            'autolink',
-                                            'lists',
-                                            'link',
-                                            'charmap',
-                                            'anchor',
-                                            'searchreplace',
-                                            'visualblocks',
-                                            'code',
-                                            'fullscreen',
-                                            'insertdatetime',
-                                            'media',
-                                            'table',
-                                            'preview',
-                                            'help',
-                                            'wordcount',
-                                            'autoresize',
-                                        ],
-
-                                        min_height: 400,
-                                        autoresize_bottom_margin: 0,
-
-                                        menubar: false,
-
-                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
-
-                                        toolbar:
-                                            'undo redo | ' +
-                                            'bold italic forecolor | alignleft aligncenter ' +
-                                            'alignright alignjustify |  outdent indent | ' +
-                                            'removeformat',
-
-                                        content_style:
-                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
-
-                                        paste_preprocess: (editor, args) => {
-                                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                                            if (blob) {
-                                                args.content = '';
-                                            }
-                                        },
-
-                                        paste_block_drop: true,
-                                    }}
-                                    onEditorChange={onChronologyInput}
                                 />
                             </div>
                         </form>

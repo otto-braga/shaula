@@ -158,6 +158,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/pessoas/{person:slug}/update/images', [PersonController::class, 'updateImages'])->name('people.update.images');
     Route::get('/pessoas/{person:slug}/editar/conteudo', [PersonController::class, 'editContent'])->name('people.edit.content');
     Route::post('/pessoas/{person:slug}/update/content', [PersonController::class, 'updateContent'])->name('people.update.content');
+    Route::get('/pessoas/{person:slug}/editar/fontes', [PersonController::class, 'editSources'])->name('people.edit.sources');
+    Route::post('/pessoas/{person:slug}/update/sources', [PersonController::class, 'updateSources'])->name('people.update.sources');
     Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('people.destroy');
     Route::get('/pessoas/fetch/options', [PersonController::class, 'fetchSelectOptions'])->name('people.fetch.options');
 
