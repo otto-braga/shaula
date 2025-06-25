@@ -23,11 +23,10 @@ export default function Index({
         date: artwork ? artwork.data.date : '' as string,
 
         authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
+        periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as number[],
         languages_uuids: artwork ? artwork.data.languages?.map((language) => language.uuid) : [] as string[],
-
-        awards_ids: artwork ? artwork.data.awards?.map((award) => award.id) : [] as number[],
-        categories_ids: artwork ? artwork.data.categories?.map((category) => category.id) : [] as number[],
-        periods_ids: artwork ? artwork.data.periods?.map((period) => period.id) : [] as number[],
+        categories_uuids: artwork ? artwork.data.categories?.map((category) => category.uuid) : [] as number[],
+        awards_uuids: artwork ? artwork.data.awards?.map((award) => award.uuid) : [] as number[],
 
         dimensions: artwork ? artwork.data.dimensions : '',
         materials: artwork ? artwork.data.materials : '',
@@ -125,6 +124,21 @@ export default function Index({
                             </div>
 
                             <div>
+                                <Label htmlFor="periods_uuids">Periodização</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'periods.fetch.options'}
+                                    value={artwork?.data.periods?.map(
+                                        period => ({ uuid: period.uuid, label: period.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('periods_uuids', options.map((option) => (option.uuid)))
+                                    }}
+                                />
+                                <InputError className="mt-2" message={errors.periods_uuids} />
+                            </div>
+
+                            <div>
                                 <Label htmlFor="languages">Linguagens</Label>
                                 <LazyLoadingSelectWithStates
                                     isMulti
@@ -140,63 +154,33 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="awards">Prêmios</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.awards?.map(
-                                            award => ({ value: award.id, label: award.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'awards.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('awards_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <Label htmlFor="categories_uuids">Categorias</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'categories.fetch.options'}
+                                    value={artwork?.data.categories?.map(
+                                        category => ({ uuid: category.uuid, label: category.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('categories_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.awards_ids} />
+                                <InputError className="mt-2" message={errors.categories_uuids} />
                             </div>
 
                             <div>
-                                <Label htmlFor="categories">Categorias</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.categories?.map(
-                                            category => ({ value: category.id, label: category.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'categories.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('categories_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <Label htmlFor="awards_uuids">Prêmios</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'awards.fetch.options'}
+                                    value={artwork?.data.awards?.map(
+                                        award => ({ uuid: award.uuid, label: award.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('awards_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.categories_ids} />
-                            </div>
-
-                            <div>
-                                <Label htmlFor="periods">Periodização</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.periods?.map(
-                                            period => ({ value: period.id, label: period.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'periods.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('periods_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
-                                />
-                                <InputError className="mt-2" message={errors.periods_ids} />
+                                <InputError className="mt-2" message={errors.awards_uuids} />
                             </div>
 
                         </form>

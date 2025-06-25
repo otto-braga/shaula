@@ -42,7 +42,7 @@ class Period extends Model
             'uuid' => $this->uuid,
             'route' => route('public.' . $this->getTable() . '.show', $this),
 
-            'label' => $this->title ?? '',
+            'label' => $this->name ?? '',
             'name' => $this->name ?? '',
 
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
