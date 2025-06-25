@@ -205,6 +205,17 @@ return [
                 ],
             ],
 
+            'periods' => [
+                'searchableAttributes' => [
+                    'name',
+                    'content',
+                ],
+                'filterableAttributes' => [
+                    'start_date',
+                    'end_date',
+                ],
+            ],
+
             // 'activities' => [
             //     'searchableAttributes' => [
             //         'name'

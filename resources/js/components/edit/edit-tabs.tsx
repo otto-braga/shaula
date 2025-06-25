@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/button';
 import { Artwork } from '@/types/artwork';
 import { HistoryArticle } from '@/types/historyArticle';
+import { Period } from '@/types/period';
 import { Person } from '@/types/person';
 import { Review } from '@/types/review';
 import { Source } from '@/types/source';
@@ -9,7 +10,7 @@ import { CheckIcon, XIcon } from 'lucide-react';
 import { useEffect, useState,  } from 'react';
 
 type EditTabsProps = {
-    model?: { data: Person | Artwork | Review | HistoryArticle | Source };
+    model?: { data: Person | Artwork | Review | HistoryArticle | Period | Source };
     route_base_name: string;
     processing: boolean;
     className?: string;
@@ -47,6 +48,11 @@ export default function EditTabs({
             hasSourcesTab = hasSourcesTab || true;
             break;
         case 'history_articles':
+            hasImagesTab = hasImagesTab || true;
+            hasContentTab = hasContentTab || true;
+            hasSourcesTab = hasSourcesTab || true;
+            break;
+        case 'periods':
             hasImagesTab = hasImagesTab || true;
             hasContentTab = hasContentTab || true;
             hasSourcesTab = hasSourcesTab || true;

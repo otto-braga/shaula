@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use App\Models\Person;
 
-trait CanParseUuids
+trait HasParseUuids
 {
     protected function parseUuids($class, $uuids)
     {

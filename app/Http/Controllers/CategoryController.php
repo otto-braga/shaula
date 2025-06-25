@@ -67,7 +67,6 @@ class CategoryController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Category::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return Category::fetchAsSelectOption($request->q);
     }
 }

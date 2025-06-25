@@ -1,4 +1,6 @@
 export type Category = {
-    id: number;
+    uuid: string;
     name: string;
+    created_at: string;
+    updated_at: string;
 }

@@ -9,14 +9,14 @@ use App\Models\Activity;
 use App\Models\Artwork;
 use App\Models\Language;
 use App\Models\Person;
-use App\Traits\CanParseUuids;
-use App\Traits\HasAuthors;
 use App\Traits\HasFile;
+use App\Traits\HasParseUuids;
+use App\Traits\HasSyncAuthors;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile, HasAuthors, CanParseUuids;
+    use HasFile, HasParseUuids, HasSyncAuthors;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -51,11 +51,11 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
-        $this->updateAuthors($artwork, $request->authors_uuids);
+        $authors_ids = $this->parseUuids(Person::class, $request->authors_uuids);
+        $this->syncAuthors($artwork, $authors_ids);
 
-        // $artwork->languages()->sync($request->languages_ids);
-
-        $artwork->languages()->sync($this->parseUuids(Language::class, $request->languages_uuids));
+        $languages_ids = $this->parseUuids(Language::class, $request->languages_uuids);
+        $artwork->languages()->sync($languages_ids);
 
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
@@ -83,7 +83,8 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $this->updateAuthors($artwork, $request->authors_uuids);
+        $authors_ids = $this->parseUuids(Person::class, $request->authors_uuids);
+        $this->syncAuthors($artwork, $authors_ids);
 
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);

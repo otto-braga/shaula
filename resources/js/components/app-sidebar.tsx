@@ -42,6 +42,11 @@ const mainNavItems: NavItem[] = [
         icon: Text,
     },
     {
+        title: 'Perodização',
+        href: route('periods.index'),
+        icon: Clock,
+    },
+    {
         title: 'Artigos de História',
         href: route('history_articles.index'),
         icon: BookOpen,
@@ -74,11 +79,6 @@ const auxNavItems: NavItem[] = [
         title: 'Linguagens',
         href: route('languages.index'),
         icon: CircleDashed,
-    },
-    {
-        title: 'Perodização',
-        href: route('periods.index'),
-        icon: Clock,
     },
     {
         title: 'Categorias',

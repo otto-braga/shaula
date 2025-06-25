@@ -11,7 +11,7 @@ class ArtworkResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            // 'id' => $this->id,
             'uuid' => $this->uuid,
             'slug' => $this->slug,
 
@@ -25,7 +25,6 @@ class ArtworkResource extends JsonResource
             'content_images' => FileResource::collection($this->contentImages),
 
             'mentions' => MentionResource::collection($this->mentions()),
-
             'sources' => SourceResource::collection($this->sources),
 
             'people' => PersonResource::collection($this->people),

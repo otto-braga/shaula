@@ -96,15 +96,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
     Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
 
-    // Periods (Periodização)
-    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
-    Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
-    Route::get('periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
-    Route::get('periodos/{period}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
-    Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
-    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
-    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
-
     // Categories
     Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
     Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
@@ -146,6 +137,22 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
     Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
     Route::get('linguagens/fetch/options', [LanguageController::class, 'fetchSelectOptions'])->name('languages.fetch.options');
+
+    // Periods (Periodização)
+    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
+    Route::get('periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
+    Route::post('periodos/store', [PeriodController::class, 'store'])->name('periods.store');
+    Route::get('periodos/{period:slug}', [PeriodController::class, 'show'])->name('periods.show');
+    Route::get('periodos/{period:slug}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
+    Route::put('periodos/{period:slug}/update', [PeriodController::class, 'update'])->name('periods.update');
+    Route::get('periodos/{period:slug}/editar/imagens', [PeriodController::class, 'editImages'])->name('periods.edit.images');
+    Route::post('periodos/{period:slug}/update/images', [PeriodController::class, 'updateImages'])->name('periods.update.images');
+    Route::get('periodos/{period:slug}/editar/conteudo', [PeriodController::class, 'editContent'])->name('periods.edit.content');
+    Route::post('periodos/{period:slug}/update/content', [PeriodController::class, 'updateContent'])->name('periods.update.content');
+    Route::get('periodos/{period:slug}/editar/fontes', [PeriodController::class, 'editSources'])->name('periods.edit.sources');
+    Route::post('periodos/{period:slug}/update/sources', [PeriodController::class, 'updateSources'])->name('periods.update.sources');
+    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
     // People
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');

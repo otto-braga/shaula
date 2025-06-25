@@ -5,115 +5,173 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Traits\HasFile;
+use App\Traits\HasParseUuids;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PeriodController extends Controller
 {
-    use HasFile;
+    use HasFile, HasParseUuids;
+
+    // -------------------------------------------------------------------------
+    // INDEX
 
     public function index()
     {
-        $periods = Period::all();
+        $periods = Period::query()
+            ->latest()
+            ->get();
 
         return Inertia::render('admin/period/index', [
             'periods' => PeriodResource::collection($periods),
         ]);
     }
 
+    public function show(Period $period)
+    {
+        //
+    }
+
+    // -------------------------------------------------------------------------
+    // CREATE
+
     public function create()
     {
-        return Inertia::render('admin/period/edit');
+        return Inertia::render('admin/period/edit/index');
     }
 
     public function store(Request $request)
     {
-        try {
-            $period = Period::create([
-                'name' => $request->name,
-                'start_date' => $request->start_date,
-                'end_date' => $request->end_date,
-                'content' => $request->content,
-            ]);
+        $dataForm = $request->all();
 
-            if ($request->has('deleteImage') && $request->deleteImage) {
-                if ($period->image) {
-                    $this->deleteFile($period->image->id);
-                }
-            }
+        $period = Period::create($dataForm);
 
-            if ($request->has('files') && count($request->files) > 0) {
-                if ($period->image) {
-                    $this->deleteFile($period->image->id);
-                }
-                $this->storeFile($request, $period, 'general');
-                $period->image()->update(['is_primary' => true]);
-            }
-
-            session()->flash('success', true);
-            return redirect()->route('periods.index')->with('success', 'Período criada com sucesso.');
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'Erro ao criar período.');
-        }
+        session()->flash('success', true);
+        return redirect()->route('periods.edit', $period);
     }
+
+    // -------------------------------------------------------------------------
+    // EDIT
 
     public function edit(Period $period)
     {
-        return Inertia::render('admin/period/edit', [
+        return Inertia::render('admin/period/edit/index', [
             'period' => new PeriodResource($period),
         ]);
     }
 
     public function update(Request $request, Period $period)
     {
-        // request()->validate([
-        //     'name' => 'required|unique:periods,name,' . $period->id,
-        //     'start_date' => '',
-        //     'end_data' => '',
-        //     'content' => 'required',
-        // ]);
+        $dataForm = $request->all();
 
-        // dd($request->all());
+        $period->update($dataForm);
 
+        session()->flash('success', true);
+        return redirect()->route('periods.edit', $period);
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT IMAGES
+
+    public function editImages(Period $period)
+    {
+        return Inertia::render('admin/period/edit/images', [
+            'period' => new PeriodResource($period),
+        ]);
+    }
+
+    public function updateImages(Request $request, Period $period)
+    {
         try {
-            $period->update([
-                'name' => request('name'),
-                'start_date' => request('start_date'),
-                'end_date' => request('end_date'),
-                'content' => request('content'),
-            ]);
+            if ($request->has('files') && count($request->files) > 0) {
+                $this->storeFile($request, $period, 'general');
+            }
 
-            if ($request->has('deleteImage') && $request->deleteImage) {
-                if ($period->image) {
-                    $this->deleteFile($period->image->id);
+            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
+                foreach ($request->filesToRemove as $fileId) {
+                    $this->deleteFile($fileId);
                 }
             }
 
-            if ($request->has('files') && count($request->files) > 0) {
-                if ($period->image) {
-                    $this->deleteFile($period->image->id);
+            if ($period->images()->count() > 0) {
+                $period->images()->update(['is_primary' => false]);
+                if ($request->primaryImageId > 0) {
+                    $period->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
+                } else {
+                    $period->images()->first()->update(['is_primary' => true]);
                 }
-                $this->storeFile($request, $period, 'general');
-                $period->image()->update(['is_primary' => true]);
             }
 
             session()->flash('success', true);
-            return redirect()->route('periods.index')->with('success', 'Período atualizada com sucesso.');
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'Erro ao atualizar período.');
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function destroy(Period $period)
+    // -------------------------------------------------------------------------
+    // EDIT CONTENT
+
+    public function editContent(Period $period)
+    {
+        return Inertia::render('admin/period/edit/content', [
+            'period' => new PeriodResource($period),
+        ]);
+    }
+
+    public function updateContent(Request $request, Period $period)
     {
         try {
-            $period->delete();
-            return redirect()->back()->with('success', 'Período deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar período.');
+            if ($request->has('files') && count($request->files) > 0) {
+                $this->storeFile($request, $period, 'content');
+            }
+
+            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
+                foreach ($request->filesToRemove as $fileId) {
+                    $this->deleteFile($fileId);
+                }
+            }
+
+            $period->update(['content' => $request->content]);
+
+            session()->flash('success', true);
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
+    }
+
+    // -------------------------------------------------------------------------
+    // EDIT SOURCES
+
+    public function editSources(Period $period)
+    {
+        $period->load('sources');
+
+        return Inertia::render('admin/period/edit/sources', [
+            'period' => new PeriodResource($period),
+        ]);
+    }
+
+    public function updateSources(Request $request, Period $period)
+    {
+        $period->sources()->sync($request->sources_ids);
+
+        session()->flash('success', true);
+        return redirect()->back();
+    }
+
+    // -------------------------------------------------------------------------
+    // DELETE
+
+    public function destroy(Period $period)
+    {
+        $period->delete();
+
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------
@@ -121,7 +179,11 @@ class PeriodController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Period::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['periods'],
+            ])
+        );
     }
 }
