@@ -688,3 +688,6 @@
 2025-06-25 17:31:12,752 INFO supervisord started with pid 1
 2025-06-25 17:31:13,754 INFO spawned: 'laravel-worker_00' with pid 45
 2025-06-25 17:31:14,991 INFO success: laravel-worker_00 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)
+2025-06-25 18:49:07,555 INFO exited: laravel-worker_00 (exit status 0; expected)
+2025-06-25 18:49:08,561 INFO spawned: 'laravel-worker_00' with pid 104
+2025-06-25 18:49:09,562 INFO success: laravel-worker_00 entered RUNNING state, process has stayed up for > than 1 seconds (startsecs)

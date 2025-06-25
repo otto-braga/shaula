@@ -3,14 +3,16 @@
 namespace App\Models;
 
 use App\Traits\Fetchable;
-use App\Traits\HasFetching;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Activity extends Model
 {
-    use HasFactory, HasUuid, Fetchable;
+    use
+        HasFactory,
+        HasUuid,
+        Fetchable;
 
     protected $table = 'activities';
 

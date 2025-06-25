@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Person;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,9 +15,10 @@ class ActivityResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'uuid' => $this->uid,
+            'uuid' => $this->uuid,
             'name' => $this->name,
-            // 'person' => new PersonResource(Person::find($this->pivot->person_id ?? 0)),
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ];
     }
 }

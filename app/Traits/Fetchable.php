@@ -13,10 +13,10 @@ trait Fetchable
         if ($q) {
             if (Schema::hasColumn($this->getTable(), 'name')) {
                 $query->where('name', 'like', "%$q%")
-                    ->select('id', 'name');
+                    ->select('uuid', 'name');
             } else if (Schema::hasColumn($this->getTable(), 'title')) {
                 $query->where('title', 'like', "%$q%")
-                    ->select('id', 'title');
+                    ->select('uuid', 'title');
             }
         }
 

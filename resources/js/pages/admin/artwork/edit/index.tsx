@@ -23,7 +23,8 @@ export default function Index({
         date: artwork ? artwork.data.date : '' as string,
 
         authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
-        languages_ids: artwork ? artwork.data.languages?.map((language) => language.id) : [] as number[],
+        languages_uuids: artwork ? artwork.data.languages?.map((language) => language.uuid) : [] as string[],
+
         awards_ids: artwork ? artwork.data.awards?.map((award) => award.id) : [] as number[],
         categories_ids: artwork ? artwork.data.categories?.map((category) => category.id) : [] as number[],
         periods_ids: artwork ? artwork.data.periods?.map((period) => period.id) : [] as number[],
@@ -125,22 +126,17 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="languages">Linguagens</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.languages?.map(
-                                            language => ({ value: language.id, label: language.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'languages.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('languages_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'languages.fetch.options'}
+                                    value={artwork?.data.languages?.map(
+                                        language => ({ uuid: language.uuid, label: language.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('languages_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.languages_ids} />
+                                <InputError className="mt-2" message={errors.languages_uuids} />
                             </div>
 
                             <div>

@@ -7,14 +7,16 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
+use App\Models\Language;
 use App\Models\Person;
+use App\Traits\CanParseUuids;
 use App\Traits\HasAuthors;
 use App\Traits\HasFile;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile, HasAuthors;
+    use HasFile, HasAuthors, CanParseUuids;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -51,7 +53,10 @@ class ArtworkController extends Controller
 
         $this->updateAuthors($artwork, $request->authors_uuids);
 
-        $artwork->languages()->sync($request->languages_ids);
+        // $artwork->languages()->sync($request->languages_ids);
+
+        $artwork->languages()->sync($this->parseUuids(Language::class, $request->languages_uuids));
+
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
         $artwork->periods()->sync($request->periods_ids);

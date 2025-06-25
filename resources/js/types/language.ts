@@ -1,5 +1,5 @@
 export type Language = {
-    id: number;
+    uuid: string;
     name: string;
     created_at: string;
     updated_at: string;

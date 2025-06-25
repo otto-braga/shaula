@@ -1,6 +1,6 @@
 import { SearchResult } from "@/types/search-result";
 import { handleReactSelectStyling } from "@/utils/react-select-styling";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Select, { MultiValue, SingleValue, components } from 'react-select';
 
 type LazyLoadingSelectProps = {
@@ -51,6 +51,11 @@ function LazyLoadingSelectWithStates({
             setter: setFetchedOptions
         });
     };
+
+    useEffect(() => {
+        console.log('selectedOptions', selectedOptions);
+        console.log('selectedOption', selectedOption);
+    }, [selectedOptions, selectedOption]);
 
     const onSelectChange = (options: SingleValue<SearchResult> | MultiValue<SearchResult>) => {
         if (props.isMulti) {
