@@ -4,9 +4,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useEffect } from 'react';
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { SearchResult } from '@/types/search-result';
+import { MultiValue } from 'react-select';
 
 export default function Index({
     artwork,
@@ -19,7 +22,7 @@ export default function Index({
         title: artwork ? artwork.data.title : '' as string,
         date: artwork ? artwork.data.date : '' as string,
 
-        authors_ids: artwork ? artwork.data.authors.map((author) => author.id) : [] as number[],
+        authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
         languages_ids: artwork ? artwork.data.languages?.map((language) => language.id) : [] as number[],
         awards_ids: artwork ? artwork.data.awards?.map((award) => award.id) : [] as number[],
         categories_ids: artwork ? artwork.data.categories?.map((category) => category.id) : [] as number[],
@@ -31,8 +34,6 @@ export default function Index({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        console.log('data', data);
 
         if (isEdit) {
             post(route('artworks.update', artwork.data), {
@@ -46,6 +47,10 @@ export default function Index({
             });
         }
     };
+
+    useEffect(() => {
+        console.log('data', data);
+    }, [data]);
 
     return (
         <AppLayout>
@@ -69,23 +74,18 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="authors_ids">Autores</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        artwork?.data.authors?.map(
-                                            author => ({ value: author.id, label: author.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'people.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('authors_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <Label htmlFor="authors_uuids">Autores</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'people.fetch.options'}
+                                    value={artwork?.data.authors?.map(
+                                        author => ({ uuid: author.uuid, label: author.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('authors_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.authors_ids} />
+                                <InputError className="mt-2" message={errors.authors_uuids} />
                             </div>
 
                             <div className="flex flex-row gap-3">

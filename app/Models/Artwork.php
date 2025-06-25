@@ -42,7 +42,7 @@ class Artwork extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
-            'route' => route('public.artworks.show', $this),
+            'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',
@@ -69,7 +69,9 @@ class Artwork extends Model
 
     public function authors(): MorphToMany
     {
-        return $this->morphToMany(Person::class, 'authorable', 'authorables')
+        return $this->morphToMany(Person::class, 'personable', 'personables')
+            ->withPivot('activity_id')
+            ->wherePivot('is_author', true)
             ->orderBy('name');
     }
 
@@ -77,6 +79,7 @@ class Artwork extends Model
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
             ->withPivot('activity_id')
+            ->wherePivot('is_author', false)
             ->orderBy('name');
     }
 

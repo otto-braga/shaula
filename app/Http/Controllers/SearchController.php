@@ -230,17 +230,4 @@ class SearchController extends Controller
             'filter' => $filter,
         ];
     }
-
-    // public function fetch(Request $request)
-    // {
-    //     $retval = $this->search($request);
-
-    //     return response()->json([
-    //         'q' => $retval['q'],
-    //         'result' => SearchResultResource::collection($retval['result']),
-    //         'total' => $retval['total'],
-    //         'last_page' => $retval['last_page'],
-    //         'currentPage' => $retval['currentPage'],
-    //     ]);
-    // }
 }

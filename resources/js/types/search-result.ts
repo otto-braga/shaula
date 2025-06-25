@@ -1,23 +1,23 @@
 export type SearchResult = {
-    uuid?: string | null;
-    type?: string | null;
-    route?: string | null;
+    uuid: string;
+    type?: string;
+    route?: string;
 
-    label?: string | null;
-    name?: string | null;
-    title?: string | null;
+    label: string;
+    name?: string;
+    title?: string;
 
-    content?: string | null;
-    primary_image_path?: string | null;
-    primary_image_url?: string | null;
+    content?: string;
+    primary_image_path?: string;
+    primary_image_url?: string;
 
-    periods?: string[] | null;
-    categories?: string[] | null;
+    periods?: string[];
+    categories?: string[];
 
-    authors?: string[] | null;
-    cities?: string[] | null;
-    artworks?: string[] | null;
+    authors?: string[];
+    cities?: string[];
+    artworks?: string[];
 
-    file_path?: string | null;
-    source_categories?: string[] | null;
+    file_path?: string;
+    source_categories?: string[];
 };

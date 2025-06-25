@@ -16,7 +16,7 @@ class ActivityResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'uuid' => $this->uid,
             'name' => $this->name,
             // 'person' => new PersonResource(Person::find($this->pivot->person_id ?? 0)),
         ];

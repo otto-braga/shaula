@@ -41,7 +41,7 @@ class ArtworkFactory extends Factory
         return $this->afterCreating(function ($artwork) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $artwork->authors()->attach($author);
+                $artwork->authors()->attach($author, ['is_author' => true]);
             }
 
             $activities = Activity::inRandomOrder()->take(rand(0, 3))->get();

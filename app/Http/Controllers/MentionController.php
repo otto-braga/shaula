@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Public\SearchPublicController;
 use Illuminate\Http\Request;
 use App\Models\Mention;
 use Illuminate\Support\Facades\Redirect;
@@ -66,7 +65,7 @@ class MentionController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        return SearchPublicController::fetchMulti(
+        return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,
                 'only' => [

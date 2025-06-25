@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->foreignId('person_id')->constrained('people')->onDelete('cascade');
             $table->morphs('authorable');
+            $table->foreignId('activity_id')->nullable()->constrained('activities')->onDelete('cascade');
 
             $table->timestamps();
         });

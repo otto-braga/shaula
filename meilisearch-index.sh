@@ -16,3 +16,6 @@ docker compose exec supervisor php artisan scout:import "App\Models\HistoryArtic
 
 docker compose exec supervisor php artisan scout:flush "App\Models\Source"
 docker compose exec supervisor php artisan scout:import "App\Models\Source"
+
+# docker compose exec supervisor php artisan scout:flush "App\Models\Activity"
+# docker compose exec supervisor php artisan scout:import "App\Models\Activity"

@@ -1,9 +1,9 @@
 import { Person } from "./person";
 
 export type Activity = {
-    id: number;
+    uuid: string;
     name: string;
-    person: Person;
+    // person: Person;
 }
 
 // export function activityLabel(activity: Activity) {

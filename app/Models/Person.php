@@ -6,10 +6,10 @@ use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Laravel\Scout\Searchable;
@@ -45,9 +45,9 @@ class Person extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
-            'route' => route('public.people.show', $this),
+            'route' => route('public.' . $this->getTable() . '.show', $this),
 
-            'label' => $this->name ?? '',
+            'label' => $this->fullLabel ?? '',
             'name' => $this->name ?? '',
 
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
@@ -70,6 +70,23 @@ class Person extends Model
         ]);
     }
 
+    protected function fullLabel(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $label = $this->name ?? '';
+                if ($this->date_of_birth) {
+                    $label .= ' (' . $this->date_of_birth;
+                    if ($this->date_of_death) {
+                        $label .= ' - ' . $this->date_of_death;
+                    }
+                    $label .= ')';
+                }
+                return $label;
+            }
+        );
+    }
+
     public function genders(): BelongsToMany
     {
         return $this->belongsToMany(Gender::class, 'gender_person', 'person_id', 'gender_id');
@@ -89,8 +106,7 @@ class Person extends Model
     public function artworks(): MorphToMany
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')
-            ->withPivot('activity_id')
-            ->orderBy('date');
+            ->withPivot('activity_id');
     }
 
     public function activities(): BelongsToMany
@@ -103,11 +119,6 @@ class Person extends Model
         return $this->morphedByMany(Review::class, 'personable', 'personables')
             ->withPivot('activity_id')
             ->orderBy('date');
-    }
-
-    public function languages(): HasManyThrough
-    {
-        return $this->hasManyThrough(Language::class, Artwork::class, 'person_id', 'artwork_id', 'id', 'id');
     }
 
     // files

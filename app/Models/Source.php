@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\Fetchable;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -35,6 +34,7 @@ class Source extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
+            'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',

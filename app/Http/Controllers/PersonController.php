@@ -4,16 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\PersonResource;
-use App\Models\City;
-use App\Models\Gender;
 use App\Models\Person;
-use App\Models\Period;
-use App\Http\Resources\PeriodResource;
-use App\Models\Mention;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
 use Inertia\Inertia;
 
 class PersonController extends Controller
@@ -66,11 +59,10 @@ class PersonController extends Controller
 
     public function edit(Person $person)
     {
-        // $person->load([
-        //     'artworks',
-        //     'languages',
-        //     'reviews',
-        // ]);
+        $person->load([
+            'artworks',
+            'reviews',
+        ]);
 
         return Inertia::render('admin/person/edit/index', [
             'person' => new PersonResource($person),

@@ -4,51 +4,33 @@ namespace App\Traits;
 
 use App\Http\Resources\SearchResultResource;
 use Illuminate\Database\Eloquent\Builder;
-use Meilisearch\Client;
+use Illuminate\Support\Facades\Schema;
 
 trait Fetchable
 {
-    public function scopeFetchAsSelectOption(Builder $query, $search = '', $quantity = 5)
+    public function scopeFetchAsSelectOption(Builder $query, $q = null, $limit = 5)
     {
-        $client = new Client(
-            config('scout.meilisearch.host'),
-            config('scout.meilisearch.key')
-        );
+        if ($q) {
+            if (Schema::hasColumn($this->getTable(), 'name')) {
+                $query->where('name', 'like', "%$q%")
+                    ->select('id', 'name');
+            } else if (Schema::hasColumn($this->getTable(), 'title')) {
+                $query->where('title', 'like', "%$q%")
+                    ->select('id', 'title');
+            }
+        }
 
-        return SearchResultResource::collection(
-            $client
-            ->index($this->getTable())
-            ->search(
-                $search,
-                [
-                    'limit' => $quantity,
-                    // 'attributesToRetrieve' => ['id', 'label', 'content'],
-                    // 'filter' => 'id > 0',
-                ]
-            )
-            ->getHits()
-        );
-    }
+        $results = $query->take($limit)->get();
+        $results = $results->map(function ($item) {
+            return [
+                'label' => $item->name ?? $item->title,
+                'uuid' => $item->uuid,
+            ];
+        });
+        $results = $results->toArray();
 
-    public function scopeFetchSingle(Builder $query, $search)
-    {
-        $client = new Client(
-            config('scout.meilisearch.host'),
-            config('scout.meilisearch.key')
-        );
-
-        return SearchResultResource::collection(
-            $client
-            ->index($this->getTable())
-            ->search(
-                $search,
-                [
-                    'limit' => 1,
-                ]
-            )
-            ->getHits()
-        );
-
-        return $query->where('id', '<', 0);
+        return response()->json([
+            'results' => SearchResultResource::collection($results),
+        ]);
     }
 }

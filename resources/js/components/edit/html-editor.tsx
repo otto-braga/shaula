@@ -17,6 +17,7 @@ import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
 import Select from 'react-select';
 import { SearchResult } from '@/types/search-result';
+import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
 type HtmlEditorProps = {
     content: string;
@@ -365,10 +366,10 @@ export default function HtmlEditor({
                 <div className="p-4 h-100">
                     <h2 className="text-lg font-semibold mb-4">Mencionar</h2>
                     <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
-                    <Select
+                    <LazyLoadingSelect
                         options={fetchedMentions}
                         value={selectedMention}
-                        onChange={(option) => {
+                        onChange={(option: SearchResult) => {
                             if (option) {
                                 option = fetchedMentions.find((mention) => mention.uuid === option?.uuid) || option;
                                 editorRef?.current?.execCommand(
@@ -380,12 +381,9 @@ export default function HtmlEditor({
                                 setShowMentions(false);
                             }
                         }}
-                        onInputChange={(inputValue) => {
+                        onInputChange={(inputValue: string) => {
                             fetchMentions(inputValue);
                         }}
-                        placeholder="Digite para buscar..."
-                        isClearable
-                        className="mb-4"
                     />
                     <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir a menção.</p>
                 </div>

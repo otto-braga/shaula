@@ -205,6 +205,22 @@ return [
                 ],
             ],
 
+            // 'activities' => [
+            //     'searchableAttributes' => [
+            //         'name'
+            //     ],
+            //     'filterableAttributes' => [
+            //     ],
+            // ],
+
+            // 'awards' => [
+            //     'searchableAttributes' => [
+            //         'name',
+            //     ],
+            //     'filterableAttributes' => [
+            //     ],
+            // ],
+
         ],
     ],
 

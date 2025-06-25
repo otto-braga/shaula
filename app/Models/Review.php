@@ -39,7 +39,7 @@ class Review extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
-            'route' => route('public.artworks.show', $this),
+            'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',

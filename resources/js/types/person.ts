@@ -11,7 +11,7 @@ import { Source } from "./source";
 
 export type Person = {
     id: number;
-    uuid: string | null;
+    uuid: string;
     slug: string;
 
     name: string;

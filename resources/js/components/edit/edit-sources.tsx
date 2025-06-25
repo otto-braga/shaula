@@ -8,6 +8,7 @@ import { CustomMenuList } from '@/components/select/lazyLoadingSelect';
 import { handleReactSelectStyling } from '@/utils/react-select-styling';
 import { Button } from '@/components/ui/button';
 import { SearchResult } from '@/types/search-result';
+import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
 type EditSourcesProps = {
     model: { data: { sources?: Source[] } },
@@ -53,7 +54,7 @@ export default function EditSources({
                 response.results
                 .filter((object: SearchResult) => !sources?.map((source) => source.uuid).includes(object.uuid ?? ''))
                 .map((object: SearchResult) => ({
-                    value: object.uuid,
+                    uuid: object.uuid,
                     label: object.label + ' - ' + object.content,
                 }))
             );
@@ -103,7 +104,7 @@ export default function EditSources({
 
     return (
         <div>
-            <Select
+            <LazyLoadingSelect
                 options={fetchedSources}
                 onChange={
                     (option: SingleValue<SearchResult>) => {
@@ -114,11 +115,6 @@ export default function EditSources({
                 }
                 value={null}
                 onInputChange={loadOptions}
-                loadingMessage={() => 'Carregando...'}
-                noOptionsMessage={() => 'Nenhum resultado.'}
-                placeholder="Digite para buscar..."
-                components={{ MenuList: CustomMenuList }}
-                styles={handleReactSelectStyling()}
             />
             <InputError className="mt-2" message={errors?.sources_ids} />
 

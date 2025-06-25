@@ -1,6 +1,6 @@
 export type ActivityPerson = {
-    activity_id: number;
+    activity_uuid: string;
     activity_name: string;
-    person_id: number;
+    person_uuid: string;
     person_name: string;
 };

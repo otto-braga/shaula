@@ -1,10 +1,10 @@
 import { Label } from '@/components/ui/label';
 import { Trash } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Option } from '@/components/select/lazyLoadingMultiSelect';
-import { LazyLoadingSelect } from '@/components/select/lazyLoadingSelect';
+import { LazyLoadingSelect, fetchDataForSelect } from '@/components/select/lazy-loading-select';
 import { Button } from '@/components/ui/button';
 import { ActivityPerson } from '@/types/activity-person';
+import { SearchResult } from '@/types/search-result';
 
 type EditPeopleProps = {
     data: {
@@ -21,13 +21,26 @@ export default function EditPeople({
     errors,
     processing,
 }: EditPeopleProps) {
-    const [selectedPerson, setSelectedPerson] = useState<Option | null>(null);
-    const [selectedActivity, setSelectedActivity] = useState<Option | null>(null);
+    const [fetchedPeople, setFetchedPeople] = useState<SearchResult[]>([]);
+    const [selectedPerson, setSelectedPerson] = useState<SearchResult | null>(null);
+
+    useEffect(() => {
+        console.log('fetchedPeople', fetchedPeople);
+        setSelectedPerson(null);
+    }, [fetchedPeople]);
+
+    const [fetchedActivities, setFetchedActivities] = useState<SearchResult[]>([]);
+    const [selectedActivity, setSelectedActivity] = useState<SearchResult | null>(null);
+
+    useEffect(() => {
+        console.log('fetchedActivities', fetchedActivities);
+        setSelectedActivity(null);
+    }, [fetchedActivities]);
 
     const onAddPersonActivity = () => {
         if (selectedPerson && selectedActivity) {
             const existingPersonActivity = data.activitiesPeople.find((pa) => (
-                pa.person_id === selectedPerson.value && pa.activity_id === selectedActivity.value
+                pa.person_uuid === selectedPerson.uuid && pa.activity_uuid === selectedActivity.uuid
             ));
 
             if (existingPersonActivity) {
@@ -37,24 +50,27 @@ export default function EditPeople({
             setData('activitiesPeople', [
                 ...data.activitiesPeople,
                 {
-                    activity_id: selectedActivity.value,
+                    activity_uuid: selectedActivity.uuid,
                     activity_name: selectedActivity.label,
-                    person_id: selectedPerson.value,
+                    person_uuid: selectedPerson.uuid,
                     person_name: selectedPerson.label,
                 },
             ]);
+
+            setSelectedPerson(null);
+            setSelectedActivity(null);
         }
     };
 
     const onRemovePersonActivity = (personActivity: ActivityPerson) => {
         setData('activitiesPeople', data.activitiesPeople.filter((pa) => (
-            pa.person_id !== personActivity.person_id || pa.activity_id !== personActivity.activity_id
+            pa.person_uuid !== personActivity.person_uuid || pa.activity_uuid !== personActivity.activity_uuid
         )));
     }
 
     const getActivitiesList = (activitiesPeople: ActivityPerson[]) => {
         const uniqueActivities = activitiesPeople.reduce((acc: ActivityPerson[], current) => {
-            const x = acc.find((item) => item.activity_id === current.activity_id);
+            const x = acc.find((item) => item.activity_uuid === current.activity_uuid);
             if (!x) {
                 return acc.concat([current]);
             } else {
@@ -73,20 +89,30 @@ export default function EditPeople({
             <div>
                 <Label>Pessoa</Label>
                 <LazyLoadingSelect
-                    initialOption={{ value: 0, label: '' }}
-                    routeName="people.fetch.options"
-                    setterFunction={(option) => {
+                    onInputChange={(q: string) => {
+                        fetchDataForSelect(
+                            { routeName: 'people.fetch.options', q: q, setter: setFetchedPeople },
+                        )
+                    }}
+                    options={fetchedPeople}
+                    onChange={(option: SearchResult) => {
                         setSelectedPerson(option);
                     }}
+                    value={selectedPerson}
                 />
 
                 <Label>Atividade</Label>
                 <LazyLoadingSelect
-                    initialOption={{ value: 0, label: '' }}
-                    routeName="activities.fetch.options"
-                    setterFunction={(option) => {
+                    onInputChange={(q: string) => {
+                        fetchDataForSelect(
+                            { routeName: 'activities.fetch.options', q: q, setter: setFetchedActivities },
+                        )
+                    }}
+                    options={fetchedActivities}
+                    onChange={(option: SearchResult) => {
                         setSelectedActivity(option);
                     }}
+                    value={selectedActivity}
                 />
 
                 <Button
@@ -100,11 +126,11 @@ export default function EditPeople({
 
                 <div className="mt-4">
                     {getActivitiesList(data.activitiesPeople).map((activity) => (
-                        <div key={activity.activity_id} className="flex flex-col gap-2 mb-4">
+                        <div key={'activity' + activity.activity_uuid} className="flex flex-col gap-2 mb-4">
                             <Label className="text-lg">{activity.activity_name}</Label>
                             <div className="flex items-center gap-2">
-                                {data.activitiesPeople.filter((pa) => pa.activity_id === activity.activity_id).map((person) => (
-                                    <div key={person.person_id} className="flex items-center gap-2 border p-2 rounded-md bg-gray-100 dark:bg-gray-700">
+                                {data.activitiesPeople.filter((pa) => pa.activity_uuid === activity.activity_uuid).map((person) => (
+                                    <div key={activity.activity_uuid + person.person_uuid} className="flex items-center gap-2 border p-2 rounded-md bg-gray-100 dark:bg-gray-700">
                                         <span>{person.person_name}</span>
                                         <Button
                                             type="button"

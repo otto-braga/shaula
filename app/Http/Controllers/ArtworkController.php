@@ -7,12 +7,14 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
+use App\Models\Person;
+use App\Traits\HasAuthors;
 use App\Traits\HasFile;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile;
+    use HasFile, HasAuthors;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -47,7 +49,8 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
-        $artwork->authors()->sync($request->authors_ids);
+        $this->updateAuthors($artwork, $request->authors_uuids);
+
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
@@ -75,7 +78,8 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $artwork->authors()->sync($request->authors_ids);
+        $this->updateAuthors($artwork, $request->authors_uuids);
+
         $artwork->languages()->sync($request->languages_ids);
         $artwork->awards()->sync($request->awards_ids);
         $artwork->categories()->sync($request->categories_ids);
@@ -104,7 +108,23 @@ class ArtworkController extends Controller
 
     public function updatePeople(Request $request, Artwork $artwork)
     {
-        $activitiesPeople = $request->activitiesPeople;
+        $request_activitiesPeople = $request->activitiesPeople;
+        $activitiesPeople = [];
+
+        foreach ($request_activitiesPeople as $activityPerson) {
+            $activity_id = Activity::where('uuid', $activityPerson['activity_uuid'])
+                ->first()?->id;
+
+            $person_id = Person::where('uuid', $activityPerson['person_uuid'])
+                ->first()?->id;
+
+            if ($activity_id && $person_id) {
+                $activitiesPeople[] = [
+                    'activity_id' => $activity_id,
+                    'person_id' => $person_id,
+                ];
+            }
+        }
 
         if ($activitiesPeople && count($activitiesPeople) > 0) {
             foreach ($activitiesPeople as $activityPerson) {
