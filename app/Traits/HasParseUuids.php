@@ -16,5 +16,7 @@ trait HasParseUuids
                 $ids[] = $model->id;
             }
         }
+
+        return $ids;
     }
 }

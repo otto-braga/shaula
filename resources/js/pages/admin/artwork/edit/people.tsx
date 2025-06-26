@@ -13,8 +13,8 @@ export default function People({
 }) {
     const { data, setData, post, errors, processing } = useForm({
         activitiesPeople: artwork.data.people.map((person) => ({
-            activity_uuid: person.activity.uuid,
-            activity_name: person.activity.name,
+            activity_uuid: person.activity?.uuid,
+            activity_name: person.activity?.name,
             person_uuid: person.uuid,
             person_name: person.name,
         })) as ActivityPerson[],

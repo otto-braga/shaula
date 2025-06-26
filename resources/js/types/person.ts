@@ -10,7 +10,7 @@ import { Review } from "./review";
 import { Source } from "./source";
 
 export type Person = {
-    id: number;
+    // id: number;
     uuid: string;
     slug: string;
 
@@ -30,7 +30,7 @@ export type Person = {
 
     artworks: Artwork[];
     activities: Activity[];
-    activity: Activity;
+    activity: Activity | null;
 
     periods: Period[];
     languages: Language[];
@@ -45,8 +45,6 @@ export type Person = {
 }
 
 export function personLabel(person: Person) {
-    if (person.id < 0) return person.name + ' (NOVO)';
-
     let label = '';
 
     if (person.date_of_birth || person.date_of_death) {

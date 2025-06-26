@@ -7,7 +7,10 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
+use App\Models\Award;
+use App\Models\Category;
 use App\Models\Language;
+use App\Models\Period;
 use App\Models\Person;
 use App\Traits\HasFile;
 use App\Traits\HasParseUuids;
@@ -57,9 +60,14 @@ class ArtworkController extends Controller
         $languages_ids = $this->parseUuids(Language::class, $request->languages_uuids);
         $artwork->languages()->sync($languages_ids);
 
-        $artwork->awards()->sync($request->awards_ids);
-        $artwork->categories()->sync($request->categories_ids);
-        $artwork->periods()->sync($request->periods_ids);
+        $awards_ids = $this->parseUuids(Award::class, $request->awards_uuids);
+        $artwork->awards()->sync($awards_ids);
+
+        $categories_ids = $this->parseUuids(Category::class, $request->categories_uuids);
+        $artwork->categories()->sync($categories_ids);
+
+        $periods_ids = $this->parseUuids(Period::class, $request->periods_uuids);
+        $artwork->periods()->sync($periods_ids);
 
         session()->flash('success', true);
         return redirect()->route('artworks.edit', $artwork);
@@ -86,10 +94,17 @@ class ArtworkController extends Controller
         $authors_ids = $this->parseUuids(Person::class, $request->authors_uuids);
         $this->syncAuthors($artwork, $authors_ids);
 
-        $artwork->languages()->sync($request->languages_ids);
-        $artwork->awards()->sync($request->awards_ids);
-        $artwork->categories()->sync($request->categories_ids);
-        $artwork->periods()->sync($request->periods_ids);
+        $languages_ids = $this->parseUuids(Language::class, $request->languages_uuids);
+        $artwork->languages()->sync($languages_ids);
+
+        $awards_ids = $this->parseUuids(Award::class, $request->awards_uuids);
+        $artwork->awards()->sync($awards_ids);
+
+        $categories_ids = $this->parseUuids(Category::class, $request->categories_uuids);
+        $artwork->categories()->sync($categories_ids);
+
+        $periods_ids = $this->parseUuids(Period::class, $request->periods_uuids);
+        $artwork->periods()->sync($periods_ids);
 
         session()->flash('success', true);
         return redirect()->route('artworks.edit', $artwork);
@@ -118,11 +133,11 @@ class ArtworkController extends Controller
         $activitiesPeople = [];
 
         foreach ($request_activitiesPeople as $activityPerson) {
-            $activity_id = Activity::where('uuid', $activityPerson['activity_uuid'])
-                ->first()?->id;
+            $activity = Activity::where('uuid', $activityPerson['activity_uuid'])->first();
+            $activity_id = $activity ? $activity->id : null;
 
-            $person_id = Person::where('uuid', $activityPerson['person_uuid'])
-                ->first()?->id;
+            $person = Person::where('uuid', $activityPerson['person_uuid'])->first();
+            $person_id = $person ? $person->id : null;
 
             if ($activity_id && $person_id) {
                 $activitiesPeople[] = [

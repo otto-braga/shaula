@@ -70,7 +70,9 @@ class Artwork extends Model
     public function authors(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('activity_id')
+            ->withPivot([
+                'is_author',
+            ])
             ->wherePivot('is_author', true)
             ->orderBy('name');
     }
@@ -78,18 +80,19 @@ class Artwork extends Model
     public function people(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('activity_id')
+            ->withPivot([
+                'activity_id',
+                'is_author',
+            ])
             ->wherePivot('is_author', false)
             ->orderBy('name');
     }
 
-    public function activities()
+    public function activities(): BelongsToMany
     {
-        return $this->people()->get()->pluck('pivot.activity_id')
-        ->unique()
-        ->map(function ($activity_id) {
-            return Activity::find($activity_id);
-        });
+        return $this->belongsToMany(Activity::class, 'personables', 'personable_id', 'activity_id')
+            ->withPivot('person_id')
+            ->orderBy('name');
     }
 
     public function categories(): MorphToMany
