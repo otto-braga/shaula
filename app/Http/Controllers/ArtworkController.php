@@ -7,7 +7,7 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
-use App\Traits\HasFile;
+use App\Traits\HandlesFiles;
 use App\Traits\SyncsAuthors;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
@@ -18,7 +18,7 @@ use Inertia\Inertia;
 class ArtworkController extends Controller
 {
     use
-        HasFile,
+        HandlesFiles,
         ParsesUuids,
         SyncsAuthors,
         UpdatesPeople,
