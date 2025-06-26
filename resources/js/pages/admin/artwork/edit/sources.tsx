@@ -11,7 +11,7 @@ export default function Sources({
     artwork: { data: Artwork },
 }) {
     const { data, setData, post, patch, errors, processing } = useForm({
-        sources_ids: artwork ? artwork.data.sources?.map((source) => source.id) : [] as number[],
+        sources_uuids: artwork ? artwork.data.sources?.map((source) => source.uuid) : [] as string[],
     });
 
     const submit: FormEventHandler = (e) => {

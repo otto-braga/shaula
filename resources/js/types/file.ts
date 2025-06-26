@@ -1,5 +1,6 @@
 export type FileProps = {
-    id: number;
+    // id: number;
+    uuid: string;
 
     name: string;
     original_name: string;

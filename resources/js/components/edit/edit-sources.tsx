@@ -2,10 +2,7 @@ import InputError from '@/components/input-error';
 import { useState, useEffect } from 'react';
 import { FileCard } from '@/components/ui/file-card';
 import { Source } from '@/types/source';
-import Select, { SingleValue } from 'react-select';
-import { Option } from '@/utils/selectHelpers';
-import { CustomMenuList } from '@/components/select/lazyLoadingSelect';
-import { handleReactSelectStyling } from '@/utils/react-select-styling';
+import { SingleValue } from 'react-select';
 import { Button } from '@/components/ui/button';
 import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
@@ -13,7 +10,7 @@ import { LazyLoadingSelect } from '../select/lazy-loading-select';
 type EditSourcesProps = {
     model: { data: { sources?: Source[] } },
     data: {
-        sources_ids: number[],
+        sources_uuids: string[],
     },
     setData: (key: string, value: any) => void,
     errors?: Record<string, string>,
@@ -99,7 +96,7 @@ export default function EditSources({
     }
 
     useEffect(() => {
-        setData('sources_ids', sources.map((source) => source.id));
+        setData('sources_uuids', sources.map((source) => source.uuid));
     }, [sources]);
 
     return (
@@ -116,11 +113,11 @@ export default function EditSources({
                 value={null}
                 onInputChange={loadOptions}
             />
-            <InputError className="mt-2" message={errors?.sources_ids} />
+            <InputError className="mt-2" message={errors?.sources_uuids} />
 
             <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                 {sources?.map((source) => (
-                    <div key={source.id + source.title} className="mt-2 p-4 border rounded-lg bg-white dark:bg-gray-800 flex flex-col justify-between">
+                    <div key={source.uuid + source.title} className="mt-2 p-4 border rounded-lg bg-white dark:bg-gray-800 flex flex-col justify-between">
                             <p className="text-sm font-semibold">{source.title}</p>
                             <p className="text-sm text-gray-500 h-32 overflow-hidden mb-2"
                                 dangerouslySetInnerHTML={{ __html: source.content ?? '' }}

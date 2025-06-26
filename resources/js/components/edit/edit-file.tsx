@@ -50,9 +50,9 @@ export default function EditFile({
 
             <div className="flex flex-1 flex-row gap-2">
                 { stored_file && (
-                    <div key={stored_file?.id} className='flex flex-col items-center w-full'>
+                    <div key={stored_file?.uuid} className='flex flex-col items-center w-full'>
                         <FileCard
-                            key={stored_file?.id + 'file_card'}
+                            key={stored_file?.uuid + 'file_card'}
                             file={stored_file}
                             className={
                                 'w-full h-96 flex flex-col items-center justify-between'
@@ -61,7 +61,7 @@ export default function EditFile({
                         />
                         <div className='w-full flex flex-col justify-between'>
                             <Button
-                                key={stored_file?.id + 'delete_button'}
+                                key={stored_file?.uuid + 'delete_button'}
                                 type="button"
                                 className={
                                     (data.delete_file ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')

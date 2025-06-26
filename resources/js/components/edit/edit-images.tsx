@@ -12,11 +12,11 @@ registerPlugin(FilePondPluginImagePreview);
 
 type EditImagesProps = {
     stored_images?: Array<FileProps>;
-    stored_primary_image_id?: number;
+    stored_primary_image_uuid?: string;
     data: {
         files: Array<File>;
-        filesToRemove: Array<number>;
-        primaryImageId: number;
+        files_to_remove: Array<string>;
+        primary_image_uuid: string;
     };
     setData: (key: string, value: any) => void;
     errors?: Record<string, string>;
@@ -25,7 +25,7 @@ type EditImagesProps = {
 
 export default function EditImages({
     stored_images = [],
-    stored_primary_image_id = 0,
+    stored_primary_image_uuid = '',
     data,
     setData,
     errors,
@@ -37,17 +37,17 @@ export default function EditImages({
         setData('files', images as File[]);
     }, [images]);
 
-    const [imagesToRemove, setImagesToRemove] = useState<Array<number>>([]);
+    const [imagesToRemove, setImagesToRemove] = useState<Array<string>>([]);
 
     useEffect(() => {
         console.log('imagesToRemove', imagesToRemove);
-        setData('filesToRemove', imagesToRemove);
+        setData('files_to_remove', imagesToRemove);
     }, [imagesToRemove]);
 
-    const [imageToSelect, setImageToSelect] = useState<number>(stored_primary_image_id);
+    const [imageToSelect, setImageToSelect] = useState<string>(stored_primary_image_uuid);
 
     useEffect(() => {
-        setData('primaryImageId', imageToSelect);
+        setData('primary_image_uuid', imageToSelect);
         console.log('imageToSelect', imageToSelect);
     }, [imageToSelect]);
 
@@ -63,45 +63,45 @@ export default function EditImages({
 
             <div className="flex flex-row gap-2">
                 {stored_images.map((image, index) => (
-                    <div key={image.id} className='flex flex-col items-center'>
-                        <img key={image.id + 'image'} src={image.path} alt={image.path}
+                    <div key={image.uuid} className='flex flex-col items-center'>
+                        <img key={image.uuid + 'image'} src={image.path} alt={image.path}
                             className={
                                 'object-cover w-32 h-32 rounded-lg shadow-md'
-                                + (imagesToRemove.find(id => id === image.id) ? ' opacity-50' : '')
+                                + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
                             }
                         />
                         <div className='w-full flex flex-col justify-between'>
                             <Button
-                                key={image.id + 'select_button'}
+                                key={image.uuid + 'select_button'}
                                 type="button"
                                 className={
-                                    (image.id == imageToSelect ? 'bg-blue-600 hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
+                                    (image.uuid == imageToSelect ? 'bg-blue-600 hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
                                 }
                                 onClick={
                                     () => {
-                                        setImageToSelect(image.id);
+                                        setImageToSelect(image.uuid);
                                     }
                                 }
                             >
                                 <CheckIcon /> Principal
                             </Button>
                             <Button
-                                key={image.id + 'delete_button'}
+                                key={image.uuid + 'delete_button'}
                                 type="button"
                                 className={
-                                    (imagesToRemove.find(id => id === image.id) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                    (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
                                 }
                                 onClick={
                                     () => {
-                                        if (!imagesToRemove.find(id => id === image.id)) {
-                                            setImagesToRemove([...imagesToRemove, image.id]);
-                                            if (image.id === imageToSelect) {
-                                                setImageToSelect(0);
+                                        if (!imagesToRemove.find(uuid => uuid === image.uuid)) {
+                                            setImagesToRemove([...imagesToRemove, image.uuid]);
+                                            if (image.uuid === imageToSelect) {
+                                                setImageToSelect('');
                                             }
                                         } else {
-                                            setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
-                                            if (image.id === stored_primary_image_id && imageToSelect === 0) {
-                                                setImageToSelect(stored_primary_image_id);
+                                            setImagesToRemove(imagesToRemove.filter((i) => i !== image.uuid));
+                                            if (image.uuid === stored_primary_image_uuid && imageToSelect === '') {
+                                                setImageToSelect(stored_primary_image_uuid);
                                             }
                                         }
                                     }

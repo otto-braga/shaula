@@ -21,11 +21,11 @@ import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
 type HtmlEditorProps = {
     content: string;
-    content_images: { id: number; path: string }[];
+    content_images: { uuid: string; path: string }[];
     data: {
         content: string;
         files?: File[];
-        filesToRemove?: number[];
+        files_to_remove?: string[];
     };
     setData: (key: string, value: any) => void;
     errors?: Record<string, string>;
@@ -76,7 +76,7 @@ export default function HtmlEditor({
         setShowGallery(false);
     }
 
-    const [imagesToRemove, setImagesToRemove] = useState<Array<number>>([]);
+    const [imagesToRemove, setImagesToRemove] = useState<Array<string>>([]);
 
     useEffect(() => {
         console.log('imagesToRemove', imagesToRemove);
@@ -266,16 +266,16 @@ export default function HtmlEditor({
 
                     <div className="flex flex-row gap-2">
                         {content_images.map((image, index) => (
-                            <div key={image.id} className='flex flex-col items-center'>
-                                <img key={image.id + 'image'} src={image.path} alt={image.path}
+                            <div key={image.uuid} className='flex flex-col items-center'>
+                                <img key={image.uuid + 'image'} src={image.path} alt={image.path}
                                     className={
                                         'object-cover w-32 h-32 rounded-lg shadow-md'
-                                        + (imagesToRemove.find(id => id === image.id) ? ' opacity-50' : '')
+                                        + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
                                     }
                                 />
                                 <div className='w-full flex flex-col justify-between'>
                                     <Button
-                                        key={image.id + 'select_button'}
+                                        key={image.uuid + 'select_button'}
                                         type="button"
                                         className={
                                             ('bg-gray-100 hover:bg-blue-300')
@@ -294,17 +294,17 @@ export default function HtmlEditor({
                                         <CheckIcon /> Adicionar ao texto
                                     </Button>
                                     <Button
-                                        key={image.id + 'delete_button'}
+                                        key={image.uuid + 'delete_button'}
                                         type="button"
                                         className={
-                                            (imagesToRemove.find(id => id === image.id) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                            (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
                                         }
                                         onClick={
                                             () => {
-                                                if (!imagesToRemove.find(id => id === image.id)) {
-                                                    setImagesToRemove([...imagesToRemove, image.id]);
+                                                if (!imagesToRemove.find(uuid => uuid === image.uuid)) {
+                                                    setImagesToRemove([...imagesToRemove, image.uuid]);
                                                 } else {
-                                                    setImagesToRemove(imagesToRemove.filter((i) => i !== image.id));
+                                                    setImagesToRemove(imagesToRemove.filter((i) => i !== image.uuid));
                                                 }
                                             }
                                         }
