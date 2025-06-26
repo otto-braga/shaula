@@ -6,8 +6,20 @@ use App\Models\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+/** * Trait HasFile
+ *
+ * This trait provides methods to handle file uploads and deletions for controllers of models that can have files.
+ * It includes methods to store files, validate them, and delete them.
+ */
 trait HasFile
 {
+    /** * Store files uploaded in the request for a given fileable model and collection.
+     *
+     * @param Request $request
+     * @param mixed $fileable The model that can have files (e.g., Post, User).
+     * @param string $collection The collection name where files will be stored.
+     * @return array The IDs of the uploaded files.
+     */
     protected function storeFile(Request $request, $fileable, $collection)
     {
         $directory = 'files/' . class_basename($fileable) . '/' . $fileable->uuid;
@@ -45,6 +57,11 @@ trait HasFile
         return $uploadedFilesIds;
     }
 
+    /** * Delete a file by its ID.
+     *
+     * @param int $fileId The ID of the file to delete.
+     * @return void
+     */
     protected function deleteFile($fileId)
     {
         $file = File::find($fileId);
