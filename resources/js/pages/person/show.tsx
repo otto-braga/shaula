@@ -38,7 +38,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                                 <div>
                                     <p className="font-medium">Cidades</p>
                                     {person.data.cities.map((city) => (
-                                        <p key={city.id}>{city.name}</p>
+                                        <p key={city.uuid}>{city.name}</p>
                                     ))}
                                 </div>
                             )}

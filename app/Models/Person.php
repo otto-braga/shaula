@@ -106,7 +106,10 @@ class Person extends Model
     public function artworks(): MorphToMany
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')
-            ->withPivot('activity_id');
+            ->withPivot([
+                'activity_id',
+                'is_author',
+            ]);
     }
 
     public function activities(): BelongsToMany
@@ -117,8 +120,10 @@ class Person extends Model
     public function reviews(): MorphToMany
     {
         return $this->morphedByMany(Review::class, 'personable', 'personables')
-            ->withPivot('activity_id')
-            ->orderBy('date');
+            ->withPivot([
+                'activity_id',
+                'is_author',
+            ]);
     }
 
     // files
