@@ -1,23 +1,8 @@
 import PublicLayout from '@/layouts/public-layout';
+import { SearchFilterOption } from '@/types/search-filter-option';
+import { SearchResult } from '@/types/search-result';
 import { typeLabelSearch } from '@/utils/type-label';
 import { useEffect, useState } from 'react';
-
-type SearchResult = {
-    type?: string | null;
-    route?: string | null;
-    name?: string | null;
-    title?: string | null;
-    authors?: string[] | null;
-    content?: string | null;
-    primary_image_path?: string | null;
-    primary_image_url?: string | null;
-};
-
-type FilterOption = {
-    name: string;
-    value: Array<string>;
-    label?: string;
-};
 
 export default function Index(
 {
@@ -29,11 +14,11 @@ export default function Index(
     const [last_page, setLastPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const [fetchedFilter, setFetchedFilter] = useState([] as FilterOption[]);
-    const [filter, setFilter] = useState([] as FilterOption[]);
+    const [fetchedFilter, setFetchedFilter] = useState([] as SearchFilterOption[]);
+    const [filter, setFilter] = useState([] as SearchFilterOption[]);
 
     const fetchFilter = () => {
-        let route_name = route('search.filter.fetch.options');
+        let route_name = route('public.search.filter.fetch.options');
 
         fetch(route_name, {
             method: 'GET',
@@ -45,9 +30,10 @@ export default function Index(
             .then(data => {
                 setFetchedFilter(data.data || []);
 
-                setFilter(data.data.map((option: FilterOption) => ({
+                setFilter(data.data.map((option: SearchFilterOption) => ({
                     name: option.name,
                     value: new Array<string>(),
+                    label: option.label,
                 })));
             })
             .catch(error => console.error('Error fetching filter data:', error));
@@ -66,7 +52,8 @@ export default function Index(
     }, [filter]);
 
     const fetchData = () => {
-        let route_name = route('search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        // let route_name = route('public.search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        let route_name = route('public.search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}`;
 
         fetch(route_name
         , {
@@ -115,7 +102,7 @@ export default function Index(
 
                 <div className='flex justify-center items-top mt-4 mb-6'>
 
-                    <div>
+                    {/* <div>
                         <h1 className="text-2xl font-bold mb-4">Filtros</h1>
                         <div className="space-y-2">
 
@@ -151,7 +138,7 @@ export default function Index(
                             )}
 
                         </div>
-                    </div>
+                    </div> */}
 
                     <div>
                         <h1 className="text-2xl font-bold mb-4">Resultados da busca por "{q}"</h1>

@@ -211,27 +211,8 @@ return [
                     'content',
                 ],
                 'filterableAttributes' => [
-                    'start_date',
-                    'end_date',
                 ],
             ],
-
-            // 'activities' => [
-            //     'searchableAttributes' => [
-            //         'name'
-            //     ],
-            //     'filterableAttributes' => [
-            //     ],
-            // ],
-
-            // 'awards' => [
-            //     'searchableAttributes' => [
-            //         'name',
-            //     ],
-            //     'filterableAttributes' => [
-            //     ],
-            // ],
-
         ],
     ],
 

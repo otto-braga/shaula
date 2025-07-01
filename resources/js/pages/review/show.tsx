@@ -3,12 +3,10 @@ import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
 import { Mention } from '@/types/mention';
 import { Review } from '@/types/review';
-import { typeLabelPlural } from '@/utils/type-label';
 
 import { Link } from '@inertiajs/react';
 
 import 'keen-slider/keen-slider.min.css';
-import { useState } from 'react';
 
 import LightGallery from 'lightgallery/react';
 
@@ -36,7 +34,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div>
                         <p className="font-semibold">Autoria</p>
                         {review.data.authors.map((author) => (
-                            <Link href={route('public.people.show', author)} key={author.id}>
+                            <Link href={route('public.people.show', author)} key={author.uuid}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))}
@@ -45,24 +43,23 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <div className="">
                             <p className="font-semibold">Categorias</p>
                             {review.data.categories.map((category) => (
-                                <p key={category.id} className="line-clamp-1">
+                                <p key={category.uuid} className="line-clamp-1">
                                     {category.name}
                                 </p>
                             ))}
                         </div>
                     )}
-                    {review.data.mentioned.length > 0 && (
+                    {review.data.mentions.length > 0 && (
                         <div className="">
                             <p className="font-semibold">Menções</p>
                             <div className="mt-2 space-y-3">
-                                {Object.entries(mentionedByType).map(([type, mentions]) => (
-                                    <div key={type} className="">
-                                        <p className="text-sm text-slate-400">{typeLabelPlural(type)}</p>
-                                        {mentions.map((mention) => (
-                                            <Link href={route('public.mentions.show.mentioned', mention)} key={mention.id + 'separadas'}>
-                                                <p className="line-clamp-1 hover:underline">{mention.mentioned_name}</p>
+                                {review.data.mentions.map((mention: Mention, index) => (
+                                    <div key={'mention' + index}>
+                                        <p>
+                                            <Link href={mention.route} className="hover:underline">
+                                                {mention.name}
                                             </Link>
-                                        ))}
+                                        </p>
                                     </div>
                                 ))}
                             </div>
@@ -82,7 +79,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <h1 className="font-semibold text-white md:text-3xl">{review.data.title}</h1>
                         <div className="flex gap-1">
                             {review.data.authors.map((author) => (
-                                <Link href={route('public.people.show', author)} key={author.id}>
+                                <Link href={route('public.people.show', author)} key={author.uuid}>
                                     <span className="text-gray-100 hover:underline md:text-lg">{author.name}</span>
                                 </Link>
                             ))}
@@ -96,7 +93,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div>
                         <p className="font-semibold">Autoria</p>
                         {review.data.authors.map((author) => (
-                            <Link href={route('public.people.show', author)} key={author.id}>
+                            <Link href={route('public.people.show', author)} key={author.uuid}>
                                 <p className="line-clamp-1 hover:underline">{author.name}</p>
                             </Link>
                         ))}
@@ -105,7 +102,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <div className="">
                             <p className="font-semibold">Categorias</p>
                             {review.data.categories.map((category) => (
-                                <p key={category.id} className="line-clamp-1">
+                                <p key={category.uuid} className="line-clamp-1">
                                     {category.name}
                                 </p>
                             ))}
@@ -134,7 +131,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <h1 className="text-3xl font-semibold">{review.data.title}</h1>
                         <div className="flex gap-1">
                             {review.data.authors.map((author) => (
-                                <Link href={route('public.people.show', author)} key={author.id}>
+                                <Link href={route('public.people.show', author)} key={author.uuid}>
                                     <span className="hover:underline md:text-lg">{author.name}</span>
                                 </Link>
                             ))}
@@ -150,7 +147,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                             <div className="grid grid-cols-1 gap-3">
                                 {review.data.images.map((image) => (
                                     <img
-                                        key={image.id}
+                                        key={image.uuid}
                                         src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`}
                                         alt="Review Image"
                                         className=""
@@ -173,7 +170,7 @@ export default function Index({ review }: { review: { data: Review } }) {
 
             {/* <div className="flex gap-3">
                 {review.data.general_images.map((image) => (
-                    <div key={image.id} className="">
+                    <div key={image.uuid} className="">
                         <img src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`} alt="Review Image" className="max-h-[600px]" />
                     </div>
                 ))}

@@ -117,6 +117,11 @@ class SearchController extends Controller
         $filterableAttributes = [];
 
         foreach ($indexUids as $indexUid => $indexUidData) {
+            // Skip if index UID data does not have the key "filterableAttributes"
+            if (!key_exists('filterableAttributes', $indexUidData)) {
+                continue;
+            }
+
             if (
                 !isset($indexUidData['filterableAttributes'])
                 || in_array($filterableAttributes, $indexUidData['filterableAttributes'])
@@ -201,7 +206,7 @@ class SearchController extends Controller
             $federation = new MultiSearchFederation();
             $federation
                 ->setLimit($page_size)
-                ->setOffset(0);
+                ->setOffset($offset);
 
             $results = $this->handleSearch(
                 client: $client,

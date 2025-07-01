@@ -63,8 +63,9 @@ Route::name('public.')->group(function () {
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
     Route::redirect('historia', 'historia/artigos');
-    Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
-    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
+    Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');
+    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('history_articles.show');
+
     Route::get('/historia/periodizacao', [PeriodPublicController::class, 'index'])->name('periods.index');
     Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
@@ -74,6 +75,8 @@ Route::name('public.')->group(function () {
 
     // Search
     Route::get('busca', [SearchPublicController::class, 'index'])->name('search');
+    Route::get('busca/fetch/search', [SearchPublicController::class, 'fetchSearch'])->name('search.fetch.search');
+    Route::get('busca/fetch/filters', [SearchPublicController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
