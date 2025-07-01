@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
+use App\Traits\HandlesFiles;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
+use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class SourceController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -47,7 +51,7 @@ class SourceController extends Controller
 
         $source = Source::create($dataForm);
 
-        $source->sourceCategories()->sync($request->source_categories_ids);
+        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
         if ($request->has('files') && count($request->files) > 0) {
             if ($source->file) {
@@ -77,7 +81,7 @@ class SourceController extends Controller
 
         $source->update($dataForm);
 
-        $source->sourceCategories()->sync($request->source_categories_ids);
+        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
         if ($request->has('delete_file') && $request->delete_file) {
             if ($source->file) {

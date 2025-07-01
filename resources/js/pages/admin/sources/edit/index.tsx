@@ -5,10 +5,12 @@ import { Label } from '@/components/ui/label';
 import { Source } from '@/types/source';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
 import HtmlEditor from '@/components/edit/html-editor';
 import EditFile from '@/components/edit/edit-file';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { MultiValue } from 'react-select';
+import { SearchResult } from '@/types/search-result';
 
 export default function Index({
     source,
@@ -19,7 +21,7 @@ export default function Index({
 
     const { data, setData, post, patch, errors, processing } = useForm({
         title: source ? source.data.title : String(),
-        source_categories_ids: source ? source.data.source_categories?.map((source_category) => source_category.id) : [] as number[],
+        source_categories_uuids: source ? source.data.source_categories?.map((source_category) => source_category.uuid) : [] as string[],
         files: Array<File>(),
         delete_file: false as boolean,
         content: source ? source.data.content as string : String(),
@@ -65,23 +67,18 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="categories">Categorias</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        source?.data.source_categories?.map(
-                                            category => ({ value: category.id, label: category.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'source_categories.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('source_categories_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <Label htmlFor="source_categories_uuids">Categorias</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'source_categories.fetch.options'}
+                                    value={source?.data.source_categories?.map(
+                                        source_category => ({ uuid: source_category.uuid, label: source_category.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('source_categories_uuids', options.map((option) => option.uuid));
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.source_categories_ids} />
+                                <InputError className="mt-2" message={errors.source_categories_uuids} />
                             </div>
 
                             <EditFile
