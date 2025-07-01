@@ -9,7 +9,6 @@ import { Person } from "./person";
 import { Source } from "./source";
 
 export type Artwork = {
-    id: number;
     uuid: string;
     slug: string;
 

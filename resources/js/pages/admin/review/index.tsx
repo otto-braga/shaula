@@ -15,6 +15,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function Index({ reviews }: { reviews: { data: Review[] } }) {
+    console.log('reviews', reviews);
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Produções" />
@@ -27,7 +29,7 @@ export default function Index({ reviews }: { reviews: { data: Review[] } }) {
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {reviews?.data?.map((review) => (
-                            <Card key={review.id} className="flex flex-col justify-between">
+                            <Card key={review.uuid} className="flex flex-col justify-between">
                                 <CardHeader>
                                     {review.primary_image?.path ? (
                                         <img src={`${review.primary_image.path}`} alt={review.title} className="mb-3 aspect-square rounded-t object-cover" />

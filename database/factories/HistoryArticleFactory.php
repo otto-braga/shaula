@@ -33,7 +33,7 @@ class HistoryArticleFactory extends Factory
         return $this->afterCreating(function ($article) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $article->authors()->attach($author);
+                $article->authors()->attach($author, ['is_author' => true]);
             }
 
             $categories = Category::inRandomOrder()->take(rand(0, 5))->get();

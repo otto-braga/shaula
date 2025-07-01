@@ -5,7 +5,6 @@ import { Person } from "./person";
 import { Source } from "./source";
 
 export type Review = {
-    id: number;
     uuid: string;
     slug: string;
 
@@ -19,10 +18,7 @@ export type Review = {
     content_images: FileProps[];
 
     mentions: string[];
-
     sources: Source[];
-
-    activity: Activity | null;
 
     categories: Category[];
 

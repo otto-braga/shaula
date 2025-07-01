@@ -33,7 +33,7 @@ class ReviewFactory extends Factory
         return $this->afterCreating(function ($review) {
             $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
             foreach ($authors as $author) {
-                $review->authors()->attach($author);
+                $review->authors()->attach($author, ['is_author' => true]);
             }
 
             $categories = Category::inRandomOrder()->take(rand(0, 5))->get();

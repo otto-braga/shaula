@@ -11,7 +11,7 @@ export default function Sources({
     review: { data: Review },
 }) {
     const { data, setData, post, patch, errors, processing } = useForm({
-        sources_ids: review ? review.data.sources?.map((source) => source.id) : [] as number[],
+        sources_uuids: review ? review.data.sources?.map((source) => source.uuid) : [] as string[],
     });
 
     const submit: FormEventHandler = (e) => {

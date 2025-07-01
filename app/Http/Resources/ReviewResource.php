@@ -11,7 +11,6 @@ class ReviewResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            // 'id' => $this->id,
             'uuid' => $this->uuid,
             'slug' => $this->slug,
 
@@ -25,10 +24,7 @@ class ReviewResource extends JsonResource
             'content_images' => FileResource::collection($this->contentImages),
 
             'mentions' => MentionResource::collection($this->mentions()),
-
             'sources' => SourceResource::collection($this->sources),
-
-            'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)), // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwor
 
             'categories' => CategoryResource::collection($this->categories),
 

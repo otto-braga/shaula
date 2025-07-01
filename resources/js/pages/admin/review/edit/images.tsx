@@ -12,8 +12,8 @@ export default function Images({
 }) {
     const { data, setData, post, errors, processing } = useForm({
         files: Array<File>(),
-        filesToRemove: Array<number>(),
-        primaryImageId: review.data.primary_image?.id || 0,
+        files_to_remove: Array<string>(),
+        primary_image_uuid: review.data.primary_image?.uuid || '',
     });
 
     const submit: FormEventHandler = (e) => {
@@ -40,7 +40,7 @@ export default function Images({
 
                             <EditImages
                                 stored_images={review.data.images}
-                                stored_primary_image_id={review.data.primary_image?.id}
+                                stored_primary_image_uuid={review.data.primary_image?.uuid}
                                 data={data}
                                 setData={setData}
                                 errors={errors}

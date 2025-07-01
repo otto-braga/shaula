@@ -10,7 +10,6 @@ import { Review } from "./review";
 import { Source } from "./source";
 
 export type Person = {
-    // id: number;
     uuid: string;
     slug: string;
 

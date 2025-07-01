@@ -64,7 +64,11 @@ class Review extends Model
 
     public function authors(): MorphToMany
     {
-        return $this->morphToMany(Person::class, 'authorable', 'authorables')
+        return $this->morphToMany(Person::class, 'personable', 'personables')
+            ->withPivot([
+                'is_author',
+            ])
+            ->wherePivot('is_author', true)
             ->orderBy('name');
     }
 

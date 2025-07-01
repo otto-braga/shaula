@@ -16,7 +16,7 @@ export default function Content({
     const { data, setData, post, errors, processing } = useForm({
         content: review.data.content as string ?? String(),
         files: Array<File>(),
-        filesToRemove: Array<number>(),
+        files_to_remove: Array<string>(),
     });
 
     const submit: FormEventHandler = (e) => {

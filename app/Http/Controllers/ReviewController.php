@@ -5,12 +5,21 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
-use App\Traits\HasFile;
+use App\Traits\HandlesFiles;
+use App\Traits\ParsesUuids;
+use App\Traits\SyncsAuthors;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    use HasFile;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        SyncsAuthors,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -45,8 +54,8 @@ class ReviewController extends Controller
 
         $review = Review::create($dataForm);
 
-        $review->authors()->sync($request->authors_ids);
-        $review->categories()->sync($request->categories_ids);
+        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $review->categories());
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -70,8 +79,8 @@ class ReviewController extends Controller
 
         $review->update($dataForm);
 
-        $review->authors()->sync($request->authors_ids);
-        $review->categories()->sync($request->categories_ids);
+        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $review->categories());
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -90,24 +99,7 @@ class ReviewController extends Controller
     public function updateImages(Request $request, Review $review)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $review, 'general');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($review->images()->count() > 0) {
-                $review->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $review->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $review->images()->first()->update(['is_primary' => true]);
-                }
-            }
+            $this->handleImageUpdate($request, $review);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -130,17 +122,7 @@ class ReviewController extends Controller
     public function updateContent(Request $request, Review $review)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $review, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $review->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $review);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -164,7 +146,7 @@ class ReviewController extends Controller
 
     public function updateSources(Request $request, Review $review)
     {
-        $review->sources()->sync($request->sources_ids);
+        $this->syncUuids($request->sources_uuids, $review->sources());
 
         session()->flash('success', true);
         return redirect()->back();
