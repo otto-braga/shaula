@@ -5,11 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Period } from '@/types/period';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
-import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
-import { SearchResult } from '@/types/search-result';
-import { MultiValue } from 'react-select';
 
 export default function Index({
     period,

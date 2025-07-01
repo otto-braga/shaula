@@ -11,7 +11,7 @@ export default function Sources({
     period: { data: Period },
 }) {
     const { data, setData, post, patch, errors, processing } = useForm({
-        sources_ids: period ? period.data.sources?.map((source) => source.id) : [] as number[],
+        sources_uuids: period ? period.data.sources?.map((source) => source.uuid) : [] as string[],
     });
 
     const submit: FormEventHandler = (e) => {

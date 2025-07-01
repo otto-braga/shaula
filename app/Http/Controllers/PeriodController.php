@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
-use App\Traits\HasFile;
-use App\Traits\HasParseUuids;
+use App\Traits\HandlesFiles;
+use App\Traits\ParsesUuids;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PeriodController extends Controller
 {
-    use HasFile, HasParseUuids;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -83,24 +89,7 @@ class PeriodController extends Controller
     public function updateImages(Request $request, Period $period)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $period, 'general');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($period->images()->count() > 0) {
-                $period->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $period->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $period->images()->first()->update(['is_primary' => true]);
-                }
-            }
+            $this->handleImageUpdate($request, $period);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -123,17 +112,7 @@ class PeriodController extends Controller
     public function updateContent(Request $request, Period $period)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $period, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $period->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $period);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -157,7 +136,7 @@ class PeriodController extends Controller
 
     public function updateSources(Request $request, Period $period)
     {
-        $period->sources()->sync($request->sources_ids);
+        $this->syncUuids($request->sources_uuids, $period->sources());
 
         session()->flash('success', true);
         return redirect()->back();
