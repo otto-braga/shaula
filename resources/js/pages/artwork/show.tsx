@@ -26,8 +26,8 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                 <div>
                     <h2>autores</h2>
                     {artwork.data.authors.map((author) => (
-                        <Link href={route('public.people.show', author.slug)} className="flex items-center space-x-2" key={author.id}>
-                            <div key={author.id}>
+                        <Link href={route('public.people.show', author.slug)} className="flex items-center space-x-2" key={author.uuid}>
+                            <div key={author.uuid}>
                                 <p>{author.name}</p>
                             </div>
                         </Link>
@@ -37,7 +37,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                 <div>
                     <h2>categorias</h2>
                     {artwork.data.categories.map((category) => (
-                        <div key={category.id}>
+                        <div key={category.uuid}>
                             <p>{category.name}</p>
                         </div>
                     ))}
@@ -46,7 +46,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                 <div>
                     <h2>periodos</h2>
                     {artwork.data.periods.map((period) => (
-                        <div key={period.id}>
+                        <div key={period.uuid}>
                             <p>{period.name}</p>
                         </div>
                     ))}
