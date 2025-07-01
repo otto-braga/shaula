@@ -27,7 +27,7 @@ export default function Index({ historyArticles }: { historyArticles: { data: Hi
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {historyArticles?.data?.map((historyArticle) => (
-                            <Card key={historyArticle.id} className="flex flex-col justify-between">
+                            <Card key={historyArticle.uuid} className="flex flex-col justify-between">
                                 <CardHeader>
                                     <CardTitle>
                                         <h3 className="line-clamp-1 font-semibold">{historyArticle.title}</h3>

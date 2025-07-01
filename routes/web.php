@@ -102,46 +102,46 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
     Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
 
-    // Categories
-    Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
-    Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
-    Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    Route::get('categorias/fetch/options', [CategoryController::class, 'fetchSelectOptions'])->name('categories.fetch.options');
-
     // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
-    Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
-    Route::put('generos/{gender}', [GenderController::class, 'update'])->name('genders.update');
-    Route::delete('generos/{gender}', [GenderController::class, 'destroy'])->name('genders.destroy');
+    Route::post('generos/store', [GenderController::class, 'store'])->name('genders.store');
+    Route::put('generos/{gender:uuid}/update', [GenderController::class, 'update'])->name('genders.update');
+    Route::delete('generos/{gender:uuid}/delete', [GenderController::class, 'destroy'])->name('genders.destroy');
     Route::get('generos/fetch/options', [GenderController::class, 'fetchSelectOptions'])->name('genders.fetch.options');
+
+    // Categories
+    Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('categorias/store', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('categorias/{category:uuid}/update', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categorias/{category:uuid}/delete', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('categorias/fetch/options', [CategoryController::class, 'fetchSelectOptions'])->name('categories.fetch.options');
 
     // Awards
     Route::get('premios', [AwardController::class, 'index'])->name('awards.index');
-    Route::post('premios', [AwardController::class, 'store'])->name('awards.store');
-    Route::put('premios/{award}', [AwardController::class, 'update'])->name('awards.update');
-    Route::delete('premios/{award}', [AwardController::class, 'destroy'])->name('awards.destroy');
+    Route::post('premios/store', [AwardController::class, 'store'])->name('awards.store');
+    Route::put('premios/{award:uuid}/update', [AwardController::class, 'update'])->name('awards.update');
+    Route::delete('premios/{award:uuid}/delete', [AwardController::class, 'destroy'])->name('awards.destroy');
     Route::get('premios/fetch/options', [AwardController::class, 'fetchSelectOptions'])->name('awards.fetch.options');
 
     // Actitivies
     Route::get('atividades', [ActivityController::class, 'index'])->name('activities.index');
-    Route::post('atividades', [ActivityController::class, 'store'])->name('activities.store');
-    Route::put('atividades/{activity}', [ActivityController::class, 'update'])->name('activities.update');
-    Route::delete('atividades/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+    Route::post('atividades/store', [ActivityController::class, 'store'])->name('activities.store');
+    Route::put('atividades/{activity:uuid}/update', [ActivityController::class, 'update'])->name('activities.update');
+    Route::delete('atividades/{activity:uuid}/delete', [ActivityController::class, 'destroy'])->name('activities.destroy');
     Route::get('atividades/fetch/options', [ActivityController::class, 'fetchSelectOptions'])->name('activities.fetch.options');
 
     // Cities
     Route::get('cidades', [CityController::class, 'index'])->name('cities.index');
-    Route::post('cidades', [CityController::class, 'store'])->name('cities.store');
-    Route::put('cidades/{city}', [CityController::class, 'update'])->name('cities.update');
-    Route::delete('cidades/{city}', [CityController::class, 'destroy'])->name('cities.destroy');
+    Route::post('cidades/store', [CityController::class, 'store'])->name('cities.store');
+    Route::put('cidades/{city:uuid}/update', [CityController::class, 'update'])->name('cities.update');
+    Route::delete('cidades/{city:uuid}/delete', [CityController::class, 'destroy'])->name('cities.destroy');
     Route::get('cidades/fetch/options', [CityController::class, 'fetchSelectOptions'])->name('cities.fetch.options');
 
     // Languages
     Route::get('linguagens', [LanguageController::class, 'index'])->name('languages.index');
-    Route::post('linguagens', [LanguageController::class, 'store'])->name('languages.store');
-    Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
-    Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
+    Route::post('linguagens/store', [LanguageController::class, 'store'])->name('languages.store');
+    Route::put('linguagens/{language:uuid}/update', [LanguageController::class, 'update'])->name('languages.update');
+    Route::delete('linguagens/{language:uuid}/delete', [LanguageController::class, 'destroy'])->name('languages.destroy');
     Route::get('linguagens/fetch/options', [LanguageController::class, 'fetchSelectOptions'])->name('languages.fetch.options');
 
     // Periods (Periodização)

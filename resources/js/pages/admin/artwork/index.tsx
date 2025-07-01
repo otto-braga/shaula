@@ -27,7 +27,7 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                     </div>
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {artworks?.data?.map((artwork) => (
-                            <Card key={artwork.id} className="flex flex-col justify-between">
+                            <Card key={artwork.uuid} className="flex flex-col justify-between">
                                 <CardHeader>
                                     {artwork.primary_image?.path ? (
                                         <img src={`${artwork.primary_image.path}`} alt={artwork.title} className="mb-3 aspect-square rounded-t object-cover" />
@@ -49,7 +49,7 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={artwork.id}
+                                            resourceId={artwork.uuid}
                                             resourceName={artwork.title}
                                             deleteRoute="artwork.destroy"
                                             onSuccess={() => window.location.reload()}

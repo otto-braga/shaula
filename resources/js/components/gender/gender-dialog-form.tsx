@@ -32,7 +32,7 @@ export default function GenderDialogForm({ gender }: GenderDialogFormProps) {
         e.preventDefault();
 
         if (gender) {
-            update(route('genders.update', gender.id), {
+            update(route('genders.update', gender), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),

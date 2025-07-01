@@ -51,7 +51,7 @@ export default function Index({ reviews }: { reviews: { data: Review[] } }) {
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={review.id}
+                                            resourceId={review.uuid}
                                             resourceName={review.title}
                                             deleteRoute="review.destroy"
                                             onSuccess={() => window.location.reload()}

@@ -32,7 +32,7 @@ export default function CategoryDialogForm({ category }: CategoryDialogFormProps
         e.preventDefault();
 
         if (category) {
-            update(route('categories.update', category.id), {
+            update(route('categories.update', category), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),

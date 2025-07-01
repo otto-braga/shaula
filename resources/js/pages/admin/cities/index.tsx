@@ -22,14 +22,14 @@ export default function Index({ cities }: { cities: { data: City[] } }) {
             </div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {cities.data.map((city) => (
-                    <Card className="rounded" key={city.id}>
+                    <Card className="rounded" key={city.uuid}>
                         <CardHeader className="">
                             <CardTitle>{city.name}</CardTitle>
                         </CardHeader>
                         <CardFooter className="flex justify-end gap-2">
                             <CityDialogForm city={city} />
                             <DeleteDialog
-                                resourceId={city.id}
+                                resourceId={city.uuid}
                                 resourceName={city.name}
                                 deleteRoute="cities.destroy"
                                 onSuccess={() => window.location.reload()}

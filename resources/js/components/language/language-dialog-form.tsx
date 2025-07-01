@@ -32,7 +32,7 @@ export default function LanguageDialogForm({ language }: LanguageDialogFormProps
         e.preventDefault();
 
         if (language) {
-            update(route('languages.update', language.id), {
+            update(route('languages.update', language), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),
