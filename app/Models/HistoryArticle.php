@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +14,12 @@ use Laravel\Scout\Searchable;
 
 class HistoryArticle extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasFetching, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Searchable;
 
     protected $table = 'history_articles';
 
@@ -35,14 +40,17 @@ class HistoryArticle extends Model
         // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
-            'route' => route('public.artworks.show', $this),
+            'uuid' => $this->uuid,
+            'route' => route('public.' . $this->getTable() . '.show', $this),
+
+            'label' => $this->title ?? '',
             'title' => $this->title ?? '',
+
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
 
             'periods' => $this->periods->pluck('name')->toArray(),
             'categories' => $this->categories->pluck('name')->toArray(),
-
             'authors' => $this->authors->pluck('name')->toArray(),
         ];
     }
@@ -61,8 +69,10 @@ class HistoryArticle extends Model
     public function authors(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('is_author')
-            ->where('is_author', true)
+            ->withPivot([
+                'is_author',
+            ])
+            ->wherePivot('is_author', true)
             ->orderBy('name');
     }
 
@@ -104,15 +114,10 @@ class HistoryArticle extends Model
             ->where('collection', 'content');
     }
 
-    // mentions
+    // Sources.
 
-    public function mentioned(): MorphMany
+    public function sources(): MorphToMany
     {
-        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
-    }
-
-    public function mentioners(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+        return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
     }
 }

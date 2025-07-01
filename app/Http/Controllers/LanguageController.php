@@ -65,7 +65,6 @@ class LanguageController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Language::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return Language::fetchAsSelectOption($request->q);
     }
 }

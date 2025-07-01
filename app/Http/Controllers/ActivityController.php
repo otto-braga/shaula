@@ -65,7 +65,6 @@ class ActivityController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Activity::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return Activity::fetchAsSelectOption($request->q);
     }
 }

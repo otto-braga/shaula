@@ -1,16 +1,20 @@
 import { Button } from '@/components/ui/button';
+import { Artwork } from '@/types/artwork';
 import { Review } from '@/types/review';
+import { HistoryArticle } from '@/types/historyArticle';
+import { Person } from '@/types/person';
 import { Link, usePage } from '@inertiajs/react';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { useEffect, useState,  } from 'react';
 
 type TabsProps = {
-    review?: { data: Review };
+    model?: { data: Artwork | Review | HistoryArticle | Person },
+    type: string,
     processing: boolean;
     className?: string;
 };
 
-export default function Tabs({ review, processing, className }: TabsProps) {
+export default function Tabs({ model, type, processing, className }: TabsProps) {
     const { flash } = usePage().props;
 
     const timedMessageDuration: number = 3000;
@@ -25,12 +29,12 @@ export default function Tabs({ review, processing, className }: TabsProps) {
         }
     }, [ flash ]);
 
-    const isEdit = !!review;
+    const isEdit = !!model;
 
     return (
         <div className={"flex flex-col gap-2" + (className ? ' ' + className : '')}>
             <div className="flex flex-col">
-                <h2 className="text-lg">{isEdit ? `${review.data.title}` : '[novo cadastro]'}</h2>
+                <h2 className="text-lg">{isEdit ? `${ 'title' in model.data ? model.data.title : ('name' in model.data ? model.data.name : '')}` : '[novo cadastro]'}</h2>
             </div>
             <div className="flex flex-row items-center justify-between rounded p-3 dark:border">
                 <div className={'flex flex-wrap gap-2 divide-x' + (!isEdit ? ' pointer-events-none' : '')}>
@@ -38,43 +42,43 @@ export default function Tabs({ review, processing, className }: TabsProps) {
                         <>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(type + '.edit') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('reviews.edit', { review: review?.data }) : ''}
+                                href={isEdit ? route(type + '.edit', model?.data) : ''}
                             >
                                 Dados
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.images') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(type + '.edit.people') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('reviews.edit.images', { review: review?.data }) : ''}
+                                href={isEdit ? route(type + '.edit.people', model?.data) : ''}
+                            >
+                                Pessoas
+                            </Link>
+                            <Link
+                                className={
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(type + '.edit.images') ? ' font-bold underline' : '')
+                                }
+                                href={isEdit ? route(type + '.edit.images', model?.data) : ''}
                             >
                                 Imagens
                             </Link>
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.content') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(type + '.edit.content') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('reviews.edit.content', { review: review?.data }) : ''}
+                                href={isEdit ? route(type + '.edit.content', model?.data) : ''}
                             >
                                 Conteúdo
                             </Link>
-                            {/* <Link
-                                className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.people') ? ' font-bold underline' : '')
-                                }
-                                href={isEdit ? route('reviews.edit.people', { review: review?.data }) : ''}
-                            >
-                                Pessoas
-                            </Link> */}
                             <Link
                                 className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current('reviews.edit.mentions') ? ' font-bold underline' : '')
+                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(type + '.edit.sources') ? ' font-bold underline' : '')
                                 }
-                                href={isEdit ? route('reviews.edit.mentions', { review: review?.data }) : ''}
+                                href={isEdit ? route(type + '.edit.sources', model?.data) : ''}
                             >
-                                Menções
+                                Fontes
                             </Link>
                         </>
                     )}

@@ -96,21 +96,25 @@ function FileCard({
     file: FileProps | null,
     className?: string
 }) {
-  return (
-      <div className={`flex flex-col items-center justify-items-center ${className}`}>
-        {file?.mime_type === 'application/pdf' ? (
-            <iframe
-                key={file.id + 'pdf'}
-                src={file.path}
-                className={'object-cover w-full h-full rounded-lg'}
-            />
+    return (
+        file === null ? (
+            <div className={`flex flex-col items-center justify-items-center ${className}`}>
+            </div>
         ) : (
-            <img key={file?.id + 'file'} src={file?.path} alt={file?.path}
-                className={'object-cover w-full h-full rounded-lg'}
-            />
-        )}
-      </div>
-  )
+            file?.mime_type === 'application/pdf' ? (
+                <iframe
+                    key={file.id + 'pdf'}
+                    src={file.path}
+                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
+                    title={file.path}
+                />
+            ) : (
+                <img key={file?.id + 'file'} src={file?.path} alt={file?.path}
+                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
+                />
+            )
+        )
+    )
 }
 
 export { FileEditCard, FileCard }

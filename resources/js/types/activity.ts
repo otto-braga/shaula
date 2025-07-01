@@ -1,13 +1,6 @@
-import { Person } from "./person";
-
 export type Activity = {
-    id: number;
+    uuid: string;
     name: string;
-    person: Person;
+    created_at: string;
+    updated_at: string;
 }
-
-// export function activityLabel(activity: Activity) {
-//     if (activity.id < 0) return activity.name + ' (NOVO)';
-
-//     return activity.name;
-// }

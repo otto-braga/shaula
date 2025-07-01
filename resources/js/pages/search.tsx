@@ -1,5 +1,5 @@
 import PublicLayout from '@/layouts/public-layout';
-import { typeLabelSearch } from '@/utils/model-label';
+import { typeLabelSearch } from '@/utils/type-label';
 import { useEffect, useState } from 'react';
 
 type SearchResult = {
@@ -33,7 +33,7 @@ export default function Index(
     const [filter, setFilter] = useState([] as FilterOption[]);
 
     const fetchFilter = () => {
-        let route_name = route('public.search.filter.fetch.options');
+        let route_name = route('search.filter.fetch.options');
 
         fetch(route_name, {
             method: 'GET',
@@ -66,7 +66,7 @@ export default function Index(
     }, [filter]);
 
     const fetchData = () => {
-        let route_name = route('public.search.fetch') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        let route_name = route('search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
 
         fetch(route_name
         , {
@@ -78,7 +78,7 @@ export default function Index(
             .then(response => response.json())
             .then(data => {
                 console.log('Search results:', data);
-                setResult({ data: data.result });
+                setResult({ data: data.results });
                 setLastPage(data.last_page);
             })
             .catch(error => console.error('Error fetching search results:', error));

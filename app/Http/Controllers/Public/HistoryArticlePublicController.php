@@ -31,11 +31,10 @@ class HistoryArticlePublicController extends Controller
      */
     public function show($slug)
     {
-
-        $historyArticles = HistoryArticle::where('slug', $slug)->firstOrFail();
+        $historyArticle = HistoryArticle::where('slug', $slug)->firstOrFail();
 
         return Inertia::render('historyArticle/show', [
-            'historyArticle' => new HistoryArticleResource($historyArticles),
+            'historyArticle' => new HistoryArticleResource($historyArticle),
         ]);
     }
 }

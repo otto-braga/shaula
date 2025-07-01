@@ -4,23 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\HistoryArticleResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\PeriodResource;
-use App\Http\Resources\PersonResource;
 use App\Models\HistoryArticle;
-use App\Models\Category;
-use App\Models\Mention;
-use App\Models\Period;
-use App\Models\Person;
-use App\Traits\HasFile;
-use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
+use App\Traits\HandlesFiles;
+use App\Traits\ParsesUuids;
+use App\Traits\SyncsAuthors;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
 use Inertia\Inertia;
 
 class HistoryArticleController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        SyncsAuthors,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -55,12 +54,9 @@ class HistoryArticleController extends Controller
 
         $historyArticle = HistoryArticle::create($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $historyArticle->categories()->sync($request->categories_ids);
-        $historyArticle->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $historyArticle->categories());
+        $this->syncUuids($request->periods_uuids, $historyArticle->periods());
 
         session()->flash('success', true);
         return redirect()->route('history_articles.edit', $historyArticle);
@@ -84,12 +80,9 @@ class HistoryArticleController extends Controller
 
         $historyArticle->update($dataForm);
 
-        $historyArticle->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $historyArticle->categories()->sync($request->categories_ids);
-        $historyArticle->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $historyArticle->categories());
+        $this->syncUuids($request->periods_uuids, $historyArticle->periods());
 
         session()->flash('success', true);
         return redirect()->route('history_articles.edit', $historyArticle);
@@ -108,24 +101,7 @@ class HistoryArticleController extends Controller
     public function updateImages(Request $request, HistoryArticle $historyArticle)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $historyArticle, 'general');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($historyArticle->images()->count() > 0) {
-                $historyArticle->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $historyArticle->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $historyArticle->images()->first()->update(['is_primary' => true]);
-                }
-            }
+            $this->handleImageUpdate($request, $historyArticle);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -148,17 +124,7 @@ class HistoryArticleController extends Controller
     public function updateContent(Request $request, HistoryArticle $historyArticle)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $historyArticle, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $historyArticle->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $historyArticle);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -169,32 +135,20 @@ class HistoryArticleController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(HistoryArticle $historyArticle)
+    public function editSources(HistoryArticle $historyArticle)
     {
-        $historyArticle->load('mentioned');
+        $historyArticle->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/historyArticle/edit/mentions', [
+        return Inertia::render('admin/historyArticle/edit/sources', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, HistoryArticle $historyArticle)
+    public function updateSources(Request $request, HistoryArticle $historyArticle)
     {
-        $historyArticle->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $historyArticle->id,
-                'mentioner_type' => $historyArticle::class
-            ]);
-        }
+        $this->syncUuids($request->sources_uuids, $historyArticle->sources());
 
         session()->flash('success', true);
         return redirect()->back();
@@ -216,7 +170,11 @@ class HistoryArticleController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = HistoryArticle::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['history_articles'],
+            ])
+        );
     }
 }

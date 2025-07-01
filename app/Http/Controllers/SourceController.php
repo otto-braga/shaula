@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
+use App\Traits\HandlesFiles;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
+use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class SourceController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -20,7 +24,7 @@ class SourceController extends Controller
     public function index()
     {
         $sources = Source::query()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return inertia('admin/sources/index', [
@@ -47,9 +51,7 @@ class SourceController extends Controller
 
         $source = Source::create($dataForm);
 
-        $source->update($dataForm);
-
-        $source->sourceCategories()->sync($request->source_categories_ids);
+        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
         if ($request->has('files') && count($request->files) > 0) {
             if ($source->file) {
@@ -79,7 +81,7 @@ class SourceController extends Controller
 
         $source->update($dataForm);
 
-        $source->sourceCategories()->sync($request->source_categories_ids);
+        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
         if ($request->has('delete_file') && $request->delete_file) {
             if ($source->file) {
@@ -92,7 +94,6 @@ class SourceController extends Controller
                 $this->deleteFile($source->file->id);
             }
             $this->storeFile($request, $source, 'general');
-            $source->file->update(['is_primary' => true]);
         }
 
         session()->flash('success', true);
@@ -113,15 +114,25 @@ class SourceController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
-    {
-        $options = Source::fetchAsSelectOption($request->search);
-        return response()->json($options);
-    }
-
     public function fetchCategorySelectOptions(Request $request)
     {
         $options = SourceCategory::fetchAsSelectOption($request->search);
         return response()->json($options);
+    }
+
+    public function fetchSingle($uuid)
+    {
+        $source = Source::where('uuid', $uuid)->firstOrFail();
+        return response()->json(new SourceResource($source));
+    }
+
+    public function fetchSelectOptions(Request $request)
+    {
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['sources'],
+            ])
+        );
     }
 }

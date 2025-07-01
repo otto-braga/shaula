@@ -65,7 +65,6 @@ class CityController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = City::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return City::fetchAsSelectOption($request->q);
     }
 }

@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Gender;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,8 +26,8 @@ class PersonFactory extends Factory
             'name' => $this->faker->name,
             'date_of_birth' => $this->faker->date(),
             'date_of_death' => rand(0, 1) ? $this->faker->date() : null,
-            'content' => json_encode($this->faker->text),
-            'chronology' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
+            'chronology' => json_encode($this->faker->text(2000)),
             'links' => "wikipedia",
         ];
     }
@@ -42,7 +43,7 @@ class PersonFactory extends Factory
                 $person->periods()->attach($period);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($person) {
                 $file->update([
@@ -51,7 +52,16 @@ class PersonFactory extends Factory
                 ]);
             });
 
-            $person->images()->first()->update(['is_primary' => true]);
+            if ($person->images()->count() > 0) {
+                $person->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $person->sources()->attach($source);
+            }
+
+            MentionFactory::generateMentions($person);
         });
     }
 }

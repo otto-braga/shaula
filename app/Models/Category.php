@@ -2,25 +2,25 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
+use App\Traits\Fetchable;
+use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 class Category extends Model
 {
-    use HasFactory, HasFetching;
+    use
+        HasFactory,
+        HasUuid,
+        Fetchable;
 
     protected $table = 'categories';
 
     protected $fillable = [
         'name',
-        'class',
     ];
 
-    // /**
-    //  * Relacionamento polimórfico inverso para os modelos relacionados.
-    //  */
     public function categorizables(): MorphToMany
     {
         return $this->morphedByMany(Review::class, 'categorizable')

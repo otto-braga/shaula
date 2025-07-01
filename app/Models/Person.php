@@ -2,22 +2,26 @@
 
 namespace App\Models;
 
-use App\Traits\HasFetching;
-use App\Traits\HasLabel;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Laravel\Scout\Searchable;
 
 class Person extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Searchable;
 
     protected $table = 'people';
 
@@ -40,14 +44,17 @@ class Person extends Model
         // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
-            'route' => route('public.people.show', $this),
+            'uuid' => $this->uuid,
+            'route' => route('public.' . $this->getTable() . '.show', $this),
+
+            'label' => $this->fullLabel ?? '',
             'name' => $this->name ?? '',
+
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
 
             'periods' => $this->periods->pluck('name')->toArray(),
             'cities' => $this->cities->pluck('name')->toArray(),
-
             'artworks' => $this->artworks->pluck('title')->toArray(),
         ];
     }
@@ -61,6 +68,23 @@ class Person extends Model
             'cities',
             'artworks',
         ]);
+    }
+
+    protected function fullLabel(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $label = $this->name ?? '';
+                if ($this->date_of_birth) {
+                    $label .= ' (' . $this->date_of_birth;
+                    if ($this->date_of_death) {
+                        $label .= ' - ' . $this->date_of_death;
+                    }
+                    $label .= ')';
+                }
+                return $label;
+            }
+        );
     }
 
     public function genders(): BelongsToMany
@@ -83,11 +107,9 @@ class Person extends Model
     {
         return $this->morphedByMany(Artwork::class, 'personable', 'personables')
             ->withPivot([
-                'is_author',
-                'is_mention',
                 'activity_id',
-            ])
-            ->orderBy('date');
+                'is_author',
+            ]);
     }
 
     public function activities(): BelongsToMany
@@ -99,16 +121,9 @@ class Person extends Model
     {
         return $this->morphedByMany(Review::class, 'personable', 'personables')
             ->withPivot([
-                'is_author',
-                'is_mention',
                 'activity_id',
-            ])
-            ->orderBy('date');
-    }
-
-    public function languages(): HasManyThrough
-    {
-        return $this->hasManyThrough(Language::class, Artwork::class, 'person_id', 'artwork_id', 'id', 'id');
+                'is_author',
+            ]);
     }
 
     // files
@@ -139,28 +154,10 @@ class Person extends Model
             ->where('collection', 'content');
     }
 
-    // mentions
+    // Sources.
 
-    public function mentioned(): MorphMany
+    public function sources(): MorphToMany
     {
-        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
-    }
-
-    public function mentioners(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
-    }
-
-    // filter
-
-    public function scopeFilter($query, array $filters)
-    {
-        $search = $filters['search'] ?? '';
-
-        if ($search != '') {
-            $query->where('name', 'like', '%' . $search . '%');
-        }
-
-        return $query;
+        return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
     }
 }

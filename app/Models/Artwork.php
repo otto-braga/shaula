@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use App\Http\Resources\PeriodResource;
-use App\Traits\HasFetching;
-use App\Traits\HasLabel;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -17,7 +15,12 @@ use Laravel\Scout\Searchable;
 
 class Artwork extends Model
 {
-    use HasFactory, HasUuid, HasSlug, HasLabel, HasFetching, Searchable;
+    use
+        HasFactory,
+        HasUuid,
+        HasSlug,
+        HasMentions,
+        Searchable;
 
     protected $table = 'artworks';
 
@@ -25,7 +28,6 @@ class Artwork extends Model
         'title',
         'date',
         'content',
-
         'dimensions',
         'materials',
     ];
@@ -37,17 +39,19 @@ class Artwork extends Model
 
     public function toSearchableArray()
     {
-        // Needs to ensure data is in the correct type for Meilisearch filtering.
         return [
             'id' => (int) $this->id,
-            'route' => route('public.artworks.show', $this),
+            'uuid' => $this->uuid,
+            'route' => route('public.' . $this->getTable() . '.show', $this),
+
+            'label' => $this->title ?? '',
             'title' => $this->title ?? '',
+
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
 
             'periods' => $this->periods->pluck('name')->toArray(),
             'categories' => $this->categories->pluck('name')->toArray(),
-
             'authors' => $this->authors->pluck('name')->toArray(),
         ];
     }
@@ -66,27 +70,29 @@ class Artwork extends Model
     public function authors(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('is_author')
-            ->where('is_author', true)
+            ->withPivot([
+                'is_author',
+            ])
+            ->wherePivot('is_author', true)
             ->orderBy('name');
     }
 
     public function people(): MorphToMany
     {
         return $this->morphToMany(Person::class, 'personable', 'personables')
-            ->withPivot('is_author')
-            ->where('is_author', false)
-            ->withPivot('activity_id')
+            ->withPivot([
+                'activity_id',
+                'is_author',
+            ])
+            ->wherePivot('is_author', false)
             ->orderBy('name');
     }
 
-    public function activities()
+    public function activities(): BelongsToMany
     {
-        return $this->people()->get()->pluck('pivot.activity_id')
-        ->unique()
-        ->map(function ($activity_id) {
-            return Activity::find($activity_id);
-        });
+        return $this->belongsToMany(Activity::class, 'personables', 'personable_id', 'activity_id')
+            ->withPivot('person_id')
+            ->orderBy('name');
     }
 
     public function categories(): MorphToMany
@@ -109,7 +115,7 @@ class Artwork extends Model
         return $this->belongsToMany(Award::class, 'artwork_award', 'artwork_id', 'award_id');
     }
 
-    // files
+    // Files.
 
     public function files(): MorphMany
     {
@@ -137,15 +143,10 @@ class Artwork extends Model
             ->where('collection', 'content');
     }
 
-    // mentions
+    // Sources.
 
-    public function mentioned(): MorphMany
+    public function sources(): MorphToMany
     {
-        return $this->morphMany(Mention::class, 'mentioner', 'mentioner_type', 'mentioner_id');
-    }
-
-    public function mentioners(): MorphMany
-    {
-        return $this->morphMany(Mention::class, 'mentioned', 'mentioned_type', 'mentioned_id');
+        return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
     }
 }

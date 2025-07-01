@@ -16,22 +16,29 @@ class SearchResultResource extends JsonResource
     public function toArray(Request $request): array
     {
         $image_path = $this['primary_image_path'] ?? null;
+        $file_path = $this['file_path'] ?? null;
         return [
-            'type' => $this['_federation']['indexUid'] ?? null,
-            'route' => $this['route'] ?? null,
-            'mention' => $this['mention'] ?? null,
-            'name' => $this['name'] ?? null,
-            'title' => $this['title'] ?? null,
-            'content' => $this['content'] ?? null,
-            'primary_image_path' => $image_path ?? null,
-            'primary_image_url' => asset(Storage::url($image_path)) ?? null,
+            'uuid' => $this['uuid'] ?? '',
+            'type' => $this['_federation']['indexUid'] ?? '',
+            'route' => $this['route'] ?? '',
 
-            'periods' => $this['periods'] ?? null, // for Artwork, Person and HistoryArticle
-            'categories' => $this['categories'] ?? null, // for Artwork, Review and HistoryArticle
+            'label' => $this['label'] ?? '',
+            'name' => $this['name'] ?? '',
+            'title' => $this['title'] ?? '',
 
-            'authors' => $this['authors'] ?? null, // for Review, HistoryArticle and Artwork
-            'cities' => $this['cities'] ?? null, // for Person
-            'artworks' => $this['artworks'] ?? null, // for Person and Review
+            'content' => $this['content'] ?? '',
+            'primary_image_path' => $image_path ?? '',
+            'primary_image_url' => asset(Storage::url($image_path)) ?? '',
+
+            'periods' => $this['periods'] ?? [], // for Artwork, Person and HistoryArticle
+            'categories' => $this['categories'] ?? [], // for Artwork, Review and HistoryArticle
+
+            'authors' => $this['authors'] ?? [], // for Review, HistoryArticle and Artwork
+            'cities' => $this['cities'] ?? [], // for Person
+            'artworks' => $this['artworks'] ?? [], // for Person and Review
+
+            'file_path' => asset(Storage::url($file_path)) ?? '', // for Source
+            'source_categories' => $this['source_categories'] ?? '', // for Source
         ];
     }
 }

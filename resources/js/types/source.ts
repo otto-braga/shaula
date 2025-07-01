@@ -1,7 +1,7 @@
 import { FileProps } from "./file";
 
 export type Source = {
-    id: number;
+    uuid: string;
     slug: string;
 
     title: string;
@@ -14,9 +14,9 @@ export type Source = {
 }
 
 export type SourceCategory = {
-    id: number;
+    uuid: string;
     name: string;
+    sources: Source[];
     created_at: string;
     updated_at: string;
-    sources: Source[];
 }

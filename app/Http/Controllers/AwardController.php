@@ -47,7 +47,6 @@ class AwardController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Award::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return Award::fetchAsSelectOption($request->q);
     }
 }

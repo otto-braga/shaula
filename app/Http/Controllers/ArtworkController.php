@@ -7,15 +7,23 @@ use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
-use App\Models\Mention;
-use App\Traits\HasFile;
-use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
+use App\Traits\HandlesFiles;
+use App\Traits\SyncsAuthors;
+use App\Traits\ParsesUuids;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
+use App\Traits\UpdatesPeople;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        SyncsAuthors,
+        UpdatesPeople,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -23,7 +31,7 @@ class ArtworkController extends Controller
     public function index()
     {
         $artworks = Artwork::query()
-            ->orderBy('created_at', 'desc')
+            ->latest()
             ->get();
 
         return Inertia::render('admin/artwork/index', [
@@ -50,16 +58,11 @@ class ArtworkController extends Controller
 
         $artwork = Artwork::create($dataForm);
 
-        $artwork->update($dataForm);
-
-        $artwork->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $artwork->languages()->sync($request->languages_ids);
-        $artwork->awards()->sync($request->awards_ids);
-        $artwork->categories()->sync($request->categories_ids);
-        $artwork->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->languages_uuids, $artwork->languages());
+        $this->syncUuids($request->awards_uuids, $artwork->awards());
+        $this->syncUuids($request->categories_uuids, $artwork->categories());
+        $this->syncUuids($request->periods_uuids, $artwork->periods());
 
         session()->flash('success', true);
         return redirect()->route('artworks.edit', $artwork);
@@ -83,14 +86,11 @@ class ArtworkController extends Controller
 
         $artwork->update($dataForm);
 
-        $artwork->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $artwork->languages()->sync($request->languages_ids);
-        $artwork->awards()->sync($request->awards_ids);
-        $artwork->categories()->sync($request->categories_ids);
-        $artwork->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->languages_uuids, $artwork->languages());
+        $this->syncUuids($request->awards_uuids, $artwork->awards());
+        $this->syncUuids($request->categories_uuids, $artwork->categories());
+        $this->syncUuids($request->periods_uuids, $artwork->periods());
 
         session()->flash('success', true);
         return redirect()->route('artworks.edit', $artwork);
@@ -115,21 +115,10 @@ class ArtworkController extends Controller
 
     public function updatePeople(Request $request, Artwork $artwork)
     {
-        $activitiesPeople = $request->activitiesPeople;
+        $this->handlePeopleUpdate($request, $artwork);
 
-        if ($activitiesPeople) {
-            $artwork->people()->detach();
-
-            foreach ($activitiesPeople as $activityPerson) {
-                $artwork->people()->attach(
-                    $activityPerson['person_id'],
-                    ['activity_id' => $activityPerson['activity_id']]
-                );
-            }
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
+        session()->flash('success', true);
+        return redirect()->back();
     }
 
     // -------------------------------------------------------------------------
@@ -145,24 +134,7 @@ class ArtworkController extends Controller
     public function updateImages(Request $request, Artwork $artwork)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $artwork, 'general');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($artwork->images()->count() > 0) {
-                $artwork->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $artwork->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $artwork->images()->first()->update(['is_primary' => true]);
-                }
-            }
+            $this->handleImageUpdate($request, $artwork);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -185,17 +157,7 @@ class ArtworkController extends Controller
     public function updateContent(Request $request, Artwork $artwork)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $artwork, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $artwork->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $artwork);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -206,32 +168,20 @@ class ArtworkController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(Artwork $artwork)
+    public function editSources(Artwork $artwork)
     {
-        $artwork->load('mentioned');
+        $artwork->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/artwork/edit/mentions', [
+        return Inertia::render('admin/artwork/edit/sources', [
             'artwork' => new ArtworkResource($artwork),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, Artwork $artwork)
+    public function updateSources(Request $request, Artwork $artwork)
     {
-        $artwork->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $artwork->id,
-                'mentioner_type' => $artwork::class
-            ]);
-        }
+        $this->syncUuids($request->sources_uuids, $artwork->sources());
 
         session()->flash('success', true);
         return redirect()->back();
@@ -253,7 +203,11 @@ class ArtworkController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Artwork::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['artworks'],
+            ])
+        );
     }
 }

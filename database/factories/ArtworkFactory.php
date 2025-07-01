@@ -7,9 +7,12 @@ use App\Models\Artwork;
 use App\Models\Award;
 use App\Models\Category;
 use App\Models\File;
+use App\Models\HistoryArticle;
 use App\Models\Language;
 use App\Models\Period;
 use App\Models\Person;
+use App\Models\Review;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,7 +30,7 @@ class ArtworkFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
             'dimensions' => $this->faker->word,
             'materials' => $this->faker->word,
         ];
@@ -69,7 +72,7 @@ class ArtworkFactory extends Factory
                 $artwork->periods()->attach($period);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($artwork) {
                 $file->update([
@@ -78,7 +81,16 @@ class ArtworkFactory extends Factory
                 ]);
             });
 
-            $artwork->images()->first()->update(['is_primary' => true]);
+            if ($artwork->images()->count() > 0) {
+                $artwork->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $artwork->sources()->attach($source);
+            }
+
+            MentionFactory::generateMentions($artwork);
         });
     }
 }

@@ -65,7 +65,6 @@ class GenderController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Gender::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return Gender::fetchAsSelectOptions($request->q);
     }
 }
