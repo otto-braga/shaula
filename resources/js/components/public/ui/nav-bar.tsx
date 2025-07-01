@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
     },
     {
         title: 'História',
-        href: '/historia',
+        href: '/historia/artigos',
     },
 ];
 

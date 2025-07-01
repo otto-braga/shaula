@@ -1,30 +1,12 @@
 import PublicLayout from '@/layouts/public-layout';
 import { PaginatedData } from '@/types/paginated-data';
 import { Person } from '@/types/person';
-import { Link, router } from '@inertiajs/react';
-import { useState } from 'react';
+import { Link } from '@inertiajs/react';
 
 export default function Index({ people, filters }: { people: PaginatedData<Person>; filters: { search: string } }) {
-    const [search, setSearch] = useState(filters.search || '');
-
-    function handleSearch(e: React.FormEvent) {
-        e.preventDefault();
-
-        router.get('/pessoas', { search }, { preserveState: true });
-    }
-
     return (
         <PublicLayout head="Pessoas">
             <section className="px-4 py-4 md:px-8 md:py-8">
-                <form onSubmit={handleSearch} className="mb-6">
-                    <input
-                        type="text"
-                        placeholder="Buscar pessoas..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="w-full max-w-md rounded border px-3 py-2"
-                    />
-                </form>
                 <div className="grid grid-cols-4 gap-4">
                     {people.data.map((person) => (
                         <Link key={person.id} href={route('public.people.show', person)} className="relative">

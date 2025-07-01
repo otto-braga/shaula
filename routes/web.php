@@ -62,8 +62,11 @@ Route::name('public.')->group(function () {
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
-    Route::get('/historia', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');
-    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('history_articles.show');
+    Route::redirect('historia', 'historia/artigos');
+    Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
+    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
+    Route::get('/historia/periodizacao', [PeriodPublicController::class, 'index'])->name('periods.index');
+    Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
     Route::get('/fontes/{source:slug}', [SourcePublicController::class, 'show'])->name('sources.show');
 
