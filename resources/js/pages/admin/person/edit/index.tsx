@@ -10,6 +10,9 @@ import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSele
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import EditTabs from '@/components/edit/edit-tabs';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { MultiValue } from 'react-select';
+import { SearchResult } from '@/types/search-result';
 
 export default function Index({
     person,
@@ -23,9 +26,9 @@ export default function Index({
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
 
-        genders_ids: person ? person.data.genders?.map((gender) => gender.id) : ([] as number[]),
-        cities_ids: person ? person.data.cities?.map((city) => city.id) : ([] as number[]),
-        periods_ids: person ? person.data.periods?.map((period) => period.id) : ([] as number[]),
+        genders_uuids: person ? person.data.genders?.map((gender) => gender.uuid) : ([] as number[]),
+        cities_uuids: person ? person.data.cities?.map((city) => city.uuid) : ([] as number[]),
+        periods_uuids: person ? person.data.periods?.map((period) => period.uuid) : ([] as number[]),
 
         links: person ? person.data.links : '',
         chronology: person ? person.data.chronology : '',
@@ -33,8 +36,6 @@ export default function Index({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        console.log('data', data);
 
         if (isEdit) {
             post(route('people.update', person.data), {
@@ -53,6 +54,12 @@ export default function Index({
 
     function onLinksInput(e: any) {
         setData('links', editorLinksRef?.current?.getContent() ?? String());
+    }
+
+    const editorChronologyRef = useRef<TinyMCEEditor | null>(null);
+
+    function onChronologyInput(e: any) {
+        setData('chronology', editorChronologyRef?.current?.getContent() ?? String());
     }
 
     return (
@@ -105,48 +112,48 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="genders"></Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.genders?.map((gender) => ({ value: gender.id, label: gender.name })) ?? []}
+                                <Label htmlFor="genders">Identidades de gênero</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'genders.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'genders_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.genders?.map(
+                                        gender => ({ uuid: gender.uuid, label: gender.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('genders_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.genders_ids} />
+                                <InputError className="mt-2" message={errors.genders_uuids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="cities">Cidades</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.cities?.map((city) => ({ value: city.id, label: city.name })) ?? []}
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'cities.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'cities_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.cities?.map(
+                                        city => ({ uuid: city.uuid, label: city.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('cities_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.cities_ids} />
+                                <InputError className="mt-2" message={errors.cities_uuids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="periods">Periodização</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.periods?.map((period) => ({ value: period.id, label: period.name })) ?? []}
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'periods.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'periods_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.periods?.map(
+                                        period => ({ uuid: period.uuid, label: period.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('periods_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.periods_ids} />
+                                <InputError className="mt-2" message={errors.periods_uuids} />
                             </div>
 
                             <div>
@@ -176,7 +183,38 @@ export default function Index({
                                     }}
                                     onEditorChange={onLinksInput}
                                 />
+                                <InputError className="mt-2" message={errors.links} />
                             </div>
+
+                            <div>
+                                <Label htmlFor="chronology">Cronologia</Label>
+                                <Editor
+                                    tinymceScriptSrc='/tinymce/tinymce.min.js'
+                                    licenseKey='gpl'
+                                    onInit={(_evt, editor) => editorChronologyRef.current = editor}
+                                    initialValue={person?.data.chronology as string || String()}
+                                    init={{
+                                        plugins: [
+                                            'autolink', 'lists', 'autoresize',
+                                        ],
+
+                                        min_height: 150,
+                                        autoresize_bottom_margin: 0,
+
+                                        menubar: false,
+
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+
+                                        toolbar: 'undo redo',
+
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                                    }}
+                                    onEditorChange={onChronologyInput}
+                                />
+                                <InputError className="mt-2" message={errors.chronology} />
+                            </div>
+
                         </form>
                     </div>
                 </div>

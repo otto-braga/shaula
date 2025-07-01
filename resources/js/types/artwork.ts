@@ -28,8 +28,10 @@ export type Artwork = {
 
     people: Person[];
     activities: Activity[];
-
-    activity: Activity | null;
+    pivot: {
+        activity: Activity | null;
+        is_author: boolean;
+    }
 
     categories: Category[];
 

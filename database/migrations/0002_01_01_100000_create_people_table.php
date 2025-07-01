@@ -17,13 +17,12 @@ return new class extends Migration
             $table->string('slug');
 
             $table->string('name');
+            $table->longText('content')->nullable();
 
             $table->string('date_of_birth')->nullable();
             $table->string('date_of_death')->nullable();
-
             $table->text('links')->nullable();
             $table->text('chronology')->nullable();
-            $table->longText('content')->nullable();
 
             $table->timestamps();
         });

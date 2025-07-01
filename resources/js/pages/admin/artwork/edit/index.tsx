@@ -5,7 +5,6 @@ import { Label } from '@/components/ui/label';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
 import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
 import { SearchResult } from '@/types/search-result';
@@ -47,10 +46,6 @@ export default function Index({
             });
         }
     };
-
-    useEffect(() => {
-        console.log('data', data);
-    }, [data]);
 
     return (
         <AppLayout>

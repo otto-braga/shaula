@@ -37,7 +37,10 @@ class PersonResource extends JsonResource
 
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
             'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
-            'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
+            'pivot' => [
+                'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
+                'is_author' => $this->pivot ? $this->pivot->is_author : false,
+            ],
 
             'periods' => PeriodResource::collection($this->periods),
             'languages' => LanguageResource::collection($this->whenLoaded('languages')),

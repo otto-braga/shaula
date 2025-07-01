@@ -29,7 +29,10 @@ class ArtworkResource extends JsonResource
 
             'people' => PersonResource::collection($this->people),
             'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
-            'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
+            'pivot' => [
+                'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
+                'is_author' => $this->pivot ? $this->pivot->is_author : false,
+            ],
 
             'categories' => CategoryResource::collection($this->categories),
             'periods' => PeriodResource::collection($this->periods),

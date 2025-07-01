@@ -5,13 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Resources\PersonResource;
 use App\Models\Person;
-use App\Traits\HasFile;
-use App\Traits\HasMention;
+use App\Traits\HandlesFiles;
+use App\Traits\ParsesUuids;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
 use Inertia\Inertia;
 
 class PersonController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -46,9 +52,9 @@ class PersonController extends Controller
 
         $person = Person::create($dataForm);
 
-        $person->genders()->sync($request->genders_ids);
-        $person->cities()->sync($request->cities_ids);
-        $person->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->genders_uuids, $person->genders());
+        $this->syncUuids($request->cities_uuids, $person->cities());
+        $this->syncUuids($request->periods_uuids, $person->periods());
 
         session()->flash('success', true);
         return redirect()->route('people.edit', $person);
@@ -75,9 +81,9 @@ class PersonController extends Controller
 
         $person->update($dataForm);
 
-        $person->genders()->sync($request->genders_ids);
-        $person->cities()->sync($request->cities_ids);
-        $person->periods()->sync($request->periods_ids);
+        $this->syncUuids($request->genders_uuids, $person->genders());
+        $this->syncUuids($request->cities_uuids, $person->cities());
+        $this->syncUuids($request->periods_uuids, $person->periods());
 
         session()->flash('success', true);
         return redirect()->route('people.edit', $person);
@@ -96,24 +102,30 @@ class PersonController extends Controller
     public function updateImages(Request $request, Person $person)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $person, 'general');
-            }
+            $this->handleImageUpdate($request, $person);
 
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
+            session()->flash('success', true);
+            return redirect()->back();
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
+    }
 
-            if ($person->images()->count() > 0) {
-                $person->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $person->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $person->images()->first()->update(['is_primary' => true]);
-                }
-            }
+    // -------------------------------------------------------------------------
+    // EDIT CHRONOLOGY
+
+    public function editChronology(Person $person)
+    {
+        return Inertia::render('admin/person/edit/chronology', [
+            'person' => new PersonResource($person),
+        ]);
+    }
+
+    public function updateChronology(Request $request, Person $person)
+    {
+        try {
+            $this->handleContentUpdate($request, $person);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -136,17 +148,7 @@ class PersonController extends Controller
     public function updateContent(Request $request, Person $person)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $person, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $person->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $person);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -170,7 +172,7 @@ class PersonController extends Controller
 
     public function updateSources(Request $request, Person $person)
     {
-        $person->sources()->sync($request->sources_ids);
+        $this->syncUuids($request->sources_uuids, $person->sources());
 
         session()->flash('success', true);
         return redirect()->back();

@@ -30,7 +30,10 @@ export type Person = {
 
     artworks: Artwork[];
     activities: Activity[];
-    activity: Activity | null;
+    pivot: {
+        activity: Activity | null;
+        is_author: boolean;
+    }
 
     periods: Period[];
     languages: Language[];
