@@ -1,7 +1,9 @@
+import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import PublicLayout from '@/layouts/public-layout';
 import { typeLabelSearch } from '@/utils/model-label';
 import { Link } from '@inertiajs/react';
+import { X } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 type SearchResult = {
@@ -29,6 +31,8 @@ export default function Index({ q }: { q: string }) {
     const [fetchedFilter, setFetchedFilter] = useState([] as FilterOption[]);
     const [filter, setFilter] = useState([] as FilterOption[]);
 
+    const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
+
     const fetchFilter = () => {
         const route_name = route('public.search.filter.fetch.options');
 
@@ -46,6 +50,7 @@ export default function Index({ q }: { q: string }) {
                     data.data.map((option: FilterOption) => ({
                         name: option.name,
                         value: new Array<string>(),
+                        label: option.label,
                     })),
                 );
             })
@@ -57,11 +62,19 @@ export default function Index({ q }: { q: string }) {
     }, []);
 
     useEffect(() => {
-        console.log('Fetched filter options:', fetchedFilter);
+        // console.log('Fetched filter options:', fetchedFilter);
     }, [fetchedFilter]);
 
     useEffect(() => {
-        console.log('Filter state updated:', filter);
+        console.log('Filter state updated:');
+        // Calculate the number of applied filters
+        let totalSelectedValues = 0;
+        filter.forEach((f) => {
+            if (f.value && f.value.length > 0) {
+                totalSelectedValues += f.value.length;
+            }
+        });
+        setAppliedFilterNumber(totalSelectedValues);
     }, [filter]);
 
     const fetchData = () => {
@@ -76,7 +89,7 @@ export default function Index({ q }: { q: string }) {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log('Search results:', data);
+                // console.log('Search results:', data);
                 setResult({ data: data.result });
                 setLastPage(data.last_page);
             })
@@ -107,11 +120,95 @@ export default function Index({ q }: { q: string }) {
         fetchData();
     }, [filter]);
 
+    useEffect(() => {
+        console.log(filter);
+    });
+
+    const clearFilters = () => {
+        // Redefine o estado 'filter' para o estado inicial (todos os valores vazios)
+        // com base na estrutura de 'fetchedFilter'
+        setFilter(
+            fetchedFilter.map((option: FilterOption) => ({
+                name: option.name,
+                value: [],
+                label: option.label,
+            })),
+        );
+        setCurrentPage(1); // Volta para a primeira página após limpar os filtros
+    };
+
     return (
         <PublicLayout head="SHAULA">
-            <div className="grid grid-cols-5 divide-x px-4 md:px-8 md:pt-4">
-                <section className="col-span-1 space-y-3">
-                    <h1 className="">Filtros</h1>
+            <MobileDetailBar title={`Filtros`}>
+                <div>
+                    <div className="flex justify-end">
+                        {appliedFilterNumber > 0 && (
+                            <div className="flex items-center gap-2 bg-slate-200 px-3 py-2 text-sm text-black">
+                                <p>{appliedFilterNumber} Filtros aplicados</p>
+                                <button onClick={clearFilters}>
+                                    <X size={24} />
+                                </button>
+                            </div>
+                        )}{' '}
+                    </div>
+                    <div className="space-y-2 divide-y pr-6">
+                        {fetchedFilter &&
+                            fetchedFilter.length > 0 &&
+                            fetchedFilter.map((filterOption, index) => (
+                                <Accordion type="single" collapsible>
+                                    <AccordionItem value={filterOption.name}>
+                                        <AccordionTrigger className="text-xl hover:cursor-pointer">
+                                            <div className="flex items-center gap-2">
+                                                {filterOption.label || ''}
+                                                {(filter.find((f) => f.name === filterOption.name)?.value?.length ?? 0) > 0 && (
+                                                    <span className="h-4 w-4 rounded-full bg-slate-500"></span>
+                                                )}
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            {filterOption.value.map((value, valueIndex) => (
+                                                <label key={valueIndex} className="flex items-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={value}
+                                                        checked={filter[index]?.value?.includes(value)}
+                                                        onChange={(e) => {
+                                                            const newFilter = [...filter];
+                                                            if (e.target.checked) {
+                                                                newFilter[index].value.push(e.target.value);
+                                                            } else {
+                                                                newFilter[index].value = newFilter[index].value.filter((v) => v !== e.target.value);
+                                                            }
+                                                            setFilter(newFilter);
+                                                            setCurrentPage(1); // Reset to first page on filter change
+                                                        }}
+                                                        className="mr-2"
+                                                    />
+                                                    {value}
+                                                </label>
+                                            ))}
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+                            ))}
+                    </div>
+                </div>
+            </MobileDetailBar>
+            <div className="grid divide-x px-4 py-4 md:grid-cols-5 md:px-8">
+                <section className="col-span-1 hidden space-y-3 lg:block">
+                    <div className="flex justify-between py-2">
+                        <h1 className="">Filtros</h1>
+                        <div className="mr-3 flex justify-end">
+                            {appliedFilterNumber > 0 && (
+                                <div className="flex items-center gap-2 bg-slate-200 px-2 text-sm text-black">
+                                    <p>{appliedFilterNumber} filtros aplicados</p>
+                                    <button onClick={clearFilters} className="hover:cursor-pointer">
+                                        <X size={24} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                     <div className="space-y-2 divide-y pr-6">
                         {fetchedFilter &&
                             fetchedFilter.length > 0 &&
@@ -148,16 +245,16 @@ export default function Index({ q }: { q: string }) {
                     </div>
                 </section>
 
-                <section className="col-span-4 space-y-8 pl-8">
+                <section className="space-y-8 md:col-span-4 md:pl-8">
                     <h1 className="">Resultados da busca por "{q}"</h1>
                     <div className="space-y-4">
                         {result.data?.map((item: SearchResult, index: number) => (
-                            <div key={index} className="flex items-start gap-4 border-b pb-4">
+                            <div key={index} className="flex flex-col items-start gap-4 border-b pb-4 md:flex-row">
                                 {item.primary_image_path && (
                                     <img
                                         src={item.primary_image_url || '/default-image.png'}
                                         alt={item.title || item.name || 'Imagem'}
-                                        className="aspect-square max-w-sm object-cover"
+                                        className="aspect-square object-cover md:max-w-sm"
                                     />
                                 )}
                                 <div className="space-y-3">
