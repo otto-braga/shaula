@@ -1,4 +1,3 @@
-import { Activity } from "./activity";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Mention } from "./mention";
@@ -7,7 +6,6 @@ import { Person } from "./person";
 import { Source } from "./source";
 
 export type HistoryArticle = {
-    id: number;
     uuid: string;
     slug: string;
 
@@ -21,10 +19,7 @@ export type HistoryArticle = {
     content_images: FileProps[];
 
     mentions: Mention[];
-
     sources: Source[];
-
-    activity: Activity | null;
 
     categories: Category[];
     periods: Period[];

@@ -11,7 +11,7 @@ export default function Sources({
     historyArticle: { data: HistoryArticle },
 }) {
     const { data, setData, post, patch, errors, processing } = useForm({
-        sources_ids: historyArticle ? historyArticle.data.sources?.map((source) => source.id) : [] as number[],
+        sources_uuids: historyArticle ? historyArticle.data.sources?.map((source) => source.uuid) : [] as string[],
     });
 
     const submit: FormEventHandler = (e) => {

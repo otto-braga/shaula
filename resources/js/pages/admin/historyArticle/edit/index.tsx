@@ -8,8 +8,10 @@ import { FormEventHandler, useRef } from 'react';
 
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { MultiValue } from 'react-select';
+import { SearchResult } from '@/types/search-result';
 
 export default function Index({
     historyArticle,
@@ -22,9 +24,9 @@ export default function Index({
         title: historyArticle ? historyArticle.data.title : '',
         date: historyArticle ? historyArticle.data.date : '',
 
-        authors_ids: historyArticle ? historyArticle.data.authors.map((author) => author.id) : [] as number[],
-        categories_ids: historyArticle ? historyArticle.data.categories?.map((category) => category.id) : [] as number[],
-        periods_ids: historyArticle ? historyArticle.data.periods?.map((period) => period.id) : [] as number[],
+        authors_uuids: historyArticle ? historyArticle.data.authors.map((author) => author.uuid) : [] as string[],
+        categories_uuids: historyArticle ? historyArticle.data.categories?.map((category) => category.uuid) : [] as string[],
+        periods_uuids: historyArticle ? historyArticle.data.periods?.map((period) => period.uuid) : [] as string[],
 
         links: historyArticle ? historyArticle.data.links : String(),
     });
@@ -75,23 +77,18 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="authors_ids">Autores</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        historyArticle?.data.authors?.map(
-                                            author => ({ value: author.id, label: author.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'people.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('authors_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <Label htmlFor="authors_uuids">Autores</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'people.fetch.options'}
+                                    value={historyArticle?.data.authors?.map(
+                                        author => ({ uuid: author.uuid, label: author.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('authors_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.authors_ids} />
+                                <InputError className="mt-2" message={errors.authors_uuids} />
                             </div>
 
                             <div className="flex flex-row gap-3">
@@ -111,42 +108,32 @@ export default function Index({
 
                             <div>
                                 <Label htmlFor="categories">Categorias</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        historyArticle?.data.categories?.map(
-                                            category => ({ value: category.id, label: category.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'categories.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('categories_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'categories.fetch.options'}
+                                    value={historyArticle?.data.categories?.map(
+                                        category => ({ uuid: category.uuid, label: category.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('categories_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.categories_ids} />
+                                <InputError className="mt-2" message={errors.categories_uuids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="periods">Periodização</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={
-                                        historyArticle?.data.periods?.map(
-                                            period => ({ value: period.id, label: period.name })
-                                        ) ?? []
-                                    }
-                                    routeName={
-                                        'periods.fetch.options'
-                                    }
-                                    setterFunction={
-                                        (options) => {
-                                            setData('periods_ids', options.map((option) => (option.value)));
-                                        }
-                                    }
+                                <LazyLoadingSelectWithStates
+                                    isMulti
+                                    routeName={'periods.fetch.options'}
+                                    value={historyArticle?.data.periods?.map(
+                                        period => ({ uuid: period.uuid, label: period.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('periods_uuids', options.map((option) => (option.uuid)))
+                                    }}
                                 />
-                                <InputError className="mt-2" message={errors.periods_ids} />
+                                <InputError className="mt-2" message={errors.periods_uuids} />
                             </div>
 
 

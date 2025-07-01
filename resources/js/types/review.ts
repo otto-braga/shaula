@@ -1,4 +1,3 @@
-import { Activity } from "./activity";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Person } from "./person";

@@ -22,7 +22,6 @@ export type Artwork = {
     content_images: FileProps[];
 
     mentions: Mention[];
-
     sources: Source[];
 
     people: Person[];
