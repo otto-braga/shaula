@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
-import Select from 'react-select';
 import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
@@ -51,6 +50,7 @@ export default function HtmlEditor({
 }: HtmlEditorProps) {
     const toolbar = 'undo redo | ' +
         (hasGallery ? 'gallery | ' : '') +
+        'media | ' +
         (hasMentions ? 'mentions | ' : '') +
         'bold italic forecolor | alignleft aligncenter ' +
         'alignright alignjustify |  outdent indent | ' +
@@ -83,7 +83,7 @@ export default function HtmlEditor({
         setData('filesToRemove', imagesToRemove);
     }, [imagesToRemove]);
 
-    const { flash } = usePage().props;
+    const { flash } = usePage().props as { error?: boolean, flash?: { success?: boolean } };
 
     const timedMessageDuration: number = 3000;
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);

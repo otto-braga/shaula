@@ -63,7 +63,7 @@ export default function EditTabs({
             break;
     }
 
-    const { flash } = usePage().props;
+    const { flash } = usePage().props as { error?: boolean, flash?: { success?: boolean } };
 
     const timedMessageDuration: number = 3000;
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);
