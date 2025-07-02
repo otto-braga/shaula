@@ -47,6 +47,7 @@ use App\Http\Controllers\Public\SearchPublicController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SourceCategoryController;
 use App\Http\Controllers\SourceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -238,7 +239,11 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/fontes/fetch/{uuid}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
 
     // Source Categories
-    Route::get('/categorias-fontes/fetch/options', [SourceController::class, 'fetchCategorySelectOptions'])->name('source_categories.fetch.options');
+    Route::get('/categorias-fontes', [SourceCategoryController::class, 'index'])->name('source_categories.index');
+    Route::post('/categorias-fontes/store', [SourceCategoryController::class, 'store'])->name('source_categories.store');
+    Route::put('/categorias-fontes/{sourceCategory:uuid}/update', [SourceCategoryController::class, 'update'])->name('source_categories.update');
+    Route::delete('/categorias-fontes/{sourceCategory:uuid}/delete', [SourceCategoryController::class, 'destroy'])->name('source_categories.destroy');
+    Route::get('/categorias-fontes/fetch/options', [SourceCategoryController::class, 'fetchSelectOptions'])->name('source_categories.fetch.options');
 
     // Mentions
     Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');

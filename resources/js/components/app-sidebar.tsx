@@ -85,19 +85,29 @@ const auxNavItems: NavItem[] = [
         href: route('categories.index'),
         icon: CircleDotDashed,
     },
+    {
+        title: 'Prêmios',
+        href: route('awards.index'),
+        icon: Circle
+    },
+    {
+        title: 'Categorias de Fonte',
+        href: route('source_categories.index'),
+        icon: Folder
+    },
 ];
 
 const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: Folder,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits',
-        icon: BookOpen,
-    },
+    // {
+    //     title: 'Repository',
+    //     href: 'https://github.com/laravel/react-starter-kit',
+    //     icon: Folder,
+    // },
+    // {
+    //     title: 'Documentation',
+    //     href: 'https://laravel.com/docs/starter-kits',
+    //     icon: BookOpen,
+    // },
 ];
 
 export function AppSidebar() {
