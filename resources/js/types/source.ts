@@ -1,4 +1,5 @@
 import { FileProps } from "./file";
+import { SourceCategory } from "./source-category";
 
 export type Source = {
     uuid: string;
@@ -13,10 +14,3 @@ export type Source = {
     updated_at: string;
 }
 
-export type SourceCategory = {
-    uuid: string;
-    name: string;
-    sources: Source[];
-    created_at: string;
-    updated_at: string;
-}

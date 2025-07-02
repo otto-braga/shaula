@@ -85,6 +85,16 @@ const auxNavItems: NavItem[] = [
         href: route('categories.index'),
         icon: CircleDotDashed,
     },
+    {
+        title: 'Prêmios',
+        href: route('awards.index'),
+        icon: Circle
+    },
+    {
+        title: 'Categorias de Fonte',
+        href: route('source_categories.index'),
+        icon: Folder
+    },
 ];
 
 const footerNavItems: NavItem[] = [
