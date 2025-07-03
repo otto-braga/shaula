@@ -29,7 +29,7 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {sources?.data?.map((source) => (
                             console.log('source', source),
-                            <Card key={source.id} className="flex flex-col justify-between">
+                            <Card key={source.uuid} className="flex flex-col justify-between">
                                 <CardHeader>
                                     <FileCard
                                         file={source.file ?? null}
@@ -47,7 +47,7 @@ export default function Index({ sources }: { sources: { data: Source[] } }) {
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={source.id}
+                                            resourceId={source.uuid}
                                             resourceName={source.title}
                                             deleteRoute="sources.destroy"
                                             onSuccess={() => window.location.reload()}

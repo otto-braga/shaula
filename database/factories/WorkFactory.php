@@ -18,11 +18,11 @@ class WorkFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'content' => $this->faker->text(1000),
+            'content' => $this->faker->text(4000)(1000),
             'date' => $this->faker->date,
             'date_end' => $this->faker->date,
             'description' => $this->faker->paragraph,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
             'slug' => $this->faker->slug,
         ];
     }

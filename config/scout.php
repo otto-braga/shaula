@@ -195,6 +195,24 @@ return [
                 ],
             ],
 
+            'sources' => [
+                'searchableAttributes' => [
+                    'title',
+                    'content',
+                ],
+                'filterableAttributes' => [
+                    'source_categories',
+                ],
+            ],
+
+            'periods' => [
+                'searchableAttributes' => [
+                    'name',
+                    'content',
+                ],
+                'filterableAttributes' => [
+                ],
+            ],
         ],
     ],
 

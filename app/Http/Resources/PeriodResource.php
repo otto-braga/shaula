@@ -15,16 +15,24 @@ class PeriodResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'uuid' => $this->uuid,
             'slug' => $this->slug,
+
             'name' => $this->name,
+            'content' => $this->content,
+
+            'images' => FileResource::collection($this->images),
+            'primary_image' => new FileResource($this->primaryImage()),
+            'content_images' => FileResource::collection($this->contentImages),
+
+            'mentions' => MentionResource::collection($this->mentions()),
+            'sources' => SourceResource::collection($this->sources),
+
+            'history_articles' => HistoryArticleResource::collection($this->whenLoaded('historyArticles')),
+
             'start_date' => $this->start_date,
             'end_date' => $this->end_date,
-            'content' => $this->content,
-            'history_articles' => HistoryArticleResource::collection($this->whenLoaded('historyArticles')),
-            'image' => new FileResource($this->image),
-            'primary_image' => new FileResource($this->primaryImage()),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

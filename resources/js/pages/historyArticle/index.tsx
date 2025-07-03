@@ -34,7 +34,7 @@ export default function Index({ historyArticles, periods }: { historyArticles: {
                 {/* <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" /> */}
                 <CarouselContent className="max-h-[50vh]">
                     {historyArticles.data.map((review) => (
-                        <CarouselItem key={review.id} className="relative basis-1/2 pl-4">
+                        <CarouselItem key={review.uuid} className="relative basis-1/2 pl-4">
                             <img
                                 src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
                                 alt="Review Image"
@@ -44,7 +44,7 @@ export default function Index({ historyArticles, periods }: { historyArticles: {
                                 <h2 className="text-xl font-semibold text-white md:text-3xl">{review.title}</h2>
                                 <div className="space-x-1">
                                     {review.authors.map((author) => (
-                                        <span key={author.id} className="text-gray-200 underline">
+                                        <span key={author.uuid} className="text-gray-200 underline">
                                             {author.name}
                                         </span>
                                     ))}
@@ -62,7 +62,7 @@ export default function Index({ historyArticles, periods }: { historyArticles: {
                 <div className="max-w-2xl">
                     <div className="mt-3 divide-y">
                         {periods.data.map((period) => (
-                            <Link href={route('public.periods.show', period)} key={period.id}>
+                            <Link href={route('public.periods.show', period)} key={period.uuid}>
                                 <div className="group cursor-pointer space-y-3 border-l-1 border-slate-300 py-6">
                                     <div className="flex items-center gap-6">
                                         <div className="h-[1px] w-8 bg-slate-300" />
@@ -95,7 +95,7 @@ export default function Index({ historyArticles, periods }: { historyArticles: {
                     </div>
                     <div className="mt-3 divide-y">
                         {periods.data.map((period) => (
-                            <Link href={route('public.periods.show', period)} key={period.id}>
+                            <Link href={route('public.periods.show', period)} key={period.uuid}>
                                 <div className="group cursor-pointer space-y-3 py-6">
                                     <div className="space-y-1">
                                         <h2 className="text-2xl font-medium group-hover:underline md:text-3xl">{period.name}</h2>

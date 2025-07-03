@@ -22,14 +22,14 @@ export default function Index({ categories }: { categories: { data: Category[] }
             </div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {categories.data.map((category) => (
-                    <Card className="rounded" key={category.id}>
+                    <Card className="rounded" key={category.uuid}>
                         <CardHeader className="">
                             <CardTitle>{category.name}</CardTitle>
                         </CardHeader>
                         <CardFooter className="flex justify-end gap-2">
                             <CategoryDialogForm category={category} />
                             <DeleteDialog
-                                resourceId={category.id}
+                                resourceId={category.uuid}
                                 resourceName={category.name}
                                 deleteRoute="categories.destroy"
                                 onSuccess={() => window.location.reload()}

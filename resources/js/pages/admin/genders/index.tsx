@@ -22,14 +22,14 @@ export default function Index({ genders }: { genders: { data: Gender[] } }) {
             </div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {genders.data.map((gender) => (
-                    <Card className="rounded" key={gender.id}>
+                    <Card className="rounded" key={gender.uuid}>
                         <CardHeader className="">
                             <CardTitle>{gender.name}</CardTitle>
                         </CardHeader>
                         <CardFooter className="flex justify-end gap-2">
                             <GenderDialogForm gender={gender} />
                             <DeleteDialog
-                                resourceId={gender.id}
+                                resourceId={gender.uuid}
                                 resourceName={gender.name}
                                 deleteRoute="genders.destroy"
                                 onSuccess={() => window.location.reload()}

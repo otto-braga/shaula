@@ -17,7 +17,6 @@ class PersonPublicController extends Controller
     {
 
         $people = Person::latest()
-            ->filter(Request::only('search'))
             ->paginate(12)
             ->withQueryString();
 

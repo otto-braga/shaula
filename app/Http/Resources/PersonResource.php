@@ -17,37 +17,37 @@ class PersonResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
             'uuid' => $this->uuid,
             'slug' => $this->slug,
 
             'name' => $this->name,
             'date_of_birth' => $this->date_of_birth,
             'date_of_death' => $this->date_of_death,
-
             'content' => $this->content,
             'chronology' => $this->chronology,
-            'links' => $this->links,
 
             'images' => FileResource::collection($this->images),
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
+            'mentions' => MentionResource::collection($this->mentions()),
+
+            'sources' => SourceResource::collection($this->sources),
+
+            'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
+            'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
+            'pivot' => [
+                'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
+                'is_author' => $this->pivot ? $this->pivot->is_author : false,
+            ],
+
+            'periods' => PeriodResource::collection($this->periods),
+            'languages' => LanguageResource::collection($this->whenLoaded('languages')),
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'genders' => new Collection($this->genders),
             'cities' => CityResource::collection($this->cities),
 
-            'periods' => PeriodResource::collection($this->periods),
-
-            'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
-            'activities' => ActivityResource::collection($this->activities),
-            'activity' => new ActivityResource(Activity::find($this->pivot->activity_id ?? 0)),
-
-            'languages' => LanguageResource::collection($this->whenLoaded('languages')),
-
-            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
-
-            'mentioned' => MentionResource::collection($this->whenLoaded('mentioned')),
-            'mentioners' => MentionResource::collection($this->whenLoaded('mentioners')),
+            'links' => $this->links,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

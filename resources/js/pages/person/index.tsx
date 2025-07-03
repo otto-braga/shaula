@@ -3,13 +3,13 @@ import { PaginatedData } from '@/types/paginated-data';
 import { Person } from '@/types/person';
 import { Link } from '@inertiajs/react';
 
-export default function Index({ people, filters }: { people: PaginatedData<Person>; filters: { search: string } }) {
+export default function Index({ people }: { people: PaginatedData<Person>; }) {
     return (
         <PublicLayout head="Pessoas">
             <section className="px-4 py-4 md:px-8 md:py-8">
                 <div className="grid grid-cols-4 gap-4">
                     {people.data.map((person) => (
-                        <Link key={person.id} href={route('public.people.show', person)} className="relative">
+                        <Link key={person.uuid} href={route('public.people.show', person)} className="relative">
                             <div>
                                 <div>
                                     <img

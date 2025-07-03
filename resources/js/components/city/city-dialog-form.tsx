@@ -32,7 +32,7 @@ export default function CityDialogForm({ city }: CityDialogFormProps) {
         e.preventDefault();
 
         if (city) {
-            update(route('cities.update', city.id), {
+            update(route('cities.update', city), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),

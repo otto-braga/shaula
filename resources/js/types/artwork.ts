@@ -6,12 +6,12 @@ import { Language } from "./language";
 import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
-import { Tag } from "./tag";
+import { Source } from "./source";
 
 export type Artwork = {
-    id: number;
     uuid: string;
     slug: string;
+
     title: string;
     date: string;
     authors: Person[];
@@ -21,21 +21,23 @@ export type Artwork = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    categories: Category[];
-    periods: Period[];
+    mentions: Mention[];
+    sources: Source[];
 
     people: Person[];
     activities: Activity[];
+    pivot: {
+        activity: Activity | null;
+        is_author: boolean;
+    }
 
-    activity: Activity | null;
+    categories: Category[];
 
+    periods: Period[];
     languages: Language[];
     awards: Award[];
     dimensions: string;
     materials: string;
-
-    mentioned: Mention[];
-    mentioners: Mention[];
 
     created_at: string;
     updated_at: string;

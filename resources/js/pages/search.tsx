@@ -1,35 +1,26 @@
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import PublicLayout from '@/layouts/public-layout';
-import { typeLabelSearch } from '@/utils/model-label';
-import { Link } from '@inertiajs/react';
-import { X } from 'lucide-react';
+import { SearchFilterOption } from '@/types/search-filter-option';
+import { SearchResult } from '@/types/search-result';
+import { typeLabelSearch } from '@/utils/type-label';
 import { useEffect, useState } from 'react';
+import { Link } from '@inertiajs/react';
+    import { X } from 'lucide-react';
 
-type SearchResult = {
-    type?: string | null;
-    route?: string | null;
-    name?: string | null;
-    title?: string | null;
-    authors?: string[] | null;
-    content?: string | null;
-    primary_image_path?: string | null;
-    primary_image_url?: string | null;
-};
+export default function Index(
+{
+    q,
+}: {
+    q: string;
+}) {
 
-type FilterOption = {
-    name: string;
-    value: Array<string>;
-    label?: string;
-};
-
-export default function Index({ q }: { q: string }) {
     const [result, setResult] = useState<{ data: SearchResult[] }>({ data: [] });
     const [last_page, setLastPage] = useState(1);
     const [currentPage, setCurrentPage] = useState(0);
 
-    const [fetchedFilter, setFetchedFilter] = useState([] as FilterOption[]);
-    const [filter, setFilter] = useState([] as FilterOption[]);
+    const [fetchedFilter, setFetchedFilter] = useState([] as SearchFilterOption[]);
+    const [filter, setFilter] = useState([] as SearchFilterOption[]);
 
     const [appliedFilterNumber, setAppliedFilterNumber] = useState(0);
 
@@ -46,13 +37,11 @@ export default function Index({ q }: { q: string }) {
             .then((data) => {
                 setFetchedFilter(data.data || []);
 
-                setFilter(
-                    data.data.map((option: FilterOption) => ({
-                        name: option.name,
-                        value: new Array<string>(),
-                        label: option.label,
-                    })),
-                );
+                setFilter(data.data.map((option: SearchFilterOption) => ({
+                    name: option.name,
+                    value: new Array<string>(),
+                    label: option.label,
+                })));
             })
             .catch((error) => console.error('Error fetching filter data:', error));
     };
@@ -78,8 +67,9 @@ export default function Index({ q }: { q: string }) {
     }, [filter]);
 
     const fetchData = () => {
-        const route_name =
-            route('public.search.fetch') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+
+        // let route_name = route('public.search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}&filter=${encodeURIComponent(JSON.stringify(filter))}`;
+        let route_name = route('public.search.fetch.search') + `?q=${encodeURIComponent(q)}&page=${currentPage}`;
 
         fetch(route_name, {
             method: 'GET',
@@ -87,10 +77,11 @@ export default function Index({ q }: { q: string }) {
                 'Content-Type': 'application/json',
             },
         })
-            .then((response) => response.json())
-            .then((data) => {
-                // console.log('Search results:', data);
-                setResult({ data: data.result });
+
+            .then(response => response.json())
+            .then(data => {
+                console.log('Search results:', data);
+                setResult({ data: data.results });
                 setLastPage(data.last_page);
             })
             .catch((error) => console.error('Error fetching search results:', error));
@@ -136,6 +127,7 @@ export default function Index({ q }: { q: string }) {
         );
         setCurrentPage(1); // Volta para a primeira página após limpar os filtros
     };
+
 
     return (
         <PublicLayout head="SHAULA">
@@ -243,7 +235,6 @@ export default function Index({ q }: { q: string }) {
                                 </Accordion>
                             ))}
                     </div>
-                </section>
 
                 <section className="space-y-8 md:col-span-4 md:pl-8">
                     <h1 className="">Resultados da busca por "{q}"</h1>

@@ -17,11 +17,10 @@ return new class extends Migration
             $table->string('slug');
 
             $table->string('name')->unique();
+            $table->text('content')->nullable();
 
             $table->string('start_date')->nullable();
             $table->string('end_date')->nullable();
-
-            $table->text('content')->nullable();
 
             $table->timestamps();
         });

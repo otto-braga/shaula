@@ -30,7 +30,7 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
             <div></div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {periods.data.map((period) => (
-                    <Card className="rounded" key={period.id}>
+                    <Card className="rounded" key={period.uuid}>
                         <CardHeader className="">
                             <CardTitle>{period.name}</CardTitle>
                         </CardHeader>
@@ -62,7 +62,7 @@ export default function Index({ periods }: { periods: { data: Period[] } }) {
                                 </Button>
                             </Link>
                             <DeleteDialog
-                                resourceId={period.id}
+                                resourceId={period.uuid}
                                 resourceName={period.name}
                                 deleteRoute="periods.destroy"
                                 onSuccess={() => window.location.reload()}

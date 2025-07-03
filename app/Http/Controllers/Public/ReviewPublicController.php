@@ -20,7 +20,6 @@ class ReviewPublicController extends Controller
         $query = Review::query();
 
         $reviews = $query->latest()
-            ->filter(Request::only('search'))
             ->paginate(8)
             ->withQueryString();
 
@@ -47,11 +46,6 @@ class ReviewPublicController extends Controller
     {
 
         $review = Review::where('slug', $slug)->firstOrFail();
-
-        $review->load([
-            'mentioned',
-            'mentioners',
-        ]);
 
         return Inertia::render('review/show', [
             'review' => new ReviewResource($review),

@@ -2,36 +2,22 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
-import { City } from '@/types/city';
-import { Gender } from '@/types/gender';
-import { Period } from '@/types/period';
 import { Person } from '@/types/person';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
-import Tabs from './tabs';
 
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
-
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Pessoas',
-        href: '/admin/pessoas',
-    },
-];
+import EditTabs from '@/components/edit/edit-tabs';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { MultiValue } from 'react-select';
+import { SearchResult } from '@/types/search-result';
 
 export default function Index({
     person,
-    genders,
-    cities,
-    periods,
 }: {
     person: { data: Person };
-    genders: { data: Gender[] };
-    cities: { data: City[] };
-    periods: { data: Period[] };
 }) {
     const isEdit = !!person;
 
@@ -40,9 +26,9 @@ export default function Index({
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
 
-        genders_ids: person ? person.data.genders?.map((gender) => gender.id) : ([] as number[]),
-        cities_ids: person ? person.data.cities?.map((city) => city.id) : ([] as number[]),
-        periods_ids: person ? person.data.periods?.map((period) => period.id) : ([] as number[]),
+        genders_uuids: person ? person.data.genders?.map((gender) => gender.uuid) : ([] as number[]),
+        cities_uuids: person ? person.data.cities?.map((city) => city.uuid) : ([] as number[]),
+        periods_uuids: person ? person.data.periods?.map((period) => period.uuid) : ([] as number[]),
 
         links: person ? person.data.links : '',
         chronology: person ? person.data.chronology : '',
@@ -77,13 +63,18 @@ export default function Index({
     }
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Produções" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="">
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <Tabs person={person} processing={processing} />
+                            <EditTabs
+                                model={person}
+                                route_base_name="people"
+                                processing={processing}
+                            />
+
                             {isEdit}
 
                             <div>
@@ -121,48 +112,48 @@ export default function Index({
                             </div>
 
                             <div>
-                                <Label htmlFor="genders"></Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.genders?.map((gender) => ({ value: gender.id, label: gender.name })) ?? []}
+                                <Label htmlFor="genders">Identidades de gênero</Label>
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'genders.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'genders_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.genders?.map(
+                                        gender => ({ uuid: gender.uuid, label: gender.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('genders_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.genders_ids} />
+                                <InputError className="mt-2" message={errors.genders_uuids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="cities">Cidades</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.cities?.map((city) => ({ value: city.id, label: city.name })) ?? []}
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'cities.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'cities_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.cities?.map(
+                                        city => ({ uuid: city.uuid, label: city.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('cities_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.cities_ids} />
+                                <InputError className="mt-2" message={errors.cities_uuids} />
                             </div>
 
                             <div>
                                 <Label htmlFor="periods">Periodização</Label>
-                                <LazyLoadingMultiSelect
-                                    initialOptions={person?.data.periods?.map((period) => ({ value: period.id, label: period.name })) ?? []}
+                                <LazyLoadingSelectWithStates
+                                    isMulti
                                     routeName={'periods.fetch.options'}
-                                    setterFunction={(options) => {
-                                        setData(
-                                            'periods_ids',
-                                            options.map((option) => option.value),
-                                        );
+                                    value={person?.data.periods?.map(
+                                        period => ({ uuid: period.uuid, label: period.name })
+                                    )}
+                                    onChange={(options: MultiValue<SearchResult>) => {
+                                        setData('periods_uuids', options.map((option) => (option.uuid)));
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.periods_ids} />
+                                <InputError className="mt-2" message={errors.periods_uuids} />
                             </div>
 
                             <div>
@@ -174,22 +165,7 @@ export default function Index({
                                     initialValue={person?.data.links as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist',
-                                            'autolink',
-                                            'lists',
-                                            'link',
-                                            'charmap',
-                                            'anchor',
-                                            'searchreplace',
-                                            'visualblocks',
-                                            'code',
-                                            'fullscreen',
-                                            'insertdatetime',
-                                            'media',
-                                            'table',
-                                            'preview',
-                                            'help',
-                                            'wordcount',
+                                            'autolink', 'lists', 'link',
                                             'autoresize',
                                         ],
 
@@ -198,26 +174,16 @@ export default function Index({
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                                        toolbar: 'undo redo | link',
+                                        toolbar: 'link | undo redo',
 
-                                        content_style:
-                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
-
-                                        paste_preprocess: (editor, args) => {
-                                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                                            if (blob) {
-                                                args.content = '';
-                                            }
-                                        },
-
-                                        paste_block_drop: true,
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
                                     }}
                                     onEditorChange={onLinksInput}
                                 />
+                                <InputError className="mt-2" message={errors.links} />
                             </div>
 
                             <div>
@@ -229,55 +195,26 @@ export default function Index({
                                     initialValue={person?.data.chronology as string || String()}
                                     init={{
                                         plugins: [
-                                            'advlist',
-                                            'autolink',
-                                            'lists',
-                                            'link',
-                                            'charmap',
-                                            'anchor',
-                                            'searchreplace',
-                                            'visualblocks',
-                                            'code',
-                                            'fullscreen',
-                                            'insertdatetime',
-                                            'media',
-                                            'table',
-                                            'preview',
-                                            'help',
-                                            'wordcount',
-                                            'autoresize',
+                                            'autolink', 'lists', 'autoresize',
                                         ],
 
-                                        min_height: 400,
+                                        min_height: 150,
                                         autoresize_bottom_margin: 0,
 
                                         menubar: false,
 
-                                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
-                                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
+                                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
 
-                                        toolbar:
-                                            'undo redo | ' +
-                                            'bold italic forecolor | alignleft aligncenter ' +
-                                            'alignright alignjustify |  outdent indent | ' +
-                                            'removeformat',
+                                        toolbar: 'undo redo',
 
-                                        content_style:
-                                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
-
-                                        paste_preprocess: (editor, args) => {
-                                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                                            if (blob) {
-                                                args.content = '';
-                                            }
-                                        },
-
-                                        paste_block_drop: true,
+                                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
                                     }}
                                     onEditorChange={onChronologyInput}
                                 />
+                                <InputError className="mt-2" message={errors.chronology} />
                             </div>
+
                         </form>
                     </div>
                 </div>

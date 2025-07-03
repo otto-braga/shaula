@@ -22,14 +22,14 @@ export default function Index({ activities }: { activities: { data: Activity[] }
             </div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {activities.data.map((activity) => (
-                    <Card className="rounded" key={activity.id}>
+                    <Card className="rounded" key={activity.uuid}>
                         <CardHeader className="">
                             <CardTitle>{activity.name}</CardTitle>
                         </CardHeader>
                         <CardFooter className="flex justify-end gap-2">
                             <ActivityDialogForm activity={activity} />
                             <DeleteDialog
-                                resourceId={activity.id}
+                                resourceId={activity.uuid}
                                 resourceName={activity.name}
                                 deleteRoute="activities.destroy"
                                 onSuccess={() => window.location.reload()}

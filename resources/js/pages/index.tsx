@@ -17,8 +17,8 @@ export default function Index({ reviews, artworks }: { reviews: { data: Review[]
                 </Link>
                 <div className="mt-6 grid w-full gap-8 md:grid-cols-3">
                     {reviews.data.map((review) => (
-                        <Link href={route('public.reviews.show', review)} key={review.id} className="group">
-                            <div key={review.id} className="">
+                        <Link href={route('public.reviews.show', review)} key={review.uuid} className="group">
+                            <div key={review.uuid} className="">
                                 <div className="bg-pink-100">
                                     <img
                                         src={`${review.primary_image ? review.primary_image.path : 'https://placehold.co/1200x900'}`}
@@ -30,7 +30,7 @@ export default function Index({ reviews, artworks }: { reviews: { data: Review[]
                                     <h2 className="text-center text-2xl font-semibold group-hover:underline">{review.title}</h2>
                                     <div className="space-x-1 text-center">
                                         {review.authors.map((author) => (
-                                            <span key={author.id} className="text-gray-500">
+                                            <span key={author.uuid} className="text-gray-500">
                                                 {author.name}
                                             </span>
                                         ))}

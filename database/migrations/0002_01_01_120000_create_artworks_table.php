@@ -15,10 +15,11 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('slug');
+
             $table->string('title');
-            $table->date('date')->nullable();
             $table->longText('content')->nullable();
 
+            $table->date('date')->nullable();
             $table->string('dimensions')->nullable();
             $table->string('materials')->nullable();
 

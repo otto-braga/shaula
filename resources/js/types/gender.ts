@@ -1,4 +1,6 @@
 export type Gender = {
-    id: number;
-    name: string; 
+    uuid: string;
+    name: string;
+    created_at: string;
+    updated_at: string;
 }

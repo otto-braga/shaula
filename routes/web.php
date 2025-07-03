@@ -36,7 +36,6 @@ use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\MentionController;
-use App\Http\Controllers\Public\MentionPublicController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
@@ -44,8 +43,11 @@ use App\Http\Controllers\Public\HistoryArticlePublicController;
 use App\Http\Controllers\Public\PeriodPublicController;
 use App\Http\Controllers\Public\PersonPublicController;
 use App\Http\Controllers\Public\ReviewPublicController;
-use App\Http\Controllers\Public\SearchController;
+use App\Http\Controllers\Public\SearchPublicController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\SourceCategoryController;
 use App\Http\Controllers\SourceController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -62,26 +64,21 @@ Route::name('public.')->group(function () {
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
     Route::redirect('historia', 'historia/artigos');
-    Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('historyArticles.index');
-    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('historyArticles.show');
+    Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');
+    Route::get('/historia/artigo/{historyArticle:slug}', [HistoryArticlePublicController::class, 'show'])->name('history_articles.show');
+
     Route::get('/historia/periodizacao', [PeriodPublicController::class, 'index'])->name('periods.index');
     Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
+    Route::get('/fontes/{source:slug}', [SourcePublicController::class, 'show'])->name('sources.show');
 
     Route::get('/historia/periodo/{period:slug}', [PeriodPublicController::class, 'show'])->name('periods.show');
 
-    Route::get('/mencao/{mention}/mentioned', [MentionPublicController::class, 'showMentioned'])->name('mentions.show.mentioned');
-    Route::get('/mencao/{mention}/mentioner', [MentionPublicController::class, 'showMentioner'])->name('mentions.show.mentioner');
-
     // Search
-    Route::get('busca', [SearchController::class, 'index'])->name('search');
-    Route::get('busca/fetch', [SearchController::class, 'fetch'])->name('search.fetch');
-    Route::get('busca/fetch/options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.options');
-    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
-    Route::get('busca/redirect-mention', [SearchController::class, 'redirectMention'])->name('search.redirect_mention');
+    Route::get('busca', [SearchPublicController::class, 'index'])->name('search');
+    Route::get('busca/fetch/search', [SearchPublicController::class, 'fetchSearch'])->name('search.fetch.search');
+    Route::get('busca/fetch/filters', [SearchPublicController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
 });
-
-// Route::get('/busca', [SearchController::class, 'index'])->name('search.index');
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
     Route::get('/', function () {
@@ -102,58 +99,67 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     })->name('appearance');
 
     // Search
-    // Route::get('search', [SearchController::class, 'search'])->name('search');
-
-    // Periods (Periodização)
-    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
-    Route::post('periodos', [PeriodController::class, 'store'])->name('periods.store');
-    Route::get('periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
-    Route::get('periodos/{period}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
-    Route::put('periodos/{period}', [PeriodController::class, 'update'])->name('periods.update');
-    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
-    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
-
-    // Categories
-    Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
-    Route::post('categorias', [CategoryController::class, 'store'])->name('categories.store');
-    Route::put('categorias/{category}', [CategoryController::class, 'update'])->name('categories.update');
-    Route::delete('categorias/{category}', [CategoryController::class, 'destroy'])->name('categories.destroy');
-    Route::get('categorias/fetch/options', [CategoryController::class, 'fetchSelectOptions'])->name('categories.fetch.options');
+    Route::get('busca/fetch/search', [SearchController::class, 'fetchSearch'])->name('search.fetch.search');
+    Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
+    Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
 
     // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
-    Route::post('generos', [GenderController::class, 'store'])->name('genders.store');
-    Route::put('generos/{gender}', [GenderController::class, 'update'])->name('genders.update');
-    Route::delete('generos/{gender}', [GenderController::class, 'destroy'])->name('genders.destroy');
+    Route::post('generos/store', [GenderController::class, 'store'])->name('genders.store');
+    Route::put('generos/{gender:uuid}/update', [GenderController::class, 'update'])->name('genders.update');
+    Route::delete('generos/{gender:uuid}/delete', [GenderController::class, 'destroy'])->name('genders.destroy');
     Route::get('generos/fetch/options', [GenderController::class, 'fetchSelectOptions'])->name('genders.fetch.options');
+
+    // Categories
+    Route::get('categorias', [CategoryController::class, 'index'])->name('categories.index');
+    Route::post('categorias/store', [CategoryController::class, 'store'])->name('categories.store');
+    Route::put('categorias/{category:uuid}/update', [CategoryController::class, 'update'])->name('categories.update');
+    Route::delete('categorias/{category:uuid}/delete', [CategoryController::class, 'destroy'])->name('categories.destroy');
+    Route::get('categorias/fetch/options', [CategoryController::class, 'fetchSelectOptions'])->name('categories.fetch.options');
 
     // Awards
     Route::get('premios', [AwardController::class, 'index'])->name('awards.index');
-    Route::post('premios', [AwardController::class, 'store'])->name('awards.store');
-    Route::put('premios/{award}', [AwardController::class, 'update'])->name('awards.update');
-    Route::delete('premios/{award}', [AwardController::class, 'destroy'])->name('awards.destroy');
+    Route::post('premios/store', [AwardController::class, 'store'])->name('awards.store');
+    Route::put('premios/{award:uuid}/update', [AwardController::class, 'update'])->name('awards.update');
+    Route::delete('premios/{award:uuid}/delete', [AwardController::class, 'destroy'])->name('awards.destroy');
     Route::get('premios/fetch/options', [AwardController::class, 'fetchSelectOptions'])->name('awards.fetch.options');
 
     // Actitivies
     Route::get('atividades', [ActivityController::class, 'index'])->name('activities.index');
-    Route::post('atividades', [ActivityController::class, 'store'])->name('activities.store');
-    Route::put('atividades/{activity}', [ActivityController::class, 'update'])->name('activities.update');
-    Route::delete('atividades/{activity}', [ActivityController::class, 'destroy'])->name('activities.destroy');
+    Route::post('atividades/store', [ActivityController::class, 'store'])->name('activities.store');
+    Route::put('atividades/{activity:uuid}/update', [ActivityController::class, 'update'])->name('activities.update');
+    Route::delete('atividades/{activity:uuid}/delete', [ActivityController::class, 'destroy'])->name('activities.destroy');
     Route::get('atividades/fetch/options', [ActivityController::class, 'fetchSelectOptions'])->name('activities.fetch.options');
 
     // Cities
     Route::get('cidades', [CityController::class, 'index'])->name('cities.index');
-    Route::post('cidades', [CityController::class, 'store'])->name('cities.store');
-    Route::put('cidades/{city}', [CityController::class, 'update'])->name('cities.update');
-    Route::delete('cidades/{city}', [CityController::class, 'destroy'])->name('cities.destroy');
+    Route::post('cidades/store', [CityController::class, 'store'])->name('cities.store');
+    Route::put('cidades/{city:uuid}/update', [CityController::class, 'update'])->name('cities.update');
+    Route::delete('cidades/{city:uuid}/delete', [CityController::class, 'destroy'])->name('cities.destroy');
     Route::get('cidades/fetch/options', [CityController::class, 'fetchSelectOptions'])->name('cities.fetch.options');
 
     // Languages
     Route::get('linguagens', [LanguageController::class, 'index'])->name('languages.index');
-    Route::post('linguagens', [LanguageController::class, 'store'])->name('languages.store');
-    Route::put('linguagens/{language}', [LanguageController::class, 'update'])->name('languages.update');
-    Route::delete('linguagens/{language}', [LanguageController::class, 'destroy'])->name('languages.destroy');
+    Route::post('linguagens/store', [LanguageController::class, 'store'])->name('languages.store');
+    Route::put('linguagens/{language:uuid}/update', [LanguageController::class, 'update'])->name('languages.update');
+    Route::delete('linguagens/{language:uuid}/delete', [LanguageController::class, 'destroy'])->name('languages.destroy');
     Route::get('linguagens/fetch/options', [LanguageController::class, 'fetchSelectOptions'])->name('languages.fetch.options');
+
+    // Periods (Periodização)
+    Route::get('periodos', [PeriodController::class, 'index'])->name('periods.index');
+    Route::get('periodos/criar', [PeriodController::class, 'create'])->name('periods.create');
+    Route::post('periodos/store', [PeriodController::class, 'store'])->name('periods.store');
+    Route::get('periodos/{period:slug}', [PeriodController::class, 'show'])->name('periods.show');
+    Route::get('periodos/{period:slug}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
+    Route::put('periodos/{period:slug}/update', [PeriodController::class, 'update'])->name('periods.update');
+    Route::get('periodos/{period:slug}/editar/imagens', [PeriodController::class, 'editImages'])->name('periods.edit.images');
+    Route::post('periodos/{period:slug}/update/images', [PeriodController::class, 'updateImages'])->name('periods.update.images');
+    Route::get('periodos/{period:slug}/editar/conteudo', [PeriodController::class, 'editContent'])->name('periods.edit.content');
+    Route::post('periodos/{period:slug}/update/content', [PeriodController::class, 'updateContent'])->name('periods.update.content');
+    Route::get('periodos/{period:slug}/editar/fontes', [PeriodController::class, 'editSources'])->name('periods.edit.sources');
+    Route::post('periodos/{period:slug}/update/sources', [PeriodController::class, 'updateSources'])->name('periods.update.sources');
+    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
     // People
     Route::get('/pessoas', [PersonController::class, 'index'])->name('people.index');
@@ -166,8 +172,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/pessoas/{person:slug}/update/images', [PersonController::class, 'updateImages'])->name('people.update.images');
     Route::get('/pessoas/{person:slug}/editar/conteudo', [PersonController::class, 'editContent'])->name('people.edit.content');
     Route::post('/pessoas/{person:slug}/update/content', [PersonController::class, 'updateContent'])->name('people.update.content');
-    Route::get('/pessoas/{person:slug}/editar/mencoes', [PersonController::class, 'editMentions'])->name('people.edit.mentions');
-    Route::post('/pessoas/{person:slug}/update/mentions', [PersonController::class, 'updateMentions'])->name('people.update.mentions');
+    Route::get('/pessoas/{person:slug}/editar/fontes', [PersonController::class, 'editSources'])->name('people.edit.sources');
+    Route::post('/pessoas/{person:slug}/update/sources', [PersonController::class, 'updateSources'])->name('people.update.sources');
     Route::delete('/pessoas/{person:slug}/delete', [PersonController::class, 'destroy'])->name('people.destroy');
     Route::get('/pessoas/fetch/options', [PersonController::class, 'fetchSelectOptions'])->name('people.fetch.options');
 
@@ -184,8 +190,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/obras/{artwork:slug}/update/images', [ArtworkController::class, 'updateImages'])->name('artworks.update.images');
     Route::get('/obras/{artwork:slug}/editar/conteudo', [ArtworkController::class, 'editContent'])->name('artworks.edit.content');
     Route::post('/obras/{artwork:slug}/update/content', [ArtworkController::class, 'updateContent'])->name('artworks.update.content');
-    Route::get('/obras/{artwork:slug}/editar/mencoes', [ArtworkController::class, 'editMentions'])->name('artworks.edit.mentions');
-    Route::post('/obras/{artwork:slug}/update/mentions', [ArtworkController::class, 'updateMentions'])->name('artworks.update.mentions');
+    Route::get('/obras/{artwork:slug}/editar/fontes', [ArtworkController::class, 'editSources'])->name('artworks.edit.sources');
+    Route::post('/obras/{artwork:slug}/update/sources', [ArtworkController::class, 'updateSources'])->name('artworks.update.sources');
     Route::delete('/obras/{artwork:slug}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
     Route::get('/obras/fetch/options', [ArtworkController::class, 'fetchSelectOptions'])->name('artworks.fetch.options');
 
@@ -196,14 +202,12 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/criticas/{review:slug}', [ReviewController::class, 'show'])->name('reviews.show');
     Route::get('/criticas/{review:slug}/editar', [ReviewController::class, 'edit'])->name('reviews.edit');
     Route::post('/criticas/{review:slug}/update', [ReviewController::class, 'update'])->name('reviews.update');
-    Route::get('/criticas/{review:slug}/editar/pessoas', [ReviewController::class, 'editPeople'])->name('reviews.edit.people');
-    Route::post('/criticas/{review:slug}/update/people', [ReviewController::class, 'updatePeople'])->name('reviews.update.people');
     Route::get('/criticas/{review:slug}/editar/imagens', [ReviewController::class, 'editImages'])->name('reviews.edit.images');
     Route::post('/criticas/{review:slug}/update/images', [ReviewController::class, 'updateImages'])->name('reviews.update.images');
     Route::get('/criticas/{review:slug}/editar/conteudo', [ReviewController::class, 'editContent'])->name('reviews.edit.content');
     Route::post('/criticas/{review:slug}/update/content', [ReviewController::class, 'updateContent'])->name('reviews.update.content');
-    Route::get('/criticas/{review:slug}/editar/mencoes', [ReviewController::class, 'editMentions'])->name('reviews.edit.mentions');
-    Route::post('/criticas/{review:slug}/update/mentions', [ReviewController::class, 'updateMentions'])->name('reviews.update.mentions');
+    Route::get('/criticas/{review:slug}/editar/fontes', [ReviewController::class, 'editSources'])->name('reviews.edit.sources');
+    Route::post('/criticas/{review:slug}/update/sources', [ReviewController::class, 'updateSources'])->name('reviews.update.sources');
     Route::delete('/criticas/{review:slug}/delete', [ReviewController::class, 'destroy'])->name('reviews.destroy');
     Route::get('/criticas/fetch/options', [ReviewController::class, 'fetchSelectOptions'])->name('reviews.fetch.options');
 
@@ -218,8 +222,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/artigos-de-historia/{historyArticle:slug}/update/images', [HistoryArticleController::class, 'updateImages'])->name('history_articles.update.images');
     Route::get('/artigos-de-historia/{historyArticle:slug}/editar/conteudo', [HistoryArticleController::class, 'editContent'])->name('history_articles.edit.content');
     Route::post('/artigos-de-historia/{historyArticle:slug}/update/content', [HistoryArticleController::class, 'updateContent'])->name('history_articles.update.content');
-    Route::get('/artigos-de-historia/{historyArticle:slug}/editar/mencoes', [HistoryArticleController::class, 'editMentions'])->name('history_articles.edit.mentions');
-    Route::post('/artigos-de-historia/{historyArticle:slug}/update/mentions', [HistoryArticleController::class, 'updateMentions'])->name('history_articles.update.mentions');
+    Route::get('/artigos-de-historia/{historyArticle:slug}/editar/fontes', [HistoryArticleController::class, 'editSources'])->name('history_articles.edit.sources');
+    Route::post('/artigos-de-historia/{historyArticle:slug}/update/sources', [HistoryArticleController::class, 'updateSources'])->name('history_articles.update.sources');
     Route::delete('/artigos-de-historia/{historyArticle:slug}/delete', [HistoryArticleController::class, 'destroy'])->name('history_articles.destroy');
     Route::get('/artigos-de-historia/fetch/options', [HistoryArticleController::class, 'fetchSelectOptions'])->name('history_articles.fetch.options');
 
@@ -230,23 +234,18 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('/fontes/{source:slug}', [SourceController::class, 'show'])->name('sources.show');
     Route::get('/fontes/{source:slug}/editar', [SourceController::class, 'edit'])->name('sources.edit');
     Route::post('/fontes/{source:slug}/update', [SourceController::class, 'update'])->name('sources.update');
-    // Route::get('/fontes/{source:slug}/editar/arquivos', [SourceController::class, 'editFiles'])->name('sources.edit.files');
-    // Route::post('/fontes/{source:slug}/update/files', [SourceController::class, 'updateFiles'])->name('sources.update.files');
-    // Route::get('/fontes/{source:slug}/editar/conteudo', [SourceController::class, 'editContent'])->name('sources.edit.content');
-    // Route::post('/fontes/{source:slug}/update/content', [SourceController::class, 'updateContent'])->name('sources.update.content');
-    // Route::get('/fontes/{source:slug}/editar/mencoes', [SourceController::class, 'editMentions'])->name('sources.edit.mentions');
-    // Route::post('/fontes/{source:slug}/update/mentions', [SourceController::class, 'updateMentions'])->name('sources.update.mentions');
     Route::delete('/fontes/{source:slug}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
+    Route::get('/fontes/fetch/{uuid}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
 
     // Source Categories
-    Route::get('/categorias-fontes/fetch/options', [SourceController::class, 'fetchCategorySelectOptions'])->name('source_categories.fetch.options');
+    Route::get('/categorias-fontes', [SourceCategoryController::class, 'index'])->name('source_categories.index');
+    Route::post('/categorias-fontes/store', [SourceCategoryController::class, 'store'])->name('source_categories.store');
+    Route::put('/categorias-fontes/{sourceCategory:uuid}/update', [SourceCategoryController::class, 'update'])->name('source_categories.update');
+    Route::delete('/categorias-fontes/{sourceCategory:uuid}/delete', [SourceCategoryController::class, 'destroy'])->name('source_categories.destroy');
+    Route::get('/categorias-fontes/fetch/options', [SourceCategoryController::class, 'fetchSelectOptions'])->name('source_categories.fetch.options');
 
     // Mentions
-    Route::get('/mencoes/{mention}/mentioned', [MentionController::class, 'showMentioned'])->name('mentions.show.mentioned');
-    Route::get('/mencoes/{mention}/mentioner', [MentionController::class, 'showMentioner'])->name('mentions.show.mentioner');
-    Route::get('/mencoes/{mention}/fetch/mentioner', [MentionController::class, 'getMentioner'])->name('mentions.fetch.mentioner');
-    Route::get('/mencoes/{mention}/fetch/mentioned', [MentionController::class, 'getMentioned'])->name('mentions.fetch.mentioned');
     Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
 
     // Connection Checks

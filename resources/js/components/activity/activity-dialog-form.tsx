@@ -32,7 +32,7 @@ export default function ActivityDialogForm({ activity }: ActivityDialogFormProps
         e.preventDefault();
 
         if (activity) {
-            update(route('activities.update', activity.id), {
+            update(route('activities.update', activity), {
                 preserveScroll: true,
                 onSuccess: () => closeModal(),
                 onFinish: () => reset(),

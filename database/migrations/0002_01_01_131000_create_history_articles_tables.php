@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->uuid('uuid')->unique();
             $table->string('slug');
-            $table->string('title');
-            $table->date('date')->nullable();
 
-            $table->text('links')->nullable();
+            $table->string('title');
             $table->longText('content')->nullable();
+
+            $table->date('date')->nullable();
+            $table->text('links')->nullable();
 
             $table->timestamps();
         });

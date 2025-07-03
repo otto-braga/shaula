@@ -4,21 +4,22 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
-use App\Http\Resources\CategoryResource;
-use App\Http\Resources\PersonResource;
 use App\Models\Review;
-use App\Models\Category;
-use App\Models\Mention;
-use App\Models\Person;
-use App\Traits\HasFile;
-use App\Traits\HasMention;
-use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Arr;
+use App\Traits\HandlesFiles;
+use App\Traits\ParsesUuids;
+use App\Traits\SyncsAuthors;
+use App\Traits\UpdatesContent;
+use App\Traits\UpdatesImages;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
 {
-    use HasFile, HasMention;
+    use
+        HandlesFiles,
+        ParsesUuids,
+        SyncsAuthors,
+        UpdatesImages,
+        UpdatesContent;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -26,6 +27,7 @@ class ReviewController extends Controller
     public function index()
     {
         $reviews = Review::latest()
+            ->latest()
             ->get();
 
         return Inertia::render('admin/review/index', [
@@ -52,11 +54,8 @@ class ReviewController extends Controller
 
         $review = Review::create($dataForm);
 
-        $review->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $review->categories()->sync($request->categories_ids);
+        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $review->categories());
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -80,11 +79,8 @@ class ReviewController extends Controller
 
         $review->update($dataForm);
 
-        $review->authors()->syncWithPivotValues(
-            $request->authors_ids,
-            ['is_author' => true]
-        );
-        $review->categories()->sync($request->categories_ids);
+        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+        $this->syncUuids($request->categories_uuids, $review->categories());
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -103,24 +99,7 @@ class ReviewController extends Controller
     public function updateImages(Request $request, Review $review)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $review, 'general');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            if ($review->images()->count() > 0) {
-                $review->images()->update(['is_primary' => false]);
-                if ($request->primaryImageId > 0) {
-                    $review->images()->where('id', $request->primaryImageId)->update(['is_primary' => true]);
-                } else {
-                    $review->images()->first()->update(['is_primary' => true]);
-                }
-            }
+            $this->handleImageUpdate($request, $review);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -143,17 +122,7 @@ class ReviewController extends Controller
     public function updateContent(Request $request, Review $review)
     {
         try {
-            if ($request->has('files') && count($request->files) > 0) {
-                $this->storeFile($request, $review, 'content');
-            }
-
-            if ($request->has('filesToRemove') && count($request->filesToRemove) > 0) {
-                foreach ($request->filesToRemove as $fileId) {
-                    $this->deleteFile($fileId);
-                }
-            }
-
-            $review->update(['content' => $request->content]);
+            $this->handleContentUpdate($request, $review);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -164,32 +133,20 @@ class ReviewController extends Controller
     }
 
     // -------------------------------------------------------------------------
-    // EDIT MENTIONS
+    // EDIT SOURCES
 
-    public function editMentions(Review $review)
+    public function editSources(Review $review)
     {
-        $review->load('mentioned');
+        $review->load('sources');
 
-        $mentionQueries = $this->getMentionQueries();
-
-        return Inertia::render('admin/review/edit/mentions', [
+        return Inertia::render('admin/review/edit/sources', [
             'review' => new ReviewResource($review),
-            'mention_queries' => new JsonResource($mentionQueries),
         ]);
     }
 
-    public function updateMentions(Request $request, Review $review)
+    public function updateSources(Request $request, Review $review)
     {
-        $review->mentioned()->delete();
-
-        foreach ($request->mentions as $mention) {
-            Mention::create([
-                'mentioned_id' => $mention['mentioned_id'],
-                'mentioned_type' => $mention['mentioned_type'],
-                'mentioner_id' => $review->id,
-                'mentioner_type' => $review::class
-            ]);
-        }
+        $this->syncUuids($request->sources_uuids, $review->sources());
 
         session()->flash('success', true);
         return redirect()->back();
@@ -211,7 +168,11 @@ class ReviewController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
-        $options = Review::fetchAsSelectOption($request->search);
-        return response()->json($options);
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['reviews'],
+            ])
+        );
     }
 }

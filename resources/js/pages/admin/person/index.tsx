@@ -30,7 +30,7 @@ export default function Index({ people }: { people: { data: Person[] } }) {
             </div>
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {people.data.map((person) => (
-                    <Card className="rounded" key={person.id}>
+                    <Card className="rounded" key={person.uuid}>
                         <CardHeader className="">
                             {person.primary_image?.path ? (
                                 <img src={`${person.primary_image.path}`} alt={person.name} className="mb-3 aspect-square rounded-t object-cover" />

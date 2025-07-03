@@ -41,7 +41,7 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                     <div>
                         <p className="font-medium">Autoria</p>
                         {historyArticle.data.authors.map((author) => (
-                            <Link href={route('public.people.show', author)} key={author.id}>
+                            <Link href={route('public.people.show', author)} key={author.uuid}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))}
@@ -86,7 +86,7 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                         <div>
                             <p className="font-medium">Autoria</p>
                             {historyArticle.data.authors.map((author) => (
-                                <Link href={route('public.people.show', author)} key={author.id}>
+                                <Link href={route('public.people.show', author)} key={author.uuid}>
                                     <p className="hover:underline">{author.name}</p>
                                 </Link>
                             ))}
@@ -110,7 +110,7 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                             <h1 className="text-2xl font-medium md:text-3xl">{historyArticle.data.title}</h1>
                             <div className="">
                                 {historyArticle.data.authors.map((author, index) => (
-                                    <span key={author.id}>
+                                    <span key={author.uuid}>
                                         <Link href={route('public.people.show', author)}>
                                             <p className="inline hover:underline">{author.name}</p>
                                         </Link>

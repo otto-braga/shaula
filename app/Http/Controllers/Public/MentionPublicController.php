@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Public;
 use App\Http\Controllers\Controller;
 use App\Models\Mention;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class MentionPublicController extends Controller
 {
@@ -22,5 +24,19 @@ class MentionPublicController extends Controller
         $route_name = 'public.' . $model->getTable() . '.show';
 
         return Redirect::route($route_name, $mention->mentioner);
+    }
+
+    public function redirectMention(Request $request)
+    {
+        $type = $request->type ?? null;
+        $uuid = $request->key;
+
+        $model = DB::table($type)->where('uuid', $uuid)->firstOrFail();
+
+        if ($model) {
+            return redirect()->route('public.' . $type . '.show', $model->slug);
+        }
+
+        // return redirect()->route('public.search.index', ['q' => $query]);
     }
 }

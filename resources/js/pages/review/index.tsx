@@ -12,20 +12,20 @@ import { useState } from 'react';
 
 export default function Index({
     reviews,
-    filters,
+    // filters,
     lastReviews,
 }: {
     reviews: PaginatedData<Review>;
-    filters: { search: string };
+    // filters: { search: string };
     lastReviews: { data: Review[] };
 }) {
-    const [search, setSearch] = useState(filters.search || '');
+    // const [search, setSearch] = useState(filters.search || '');
 
-    function handleSearch(e: React.FormEvent) {
-        e.preventDefault();
+    // function handleSearch(e: React.FormEvent) {
+    //     e.preventDefault();
 
-        router.get('/critica', { search }, { preserveState: true });
-    }
+    //     router.get('/critica', { search }, { preserveState: true });
+    // }
 
     return (
         <PublicLayout head="Crítica">
@@ -51,7 +51,7 @@ export default function Index({
                 {/* <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" /> */}
                 <CarouselContent className="max-h-[90vh]">
                     {lastReviews.data.map((review) => (
-                        <CarouselItem key={review.id} className="relative basis-1/1 pl-4">
+                        <CarouselItem key={review.uuid} className="relative basis-1/1 pl-4">
                             <img
                                 src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
                                 alt="Review Image"
@@ -61,7 +61,7 @@ export default function Index({
                                 <h2 className="text-xl font-semibold text-white md:text-3xl">{review.title}</h2>
                                 <div className="space-x-1">
                                     {review.authors.map((author) => (
-                                        <span key={author.id} className="text-gray-200 underline">
+                                        <span key={author.uuid} className="text-gray-200 underline">
                                             {author.name}
                                         </span>
                                     ))}
@@ -175,7 +175,7 @@ export default function Index({
                                     <h2 className="text-2xl font-semibold">{review.title}</h2>
                                     <div className="space-x-1">
                                         {review.authors.map((author) => (
-                                            <span key={author.id} className="text-gray-500 underline">
+                                            <span key={author.uuid} className="text-gray-500 underline">
                                                 {author.name}
                                             </span>
                                         ))}

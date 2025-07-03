@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
+            $table->uuid('uuid')->unique();
 
             $table->morphs('fileable');
 

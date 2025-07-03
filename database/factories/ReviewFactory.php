@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\File;
 use App\Models\Person;
 use App\Models\Review;
+use App\Models\Source;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +24,7 @@ class ReviewFactory extends Factory
         return [
             'title' => $this->faker->sentence,
             'date' => $this->faker->date,
-            'content' => json_encode($this->faker->text),
+            'content' => json_encode($this->faker->text(4000)),
         ];
     }
 
@@ -40,7 +41,7 @@ class ReviewFactory extends Factory
                 $review->categories()->attach($category);
             }
 
-            File::factory(rand(1, 4))->create([
+            File::factory(rand(0, 4))->create([
                 'mime_type' => 'image/png',
             ])->each(function ($file) use ($review) {
                 $file->update([
@@ -49,7 +50,16 @@ class ReviewFactory extends Factory
                 ]);
             });
 
-            $review->images()->first()->update(['is_primary' => true]);
+            if ($review->images()->count() > 0) {
+                $review->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $review->sources()->attach($source);
+            }
+
+            MentionFactory::generateMentions($review);
         });
     }
 }
