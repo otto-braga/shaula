@@ -3,6 +3,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTrigger } from '@/components/ui/
 import { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
+import SearchBar from './search-bar';
 
 const navItems: NavItem[] = [
     {
@@ -74,12 +75,15 @@ export function NavBar() {
                 </Sheet>
             </div>
 
-            <div className="hidden space-x-3 text-2xl md:block">
-                {navItems.map((item) => (
-                    <Link key={item.href} href={item.href} className={`${page.url === item.href ? 'underline' : ''} hover:underline`}>
-                        {item.title}
-                    </Link>
-                ))}
+            <div className="hidden divide-x text-2xl md:flex md:items-center">
+                <div className="space-x-3 pr-3">
+                    {navItems.map((item) => (
+                        <Link key={item.href} href={item.href} className={`${page.url === item.href ? 'underline' : ''} hover:underline`}>
+                            {item.title}
+                        </Link>
+                    ))}
+                </div>
+                <SearchBar />
             </div>
         </nav>
     );

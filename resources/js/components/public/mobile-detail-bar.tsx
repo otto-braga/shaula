@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 
-export default function MobileDetailBar({ children }: { children: React.ReactNode }) {
+export default function MobileDetailBar({ children, title }: { children: React.ReactNode; title?: string }) {
     const [isOpen, setIsOpen] = useState(false);
 
     // Falta colocar como props a opção de quando
@@ -17,7 +17,7 @@ export default function MobileDetailBar({ children }: { children: React.ReactNod
                     onClick={() => setIsOpen(!isOpen)}
                     className="flex w-full items-center justify-center gap-1 text-lg focus:border-0 focus:ring-0"
                 >
-                    <p>Detalhes</p>
+                    <p>{title ? title : 'Detalhes'}</p>
                     <ChevronDown size={24} className={`transition-transform ${isOpen ? 'rotate-0' : 'rotate-180'}`} />
                 </button>
             </div>
