@@ -12,5 +12,6 @@ export function formatDate(date: string) {
         year: 'numeric',
         // hour: 'numeric',
         // minute: 'numeric',
+        timeZone: 'UTC',
     });
 }

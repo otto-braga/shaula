@@ -1,5 +1,6 @@
 import { SourceCard } from '@/components/ui/source-card';
 import PublicLayout from '@/layouts/public-layout';
+import { formatDate } from '@/lib/utils';
 import { Artwork } from '@/types/artwork';
 import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
@@ -75,6 +76,19 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                     />
                 </div>
                 <div>{artwork.data.title}</div>
+                <div className="text-gray-500">
+                    {artwork.data.date ? formatDate(artwork.data.date) : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.year ? artwork.data.year : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.dimensions ? artwork.data.dimensions : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.materials ? artwork.data.materials : ''}
+                </div>
+                <br />
                 <div>
                     <h2>sobre</h2>
                     <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="pb-6 text-lg" />

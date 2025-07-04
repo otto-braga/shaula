@@ -13,6 +13,7 @@ use App\Models\Period;
 use App\Models\Person;
 use App\Models\Review;
 use App\Models\Source;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -29,7 +30,8 @@ class ArtworkFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'date' => $this->faker->date,
+            // 'date' => Carbon::parse($this->faker->date, 'UTC'),
+            'date' => Carbon::parse($this->faker->year . '-06-01', 'UTC')->startOfDay(), // Default to June 1st if only year is provided
             'content' => json_encode($this->faker->text(4000)),
             'dimensions' => $this->faker->word,
             'materials' => $this->faker->word,

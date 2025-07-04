@@ -13,6 +13,7 @@ use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
 use App\Traits\UpdatesPeople;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
@@ -54,7 +55,12 @@ class ArtworkController extends Controller
 
     public function store(Request $request)
     {
-        $dataForm = $request->all();
+        $dataForm = $request->except(['date']);
+
+        if ($request->has('date')) {
+            $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
+            $dataForm['date'] = Carbon::parse($date, 'UTC')->startOfDay();
+        }
 
         $artwork = Artwork::create($dataForm);
 
@@ -83,6 +89,10 @@ class ArtworkController extends Controller
     public function update(Request $request, Artwork $artwork)
     {
         $dataForm = $request->all();
+
+        if ($request->has('date')) {
+            $dataForm['date'] = $request->date . '-01-01'; // Default to June 1st if only year is provided
+        }
 
         $artwork->update($dataForm);
 

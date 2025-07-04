@@ -7,6 +7,7 @@ use App\Models\File;
 use App\Models\Person;
 use App\Models\Review;
 use App\Models\Source;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -23,7 +24,8 @@ class ReviewFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'date' => $this->faker->date,
+            // date in UTC with offset timezone of -03:00
+            'date' => Carbon::parse($this->faker->date, 'UTC')->setTimezone('America/Sao_Paulo')->startOfDay(),
             'content' => json_encode($this->faker->text(4000)),
         ];
     }
