@@ -18,6 +18,19 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                     />
                 </div>
                 <div>{artwork.data.title}</div>
+                <div className="text-gray-500">
+                    {artwork.data.date ? new Date(artwork.data.date).toLocaleDateString() : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.year ? artwork.data.year : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.dimensions ? artwork.data.dimensions : ''}
+                </div>
+                <div className="text-gray-500">
+                    {artwork.data.materials ? artwork.data.materials : ''}
+                </div>
+                <br />
                 <div>
                     <h2>sobre</h2>
                     <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="pb-6 text-lg" />

@@ -36,6 +36,8 @@ export type Artwork = {
     periods: Period[];
     languages: Language[];
     awards: Award[];
+
+    year: string;
     dimensions: string;
     materials: string;
 

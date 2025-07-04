@@ -4,7 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Artwork } from '@/types/artwork';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler, useEffect } from 'react';
+import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
 import { SearchResult } from '@/types/search-result';
@@ -19,7 +19,7 @@ export default function Index({
 
     const { data, setData, post, patch, errors, processing } = useForm({
         title: artwork ? artwork.data.title : '' as string,
-        date: artwork ? artwork.data.date : '' as string,
+        date: artwork ? new Date(artwork.data.date).getFullYear() : '' as string,
 
         authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
         periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as number[],
@@ -85,11 +85,12 @@ export default function Index({
 
                             <div className="flex flex-row gap-3">
                                 <div className="w-full">
-                                    <Label htmlFor="date">Data</Label>
+                                    <Label htmlFor="date">Ano</Label>
                                     <Input
                                         id="date"
-                                        type="date"
+                                        type="number"
                                         value={data.date ?? ''}
+                                        pattern='[0-9]{4}'
                                         onChange={(e) => setData('date', e.target.value)}
                                         autoComplete="date"
                                         className="w-full"

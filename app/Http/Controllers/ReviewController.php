@@ -10,6 +10,7 @@ use App\Traits\ParsesUuids;
 use App\Traits\SyncsAuthors;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
+use Carbon\Carbon;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
@@ -76,6 +77,34 @@ class ReviewController extends Controller
     public function update(Request $request, Review $review)
     {
         $dataForm = $request->all();
+
+        if ($request->has('date')) {
+            $date_exploded = explode('T', $request->date, 2);
+            $date = $date_exploded[0];
+            $timezone = $date_exploded[1] ?? 'UTC';
+            $hour = '14:20:00'; // Default hour if not provided
+
+            $date = $date . 'T' . $hour; // Combine date and hour
+
+            $date_UTC = Carbon::parse($date, $timezone)->toISOString();
+
+            $date_back_to_local = Carbon::parse($date_UTC, 'UTC')
+                ->setTimezone($timezone)
+                ->toDateTimeLocalString();
+
+            // $date_back_to_local = Carbon::parse($date_UTC, $timezone);
+
+            $date_sao_paulo = Carbon::parse($date_UTC, 'UTC')
+                ->setTimezone('America/Sao_Paulo');
+
+            dd(
+                'Original date:', $date,
+                // 'Date in local timezone:', $date_local,
+                'Date in UTC:', $date_UTC,
+                'Date back to local timezone:', $date_back_to_local,
+                'Date in Sao Paulo timezone:', $date_sao_paulo
+            );
+        }
 
         $review->update($dataForm);
 

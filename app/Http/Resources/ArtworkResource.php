@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -15,7 +16,7 @@ class ArtworkResource extends JsonResource
             'slug' => $this->slug,
 
             'title' => $this->title,
-            'date' => $this->date,
+            'date' => Carbon::parse($this->date),
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
 
@@ -37,6 +38,8 @@ class ArtworkResource extends JsonResource
             'periods' => PeriodResource::collection($this->periods),
             'languages' => LanguageResource::collection($this->languages),
             'awards' => AwardResource::collection($this->awards),
+
+            'year' => Carbon::parse($this->date)->year, // Apenas o ano, sem o mês e dia
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
 
