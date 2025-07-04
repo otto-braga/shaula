@@ -1,24 +1,20 @@
 import DeleteDialog from '@/components/common/delete-dialog';
+import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
 import { Person } from '@/types/person';
 import { Head, Link } from '@inertiajs/react';
 import { Plus } from 'lucide-react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Pessoas',
-        href: route('people.index'),
-    },
-];
+export default function Index({ people }: { people: PaginationProps & { data: Person[] } }) {
+    console.log(people);
 
-export default function Index({ people }: { people: { data: Person[] } }) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Profile settings" />
-            <div className="mt-3 flex justify-end p-3">
+            <div className="mt-3 flex justify-between items-center p-3">
+                <h1 className="text-2xl font-bold">Pessoas</h1>
                 <Link href={route('people.create')}>
                     <Button variant="secondary">
                         <div className="flex items-center gap-1">
@@ -28,6 +24,9 @@ export default function Index({ people }: { people: { data: Person[] } }) {
                     </Button>
                 </Link>
             </div>
+
+            <PaginationControls pagination={people} />
+
             <div className="grid gap-4 p-3 md:grid-cols-3">
                 {people.data.map((person) => (
                     <Card className="rounded" key={person.uuid}>

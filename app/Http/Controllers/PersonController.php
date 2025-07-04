@@ -26,10 +26,10 @@ class PersonController extends Controller
     {
         $people = Person::query()
             ->latest()
-            ->get();
+            ->paginate(2);
 
         return Inertia::render('admin/person/index', [
-            'people' => PersonResource::collection($people),
+            'people' => $people,
         ]);
     }
 

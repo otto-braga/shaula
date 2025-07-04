@@ -33,7 +33,7 @@ class ArtworkController extends Controller
     {
         $artworks = Artwork::query()
             ->latest()
-            ->get();
+            ->paginate(2);
 
         return Inertia::render('admin/artwork/index', [
             'artworks' => ArtworkResource::collection($artworks),
