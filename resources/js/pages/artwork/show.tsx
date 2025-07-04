@@ -39,7 +39,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                 <h2 className="mb-2 text-xl font-semibold text-gray-800">Autores</h2>
                                 <ul className="space-y-1">
                                     {data.authors.map((author) => (
-                                        <li key={author.id}>
+                                        <li key={author.uuid}>
                                             <Link
                                                 href={route('public.people.show', author.slug)}
                                                 className="text-gray-700 hover:text-gray-900 hover:underline"
@@ -57,7 +57,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                 <h2 className="mb-2 text-xl font-semibold text-gray-800">Categorias</h2>
                                 <div className="flex flex-wrap gap-2">
                                     {data.categories.map((category) => (
-                                        <span key={category.id} className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
+                                        <span key={category.uuid} className="rounded-full bg-gray-100 px-3 py-1 text-sm text-gray-700">
                                             {category.name}
                                         </span>
                                     ))}
@@ -67,6 +67,8 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
 
                         {/* Você pode adicionar a seção de Períodos de forma similar se necessário */}
                     </div>
+                </div>
+            </div>
             <div className="divide-y">
                 <div>
                     <img
