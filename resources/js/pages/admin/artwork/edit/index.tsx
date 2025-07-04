@@ -17,9 +17,10 @@ export default function Index({
 }) {
     const isEdit = !!artwork;
 
+
     const { data, setData, post, patch, errors, processing } = useForm({
         title: artwork ? artwork.data.title : '' as string,
-        date: artwork ? new Date(artwork.data.date).getFullYear() : '' as string,
+        date: artwork ? new Date(artwork.data.date).getUTCFullYear() : '' as string,
 
         authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
         periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as number[],

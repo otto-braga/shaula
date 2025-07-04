@@ -46,19 +46,6 @@ export default function Index({
         }
     };
 
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const inputDate = e.target.value;
-        const date = new Date(inputDate);
-        // const offset = -date.getTimezoneOffset();
-        // // date.setUTCHours(0, 0, 0, 0); // Set hours to 0 for UTC
-        // date.setUTCMinutes(offset, 0, 0); // Adjust for timezone offset
-        // // console.log(Intl.DateTimeFormat().resolvedOptions().timeZone); // Get the user's timezone
-
-        // // console.log(date.getTimezoneOffset()/60);
-
-        setData('date', date.toISOString().split('T')[0] + 'T' + Intl.DateTimeFormat().resolvedOptions().timeZone);
-    }
-
     return (
         <AppLayout>
             <Head title="Produções" />
@@ -101,8 +88,8 @@ export default function Index({
                                     <Input
                                         id="date"
                                         type="date"
-                                        value={data.date ? data.date.split('T')[0] : ''}
-                                        onChange={handleDateChange}
+                                        value={data.date}
+                                        onChange={(e) => setData('date', e.target.value)}
                                         autoComplete="date"
                                         className="w-full"
                                     />
