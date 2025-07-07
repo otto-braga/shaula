@@ -1,7 +1,6 @@
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import PublicLayout from '@/layouts/public-layout';
 import { formatDate } from '@/lib/utils';
-import { Mention } from '@/types/mention';
 import { Review } from '@/types/review';
 
 import { Link } from '@inertiajs/react';
@@ -19,6 +18,7 @@ import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/scss/lg-zoom.scss';
 import 'lightgallery/scss/lightgallery.scss';
 
+import { SourceCard } from '@/components/ui/source-card';
 import 'keen-slider/keen-slider.min.css';
 
 export default function Index({ review }: { review: { data: Review } }) {
@@ -30,12 +30,12 @@ export default function Index({ review }: { review: { data: Review } }) {
         <PublicLayout head="Crítica">
             {/* barra inferior para informações da crítica, apenas mobile */}
             <MobileDetailBar>
-                <div className="space-y-2">
+                <section className="space-y-3 divide-y *:pb-3">
                     <div>
                         <p className="font-semibold">Autoria</p>
                         {review.data.authors.map((author) => (
                             <Link href={route('public.people.show', author)} key={author.uuid}>
-                                <p className="hover:underline">{author.name}</p>
+                                <p className="line-clamp-1 hover:underline">{author.name}</p>
                             </Link>
                         ))}
                     </div>
@@ -49,23 +49,30 @@ export default function Index({ review }: { review: { data: Review } }) {
                             ))}
                         </div>
                     )}
+
                     {review.data.mentions.length > 0 && (
                         <div className="">
-                            <p className="font-semibold">Menções</p>
-                            <div className="mt-2 space-y-3">
-                                {review.data.mentions.map((mention: Mention, index) => (
-                                    <div key={'mention' + index}>
-                                        <p>
-                                            <Link href={mention.route} className="hover:underline">
-                                                {mention.name}
-                                            </Link>
-                                        </p>
-                                    </div>
+                            <p className="font-medium">Menções</p>
+                            <div className="mt-2 flex flex-col gap-1">
+                                {review.data.mentions.map((mention, index) => (
+                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                        <p className="line-clamp-1">{mention['name']}</p>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
                     )}
-                </div>
+                    {review.data.sources.length > 0 && (
+                        <div className="space-y-3">
+                            <p className="font-semibold">Fontes</p>
+                            {review.data.sources.map((source, index) => (
+                                <div key={'source' + index}>
+                                    <SourceCard source={source} className="" />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </section>
             </MobileDetailBar>
 
             <div className="relative -mt-16 h-[25vh] w-full overflow-hidden lg:h-[50vh]">
@@ -109,22 +116,28 @@ export default function Index({ review }: { review: { data: Review } }) {
                         </div>
                     )}
 
-
+                    {review.data.mentions.length > 0 && (
                         <div className="">
-                            <p className="font-semibold">Menções</p>
-                            <div className="mt-2 space-y-3">
+                            <p className="font-medium">Menções</p>
+                            <div className="mt-2 flex flex-col gap-1">
                                 {review.data.mentions.map((mention, index) => (
-                                    <div key={'mention' + index}>
-                                        <p>
-                                            <Link href={mention['route']} className="hover:underline">
-                                                {mention['name']}
-                                            </Link>
-                                        </p>
-                                    </div>
+                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                        <p className="line-clamp-1">{mention['name']}</p>
+                                    </Link>
                                 ))}
                             </div>
                         </div>
-
+                    )}
+                    {review.data.sources.length > 0 && (
+                        <div className="space-y-3">
+                            <p className="font-semibold">Fontes</p>
+                            {review.data.sources.map((source, index) => (
+                                <div key={'source' + index}>
+                                    <SourceCard source={source} className="" />
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </section>
                 <section className="md:col-span-2 md:pr-6 lg:col-span-3 lg:pr-8">
                     <div>
@@ -140,6 +153,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div className="mt-6">
                         <span className="text-sm text-slate-500">{formatDate(review.data.date)}</span>
                     </div>
+
                     <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 text-lg lg:text-xl" />
                 </section>
                 <section className="lg:col-span-2">

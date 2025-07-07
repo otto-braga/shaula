@@ -1,14 +1,14 @@
 import PublicLayout from '@/layouts/public-layout';
 
+import Pagination from '@/components/Pagination';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
 import { PaginatedData } from '@/types/paginated-data';
 import { Review } from '@/types/review';
-import { Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
-import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
 
 export default function Index({
     reviews,
@@ -78,53 +78,6 @@ export default function Index({
 
             <section className="grid grid-cols-1 divide-x px-4 pt-8 md:grid-cols-8 md:gap-8 md:px-8">
                 <div className="mb-6 w-full pr-8 md:col-span-2 md:mb-0">
-                    {/* <Tabs defaultValue="about">
-                        <TabsList className="0 flex justify-evenly divide-x">
-                            <TabsTrigger value="about" className="flex w-full items-center justify-center gap-1 hover:cursor-pointer">
-                                <Users />
-                                <span>Editorial</span>
-                            </TabsTrigger>
-                            <TabsTrigger value="filters" className="flex w-full items-center justify-center gap-1 hover:cursor-pointer">
-                                <Filter />
-                                <span>Filtros</span>
-                            </TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="about">
-                            <div className="mt-3 space-y-6">
-                                <p className="max-w-sm text-justify text-sm">
-                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam accusamus tenetur doloribus perspiciatis
-                                    consequatur accusantium amet voluptatem odio. Molestias ullam, nisi accusamus velit recusandae deleniti voluptates
-                                    aut corrupti explicabo libero. Reiciendis repellendus quod ipsa, molestias et harum eaque quae.
-                                </p>
-                                <div className="space-y-3">
-                                    <div>
-                                        <p className="font-medium">Editora Chefe</p>
-                                        <p>Fabíola Alves</p>
-                                    </div>
-                                    <div>
-                                        <p className="font-medium">Editora Jr. / Redatora</p>
-                                        <p>Maria Sucar</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </TabsContent>
-                        <TabsContent value="filters">
-                            <div className="mt-3 divide-y">
-                                <div className="flex justify-between py-3">
-                                    <p>Categorias</p>
-                                    <ChevronDown />
-                                </div>
-                                <div className="flex justify-between py-3">
-                                    <p>Autores</p>
-                                    <ChevronDown />
-                                </div>
-                                <div className="flex justify-between py-3">
-                                    <p>Data de publicação</p>
-                                    <ChevronDown />
-                                </div>
-                            </div>
-                        </TabsContent>
-                    </Tabs> */}
                     <div className="mt-3 space-y-6">
                         <h1 className="font-medium">SHAULA - CRÍTICA</h1>
                         <p className="max-w-sm text-justify">
@@ -144,7 +97,7 @@ export default function Index({
                         </div>
                     </div>
                 </div>
-                <div className="divide-y md:col-span-5 md:pr-8">
+                <div id="criticas" className="divide-y md:col-span-5 md:pr-8">
                     {/* <div className="mb-6 w-full md:col-span-1 md:mb-0">
                         <form onSubmit={handleSearch}>
                             <div className="relative">
@@ -185,27 +138,7 @@ export default function Index({
                             </div>
                         </Link>
                     ))}
-                    <div className="mt-8 flex flex-wrap justify-center gap-2">
-                        {reviews.meta.links.map((link, index) =>
-                            link.url ? (
-                                <Link key={index} href={link.url} className={`px-4 py-2 ${link.active ? 'font-semibold' : 'bg-white text-gray-500'}`}>
-                                    {link.label === '&laquo; Previous' ? (
-                                        <>
-                                            <ChevronLeft />
-                                        </>
-                                    ) : link.label === 'Next &raquo;' ? (
-                                        <>
-                                            <ChevronRight />
-                                        </>
-                                    ) : (
-                                        link.label
-                                    )}
-                                </Link>
-                            ) : (
-                                <></>
-                            ),
-                        )}
-                    </div>
+                    <Pagination links={reviews.meta.links} anchor="#criticas" />
                 </div>
                 <div className="md:col-span-1">
                     <div className="divide-y">

@@ -20,9 +20,12 @@ const setCookie = (name: string, value: string, days = 365) => {
 };
 
 const applyTheme = (appearance: Appearance) => {
-    const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
+    // const isDark = appearance === 'dark' || (appearance === 'system' && prefersDark());
 
-    document.documentElement.classList.toggle('dark', isDark);
+    // document.documentElement.classList.toggle('dark', isDark);
+
+    // Força o tema claro, garantindo que a classe 'dark' seja sempre removida.
+    document.documentElement.classList.remove('dark');
 };
 
 const mediaQuery = () => {
@@ -34,39 +37,54 @@ const mediaQuery = () => {
 };
 
 const handleSystemThemeChange = () => {
-    const currentAppearance = localStorage.getItem('appearance') as Appearance;
-    applyTheme(currentAppearance || 'system');
+    // const currentAppearance = localStorage.getItem('appearance') as Appearance;
+    // applyTheme(currentAppearance || 'system');
+    // Como estamos forçando o tema claro, esta função não precisa fazer nada.
+    applyTheme('light');
 };
 
 export function initializeTheme() {
-    const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
+    // const savedAppearance = (localStorage.getItem('appearance') as Appearance) || 'system';
 
-    applyTheme(savedAppearance);
+    // applyTheme(savedAppearance);
 
     // Add the event listener for system theme changes...
-    mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+    // mediaQuery()?.addEventListener('change', handleSystemThemeChange);
+
+    // Força o tema claro na inicialização.
+    applyTheme('light');
+    // Não é mais necessário ouvir as mudanças do sistema.
 }
 
 export function useAppearance() {
-    const [appearance, setAppearance] = useState<Appearance>('system');
+    // const [appearance, setAppearance] = useState<Appearance>('system');
+    // O estado agora é fixo em 'light'.
+    const [appearance, setAppearance] = useState<Appearance>('light');
 
     const updateAppearance = useCallback((mode: Appearance) => {
-        setAppearance(mode);
+        // setAppearance(mode);
+        // // Store in localStorage for client-side persistence...
+        // localStorage.setItem('appearance', mode);
+        // // Store in cookie for SSR...
+        // setCookie('appearance', mode);
+        // applyTheme(mode);
 
-        // Store in localStorage for client-side persistence...
-        localStorage.setItem('appearance', mode);
-
-        // Store in cookie for SSR...
-        setCookie('appearance', mode);
-
-        applyTheme(mode);
+        // Ignora o modo solicitado e sempre aplica e armazena 'light'.
+        const forcedMode: Appearance = 'light';
+        setAppearance(forcedMode);
+        localStorage.setItem('appearance', forcedMode);
+        setCookie('appearance', forcedMode);
+        applyTheme(forcedMode);
     }, []);
 
     useEffect(() => {
-        const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
-        updateAppearance(savedAppearance || 'system');
+        // const savedAppearance = localStorage.getItem('appearance') as Appearance | null;
+        // updateAppearance(savedAppearance || 'system');
 
-        return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
+        // return () => mediaQuery()?.removeEventListener('change', handleSystemThemeChange);
+
+        // Garante que o tema claro seja aplicado ao montar o componente.
+        updateAppearance('light');
     }, [updateAppearance]);
 
     return { appearance, updateAppearance } as const;

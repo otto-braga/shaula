@@ -43,8 +43,8 @@ export default function Index({ period }: { period: { data: Period } }) {
                                 <div className="flex flex-col gap-6 divide-y">
                                     {period.data.history_articles?.map((article) => {
                                         return (
-                                            <Link href={route('public.historyArticles.show', { historyArticle: article })}>
-                                                <div className="group flex gap-6 pb-6">
+                                            <Link href={route('public.history_articles.show', { historyArticle: article })}>
+                                                <div className="group flex gap-6 pb-6" key={article.uuid}>
                                                     <img
                                                         src={`${article.primary_image ? article.primary_image.path : 'https://placehold.co/1280x900'}`}
                                                         alt="Review Image"

@@ -9,12 +9,14 @@ function SourceCard({
     className?: string
 }) {
     return (
-        <a className={`${className}`}
+        <a className={`${className} hover:underline`}
             href={source.file?.path}
+            target='_blank'
         >
             {source.content}
         </a>
     )
 }
 
-export { SourceCard }
+export { SourceCard };
+

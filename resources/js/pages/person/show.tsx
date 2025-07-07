@@ -120,9 +120,11 @@ export default function Index({ person }: { person: { data: Person } }) {
                                             <div className="mt-3">
                                                 <h3 className="text-lg group-hover:underline">{artwork.title}</h3>
                                                 <p className="text-sm text-slate-700">
-                                                    { artwork.pivot.is_author ? 'autoria' : (
-                                                        artwork.pivot.activity ? `${artwork.pivot.activity.name}` : ''
-                                                    )}
+                                                    {artwork.pivot.is_author
+                                                        ? 'Autoria'
+                                                        : artwork.pivot.activity
+                                                          ? `${artwork.pivot.activity.name}`
+                                                          : ''}
                                                 </p>
                                             </div>
                                         </div>

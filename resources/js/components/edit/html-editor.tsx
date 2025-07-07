@@ -1,21 +1,20 @@
 import { usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect, useRef, useState } from 'react';
 
-import { FilePond, registerPlugin } from "react-filepond";
-import "filepond/dist/filepond.min.css";
-import { FilePondFile, FilePondInitialFile } from 'filepond'
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import { FilePondFile, FilePondInitialFile } from 'filepond';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
+import 'filepond/dist/filepond.min.css';
+import { FilePond, registerPlugin } from 'react-filepond';
 registerPlugin(FilePondPluginImagePreview);
 
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 
-import { Button } from '@/components/ui/button';
 import Modal from '@/components/common/modal';
+import { Button } from '@/components/ui/button';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
-import Select from 'react-select';
 import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
@@ -49,13 +48,13 @@ export default function HtmlEditor({
     hasGallery = true,
     hasMentions = true,
 }: HtmlEditorProps) {
-    const toolbar = 'undo redo | ' +
+    const toolbar =
+        'undo redo | ' +
         (hasGallery ? 'gallery | ' : '') +
         (hasMentions ? 'mentions | ' : '') +
         'bold italic forecolor | alignleft aligncenter ' +
         'alignright alignjustify |  outdent indent | ' +
         'removeformat';
-
 
     const [images, setImages] = useState<Array<FilePondInitialFile | File | Blob | string>>([]);
 
@@ -106,15 +105,13 @@ export default function HtmlEditor({
 
         let response;
 
-        fetch(
-            route('mentions.fetch.options') + '?q=' + encodeURIComponent(search),
-            {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'Accept': 'application/json',
-                },
-            })
+        fetch(route('mentions.fetch.options') + '?q=' + encodeURIComponent(search), {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                Accept: 'application/json',
+            },
+        })
             .then((res) => res.json())
             .then((data) => {
                 response = data as { results: SearchResult[] };
@@ -124,7 +121,7 @@ export default function HtmlEditor({
                         uuid: object.uuid || '',
                         route: object.route || '',
                         label: object.label || '',
-                    }))
+                    })),
                 );
             });
 
@@ -155,22 +152,18 @@ export default function HtmlEditor({
                 (selectInput as HTMLInputElement).focus();
             }
         }, 100);
-    }
+    };
 
     const closeMentionModal = () => {
         if (!selectedMention && shouldAddCharacter) {
-            editorRef?.current?.execCommand(
-                'mceInsertContent',
-                false,
-                '@'
-            );
+            editorRef?.current?.execCommand('mceInsertContent', false, '@');
             editorRef?.current?.focus();
         }
         setShouldAddCharacter(false);
         setShowMentions(false);
         setSelectedMention(null);
         setFetchedMentions([]);
-    }
+    };
 
     useEffect(() => {
         console.log('fetchedMentions', fetchedMentions);
@@ -178,18 +171,30 @@ export default function HtmlEditor({
 
     return (
         <>
-            <div className='sticky top-96'>
-
+            <div className="sticky top-96">
                 <Editor
-                    tinymceScriptSrc='/tinymce/tinymce.min.js'
-                    licenseKey='gpl'
-                    onInit={(_evt, editor) => editorRef.current = editor}
-                    initialValue={content as string || String()}
+                    tinymceScriptSrc="/tinymce/tinymce.min.js"
+                    licenseKey="gpl"
+                    onInit={(_evt, editor) => (editorRef.current = editor)}
+                    initialValue={(content as string) || String()}
                     init={{
                         plugins: [
-                            'advlist', 'autolink', 'lists', 'link', 'charmap',
-                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                            'insertdatetime', 'media', 'table', 'preview', 'help', 'wordcount',
+                            'advlist',
+                            'autolink',
+                            'lists',
+                            'link',
+                            'charmap',
+                            'anchor',
+                            'searchreplace',
+                            'visualblocks',
+                            'code',
+                            'fullscreen',
+                            'insertdatetime',
+                            'media',
+                            'table',
+                            'preview',
+                            'help',
+                            'wordcount',
                             'autoresize',
                         ],
 
@@ -201,12 +206,13 @@ export default function HtmlEditor({
 
                         menubar: false,
 
-                        skin: document.documentElement.classList.contains('dark') ? "oxide-dark" : "oxide",
-                        content_css: document.documentElement.classList.contains('dark') ? "dark" : "default",
+                        skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                        content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
 
                         toolbar: toolbar,
 
-                        content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                        content_style:
+                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
                         paste_preprocess: (editor, args) => {
                             const blob = args.content.match(/<img src="blob:.*">/g);
@@ -219,7 +225,6 @@ export default function HtmlEditor({
                         paste_block_drop: true,
 
                         setup: (editor) => {
-
                             if (hasGallery) {
                                 editor.ui.registry.addButton('gallery', {
                                     text: 'Imagens',
@@ -251,7 +256,6 @@ export default function HtmlEditor({
                     }}
                     onEditorChange={onContentInput}
                 />
-
             </div>
 
             <Modal show={showGallery} onClose={closeGallery}>
@@ -259,37 +263,36 @@ export default function HtmlEditor({
                     <FilePond
                         files={images}
                         onupdatefiles={(imageItems: FilePondFile[]) => {
-                            setImages(imageItems.map((imageItem) => imageItem.file as File))
+                            setImages(imageItems.map((imageItem) => imageItem.file as File));
                         }}
                         allowMultiple={true}
                     />
 
                     <div className="flex flex-row gap-2">
                         {content_images.map((image, index) => (
-                            <div key={image.uuid} className='flex flex-col items-center'>
-                                <img key={image.uuid + 'image'} src={image.path} alt={image.path}
+                            <div key={image.uuid} className="flex flex-col items-center">
+                                <img
+                                    key={image.uuid + 'image'}
+                                    src={image.path}
+                                    alt={image.path}
                                     className={
-                                        'object-cover w-32 h-32 rounded-lg shadow-md'
-                                        + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
+                                        'h-32 w-32 rounded-lg object-cover shadow-md' +
+                                        (imagesToRemove.find((uuid) => uuid === image.uuid) ? ' opacity-50' : '')
                                     }
                                 />
-                                <div className='w-full flex flex-col justify-between'>
+                                <div className="flex w-full flex-col justify-between">
                                     <Button
                                         key={image.uuid + 'select_button'}
                                         type="button"
-                                        className={
-                                            ('bg-gray-100 hover:bg-blue-300')
-                                        }
-                                        onClick={
-                                            () => {
-                                                editorRef?.current?.execCommand(
-                                                    'mceInsertContent',
-                                                    false,
-                                                    `<img src="${image.path}" alt="${image.path}" />`
-                                                );
-                                                closeGallery();
-                                            }
-                                        }
+                                        className={'bg-gray-100 hover:bg-blue-300'}
+                                        onClick={() => {
+                                            editorRef?.current?.execCommand(
+                                                'mceInsertContent',
+                                                false,
+                                                `<img src="${image.path}" alt="${image.path}" />`,
+                                            );
+                                            closeGallery();
+                                        }}
                                     >
                                         <CheckIcon /> Adicionar ao texto
                                     </Button>
@@ -297,17 +300,17 @@ export default function HtmlEditor({
                                         key={image.uuid + 'delete_button'}
                                         type="button"
                                         className={
-                                            (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                            imagesToRemove.find((uuid) => uuid === image.uuid)
+                                                ? 'bg-red-600 hover:bg-red-300'
+                                                : 'bg-gray-100 hover:bg-red-300'
                                         }
-                                        onClick={
-                                            () => {
-                                                if (!imagesToRemove.find(uuid => uuid === image.uuid)) {
-                                                    setImagesToRemove([...imagesToRemove, image.uuid]);
-                                                } else {
-                                                    setImagesToRemove(imagesToRemove.filter((i) => i !== image.uuid));
-                                                }
+                                        onClick={() => {
+                                            if (!imagesToRemove.find((uuid) => uuid === image.uuid)) {
+                                                setImagesToRemove([...imagesToRemove, image.uuid]);
+                                            } else {
+                                                setImagesToRemove(imagesToRemove.filter((i) => i !== image.uuid));
                                             }
-                                        }
+                                        }}
                                     >
                                         <DeleteIcon /> Deletar
                                     </Button>
@@ -317,54 +320,38 @@ export default function HtmlEditor({
                     </div>
 
                     <div className="ml-8 flex justify-center">
-                        <Button type="submit"
-                            onClick={ (e) => {
+                        <Button
+                            type="submit"
+                            onClick={(e) => {
                                 setImages([]);
                                 submit(e);
                             }}
                             disabled={processing || isTimedMessageShown}
-                            className={
-                                'rounded min-w-[8em]' +
-                                (
-                                    isTimedMessageShown ?
-                                        (
-                                            flash?.success ?
-                                                ' bg-green-400'
-                                                : ' bg-red-400'
-                                        )
-                                        : (
-                                            ''
-                                        )
-                                )
-                            }
+                            className={'min-w-[8em] rounded' + (isTimedMessageShown ? (flash?.success ? ' bg-green-400' : ' bg-red-400') : '')}
                         >
-                            {
-                                processing ?
-                                    'Salvando...'
-                                    : isTimedMessageShown ?
-                                        (
-                                            flash?.success ?
-                                                (
-                                                    <div className="flex items-center gap-2">
-                                                        Salvo! <CheckIcon className="h-16 w-16" />
-                                                    </div>
-                                                )
-                                                : (
-                                                    <div className="flex items-center gap-2">
-                                                        Erro! <XIcon className="h-16 w-16" />
-                                                    </div>
-                                                )
-                                        )
-                                        : 'Salvar'
-                            }
+                            {processing ? (
+                                'Salvando...'
+                            ) : isTimedMessageShown ? (
+                                flash?.success ? (
+                                    <div className="flex items-center gap-2">
+                                        Salvo! <CheckIcon className="h-16 w-16" />
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        Erro! <XIcon className="h-16 w-16" />
+                                    </div>
+                                )
+                            ) : (
+                                'Salvar'
+                            )}
                         </Button>
                     </div>
                 </div>
             </Modal>
 
             <Modal show={showMentions} onClose={closeMentionModal}>
-                <div className="p-4 h-100">
-                    <h2 className="text-lg font-semibold mb-4">Mencionar</h2>
+                <div className="h-100 p-4">
+                    <h2 className="mb-4 text-lg font-semibold">Mencionar</h2>
                     <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
                     <LazyLoadingSelect
                         options={fetchedMentions}
@@ -375,7 +362,7 @@ export default function HtmlEditor({
                                 editorRef?.current?.execCommand(
                                     'mceInsertContent',
                                     false,
-                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.uuid}" href="${option.route}">${option.label}</a></span>`
+                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.uuid}" href="${option.route}">${option.label}</a></span>`,
                                 );
                                 setSelectedMention(null);
                                 setShowMentions(false);
