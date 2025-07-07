@@ -11,12 +11,16 @@ import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-se
 import { MultiValue } from 'react-select';
 import { SearchResult } from '@/types/search-result';
 
+// type DateWithTimezone =
+
 export default function Index({
     review,
 }: {
     review: { data: Review };
 }) {
     const isEdit = !!review;
+
+    console.log(review);
 
     const { data, setData, post, patch, errors, processing } = useForm({
         title: review ? review.data.title : '',
@@ -84,7 +88,7 @@ export default function Index({
                                     <Input
                                         id="date"
                                         type="date"
-                                        value={data.date ?? ''}
+                                        value={data.date}
                                         onChange={(e) => setData('date', e.target.value)}
                                         autoComplete="date"
                                         className="w-full"

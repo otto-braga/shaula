@@ -51,6 +51,7 @@ export default function HtmlEditor({
     const toolbar =
         'undo redo | ' +
         (hasGallery ? 'gallery | ' : '') +
+        'media | ' +
         (hasMentions ? 'mentions | ' : '') +
         'bold italic forecolor | alignleft aligncenter ' +
         'alignright alignjustify |  outdent indent | ' +
@@ -82,7 +83,7 @@ export default function HtmlEditor({
         setData('filesToRemove', imagesToRemove);
     }, [imagesToRemove]);
 
-    const { flash } = usePage().props;
+    const { flash } = usePage().props as { error?: boolean, flash?: { success?: boolean } };
 
     const timedMessageDuration: number = 3000;
     const [isTimedMessageShown, setIsTimedMessageShown] = useState<boolean>(false);

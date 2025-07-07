@@ -113,7 +113,7 @@ export default function Index({ q }: { q: string }) {
         // Redefine o estado 'filter' para o estado inicial (todos os valores vazios)
         // com base na estrutura de 'fetchedFilter'
         setFilter(
-            fetchedFilter.map((option: FilterOption) => ({
+            fetchedFilter.map((option: SearchFilterOption) => ({
                 name: option.name,
                 value: [],
                 label: option.label,
@@ -124,7 +124,7 @@ export default function Index({ q }: { q: string }) {
 
     return (
         <PublicLayout head="SHAULA">
-            <MobileDetailBar title={`Filtros`}>
+            {/* <MobileDetailBar title={`Filtros`}>
                 <div>
                     <div className="flex justify-end">
                         {appliedFilterNumber > 0 && (
@@ -178,9 +178,9 @@ export default function Index({ q }: { q: string }) {
                             ))}
                     </div>
                 </div>
-            </MobileDetailBar>
+            </MobileDetailBar> */}
             <div className="grid divide-x px-4 py-4 md:grid-cols-5 md:px-8">
-                <section className="col-span-1 hidden space-y-3 lg:block">
+                {/* <section className="col-span-1 hidden space-y-3 lg:block">
                     <div className="flex justify-between py-2">
                         <h1 className="">Filtros</h1>
                         <div className="mr-3 flex justify-end">
@@ -228,7 +228,11 @@ export default function Index({ q }: { q: string }) {
                                 </Accordion>
                             ))}
                     </div>
-                </section>
+
+
+
+                </section> */}
+
                 <section className="space-y-8 md:col-span-4 md:pl-8">
                     <h1 className="">Resultados da busca por "{q}"</h1>
                     <div className="space-y-4">

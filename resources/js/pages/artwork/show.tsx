@@ -1,6 +1,7 @@
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { SourceCard } from '@/components/ui/source-card';
 import PublicLayout from '@/layouts/public-layout';
+import { formatDate } from '@/lib/utils';
 import { Artwork } from '@/types/artwork';
 import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
@@ -33,7 +34,6 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                 ))}
                             </div>
                         )}
-
                         {artwork.data.periods.length > 0 && (
                             <div className="">
                                 <p className="font-semibold">Períodos</p>
@@ -84,7 +84,6 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                             </Link>
                         ))}
                     </div>
-
                     {artwork.data.categories.length > 0 && (
                         <div className="">
                             <p className="font-semibold">Categorias</p>
