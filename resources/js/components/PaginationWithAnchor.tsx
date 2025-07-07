@@ -13,7 +13,7 @@ interface PaginationProps {
     anchor?: string;
 }
 
-export default function Pagination({ links, className = '', anchor = '' }: PaginationProps) {
+export default function PaginationWithAnchor({ links, className = '', anchor = '' }: PaginationProps) {
     function getLabel(label: string) {
         if (label === '&laquo; Previous') {
             return <ChevronLeft className="h-8 w-8" />;

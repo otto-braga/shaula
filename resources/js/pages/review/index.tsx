@@ -1,8 +1,8 @@
 import PublicLayout from '@/layouts/public-layout';
 
-import Pagination from '@/components/Pagination';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 
+import PaginationWithAnchor from '@/components/PaginationWithAnchor';
 import { PaginatedData } from '@/types/paginated-data';
 import { Review } from '@/types/review';
 import { Link } from '@inertiajs/react';
@@ -138,7 +138,7 @@ export default function Index({
                             </div>
                         </Link>
                     ))}
-                    <Pagination links={reviews.meta.links} anchor="#criticas" />
+                    <PaginationWithAnchor links={reviews.meta.links} anchor="#criticas" />
                 </div>
                 <div className="md:col-span-1">
                     <div className="divide-y">

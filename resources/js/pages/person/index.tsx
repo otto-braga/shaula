@@ -1,4 +1,4 @@
-import Pagination from '@/components/Pagination';
+import PaginationWithAnchor from '@/components/PaginationWithAnchor';
 import PublicLayout from '@/layouts/public-layout';
 import { PaginatedData } from '@/types/paginated-data';
 import { Person } from '@/types/person';
@@ -30,7 +30,7 @@ export default function Index({ people }: { people: PaginatedData<Person> }) {
                     ))}
                 </div>
                 <div className="flex justify-center">
-                    <Pagination links={people.meta.links} />
+                    <PaginationWithAnchor links={people.meta.links} />
                 </div>
             </section>
         </PublicLayout>
