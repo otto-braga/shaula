@@ -17,7 +17,7 @@ class PeriodFactory extends Factory
         $endDate = $this->faker->dateTimeBetween($startDate, 'now');
 
         return [
-            'name' => 'periodo '.$this->faker->unique()->word,
+            'name' => $this->faker->unique()->word,
             'start_date' => $startDate,
             'end_date' => $endDate,
         ];
