@@ -14,9 +14,9 @@ import 'lightgallery/scss/lg-zoom.scss';
 import 'lightgallery/scss/lightgallery.scss';
 
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
+import { SourceCard } from '@/components/ui/source-card';
 import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
-import { ArrowUpRight } from 'lucide-react';
 
 export default function Show({ historyArticle }: { historyArticle: { data: HistoryArticle } }) {
     console.log(historyArticle.data);
@@ -24,34 +24,46 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
         <PublicLayout head="História">
             {/* barra inferior para informações do artigo, apenas mobile */}
             <MobileDetailBar>
-                <div className="pb-3 md:pr-6 md:pb-6">
-                    <h3 className="">Período</h3>
-                    <p className="text-xl font-medium">{historyArticle.data.periods[0].name}</p>
-                    <div dangerouslySetInnerHTML={{ __html: historyArticle.data.periods[0].content }} className="mt-4 line-clamp-5 text-slate-500" />
-                    <div className="mt-6 flex justify-end">
-                        <Link href="#">
-                            <div className="flex items-center gap-1 text-lg hover:underline">
-                                <span>Ver mais</span>
-                                <ArrowUpRight />
-                            </div>
-                        </Link>
+                <div className="space-y-3 divide-y *:pb-3">
+                    <div className="pb-3 md:pr-6 md:pb-6">
+                        <h3 className="">Período</h3>
+                        {historyArticle.data.periods.map((period) => (
+                            <p className="text-xl font-medium">{period.name}</p>
+                        ))}
                     </div>
-                </div>
-                <div className="space-y-3 border-t pt-3 text-lg">
                     <div>
-                        <p className="font-medium">Autoria</p>
+                        <p className="mb-2 font-medium">Autoria</p>
                         {historyArticle.data.authors.map((author) => (
                             <Link href={route('public.people.show', author)} key={author.uuid}>
                                 <p className="hover:underline">{author.name}</p>
                             </Link>
                         ))}
                     </div>
-
                     {historyArticle.data.categories.length > 0 && (
                         <div className="mt-4">
-                            <p className="font-medium">Categorias</p>
+                            <p className="mb-2 font-medium">Categorias</p>
                             {historyArticle.data.categories.map((category) => (
                                 <p>{category.name}</p>
+                            ))}
+                        </div>
+                    )}
+                    <div className="">
+                        <p className="font-medium">Menções</p>
+                        <div className="mt-2 flex flex-col gap-1">
+                            {historyArticle.data.mentions.map((mention, index) => (
+                                <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                    <p className="line-clamp-1">{mention['name']}</p>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                    {historyArticle.data.sources.length > 0 && (
+                        <div className="space-y-2">
+                            <p className="font-semibold">Fontes</p>
+                            {historyArticle.data.sources.map((source, index) => (
+                                <div key={'source' + index}>
+                                    <SourceCard source={source} className="line-clamp-1" />
+                                </div>
                             ))}
                         </div>
                     )}
@@ -65,38 +77,49 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
 
             <main className="grid gap-12 p-4 pt-8 pb-20 md:grid-cols-6 md:divide-x-1 md:px-8">
                 {/* infomações sobre o artigo */}
-                <section className="hidden md:col-span-2 md:space-y-6 md:divide-y lg:block lg:pr-12">
-                    <div className="md:pr-6 md:pb-6">
-                        <h3 className="">Período</h3>
-                        <p className="text-xl font-medium">{historyArticle.data.periods[0].name}</p>
-                        <div
-                            dangerouslySetInnerHTML={{ __html: historyArticle.data.periods[0].content }}
-                            className="mt-4 line-clamp-5 text-slate-500"
-                        />
-                        <div className="mt-6 flex justify-end">
-                            <Link href="#">
-                                <div className="flex items-center gap-1 hover:underline">
-                                    <span>Ver mais</span>
-                                    <ArrowUpRight />
-                                </div>
-                            </Link>
+                <section className="hidden md:col-span-2 md:space-y-3 md:divide-y lg:block lg:pr-12">
+                    <div className="space-y-3 divide-y *:pb-3">
+                        <div className="md:pr-6">
+                            <h3 className="">Períodos</h3>
+                            {historyArticle.data.periods.map((period) => (
+                                <Link href={route('public.periods.show', period)}>
+                                    <p className="text-xl font-medium">{period.name}</p>
+                                </Link>
+                            ))}
                         </div>
-                    </div>
-                    <div className="space-y-3 md:sticky md:top-24">
                         <div>
-                            <p className="font-medium">Autoria</p>
+                            <p className="mb-2 font-medium">Autoria</p>
                             {historyArticle.data.authors.map((author) => (
                                 <Link href={route('public.people.show', author)} key={author.uuid}>
                                     <p className="hover:underline">{author.name}</p>
                                 </Link>
                             ))}
                         </div>
-
                         {historyArticle.data.categories.length > 0 && (
                             <div className="mt-4">
-                                <p className="font-medium">Categorias</p>
+                                <p className="mb-2 font-medium">Categorias</p>
                                 {historyArticle.data.categories.map((category) => (
                                     <p>{category.name}</p>
+                                ))}
+                            </div>
+                        )}
+                        <div className="">
+                            <p className="font-medium">Menções</p>
+                            <div className="mt-2 flex flex-col gap-1">
+                                {historyArticle.data.mentions.map((mention, index) => (
+                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                        <p className="line-clamp-1">{mention['name']}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                        {historyArticle.data.sources.length > 0 && (
+                            <div className="space-y-2">
+                                <p className="font-semibold">Fontes</p>
+                                {historyArticle.data.sources.map((source, index) => (
+                                    <div key={'source' + index}>
+                                        <SourceCard source={source} className="line-clamp-1" />
+                                    </div>
                                 ))}
                             </div>
                         )}

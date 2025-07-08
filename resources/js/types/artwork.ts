@@ -24,8 +24,11 @@ export type Artwork = {
     mentions: Mention[];
     sources: Source[];
 
+    // Pessoas que não são autores, mas estão ligadas à obra por meio de uma atividade
     people: Person[];
+
     activities: Activity[];
+    
     pivot: {
         activity: Activity | null;
         is_author: boolean;

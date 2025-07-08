@@ -29,6 +29,8 @@ export type Person = {
 
     artworks: Artwork[];
     activities: Activity[];
+
+    // Atividades exercidas
     pivot: {
         activity: Activity | null;
         is_author: boolean;

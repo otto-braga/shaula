@@ -13,6 +13,7 @@ export default ({ children, head }: PublicLayoutProps) => (
         <div className="">
             <NavBar />
             <main className="mt-16">{children}</main>
+            <div className="mt-6 w-full border-t p-12"></div>
         </div>
     </>
 );
