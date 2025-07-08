@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\GenderResource;
 use App\Models\Gender;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class GenderController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $genders = Gender::all();
+        $genders = Gender::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/genders/index', [
             'genders' => GenderResource::collection($genders),

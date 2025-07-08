@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class ActivityController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $activities = Activity::all();
+        $activities = Activity::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/activities/index', [
             'activities' => ActivityResource::collection($activities),

@@ -17,7 +17,7 @@ class GenderFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'genero '.$this->faker->unique()->word,
+            'name' => $this->faker->unique()->word,
         ];
     }
 }

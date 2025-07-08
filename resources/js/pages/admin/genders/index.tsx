@@ -1,43 +1,52 @@
 import DeleteDialog from '@/components/common/delete-dialog';
 import GenderDialogForm from '@/components/gender/gender-dialog-form';
+import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
 import { Gender } from '@/types/gender';
 import { Head } from '@inertiajs/react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Identidades de Gênero',
-        href: '/admin/generos',
-    },
-];
+type Props = {
+    data: Gender[];
+    meta: PaginationProps;
+};
 
-export default function Index({ genders }: { genders: { data: Gender[] } }) {
+export default function Index({ genders }: { genders: Props }) {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Profile settings" />
-            <div className="mt-3 flex justify-end p-3">
-                <GenderDialogForm />
-            </div>
-            <div className="grid gap-4 p-3 md:grid-cols-3">
-                {genders.data.map((gender) => (
-                    <Card className="rounded" key={gender.uuid}>
-                        <CardHeader className="">
-                            <CardTitle>{gender.name}</CardTitle>
-                        </CardHeader>
-                        <CardFooter className="flex justify-end gap-2">
-                            <GenderDialogForm gender={gender} />
-                            <DeleteDialog
-                                resourceId={gender.uuid}
-                                resourceName={gender.name}
-                                deleteRoute="genders.destroy"
-                                onSuccess={() => window.location.reload()}
-                            />
-                        </CardFooter>
-                    </Card>
-                ))}
-            </div>
+        <AppLayout>
+            <Head title="Identidades de Gênero" />
+            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
+                <div className="mx-auto lg:px-8">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold">Identidades de Gênero</h1>
+                        <GenderDialogForm />
+                    </div>
+
+                    <PaginationControls pagination={genders.meta} className="mt-4" />
+
+                    <div className="grid gap-4 p-3 md:grid-cols-3">
+                        {genders.data.map((gender) => (
+                            <Card className="rounded" key={gender.uuid}>
+                                <CardHeader className="">
+                                    <CardTitle>{gender.name}</CardTitle>
+                                </CardHeader>
+                                <CardFooter className="flex justify-end gap-2">
+                                    <GenderDialogForm gender={gender} />
+                                    <DeleteDialog
+                                        resourceId={gender.uuid}
+                                        resourceName={gender.name}
+                                        deleteRoute="genders.destroy"
+                                        onSuccess={() => window.location.reload()}
+                                    />
+                                </CardFooter>
+                            </Card>
+                        ))}
+                    </div>
+
+                    <PaginationControls pagination={genders.meta} className="mt-4" />
+
+                </div>
+            </section>
         </AppLayout>
     );
 }

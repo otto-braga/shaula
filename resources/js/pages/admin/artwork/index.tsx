@@ -1,30 +1,35 @@
 import DeleteDialog from '@/components/common/delete-dialog';
+import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Artwork } from '@/types/artwork';
+import { Person } from '@/types/person';
 import { Head, Link } from '@inertiajs/react';
 import { Edit, Eye } from 'lucide-react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Obras',
-        href: '/admin/artwork',
-    },
-];
+type Props = {
+    data: Artwork[];
+    meta: PaginationProps;
+};
 
-export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
+export default function Index({ artworks }: { artworks: Props }) {
+    console.log(artworks);
+
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Produções" />
+        <AppLayout>
+            <Head title="Obras" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
-                    <div className="flex justify-end">
+                    <div className="flex justify-between items-center">
+                        <h1 className="text-2xl font-bold">Obras</h1>
                         <Link href={route('artworks.create')} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>
+
+                    <PaginationControls pagination={artworks.meta} className="mt-4" />
+
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {artworks?.data?.map((artwork) => (
                             <Card key={artwork.uuid} className="flex flex-col justify-between">
@@ -43,7 +48,7 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                                 <CardContent>
                                     <div>
                                         <p className="text-sm">Autores</p>
-                                        <p>{artwork.authors.map((author) => author.name).join(', ')}</p>
+                                        <p>{artwork.authors.map((author: Person) => author.name).join(', ')}</p>
                                     </div>
                                 </CardContent>
                                 <CardFooter>
@@ -69,6 +74,9 @@ export default function Index({ artworks }: { artworks: { data: Artwork[] } }) {
                             </Card>
                         ))}
                     </div>
+
+                    <PaginationControls pagination={artworks.meta} className="mt-4" />
+
                 </div>
             </section>
         </AppLayout>

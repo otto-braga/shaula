@@ -17,7 +17,7 @@ class SourceCategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'categoria de fonte ' . $this->faker->unique()->word,
+            'name' => $this->faker->unique()->word,
         ];
     }
 }

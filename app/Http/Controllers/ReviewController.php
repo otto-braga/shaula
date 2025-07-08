@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\SyncsAuthors;
 use App\Traits\UpdatesContent;
@@ -20,7 +21,8 @@ class ReviewController extends Controller
         ParsesUuids,
         SyncsAuthors,
         UpdatesImages,
-        UpdatesContent;
+        UpdatesContent,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -29,7 +31,7 @@ class ReviewController extends Controller
     {
         $reviews = Review::latest()
             ->latest()
-            ->get();
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/review/index', [
             'reviews' => ReviewResource::collection($reviews),
