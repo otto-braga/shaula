@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\SourceCategoryResource;
 use App\Models\SourceCategory;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 
 class SourceCategoryController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $souceCategories = SourceCategory::all();
+        $souceCategories = SourceCategory::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return inertia('admin/sourceCategories/index', [
             'sourceCategories' => SourceCategoryResource::collection($souceCategories),

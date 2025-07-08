@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $categories = Category::latest()
-            ->get();
+        $categories = Category::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/categories/index', [
             'categories' => CategoryResource::collection($categories),

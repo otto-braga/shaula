@@ -8,6 +8,7 @@ use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
 use App\Models\Artwork;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\SyncsAuthors;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
@@ -24,7 +25,8 @@ class ArtworkController extends Controller
         SyncsAuthors,
         UpdatesPeople,
         UpdatesImages,
-        UpdatesContent;
+        UpdatesContent,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -33,7 +35,7 @@ class ArtworkController extends Controller
     {
         $artworks = Artwork::query()
             ->latest()
-            ->paginate(2);
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/artwork/index', [
             'artworks' => ArtworkResource::collection($artworks),

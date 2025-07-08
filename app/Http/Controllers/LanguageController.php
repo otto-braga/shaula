@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\LanguageResource;
 use App\Models\Language;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class LanguageController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $languages = Language::all();
+        $languages = Language::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/languages/index', [
             'languages' => LanguageResource::collection($languages),

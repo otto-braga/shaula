@@ -4,13 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\AwardResource;
 use App\Models\Award;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 
 class AwardController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $awards = Award::all();
+        $awards = Award::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return inertia('admin/awards/index', [
             'awards' => AwardResource::collection($awards),

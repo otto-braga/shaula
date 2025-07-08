@@ -4,14 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\CityResource;
 use App\Models\City;
+use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class CityController extends Controller
 {
+    use
+        HasCommonPaginationConstants;
+
     public function index()
     {
-        $cities = City::all();
+        $cities = City::query()
+            ->orderBy('name')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/cities/index', [
             'cities' => CityResource::collection($cities),

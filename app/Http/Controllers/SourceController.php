@@ -6,6 +6,7 @@ use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\HasFile;
 use App\Traits\HasMention;
 use App\Traits\ParsesUuids;
@@ -16,7 +17,8 @@ class SourceController extends Controller
 {
     use
         HandlesFiles,
-        ParsesUuids;
+        ParsesUuids,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -25,7 +27,7 @@ class SourceController extends Controller
     {
         $sources = Source::query()
             ->latest()
-            ->get();
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return inertia('admin/sources/index', [
             'sources' => SourceResource::collection($sources),

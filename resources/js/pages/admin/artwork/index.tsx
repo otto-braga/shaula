@@ -1,7 +1,7 @@
 import DeleteDialog from '@/components/common/delete-dialog';
 import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
 import { Person } from '@/types/person';
@@ -18,7 +18,7 @@ export default function Index({ artworks }: { artworks: Props }) {
 
     return (
         <AppLayout>
-            <Head title="Produções" />
+            <Head title="Obras" />
             <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-between items-center">
@@ -74,6 +74,9 @@ export default function Index({ artworks }: { artworks: Props }) {
                             </Card>
                         ))}
                     </div>
+
+                    <PaginationControls pagination={artworks.meta} className="mt-4" />
+
                 </div>
             </section>
         </AppLayout>

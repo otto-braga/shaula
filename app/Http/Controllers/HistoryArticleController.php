@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\HistoryArticleResource;
 use App\Models\HistoryArticle;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\SyncsAuthors;
 use App\Traits\UpdatesContent;
@@ -19,7 +20,8 @@ class HistoryArticleController extends Controller
         ParsesUuids,
         SyncsAuthors,
         UpdatesImages,
-        UpdatesContent;
+        UpdatesContent,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -28,7 +30,7 @@ class HistoryArticleController extends Controller
     {
         $historyArticles = HistoryArticle::query()
             ->latest()
-            ->get();
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),

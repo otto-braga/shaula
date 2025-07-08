@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
@@ -17,7 +18,8 @@ class PeriodController extends Controller
         HandlesFiles,
         ParsesUuids,
         UpdatesImages,
-        UpdatesContent;
+        UpdatesContent,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -26,7 +28,7 @@ class PeriodController extends Controller
     {
         $periods = Period::query()
             ->latest()
-            ->get();
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/period/index', [
             'periods' => PeriodResource::collection($periods),

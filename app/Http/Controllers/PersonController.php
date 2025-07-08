@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Resources\PersonResource;
 use App\Models\Person;
 use App\Traits\HandlesFiles;
+use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
@@ -17,7 +18,8 @@ class PersonController extends Controller
         HandlesFiles,
         ParsesUuids,
         UpdatesImages,
-        UpdatesContent;
+        UpdatesContent,
+        HasCommonPaginationConstants;
 
     // -------------------------------------------------------------------------
     // INDEX
@@ -26,10 +28,10 @@ class PersonController extends Controller
     {
         $people = Person::query()
             ->latest()
-            ->paginate(2);
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/person/index', [
-            'people' => $people,
+            'people' => PersonResource::collection($people),
         ]);
     }
 
