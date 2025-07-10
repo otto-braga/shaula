@@ -1,7 +1,7 @@
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 import {
@@ -13,10 +13,12 @@ import {
     Clock,
     ContactRound,
     Folder,
+    FolderArchive,
     LayoutGrid,
     PersonStanding,
     Text,
     Transgender,
+    Workflow,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -97,6 +99,19 @@ const auxNavItems: NavItem[] = [
     },
 ];
 
+const adminNavItems: NavItem[] = [
+    {
+        title: 'Funções',
+        href: route('roles.index'),
+        icon: Workflow,
+    },
+    {
+        title: 'Usuários',
+        href: route('users.index'),
+        icon: PersonStanding,
+    },
+];
+
 const footerNavItems: NavItem[] = [
     // {
     //     title: 'Repository',
@@ -125,11 +140,22 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
+            <SidebarSeparator />
+
             <SidebarContent>
                 <NavMain items={mainNavItems} title="Conteúdo" />
             </SidebarContent>
+
+            <SidebarSeparator />
+
             <SidebarContent>
                 <NavMain items={auxNavItems} title="Auxiliares" />
+            </SidebarContent>
+
+            <SidebarSeparator />
+
+            <SidebarContent>
+                <NavMain items={adminNavItems} title="Administrativos" />
             </SidebarContent>
 
             <SidebarFooter>

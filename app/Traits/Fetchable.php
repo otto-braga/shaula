@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Schema;
 
 trait Fetchable
 {
-    public function scopeFetchAsSelectOption(Builder $query, $q = null, $limit = 5)
+    public function scopeFetchAsSelectOptions(Builder $query, $q = null, $limit = 5)
     {
         if ($q) {
             if (Schema::hasColumn($this->getTable(), 'name')) {

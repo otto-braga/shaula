@@ -11,6 +11,8 @@ class TestSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(GenderSeeder::class);
         $this->call(CitySeeder::class);
         $this->call(ActivitySeeder::class);

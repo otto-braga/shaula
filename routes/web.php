@@ -47,8 +47,10 @@ use App\Http\Controllers\Public\SearchPublicController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SourceCategoryController;
 use App\Http\Controllers\SourceController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -103,6 +105,20 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
     Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
 
+    // Roles
+    Route::get('funcoes', [RoleController::class, 'index'])->name('roles.index');
+    Route::post('funcoes/store', [RoleController::class, 'store'])->name('roles.store');
+    Route::put('funcoes/{role:uuid}/update', [RoleController::class, 'update'])->name('roles.update');
+    Route::delete('funcoes/{role:uuid}/delete', [RoleController::class, 'destroy'])->name('roles.destroy');
+    Route::get('funcoes/fetch/options', [RoleController::class, 'fetchSelectOptions'])->name('roles.fetch.options');
+
+    // Users
+    Route::get('usuarios', [UserController::class, 'index'])->name('users.index');
+    Route::get('usuarios/{user:uuid}/editar', [UserController::class, 'edit'])->name('users.edit');
+    Route::post('usuarios/{user:uuid}/update', [UserController::class, 'update'])->name('users.update');
+    Route::delete('usuarios/{user:uuid}/delete', [UserController::class, 'destroy'])->name('users.destroy');
+    Route::get('usuarios/fetch/options', [UserController::class, 'fetchSelectOptions'])->name('users.fetch.options');
+
     // Genders
     Route::get('generos', [GenderController::class, 'index'])->name('genders.index');
     Route::post('generos/store', [GenderController::class, 'store'])->name('genders.store');
@@ -151,7 +167,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('periodos/store', [PeriodController::class, 'store'])->name('periods.store');
     Route::get('periodos/{period:slug}', [PeriodController::class, 'show'])->name('periods.show');
     Route::get('periodos/{period:slug}/editar', [PeriodController::class, 'edit'])->name('periods.edit');
-    Route::put('periodos/{period:slug}/update', [PeriodController::class, 'update'])->name('periods.update');
+    Route::post('periodos/{period:slug}/update', [PeriodController::class, 'update'])->name('periods.update');
     Route::get('periodos/{period:slug}/editar/imagens', [PeriodController::class, 'editImages'])->name('periods.edit.images');
     Route::post('periodos/{period:slug}/update/images', [PeriodController::class, 'updateImages'])->name('periods.update.images');
     Route::get('periodos/{period:slug}/editar/conteudo', [PeriodController::class, 'editContent'])->name('periods.edit.content');
