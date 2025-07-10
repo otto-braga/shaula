@@ -107,16 +107,13 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
 
     // Roles
     Route::get('funcoes', [RoleController::class, 'index'])->name('roles.index');
-    Route::post('funcoes/store', [RoleController::class, 'store'])->name('roles.store');
-    Route::put('funcoes/{role:uuid}/update', [RoleController::class, 'update'])->name('roles.update');
-    Route::delete('funcoes/{role:uuid}/delete', [RoleController::class, 'destroy'])->name('roles.destroy');
     Route::get('funcoes/fetch/options', [RoleController::class, 'fetchSelectOptions'])->name('roles.fetch.options');
+    Route::get('funcoes/fetch/options/all', [RoleController::class, 'fetchAllSelectOptions'])->name('roles.fetch.options.all');
 
     // Users
     Route::get('usuarios', [UserController::class, 'index'])->name('users.index');
     Route::get('usuarios/{user:uuid}/editar', [UserController::class, 'edit'])->name('users.edit');
     Route::post('usuarios/{user:uuid}/update', [UserController::class, 'update'])->name('users.update');
-    Route::delete('usuarios/{user:uuid}/delete', [UserController::class, 'destroy'])->name('users.destroy');
     Route::get('usuarios/fetch/options', [UserController::class, 'fetchSelectOptions'])->name('users.fetch.options');
 
     // Genders

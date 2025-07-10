@@ -14,15 +14,18 @@ class RoleSeeder extends Seeder
     {
         // Create default roles
         \App\Models\Role::create([
-            'name' => 'dev'
+            'name' => 'dev',
+            'description' => 'Desenvolvedor. Acesso total ao sistema.',
         ]);
 
         \App\Models\Role::create([
             'name' => 'Coordenador',
+            'description' => 'Coordenador. Acesso total ao sistema, exceto configurações administrativas.',
         ]);
 
         \App\Models\Role::create([
             'name' => 'Membro',
+            'description' => 'Membro. Acesso limitado a funcionalidades básicas do sistema.',
         ]);
     }
 }

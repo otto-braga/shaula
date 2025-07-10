@@ -23,51 +23,6 @@ class RoleController extends Controller
         ]);
     }
 
-    public function store(Request $request)
-    {
-        try {
-            Role::create([
-                'name' => $request->name,
-            ]);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Exception $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    public function update(Request $request, Role $role)
-    {
-        try {
-            $role->update([
-                'name' => $request->name,
-            ]);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Exception $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    public function destroy(Role $role)
-    {
-        try {
-            $role->delete();
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Exception $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
 
     // -------------------------------------------------------------------------
     // FETCH
@@ -75,5 +30,10 @@ class RoleController extends Controller
     public function fetchSelectOptions(Request $request)
     {
         return Role::fetchAsSelectOptions($request->q);
+    }
+
+    public function fetchAllSelectOptions()
+    {
+        return Role::fetchAllAsSelectOptions();
     }
 }

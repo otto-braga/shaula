@@ -33,4 +33,18 @@ trait Fetchable
             'results' => SearchResultResource::collection($results),
         ]);
     }
+
+    public static function fetchAllAsSelectOptions()
+    {
+        $results = self::all()->map(function ($item) {
+            return [
+                'label' => $item->name ?? $item->title,
+                'uuid' => $item->uuid,
+            ];
+        })->toArray();
+
+        return response()->json([
+            'results' => SearchResultResource::collection($results),
+        ]);
+    }
 }

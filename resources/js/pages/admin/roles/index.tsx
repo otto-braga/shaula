@@ -1,5 +1,3 @@
-import DeleteDialog from '@/components/common/delete-dialog';
-import RoleDialogForm from '@/components/role/role-dialog-form';
 import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
@@ -19,7 +17,6 @@ export default function Index({ roles }: { roles: Props }) {
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold">Funções</h1>
-                        <RoleDialogForm />
                     </div>
 
                     <PaginationControls pagination={roles.meta} className="mt-4" />
@@ -30,14 +27,10 @@ export default function Index({ roles }: { roles: Props }) {
                                 <CardHeader className="">
                                     <CardTitle>{role.name}</CardTitle>
                                 </CardHeader>
+                                <div className="p-3 text-sm text-gray-600 dark:text-gray-400">
+                                    {role.description}
+                                </div>
                                 <CardFooter className="flex justify-end gap-2">
-                                    <RoleDialogForm role={role} />
-                                    <DeleteDialog
-                                        resourceId={role.uuid}
-                                        resourceName={role.name}
-                                        deleteRoute="roles.destroy"
-                                        onSuccess={() => window.location.reload()}
-                                    />
                                 </CardFooter>
                             </Card>
                         ))}
