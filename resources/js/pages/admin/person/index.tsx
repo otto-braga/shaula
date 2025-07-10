@@ -5,7 +5,7 @@ import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Person } from '@/types/person';
 import { Head, Link } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
+import { AdminSearchBar } from '@/components/admin-search-bar/admin-search-bar';
 
 type Props = {
     data: Person[];
@@ -28,7 +28,10 @@ export default function Index({ people }: { people: Props }) {
                     </div>
                 </div>
 
-                <PaginationControls pagination={people.meta} className="mt-4" />
+                <div className="flex flex-row justify-between items-center mt-4">
+                    <AdminSearchBar route="people.index" />
+                    <PaginationControls pagination={people.meta} />
+                </div>
 
                 <div className="grid gap-4 p-3 md:grid-cols-3">
                     {people.data.map((person) => (

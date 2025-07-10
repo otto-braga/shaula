@@ -26,7 +26,11 @@ class PersonController extends Controller
 
     public function index()
     {
-        $people = Person::query()
+        $people = Person::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
