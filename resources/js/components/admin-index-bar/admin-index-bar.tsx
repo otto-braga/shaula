@@ -8,7 +8,7 @@ export type AdminIndexBarProps = {
 
 function AdminIndexBar(props : AdminIndexBarProps) {
     return (
-        <div className="flex flex-row justify-between items-center mt-4">
+        <div className="flex flex-col justify-between items-center mt-4">
             <AdminSearchBar route={props.index_route} />
             <PaginationControls pagination={props.pagination_meta} />
         </div>

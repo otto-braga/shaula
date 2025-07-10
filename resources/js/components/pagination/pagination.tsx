@@ -18,7 +18,7 @@ export type PaginationProps = {
 function PaginationControls({ pagination, className }: { pagination: PaginationProps } & { className?: string }) {
     return (
         <div className={`${className}`}>
-            <div className="flex flex-col items-center justify-between p-3">
+            <div className="flex flex-col items-center justify-between m-4">
                 <div className="flex items-center gap-2">
                     <Button
                         variant="outline"
