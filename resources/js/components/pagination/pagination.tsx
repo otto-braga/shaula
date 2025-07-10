@@ -1,32 +1,18 @@
 import { Button } from '@/components/ui/button';
-import Select, { MultiValue, SingleValue, components } from 'react-select';
-import { isNumberObject } from 'util/types';
+import Select, { SingleValue } from 'react-select';
 
-export type PaginationPropsOld = {
-    data: any[];
+type PaginationLink = {
+    url: string | null;
+    label: string;
+    active: boolean;
+}
+
+export type PaginationProps = {
     current_page: number;
     last_page: number;
     per_page: number;
     total: number;
-    first_page_url: string;
-    last_page_url: string;
-    next_page_url: string | null;
-    prev_page_url: string | null;
-}
-
-export type PaginationProps = {
-    // data: any[];
-    // meta: {
-        current_page: number;
-        last_page: number;
-        per_page: number;
-        total: number;
-        links: {
-            url: string | null;
-            label: string;
-            active: boolean;
-        }[];
-    // }
+    links: PaginationLink[];
 }
 
 function PaginationControls({ pagination, className }: { pagination: PaginationProps } & { className?: string }) {
@@ -53,20 +39,19 @@ function PaginationControls({ pagination, className }: { pagination: PaginationP
 
                     <Select
                         className="w-24"
+                        getOptionLabel={(option) => option.label}
+                        getOptionValue={(option: PaginationLink) => option.url || ''}
                         options={pagination.links
                             .filter((link, index) => index !== 0 && index !== pagination.links.length - 1)
                             .map((link, index) => ({
-                                value: link.url || '',
+                                url: link.url || '',
                                 label: link.label,
-                                isDisabled: !link.url,
-                                isSelected: link.active,
+                                active: link.active,
                             }))
                         }
-                        value={pagination.links.find(link => link.active) || { value: '', label: 'Página atual' }}
-                        onChange={(option: SingleValue<{ value: string; label: string }>) => {
-                            if (option && option.value) {
-                                window.location.href = option.value;
-                            }
+                        value={pagination.links.find(link => link.active) || { url: '', label: 'Página atual', active: true }}
+                        onChange={(option: SingleValue<PaginationLink>) => {
+                            window.location.href = option?.url || '';
                         }}
                         isSearchable={false}
                         isClearable={false}
@@ -78,23 +63,6 @@ function PaginationControls({ pagination, className }: { pagination: PaginationP
                             }),
                         }}
                     />
-
-                    {/* {pagination.links
-                        .filter((link, index) => index !== 0 && index !== pagination.links.length - 1)
-                        .map((link, index) => (
-                            <Button
-                                key={index}
-                                variant={link.active ? 'default' : 'outline'}
-                                size="sm"
-                                className={link.active ? 'bg-blue-500 text-white' : ''}
-                                onClick={
-                                    () => link.url && window.location.href === link.url ? undefined : window.location.href = link.url || ''
-                                }
-                            >
-                                {link.label}
-                            </Button>
-                        )
-                    )} */}
 
                     <Button
                         variant="outline"
@@ -113,9 +81,6 @@ function PaginationControls({ pagination, className }: { pagination: PaginationP
                         {'>>'}
                     </Button>
                 </div>
-                {/* <p className="text-sm text-gray-500 mt-2">
-                    página {pagination.current_page} de {pagination.last_page}
-                </p> */}
             </div>
         </div>
     );
