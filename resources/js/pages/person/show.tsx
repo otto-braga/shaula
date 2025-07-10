@@ -65,13 +65,13 @@ export default function Index({ person }: { person: { data: Person } }) {
                 </section>
                 {/* bio e crono */}
                 <section className="mt-6 border-t pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 md:pr-4">
-                    <div className="md:sticky md:top-24">
-                        <div className="space-y-1">
-                            <h2 className="font-medium">Biografia</h2>
+                    <div className="space-y-4 md:sticky md:top-24">
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-medium uppercase">BIOGRAFIA</h2>
                             <div dangerouslySetInnerHTML={{ __html: person.data.content }} className="pb-6 text-lg" />
                         </div>
-                        <div className="space-y-1">
-                            <h2 className="font-medium">Cronologia</h2>
+                        <div className="space-y-3">
+                            <h2 className="text-xl font-medium uppercase">CRONOLOGIA</h2>
                             <div dangerouslySetInnerHTML={{ __html: person.data.chronology }} className="pb-6 text-lg" />
                         </div>
                     </div>
@@ -80,10 +80,10 @@ export default function Index({ person }: { person: { data: Person } }) {
                 <section className="space-y-6 divide-y border-t pt-6 pb-3 md:col-span-2 md:border-0 md:pt-0">
                     {person.data.reviews.length > 0 && (
                         <div className="pb-6">
-                            <h2 className="mb-6 text-xl font-medium">CRÍTICAS</h2>
-                            <div className="group grid cursor-pointer grid-cols-1 gap-4">
+                            <h2 className="mb-6 text-xl font-medium uppercase">CRÍTICAS</h2>
+                            <div className="grid cursor-pointer grid-cols-1 gap-8">
                                 {person.data.reviews.map((review) => (
-                                    <Link href={route('public.reviews.show', review)} key={review.uuid}>
+                                    <Link href={route('public.reviews.show', review)} key={review.uuid} className="group">
                                         <div key={review.uuid} className="flex items-start gap-3">
                                             <img
                                                 src={`${review.primary_image ? review.primary_image.path : 'https://placehold.co/1280x900'}`}
@@ -107,8 +107,45 @@ export default function Index({ person }: { person: { data: Person } }) {
 
                     {person.data.artworks.length > 0 && (
                         <div>
-                            <h2 className="mb-6 text-xl font-medium">OBRAS</h2>
-                            <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
+                            <h2 className="mb-6 text-xl font-medium uppercase">OBRAS</h2>
+                            <div className="grid grid-cols-2 gap-8">
+                                {(() => {
+                                    const columns = person.data.artworks.reduce(
+                                        (acc, artwork, index) => {
+                                            acc[index % 2].push(
+                                                <Link href={route('public.artworks.show', artwork.slug)} className="group" key={artwork.uuid}>
+                                                    <div key={artwork.uuid} className="relative">
+                                                        <img
+                                                            src={`${artwork.primary_image ? artwork.primary_image.path : 'https://placehold.co/1280x900'}`}
+                                                            alt="artwork Image"
+                                                            className="w-full"
+                                                        />
+                                                        <div className="mt-3">
+                                                            <h3 className="text-lg group-hover:underline">{artwork.title}</h3>
+                                                            <p className="text-sm text-slate-700">
+                                                                {artwork.pivot.is_author
+                                                                    ? 'Autoria'
+                                                                    : artwork.pivot.activity
+                                                                      ? `${artwork.pivot.activity.name}`
+                                                                      : ''}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </Link>,
+                                            );
+                                            return acc;
+                                        },
+                                        [[], []] as JSX.Element[][],
+                                    );
+
+                                    return columns.map((column, columnIndex) => (
+                                        <div key={columnIndex} className="flex flex-col gap-8">
+                                            {column}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
+                            {/* <div className="grid gap-8 md:grid-cols-1 lg:grid-cols-2">
                                 {person.data.artworks.map((artwork) => (
                                     <Link href={route('public.artworks.show', artwork.slug)} className="group" key={artwork.uuid}>
                                         <div key={artwork.uuid} className="relative">
@@ -130,10 +167,10 @@ export default function Index({ person }: { person: { data: Person } }) {
                                         </div>
                                     </Link>
                                 ))}
-                            </div>
+                            </div> */}
                         </div>
                         // <div className="pb-6">
-                        //     <h2 className="mb-6 text-xl font-medium">OBRAS</h2>
+                        //     <h2 className="mb-6 text-xl font-medium uppercase">OBRAS</h2>
                         //     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-2">
                         //         {person.data.artworks.map((artwork) => (
                         //             <Link href={route('public.artworks.show', artwork.slug)} key={artwork.uuid}>
