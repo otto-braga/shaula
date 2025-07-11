@@ -6,6 +6,7 @@ use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class RoleController extends Controller
 {
@@ -14,8 +15,15 @@ class RoleController extends Controller
 
     public function index()
     {
-        $roles = Role::query()
-            ->orderBy('name')
+        Gate::authorize('view', Role::class);
+
+        $roles = Role::query();
+
+        if (!Gate::allows('dev', Role::class)) {
+            $roles->where('name', '!=', 'dev');
+        }
+
+        $roles = $roles->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return inertia('admin/roles/index', [

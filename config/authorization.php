@@ -7,6 +7,7 @@ namespace App\Models;
 
 // Helper constants for permission groups
 // -----------------------------------------------------------------------------
+const DEV = ['dev', 'view', 'create', 'update', 'delete'];
 const ALL = ['view', 'create', 'update','delete',];
 const NO_DELETE = ['view','create','update',];
 const VIEW = ['view',];
@@ -25,27 +26,27 @@ return [
         'dev' => [
             'description' => 'Acesso total ao sistema.',
             'permissions' => [
-                Role::class => ALL,
-                User::class => ALL,
+                Role::class => DEV,
+                User::class => DEV,
 
-                Person::class => ALL,
-                Artwork::class => ALL,
-                Review::class => ALL,
-                Period::class => ALL,
-                HistoryArticle::class => ALL,
-                Source::class => ALL,
+                Person::class => DEV,
+                Artwork::class => DEV,
+                Review::class => DEV,
+                Period::class => DEV,
+                HistoryArticle::class => DEV,
+                Source::class => DEV,
 
-                Gender::class => ALL,
-                Activity::class => ALL,
-                City::class => ALL,
-                Language::class => ALL,
-                Category::class => ALL,
-                Award::class => ALL,
-                SourceCategory::class => ALL,
+                Gender::class => DEV,
+                Activity::class => DEV,
+                City::class => DEV,
+                Language::class => DEV,
+                Category::class => DEV,
+                Award::class => DEV,
+                SourceCategory::class => DEV,
             ],
         ],
         'Coordenador' => [
-            'description' => 'Acesso total ao sistema, exceto edição de funções e remoção de usuários.',
+            'description' => 'Acesso quase total ao sistema, exceto edição de funções e usuários. Pode atribuir funções a usuários.',
             'permissions' => [
                 Role::class => VIEW,
                 User::class => NO_DELETE,
@@ -68,7 +69,7 @@ return [
             ],
         ],
         'Editor' => [
-            'description' => 'Acesso limitado ao sistema. Pode criar e editar cadastros, mas não pode excluir.',
+            'description' => 'Acesso limitado ao sistema. Pode criar e editar cadastros dos conteúdos principais, mas não pode excluir.',
             'permissions' => [
                 Person::class => NO_DELETE,
                 Artwork::class => NO_DELETE,
@@ -92,6 +93,7 @@ return [
     // Define policy types and models which will use these policies.
     // -------------------------------------------------------------------------
     'types' => [
+        'dev',
         'view',
         'create',
         'update',

@@ -28,6 +28,11 @@ class BasePolicy
         return Response::deny();
     }
 
+    public function dev(User $user): Response
+    {
+        return $this->checkAuthorization($user, 'dev');
+    }
+
     public function view(User $user): Response
     {
         return $this->checkAuthorization($user, 'view');
