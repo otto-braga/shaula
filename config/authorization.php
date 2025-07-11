@@ -20,7 +20,7 @@ return [
     // Each role has a name, description, and a set of permissions.
     // Permissions are defined as an array of actions that the role can perform on a model.
     // The keys in the 'permissions' array should match the class names of the models they apply to.
-    // The values are arrays of actions that the role can perform on that model which are defined in the 'types' array.
+    // The values are arrays of actions that the role can perform on that model.
     // Example: Artwork::class => ['view', 'create', 'update', 'delete'].
     'roles' => [
         'dev' => [
@@ -87,21 +87,6 @@ return [
                 SourceCategory::class => NO_DELETE,
             ],
         ],
-    ],
-    // =========================================================================
-
-    // Define policy types and models which will use these policies.
-    // -------------------------------------------------------------------------
-    'types' => [
-        'dev',
-        'view',
-        'create',
-        'update',
-        'delete',
-    ],
-    'models' => [
-        Artwork::class,
-        Person::class,
     ],
 ];
 

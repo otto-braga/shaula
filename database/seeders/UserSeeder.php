@@ -18,27 +18,24 @@ class UserSeeder extends Seeder
             'name' => 'dev',
             'email' => 'dev@test.com',
         ]);
-        $user->roles()->attach(
-            Role::where('name', 'dev')->firstOrFail(),
-            ['is_default' => true]
-        );
+        $user->role()->associate(
+            Role::where('name', 'dev')->firstOrFail()
+        )->save();
 
         $user = User::factory()->create([
             'name' => 'Usuário Coordenador',
             'email' => 'coordinator@test.com',
         ]);
-        $user->roles()->attach(
-            Role::where('name', 'Coordenador')->firstOrFail(),
-            ['is_default' => true]
-        );
+        $user->role()->associate(
+            Role::where('name', 'Coordenador')->firstOrFail()
+        )->save();
 
         $user = User::factory()->create([
             'name' => 'Usuário Editor',
             'email' => 'editor@test.com',
         ]);
-        $user->roles()->attach(
-            Role::where('name', 'Editor')->firstOrFail(),
-            ['is_default' => true]
-        );
+        $user->role()->associate(
+            Role::where('name', 'Editor')->firstOrFail()
+        )->save();
     }
 }

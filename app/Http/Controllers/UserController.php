@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\Role;
 use App\Models\User;
 use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
@@ -27,7 +28,6 @@ class UserController extends Controller
         }
 
         $users = $users->orderBy('name')
-            ->with('roles')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/users/index', [
@@ -38,14 +38,19 @@ class UserController extends Controller
     public function edit(User $user)
     {
         return Inertia::render('admin/users/edit', [
-            'user' => new UserResource($user->load('roles'))
+            'user' => new UserResource($user)
         ]);
     }
 
     public function update(Request $request, User $user)
     {
         try {
-            $this->syncUuids($request->roles_uuids, $user->roles());
+            $role = Role::where('uuid', $request->role_uuid)->first();
+
+            if ($role) {
+                $user->role()->associate($role);
+                $user->save();
+            }
 
             session()->flash('success', true);
             return redirect()->back();

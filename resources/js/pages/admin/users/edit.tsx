@@ -18,8 +18,7 @@ export default function Index({
 
     const { data, setData, post, patch, errors, processing } = useForm({
         name: user ? user.name : '' as string,
-
-        roles_uuids: user ? user.roles.map((role) => role.uuid) : [] as string[],
+        role_uuid: user ? user.role?.uuid : '' as string,
     });
 
     const submit: FormEventHandler = (e) => {
@@ -56,18 +55,15 @@ export default function Index({
                             {isEdit}
 
                             <div>
-                                <Label htmlFor="roles_uuids">Funções</Label>
+                                <Label htmlFor="role_uuid">Função</Label>
                                 <SelectWithStates
-                                    isMulti
                                     routeName={'roles.fetch.options.all'}
-                                    value={user?.roles?.map(
-                                        role => ({ uuid: role.uuid, label: role.name })
-                                    )}
-                                    onChange={(options: MultiValue<SearchResult>) => {
-                                        setData('roles_uuids', options.map((option) => (option.uuid)))
+                                    value={{ uuid: user?.role.uuid, label: user?.role.name }}
+                                    onChange={(option: SearchResult) => {
+                                        setData('role_uuid', option.uuid)
                                     }}
                                 />
-                                <InputError className="mt-2" message={errors.roles_uuids} />
+                                <InputError className="mt-2" message={errors.role_uuid} />
                             </div>
 
                         </form>

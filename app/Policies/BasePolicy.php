@@ -15,12 +15,14 @@ class BasePolicy
 
     function checkAuthorization(User $user, string $permission_type): Response
     {
-        foreach ($user->roles as $user_role) {
-            foreach (config('authorization.roles') as $role_name => $role_data) {
-                if ($user_role->name === $role_name) {
-                    if (in_array($permission_type, $role_data['permissions'][static::CLASS_NAME] ?? [])) {
-                        return Response::allow();
-                    }
+        if ($user->role === null) {
+            return Response::deny('Não autorizado: usuário não possui nenhuma função atribuída.');
+        }
+
+        foreach (config('authorization.roles') as $role_name => $role_data) {
+            if ($user->role->name === $role_name) {
+                if (in_array($permission_type, $role_data['permissions'][static::CLASS_NAME] ?? [])) {
+                    return Response::allow();
                 }
             }
         }

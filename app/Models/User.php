@@ -7,7 +7,7 @@ namespace App\Models;
 use App\Traits\Fetchable;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -53,74 +53,8 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * The roles that belong to the user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function roles(): BelongsToMany
+    public function role(): BelongsTo
     {
-        return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
-    }
-
-    /**
-     * Check if the user has a specific role.
-     *
-     * @param string $roleName
-     * @return bool
-     */
-    public function hasRole(string $roleName): bool
-    {
-        return $this->roles()->where('name', $roleName)->exists();
-    }
-
-    /**
-     * Check if the user has any of the specified roles.
-     *
-     * @param list<string> $roleNames
-     * @return bool
-     */
-    public function hasAnyRole(array $roleNames): bool
-    {
-        return $this->roles()->whereIn('name', $roleNames)->exists();
-    }
-
-    /**
-     * Check if the user has all of the specified roles.
-     *
-     * @param list<string> $roleNames
-     * @return bool
-     */
-    public function hasAllRoles(array $roleNames): bool
-    {
-        return $this->roles()->whereIn('name', $roleNames)->count() === count($roleNames);
-    }
-
-    /**
-     * Get the user's permissions.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public function permissions()
-    {
-        $retval = [];
-
-        foreach ($this->roles as $role) {
-            $role_permissions = config('authorization.roles')[$role->name]['permissions'] ?? [];
-            foreach ($role_permissions as $class => $permissions) {
-                $class = class_basename($class);
-                if (!isset($retval[$class])) {
-                    $retval[$class] = [];
-                }
-                $retval[$class] = array_merge($retval[$class], $permissions);
-            }
-        }
-
-        // Remove duplicates
-        foreach ($retval as $class => $permissions) {
-            $retval[$class] = array_unique($permissions);
-        }
-
-        return collect($retval);
+        return $this->belongsTo(Role::class);
     }
 }
