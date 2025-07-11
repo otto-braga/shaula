@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -17,8 +18,15 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::query()
-            ->orderBy('name')
+        Gate::authorize('view', User::class);
+
+        $users = User::query();
+
+        if (!Gate::allows('dev', User::class)) {
+            $users = $users->where('name', '!=', 'dev');
+        }
+
+        $users = $users->orderBy('name')
             ->with('roles')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 

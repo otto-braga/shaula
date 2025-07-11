@@ -103,25 +103,24 @@ class User extends Authenticatable
      */
     public function permissions()
     {
-        $permissions = [];
-        $permission_types = config('permission.types', []);
-        $permission_models = config('permission.models', []);
+        $retval = [];
 
-        foreach ($permission_types as $type) {
-            foreach ($permission_models as $model) {
-                if ($type === 'viewAny' || $type === 'create') {
-                    if ($this->can($type, $model)) {
-                        $permissions[$type][] = class_basename($model);
-                    }
-                } else {
-                    $modelInstance = new $model;
-                    if ($this->can($type, $modelInstance)) {
-                        $permissions[$type][] = class_basename($model);
-                    }
+        foreach ($this->roles as $role) {
+            $role_permissions = config('authorization.roles')[$role->name]['permissions'] ?? [];
+            foreach ($role_permissions as $class => $permissions) {
+                $class = class_basename($class);
+                if (!isset($retval[$class])) {
+                    $retval[$class] = [];
                 }
+                $retval[$class] = array_merge($retval[$class], $permissions);
             }
         }
 
-        return collect($permissions);
+        // Remove duplicates
+        foreach ($retval as $class => $permissions) {
+            $retval[$class] = array_unique($permissions);
+        }
+
+        return collect($retval);
     }
 }

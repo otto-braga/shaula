@@ -16,6 +16,7 @@ return new class extends Migration
 
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('role_id')->constrained('roles')->onDelete('cascade');
+            $table->boolean('is_default')->default(false);
 
             $table->unique(['user_id', 'role_id'])->index('role_user_unique');
 

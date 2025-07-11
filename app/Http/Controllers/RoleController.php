@@ -20,7 +20,7 @@ class RoleController extends Controller
         $roles = Role::query();
 
         if (!Gate::allows('dev', Role::class)) {
-            $roles->where('name', '!=', 'dev');
+            $roles = $roles->where('name', '!=', 'dev');
         }
 
         $roles = $roles->orderBy('name')

@@ -19,7 +19,8 @@ class UserSeeder extends Seeder
             'email' => 'dev@test.com',
         ]);
         $user->roles()->attach(
-            Role::where('name', 'dev')->firstOrFail()
+            Role::where('name', 'dev')->firstOrFail(),
+            ['is_default' => true]
         );
 
         $user = User::factory()->create([
@@ -27,7 +28,8 @@ class UserSeeder extends Seeder
             'email' => 'coordinator@test.com',
         ]);
         $user->roles()->attach(
-            Role::where('name', 'Coordenador')->firstOrFail()
+            Role::where('name', 'Coordenador')->firstOrFail(),
+            ['is_default' => true]
         );
 
         $user = User::factory()->create([
@@ -35,7 +37,8 @@ class UserSeeder extends Seeder
             'email' => 'editor@test.com',
         ]);
         $user->roles()->attach(
-            Role::where('name', 'Editor')->firstOrFail()
+            Role::where('name', 'Editor')->firstOrFail(),
+            ['is_default' => true]
         );
     }
 }
