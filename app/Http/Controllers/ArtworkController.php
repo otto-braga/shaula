@@ -34,7 +34,7 @@ class ArtworkController extends Controller
 
     public function index()
     {
-        Gate::authorize('viewAny', Artwork::class);
+        Gate::authorize('view', Artwork::class);
 
         $artworks = Artwork::query()
             ->latest()
