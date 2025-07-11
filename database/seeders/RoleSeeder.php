@@ -13,6 +13,7 @@ class RoleSeeder extends Seeder
         foreach (config('authorization.roles') as $role_name => $role_data) {
             Role::create([
                 'name' => $role_name,
+                'label' => $role_data['label'],
                 'description' => $role_data['description'],
             ]);
         }

@@ -144,7 +144,7 @@ export function AppSidebar() {
                     <SidebarSeparator />
                     <NavMain items={adminNavItems} title="Administrativos" />
                 </>)} */}
-                <AuthorizationCheck role_names={['dev', 'Coordenador']}>
+                <AuthorizationCheck role_names={['dev', 'admin']}>
                     <SidebarSeparator />
                     <NavMain items={adminNavItems} title="Administrativos" />
                 </AuthorizationCheck>

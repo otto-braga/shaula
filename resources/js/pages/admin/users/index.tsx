@@ -31,7 +31,7 @@ export default function Index({ users }: { users: Props }) {
                                     <CardTitle>{user.name}</CardTitle>
                                     {user.role && (
                                         <div className="text-sm text-gray-500">
-                                            Função: {user.role.name}
+                                            Função: {user.role.label}
                                         </div>
                                     )}
                                 </CardHeader>

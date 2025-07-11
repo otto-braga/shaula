@@ -24,6 +24,7 @@ return [
     // Example: Artwork::class => ['view', 'create', 'update', 'delete'].
     'roles' => [
         'dev' => [
+            'label' => 'Desenvolvedor',
             'description' => 'Acesso total ao sistema.',
             'permissions' => [
                 Role::class => DEV,
@@ -45,7 +46,8 @@ return [
                 SourceCategory::class => DEV,
             ],
         ],
-        'Coordenador' => [
+        'admin' => [
+            'label' => 'Coordenador',
             'description' => 'Acesso quase total ao sistema, exceto edição de funções e usuários. Pode atribuir funções a usuários.',
             'permissions' => [
                 Role::class => VIEW,
@@ -68,7 +70,8 @@ return [
                 SourceCategory::class => ALL,
             ],
         ],
-        'Editor' => [
+        'editor' => [
+            'label' => 'Editor',
             'description' => 'Acesso limitado ao sistema. Pode criar e editar cadastros dos conteúdos principais, mas não pode excluir.',
             'permissions' => [
                 Person::class => NO_DELETE,

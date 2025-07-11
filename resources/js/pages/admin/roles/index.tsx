@@ -25,7 +25,7 @@ export default function Index({ roles }: { roles: Props }) {
                         {roles.data.map((role) => (
                             <Card className="rounded" key={role.uuid}>
                                 <CardHeader className="">
-                                    <CardTitle>{role.name}</CardTitle>
+                                    <CardTitle>{role.label}</CardTitle>
                                 </CardHeader>
                                 <div className="p-3 text-sm text-gray-600 dark:text-gray-400">
                                     {role.description}

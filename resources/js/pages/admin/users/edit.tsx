@@ -58,7 +58,7 @@ export default function Index({
                                 <Label htmlFor="role_uuid">Função</Label>
                                 <SelectWithStates
                                     routeName={'roles.fetch.options.all'}
-                                    value={{ uuid: user?.role.uuid, label: user?.role.name }}
+                                    value={{ uuid: user?.role.uuid, label: user?.role.label }}
                                     onChange={(option: SearchResult) => {
                                         setData('role_uuid', option.uuid)
                                     }}

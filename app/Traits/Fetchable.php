@@ -34,7 +34,7 @@ trait Fetchable
         $results = $query->take($limit)->get();
         $results = $results->map(function ($item) {
             return [
-                'label' => $item->name ?? $item->title,
+                'label' => $item->label ?? ($item->name ?? $item->title),
                 'uuid' => $item->uuid,
             ];
         });
@@ -63,7 +63,7 @@ trait Fetchable
 
         $results = $results->map(function ($item) {
             return [
-                'label' => $item->name ?? $item->title,
+                'label' => $item->label ?? ($item->name ?? $item->title),
                 'uuid' => $item->uuid,
             ];
         })->toArray();

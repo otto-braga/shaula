@@ -7,12 +7,12 @@ export function isDevUser(): boolean {
 
 export function isAdminUser(): boolean {
     const { auth } = usePage().props as any;
-    return auth.user.role.name === 'Coordenador';
+    return auth.user.role.name === 'admin';
 }
 
-export function isUser(): boolean {
+export function isEditorUser(): boolean {
     const { auth } = usePage().props as any;
-    return auth.user.role.name === 'Editor';
+    return auth.user.role.name === 'editor';
 }
 
 export function AuthorizationCheck({ children, role_names }: { children: React.ReactNode, role_names: string[] }) {

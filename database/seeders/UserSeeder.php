@@ -24,10 +24,10 @@ class UserSeeder extends Seeder
 
         $user = User::factory()->create([
             'name' => 'Usuário Coordenador',
-            'email' => 'coordinator@test.com',
+            'email' => 'admin@test.com',
         ]);
         $user->role()->associate(
-            Role::where('name', 'Coordenador')->firstOrFail()
+            Role::where('name', 'admin')->firstOrFail()
         )->save();
 
         $user = User::factory()->create([
@@ -35,7 +35,7 @@ class UserSeeder extends Seeder
             'email' => 'editor@test.com',
         ]);
         $user->role()->associate(
-            Role::where('name', 'Editor')->firstOrFail()
+            Role::where('name', 'editor')->firstOrFail()
         )->save();
     }
 }
