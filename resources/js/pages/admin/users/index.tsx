@@ -29,6 +29,11 @@ export default function Index({ users }: { users: Props }) {
                             <Card className="rounded" key={user.uuid + user.name}>
                                 <CardHeader className="">
                                     <CardTitle>{user.name}</CardTitle>
+                                    {user.role && (
+                                        <div className="text-sm text-gray-500">
+                                            Função: {user.role.name}
+                                        </div>
+                                    )}
                                 </CardHeader>
                                 <CardFooter className="flex justify-end gap-2">
                                     <Link href={route('users.edit', user)}>
