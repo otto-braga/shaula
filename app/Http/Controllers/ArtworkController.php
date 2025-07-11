@@ -15,6 +15,7 @@ use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
 use App\Traits\UpdatesPeople;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
@@ -33,6 +34,8 @@ class ArtworkController extends Controller
 
     public function index()
     {
+        Gate::authorize('viewAny', Artwork::class);
+
         $artworks = Artwork::query()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);

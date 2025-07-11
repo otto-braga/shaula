@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
 import { Person } from '@/types/person';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Edit, Eye } from 'lucide-react';
 
 type Props = {
@@ -14,7 +14,8 @@ type Props = {
 };
 
 export default function Index({ artworks }: { artworks: Props }) {
-    console.log(artworks);
+    // console.log(artworks);
+    console.log(usePage().props.auth);
 
     return (
         <AppLayout>

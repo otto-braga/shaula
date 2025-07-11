@@ -62,4 +62,66 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user', 'user_id', 'role_id');
     }
+
+    /**
+     * Check if the user has a specific role.
+     *
+     * @param string $roleName
+     * @return bool
+     */
+    public function hasRole(string $roleName): bool
+    {
+        return $this->roles()->where('name', $roleName)->exists();
+    }
+
+    /**
+     * Check if the user has any of the specified roles.
+     *
+     * @param list<string> $roleNames
+     * @return bool
+     */
+    public function hasAnyRole(array $roleNames): bool
+    {
+        return $this->roles()->whereIn('name', $roleNames)->exists();
+    }
+
+    /**
+     * Check if the user has all of the specified roles.
+     *
+     * @param list<string> $roleNames
+     * @return bool
+     */
+    public function hasAllRoles(array $roleNames): bool
+    {
+        return $this->roles()->whereIn('name', $roleNames)->count() === count($roleNames);
+    }
+
+    /**
+     * Get the user's permissions.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function permissions()
+    {
+        $permissions = [];
+        $permission_types = config('permission.types', []);
+        $permission_models = config('permission.models', []);
+
+        foreach ($permission_types as $type) {
+            foreach ($permission_models as $model) {
+                if ($type === 'viewAny' || $type === 'create') {
+                    if ($this->can($type, $model)) {
+                        $permissions[$type][] = class_basename($model);
+                    }
+                } else {
+                    $modelInstance = new $model;
+                    if ($this->can($type, $modelInstance)) {
+                        $permissions[$type][] = class_basename($model);
+                    }
+                }
+            }
+        }
+
+        return collect($permissions);
+    }
 }

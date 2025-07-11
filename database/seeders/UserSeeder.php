@@ -31,11 +31,11 @@ class UserSeeder extends Seeder
         );
 
         $user = User::factory()->create([
-            'name' => 'Usuário Membro',
-            'email' => 'member@test.com',
+            'name' => 'Usuário Editor',
+            'email' => 'editor@test.com',
         ]);
         $user->roles()->attach(
-            Role::where('name', 'Membro')->firstOrFail()
+            Role::where('name', 'Editor')->firstOrFail()
         );
     }
 }

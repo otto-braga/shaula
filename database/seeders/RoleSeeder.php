@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -15,17 +16,25 @@ class RoleSeeder extends Seeder
         // Create default roles
         \App\Models\Role::create([
             'name' => 'dev',
-            'description' => 'Desenvolvedor. Acesso total ao sistema.',
+            'description' => 'Acesso total ao sistema.',
         ]);
 
         \App\Models\Role::create([
             'name' => 'Coordenador',
-            'description' => 'Coordenador. Acesso total ao sistema, exceto configurações administrativas.',
+            'description' => 'Acesso total ao sistema, exceto configurações administrativas.',
         ]);
 
         \App\Models\Role::create([
-            'name' => 'Membro',
-            'description' => 'Membro. Acesso limitado a funcionalidades básicas do sistema.',
+            'name' => 'Editor',
+            'description' => 'Acesso limitado a funcionalidades básicas do sistema.',
         ]);
+
+        // foreach (config('permission.roles') as $name => $description) {
+        //     Role::firstOrCreate([
+        //         'name' => $name,
+        //     ], [
+        //         'description' => $description,
+        //     ]);
+        // }
     }
 }
