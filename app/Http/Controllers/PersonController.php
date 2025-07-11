@@ -10,6 +10,7 @@ use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class PersonController extends Controller
@@ -26,6 +27,8 @@ class PersonController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Person::class);
+
         $people = Person::where(function ($query) {
                 if (request()->has('q') && request()->q) {
                     $query->where('name', 'like', '%' . request()->q . '%');
