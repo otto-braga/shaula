@@ -9,6 +9,8 @@ namespace App\Models;
 // -----------------------------------------------------------------------------
 const ALL = ['view', 'create', 'update','delete',];
 const NO_DELETE = ['view','create','update',];
+const VIEW = ['view',];
+const NONE = [];
 
 return [
     // =========================================================================
@@ -23,20 +25,65 @@ return [
         'dev' => [
             'description' => 'Acesso total ao sistema.',
             'permissions' => [
+                Role::class => ALL,
+                User::class => ALL,
+
+                Person::class => ALL,
                 Artwork::class => ALL,
-                Person::class => ['view',],
+                Review::class => ALL,
+                Period::class => ALL,
+                HistoryArticle::class => ALL,
+                Source::class => ALL,
+
+                Gender::class => ALL,
+                Activity::class => ALL,
+                City::class => ALL,
+                Language::class => ALL,
+                Category::class => ALL,
+                Award::class => ALL,
+                SourceCategory::class => ALL,
             ],
         ],
         'Coordenador' => [
-            'description' => 'Acesso total ao sistema, exceto configurações administrativas.',
+            'description' => 'Acesso total ao sistema, exceto edição de funções e remoção de usuários.',
             'permissions' => [
+                Role::class => VIEW,
+                User::class => NO_DELETE,
+
                 Artwork::class => ALL,
+                Person::class => ALL,
+                Artwork::class => ALL,
+                Review::class => ALL,
+                Period::class => ALL,
+                HistoryArticle::class => ALL,
+                Source::class => ALL,
+
+                Gender::class => ALL,
+                Activity::class => ALL,
+                City::class => ALL,
+                Language::class => ALL,
+                Category::class => ALL,
+                Award::class => ALL,
+                SourceCategory::class => ALL,
             ],
         ],
         'Editor' => [
-            'description' => 'Acesso limitado a funcionalidades básicas do sistema.',
+            'description' => 'Acesso limitado ao sistema. Pode criar e editar cadastros, mas não pode excluir.',
             'permissions' => [
+                Person::class => NO_DELETE,
                 Artwork::class => NO_DELETE,
+                Review::class => NO_DELETE,
+                Period::class => NO_DELETE,
+                HistoryArticle::class => NO_DELETE,
+                Source::class => NO_DELETE,
+
+                Gender::class => NO_DELETE,
+                Activity::class => NO_DELETE,
+                City::class => NO_DELETE,
+                Language::class => NO_DELETE,
+                Category::class => NO_DELETE,
+                Award::class => NO_DELETE,
+                SourceCategory::class => NO_DELETE,
             ],
         ],
     ],
