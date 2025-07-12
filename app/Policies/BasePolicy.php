@@ -19,11 +19,20 @@ class BasePolicy
             return Response::deny('Não autorizado: usuário não possui nenhuma função atribuída.');
         }
 
-        foreach (config('authorization.roles') as $role_name => $role_data) {
-            if ($user->role->name === $role_name) {
-                if (in_array($permission_type, $role_data['permissions'][static::CLASS_NAME] ?? [])) {
-                    return Response::allow();
-                }
+        // dd(
+        //     $user->role->name,
+        //     static::CLASS_NAME,
+        //     $permission_type,
+        //     config('authorization.roles'),
+        //     config('authorization.roles')[$user->role->name],
+        //     config('authorization.roles')[$user->role->name]['permissions'][static::CLASS_NAME],
+        //     in_array($permission_type, config('authorization.roles')[$user->role->name]['permissions'][static::CLASS_NAME])
+        // );
+
+        if (array_key_exists($user->role->name, config('authorization.roles'))) {
+            $role_data = config('authorization.roles')[$user->role->name];
+            if (in_array($permission_type, $role_data['permissions'][static::CLASS_NAME] ?? [])) {
+                return Response::allow();
             }
         }
 

@@ -55,7 +55,7 @@ export default function Index({ reviews }: { reviews: Props }) {
                                         <DeleteDialog
                                             resourceId={review.uuid}
                                             resourceName={review.title}
-                                            deleteRoute="review.destroy"
+                                            deleteRoute="reviews.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
                                         <Link href={route('reviews.edit', { review: review })}>

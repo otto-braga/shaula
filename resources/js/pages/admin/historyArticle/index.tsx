@@ -58,7 +58,7 @@ export default function Index({ historyArticles }: { historyArticles: Props }) {
                                         <DeleteDialog
                                             resourceId={historyArticle.slug}
                                             resourceName={historyArticle.title}
-                                            deleteRoute="historyArticle.destroy"
+                                            deleteRoute="history_articles.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
                                         <Link href={route('history_articles.edit', { historyArticle: historyArticle })}>

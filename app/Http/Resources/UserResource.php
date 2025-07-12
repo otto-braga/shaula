@@ -8,6 +8,11 @@ use Illuminate\Http\Resources\Json\JsonResource;
 class UserResource extends JsonResource
 {
     /**
+     * Deactivate the wrapping of the resource.
+     */
+    public static $wrap = null;
+
+    /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>

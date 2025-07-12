@@ -14,8 +14,7 @@ type Props = {
 };
 
 export default function Index({ artworks }: { artworks: Props }) {
-    // console.log(artworks);
-    console.log(usePage().props.auth);
+    console.log(artworks);
 
     return (
         <AppLayout>
@@ -57,7 +56,7 @@ export default function Index({ artworks }: { artworks: Props }) {
                                         <DeleteDialog
                                             resourceId={artwork.uuid}
                                             resourceName={artwork.title}
-                                            deleteRoute="artwork.destroy"
+                                            deleteRoute="artworks.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
                                         <Link href={route('artworks.edit', { artwork: artwork })}>

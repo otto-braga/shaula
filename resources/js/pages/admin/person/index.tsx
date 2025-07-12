@@ -50,7 +50,7 @@ export default function Index({ people }: { people: Props }) {
                                 <DeleteDialog
                                     resourceId={person.uuid || ''}
                                     resourceName={person.name}
-                                    deleteRoute="person.destroy"
+                                    deleteRoute="people.destroy"
                                     onSuccess={() => window.location.reload()}
                                 />
                             </CardFooter>

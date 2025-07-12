@@ -53,7 +53,6 @@ return [
                 Role::class => VIEW,
                 User::class => NO_DELETE,
 
-                Artwork::class => ALL,
                 Person::class => ALL,
                 Artwork::class => ALL,
                 Review::class => ALL,
