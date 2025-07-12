@@ -11,6 +11,7 @@ use App\Traits\HasFile;
 use App\Traits\HasMention;
 use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class SourceController extends Controller
@@ -25,6 +26,8 @@ class SourceController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Source::class);
+
         $sources = Source::query()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -44,11 +47,15 @@ class SourceController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Source::class);
+
         return Inertia::render('admin/sources/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Source::class);
+
         $dataForm = $request->all();
 
         $source = Source::create($dataForm);
@@ -72,6 +79,8 @@ class SourceController extends Controller
 
     public function edit(Source $source)
     {
+        Gate::authorize('update', Source::class);
+
         return Inertia::render('admin/sources/edit/index', [
             'source' => new SourceResource($source),
         ]);
@@ -79,6 +88,8 @@ class SourceController extends Controller
 
     public function update(Request $request, Source $source)
     {
+        Gate::authorize('update', Source::class);
+
         $dataForm = $request->all();
 
         $source->update($dataForm);
@@ -107,6 +118,8 @@ class SourceController extends Controller
 
     public function destroy(Source $source)
     {
+        Gate::authorize('delete', Source::class);
+
         $source->delete();
 
         session()->flash('success', true);
@@ -118,18 +131,24 @@ class SourceController extends Controller
 
     public function fetchCategorySelectOptions(Request $request)
     {
+        Gate::authorize('view', Source::class);
+
         $options = SourceCategory::fetchAsSelectOption($request->search);
         return response()->json($options);
     }
 
     public function fetchSingle($uuid)
     {
+        Gate::authorize('view', Source::class);
+
         $source = Source::where('uuid', $uuid)->firstOrFail();
         return response()->json(new SourceResource($source));
     }
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Source::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,

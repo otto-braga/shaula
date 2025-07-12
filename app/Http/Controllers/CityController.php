@@ -6,6 +6,7 @@ use App\Http\Resources\CityResource;
 use App\Models\City;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class CityController extends Controller
@@ -15,6 +16,8 @@ class CityController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', City::class);
+
         $cities = City::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -26,6 +29,8 @@ class CityController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', City::class);
+
         $request->validate([
             'name' => 'required|unique:cities',
         ]);
@@ -42,6 +47,8 @@ class CityController extends Controller
 
     public function update(City $city)
     {
+        Gate::authorize('update', City::class);
+
         request()->validate([
             'name' => 'required|unique:cities',
         ]);
@@ -58,6 +65,8 @@ class CityController extends Controller
 
     public function destroy(City $city)
     {
+        Gate::authorize('delete', City::class);
+
         try {
             $city->delete();
             return redirect()->back()->with('success', 'Cidade deletada com sucesso.');
@@ -71,6 +80,8 @@ class CityController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', City::class);
+
         return City::fetchAsSelectOption($request->q);
     }
 }

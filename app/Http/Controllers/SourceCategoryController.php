@@ -6,6 +6,7 @@ use App\Http\Resources\SourceCategoryResource;
 use App\Models\SourceCategory;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class SourceCategoryController extends Controller
 {
@@ -14,6 +15,8 @@ class SourceCategoryController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', SourceCategory::class);
+
         $souceCategories = SourceCategory::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -25,6 +28,8 @@ class SourceCategoryController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', SourceCategory::class);
+
         $request->validate([
             'name' => 'required|unique:source_categories',
         ]);
@@ -41,6 +46,8 @@ class SourceCategoryController extends Controller
 
     public function update(Request $request, SourceCategory $sourceCategory)
     {
+        Gate::authorize('update', SourceCategory::class);
+
         $request->validate([
             'name' => 'required|unique:source_categories',
         ]);
@@ -58,6 +65,8 @@ class SourceCategoryController extends Controller
 
     public function destroy(SourceCategory $sourceCategory)
     {
+        Gate::authorize('delete', SourceCategory::class);
+
         try {
             $sourceCategory->delete();
             return redirect()->back()->with('success', 'Categoria de fonte deletada com sucesso.');
@@ -71,6 +80,8 @@ class SourceCategoryController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', SourceCategory::class);
+
         return SourceCategory::fetchSelectOptions($request->q);
     }
 }

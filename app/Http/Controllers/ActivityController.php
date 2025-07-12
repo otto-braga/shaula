@@ -6,6 +6,7 @@ use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ActivityController extends Controller
@@ -15,6 +16,8 @@ class ActivityController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Activity::class);
+
         $activities = Activity::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -26,6 +29,8 @@ class ActivityController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Activity::class);
+
         $request->validate([
             'name' => 'required|unique:activities',
         ]);
@@ -42,6 +47,8 @@ class ActivityController extends Controller
 
     public function update(Activity $activity)
     {
+        Gate::authorize('update', Activity::class);
+
         request()->validate([
             'name' => 'required|unique:activities',
         ]);
@@ -58,6 +65,8 @@ class ActivityController extends Controller
 
     public function destroy(Activity $activity)
     {
+        Gate::authorize('delete', Activity::class);
+
         try {
             $activity->delete();
             return redirect()->back()->with('success', 'Atividade deletada com sucesso.');
@@ -71,6 +80,8 @@ class ActivityController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Activity::class);
+
         return Activity::fetchAsSelectOption($request->q);
     }
 }

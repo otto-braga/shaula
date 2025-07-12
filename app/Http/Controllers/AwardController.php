@@ -6,6 +6,7 @@ use App\Http\Resources\AwardResource;
 use App\Models\Award;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class AwardController extends Controller
 {
@@ -14,6 +15,8 @@ class AwardController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Award::class);
+
         $awards = Award::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -25,6 +28,8 @@ class AwardController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Award::class);
+
         $request->validate([
             'name' => 'required|unique:awards',
             'promoter' => 'optional|string|max:255',
@@ -42,6 +47,8 @@ class AwardController extends Controller
 
     public function update(Request $request, Award $award)
     {
+        Gate::authorize('update', Award::class);
+
         $request->validate([
             'name' => 'required|unique:awards,name,' . $award->id,
             'promoter' => 'optional|string|max:255',
@@ -60,6 +67,8 @@ class AwardController extends Controller
 
     public function destroy(Award $award)
     {
+        Gate::authorize('delete', Award::class);
+
         try {
             $award->delete();
             return redirect()->back()->with('success', 'Prêmio deletado com sucesso.');
@@ -73,6 +82,8 @@ class AwardController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Award::class);
+
         return Award::fetchAsSelectOption($request->q);
     }
 }

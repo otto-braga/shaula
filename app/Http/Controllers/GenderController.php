@@ -6,6 +6,7 @@ use App\Http\Resources\GenderResource;
 use App\Models\Gender;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class GenderController extends Controller
@@ -15,6 +16,8 @@ class GenderController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Gender::class);
+
         $genders = Gender::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -26,6 +29,8 @@ class GenderController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Gender::class);
+
         $request->validate([
             'name' => 'required|unique:genders',
         ]);
@@ -42,6 +47,8 @@ class GenderController extends Controller
 
     public function update(Gender $gender)
     {
+        Gate::authorize('update', Gender::class);
+
         request()->validate([
             'name' => 'required|unique:genders',
         ]);
@@ -58,6 +65,8 @@ class GenderController extends Controller
 
     public function destroy(Gender $gender)
     {
+        Gate::authorize('delete', Gender::class);
+
         try {
             $gender->delete();
             return redirect()->back()->with('success', 'Identidade de gênero deletada com sucesso.');
@@ -71,6 +80,8 @@ class GenderController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Gender::class);
+
         return Gender::fetchAsSelectOptions($request->q);
     }
 }
