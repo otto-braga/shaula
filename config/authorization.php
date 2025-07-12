@@ -28,7 +28,7 @@ return [
             'description' => 'Acesso total ao sistema.',
             'permissions' => [
                 Role::class => DEV,
-                User::class => DEV,
+                User::class => NO_DELETE,
 
                 Person::class => DEV,
                 Artwork::class => DEV,

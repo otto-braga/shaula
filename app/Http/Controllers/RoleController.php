@@ -37,11 +37,15 @@ class RoleController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Role::class);
+
         return Role::fetchAsSelectOptions($request->q);
     }
 
     public function fetchAllSelectOptions()
     {
+        Gate::authorize('view', Role::class);
+
         return Role::fetchAllAsSelectOptions();
     }
 }

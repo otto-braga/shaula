@@ -37,6 +37,8 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        Gate::authorize('update', User::class);
+
         return Inertia::render('admin/users/edit', [
             'user' => new UserResource($user)
         ]);
@@ -44,6 +46,8 @@ class UserController extends Controller
 
     public function update(Request $request, User $user)
     {
+        Gate::authorize('update', User::class);
+
         try {
             $role = Role::where('uuid', $request->role_uuid)->first();
 
@@ -62,6 +66,8 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        Gate::authorize('delete', User::class);
+
         try {
             $user->delete();
 
@@ -78,6 +84,8 @@ class UserController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', User::class);
+
         return User::fetchAsSelectOptions($request->q);
     }
 }
