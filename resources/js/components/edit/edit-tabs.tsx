@@ -11,6 +11,7 @@ import { useEffect, useState,  } from 'react';
 
 type EditTabsProps = {
     model?: { data: Person | Artwork | Review | HistoryArticle | Period | Source };
+    // model?: { data: any };
     route_base_name: string;
     processing: boolean;
     className?: string;

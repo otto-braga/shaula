@@ -15,6 +15,7 @@ use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
 use App\Traits\UpdatesPeople;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ArtworkController extends Controller
@@ -33,6 +34,8 @@ class ArtworkController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Artwork::class);
+
         $artworks = Artwork::query()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -52,11 +55,15 @@ class ArtworkController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Artwork::class);
+
         return Inertia::render('admin/artwork/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Artwork::class);
+
         $dataForm = $request->except(['date']);
 
         if ($request->has('date')) {
@@ -81,6 +88,8 @@ class ArtworkController extends Controller
 
     public function edit(Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         $artwork->load('authors');
 
         return Inertia::render('admin/artwork/edit/index', [
@@ -90,6 +99,8 @@ class ArtworkController extends Controller
 
     public function update(Request $request, Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         $dataForm = $request->all();
 
         if ($request->has('date')) {
@@ -113,6 +124,8 @@ class ArtworkController extends Controller
 
     public function editPeople(Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         $artwork->load('people');
 
         $activities = Activity::query()
@@ -138,6 +151,8 @@ class ArtworkController extends Controller
 
     public function editImages(Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         return Inertia::render('admin/artwork/edit/images', [
             'artwork' => new ArtworkResource($artwork),
         ]);
@@ -145,6 +160,8 @@ class ArtworkController extends Controller
 
     public function updateImages(Request $request, Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         try {
             $this->handleImageUpdate($request, $artwork);
 
@@ -161,6 +178,8 @@ class ArtworkController extends Controller
 
     public function editContent(Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         return Inertia::render('admin/artwork/edit/content', [
             'artwork' => new ArtworkResource($artwork),
         ]);
@@ -168,6 +187,8 @@ class ArtworkController extends Controller
 
     public function updateContent(Request $request, Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         try {
             $this->handleContentUpdate($request, $artwork);
 
@@ -184,6 +205,8 @@ class ArtworkController extends Controller
 
     public function editSources(Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         $artwork->load('sources');
 
         return Inertia::render('admin/artwork/edit/sources', [
@@ -193,6 +216,8 @@ class ArtworkController extends Controller
 
     public function updateSources(Request $request, Artwork $artwork)
     {
+        Gate::authorize('update', Artwork::class);
+
         $this->syncUuids($request->sources_uuids, $artwork->sources());
 
         session()->flash('success', true);
@@ -204,6 +229,8 @@ class ArtworkController extends Controller
 
     public function destroy(Artwork $artwork)
     {
+        Gate::authorize('delete', Artwork::class);
+
         $artwork->delete();
 
         session()->flash('success', true);
@@ -215,6 +242,8 @@ class ArtworkController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Artwork::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,

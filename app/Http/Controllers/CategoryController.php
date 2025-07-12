@@ -6,6 +6,7 @@ use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class CategoryController extends Controller
@@ -15,6 +16,8 @@ class CategoryController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Category::class);
+
         $categories = Category::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -26,6 +29,8 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Category::class);
+
         $request->validate([
             'name' => 'required|unique:categories',
         ]);
@@ -43,6 +48,8 @@ class CategoryController extends Controller
 
     public function update(Category $category)
     {
+        Gate::authorize('update', Category::class);
+
         request()->validate([
             'name' => 'required|unique:categories',
         ]);
@@ -59,6 +66,8 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
+        Gate::authorize('delete', Category::class);
+
         try {
             $category->delete();
             return redirect()->back()->with('success', 'Categoria deletada com sucesso.');
@@ -72,6 +81,8 @@ class CategoryController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Category::class);
+
         return Category::fetchAsSelectOption($request->q);
     }
 }

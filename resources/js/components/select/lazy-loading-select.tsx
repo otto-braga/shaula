@@ -1,6 +1,6 @@
 import { SearchResult } from "@/types/search-result";
 import { handleReactSelectStyling } from "@/utils/react-select-styling";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import Select, { MultiValue, SingleValue, components } from 'react-select';
 
 type LazyLoadingSelectProps = {
@@ -86,6 +86,78 @@ function LazyLoadingSelectWithStates({
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."
             components={{ MenuList: CustomMenuList }}
+            styles={handleReactSelectStyling()}
+        />
+    </>)
+}
+
+// -----------------------------------------------------------------------------
+// Select With States (generic for both single and multi select)
+
+type SelectWithStatesProps = {
+    routeName: string;
+    value?: SearchResult | SearchResult[];
+    isMulti?: boolean;
+    [key: string]: any; // Allow additional props
+}
+
+function SelectWithStates({
+    ...props
+}: SelectWithStatesProps) {
+    const [fetchedOptions, setFetchedOptions] = useState<MultiValue<SearchResult>>();
+    const [selectedOption, setSelectedOption] = useState<SearchResult | null>(props.value as SearchResult || null);
+    const [selectedOptions, setSelectedOptions] = useState<MultiValue<SearchResult>>(props.value as SearchResult[] || []);
+
+    const onSelectInputChange = (q: string) => {
+        fetchDataForSelect({
+            routeName: props.routeName,
+            q: q,
+            setter: setFetchedOptions
+        });
+    };
+
+    useEffect(() => {
+        console.log('selectedOptions', selectedOptions);
+        console.log('selectedOption', selectedOption);
+    }, [selectedOptions, selectedOption]);
+
+    const onSelectChange = (options: SingleValue<SearchResult> | MultiValue<SearchResult>) => {
+        if (props.isMulti) {
+            setSelectedOption(null);
+            setSelectedOptions(options as MultiValue<SearchResult>);
+        } else {
+            setSelectedOption(options as SingleValue<SearchResult>);
+            setSelectedOptions([]);
+        }
+
+        // setFetchedOptions([]);
+        if (props.onChange) {
+            props.onChange(options);
+        }
+    };
+
+    useEffect(() => {
+        fetchDataForSelect({
+            routeName: props.routeName,
+            q: 'all',
+            setter: setFetchedOptions
+        });
+    }, []);
+
+    return (<>
+        <Select
+            {...props}
+            isMulti={props.isMulti || false}
+            getOptionLabel={(option: SearchResult) => option.label}
+            getOptionValue={(option: SearchResult) => option.uuid}
+            // onInputChange={onSelectInputChange}
+            options={fetchedOptions}
+            onChange={onSelectChange}
+            value={props.isMulti ? selectedOptions : selectedOption}
+            loadingMessage={() => 'Carregando...'}
+            noOptionsMessage={() => 'Nenhum resultado.'}
+            // placeholder="Digite para buscar..."
+            // components={{ MenuList: CustomMenuList }}
             styles={handleReactSelectStyling()}
         />
     </>)
@@ -253,6 +325,7 @@ const CustomMenuList = (props: any) => {
 export {
     LazyLoadingSelect,
     LazyLoadingSelectWithStates,
+    SelectWithStates,
     LazyLoadingSingleSelectWithStates,
     LazyLoadingMultiSelectWithStates,
     fetchDataForSelect,

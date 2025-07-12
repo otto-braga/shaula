@@ -35,7 +35,7 @@ export default function Index({ sourceCategories }: { sourceCategories: Props })
                                     <DeleteDialog
                                         resourceId={sourceCategory.uuid}
                                         resourceName={sourceCategory.name}
-                                        deleteRoute="sourceCategories.destroy"
+                                        deleteRoute="source_categories.destroy"
                                         onSuccess={() => window.location.reload()}
                                     />
                                 </CardFooter>

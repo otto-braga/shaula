@@ -10,6 +10,7 @@ use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class PersonController extends Controller
@@ -26,7 +27,13 @@ class PersonController extends Controller
 
     public function index()
     {
-        $people = Person::query()
+        Gate::authorize('view', Person::class);
+
+        $people = Person::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -45,11 +52,15 @@ class PersonController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Person::class);
+
         return Inertia::render('admin/person/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Person::class);
+
         $dataForm = $request->all();
 
         $person = Person::create($dataForm);
@@ -67,6 +78,8 @@ class PersonController extends Controller
 
     public function edit(Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         $person->load([
             'artworks',
             'reviews',
@@ -79,6 +92,8 @@ class PersonController extends Controller
 
     public function update(Request $request, Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         $dataForm = $request->all();
 
         $person->update($dataForm);
@@ -96,6 +111,8 @@ class PersonController extends Controller
 
     public function editImages(Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         return Inertia::render('admin/person/edit/images', [
             'person' => new PersonResource($person),
         ]);
@@ -103,6 +120,8 @@ class PersonController extends Controller
 
     public function updateImages(Request $request, Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         try {
             $this->handleImageUpdate($request, $person);
 
@@ -119,6 +138,8 @@ class PersonController extends Controller
 
     public function editChronology(Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         return Inertia::render('admin/person/edit/chronology', [
             'person' => new PersonResource($person),
         ]);
@@ -126,6 +147,8 @@ class PersonController extends Controller
 
     public function updateChronology(Request $request, Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         try {
             $this->handleContentUpdate($request, $person);
 
@@ -142,6 +165,8 @@ class PersonController extends Controller
 
     public function editContent(Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         return Inertia::render('admin/person/edit/content', [
             'person' => new PersonResource($person),
         ]);
@@ -149,6 +174,8 @@ class PersonController extends Controller
 
     public function updateContent(Request $request, Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         try {
             $this->handleContentUpdate($request, $person);
 
@@ -165,6 +192,8 @@ class PersonController extends Controller
 
     public function editSources(Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         $person->load('sources');
 
         return Inertia::render('admin/person/edit/sources', [
@@ -174,6 +203,8 @@ class PersonController extends Controller
 
     public function updateSources(Request $request, Person $person)
     {
+        Gate::authorize('update', Person::class);
+
         $this->syncUuids($request->sources_uuids, $person->sources());
 
         session()->flash('success', true);
@@ -185,6 +216,8 @@ class PersonController extends Controller
 
     public function destroy(Person $person)
     {
+        Gate::authorize('delete', Person::class);
+
         $person->delete();
 
         session()->flash('success', true);
@@ -196,6 +229,8 @@ class PersonController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Person::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,

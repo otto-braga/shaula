@@ -6,6 +6,7 @@ use App\Http\Resources\LanguageResource;
 use App\Models\Language;
 use App\Traits\HasCommonPaginationConstants;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class LanguageController extends Controller
@@ -15,6 +16,8 @@ class LanguageController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Language::class);
+
         $languages = Language::query()
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -26,6 +29,8 @@ class LanguageController extends Controller
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Language::class);
+
         $request->validate([
             'name' => 'required|unique:languages',
         ]);
@@ -42,6 +47,8 @@ class LanguageController extends Controller
 
     public function update(Language $language)
     {
+        Gate::authorize('update', Language::class);
+
         request()->validate([
             'name' => 'required|unique:languages',
         ]);
@@ -58,6 +65,8 @@ class LanguageController extends Controller
 
     public function destroy(Language $language)
     {
+        Gate::authorize('delete', Language::class);
+
         try {
             $language->delete();
             return redirect()->back()->with('success', 'Linguagem deletada com sucesso.');
@@ -71,6 +80,8 @@ class LanguageController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Language::class);
+
         return Language::fetchAsSelectOption($request->q);
     }
 }

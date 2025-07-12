@@ -42,11 +42,6 @@ export default function Index({ historyArticles }: { historyArticles: Props }) {
                                         <h3 className="line-clamp-1 font-semibold">{historyArticle.title}</h3>
                                     </CardTitle>
                                 </CardHeader>
-                                <CardHeader>
-                                    <CardTitle>
-                                        <h3 className="line-clamp-1 font-semibold">{historyArticle.title}</h3>
-                                    </CardTitle>
-                                </CardHeader>
                                 <CardContent>
                                     <div>
                                         <p className="text-sm">Autores</p>
@@ -56,9 +51,9 @@ export default function Index({ historyArticles }: { historyArticles: Props }) {
                                 <CardFooter>
                                     <div className="mt-2 flex w-full justify-end gap-2">
                                         <DeleteDialog
-                                            resourceId={historyArticle.slug}
+                                            resourceId={historyArticle.uuid}
                                             resourceName={historyArticle.title}
-                                            deleteRoute="historyArticle.destroy"
+                                            deleteRoute="history_articles.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
                                         <Link href={route('history_articles.edit', { historyArticle: historyArticle })}>

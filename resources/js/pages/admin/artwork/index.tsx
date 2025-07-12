@@ -5,7 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
 import { Person } from '@/types/person';
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, usePage } from '@inertiajs/react';
 import { Edit, Eye } from 'lucide-react';
 
 type Props = {
@@ -56,7 +56,7 @@ export default function Index({ artworks }: { artworks: Props }) {
                                         <DeleteDialog
                                             resourceId={artwork.uuid}
                                             resourceName={artwork.title}
-                                            deleteRoute="artwork.destroy"
+                                            deleteRoute="artworks.destroy"
                                             onSuccess={() => window.location.reload()}
                                         />
                                         <Link href={route('artworks.edit', { artwork: artwork })}>

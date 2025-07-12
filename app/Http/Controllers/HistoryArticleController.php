@@ -11,6 +11,7 @@ use App\Traits\ParsesUuids;
 use App\Traits\SyncsAuthors;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class HistoryArticleController extends Controller
@@ -28,6 +29,8 @@ class HistoryArticleController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', HistoryArticle::class);
+
         $historyArticles = HistoryArticle::query()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -47,11 +50,15 @@ class HistoryArticleController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', HistoryArticle::class);
+
         return Inertia::render('admin/historyArticle/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', HistoryArticle::class);
+
         $dataForm = $request->all();
 
         $historyArticle = HistoryArticle::create($dataForm);
@@ -69,6 +76,8 @@ class HistoryArticleController extends Controller
 
     public function edit(HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         $historyArticle->load('authors');
 
         return Inertia::render('admin/historyArticle/edit/index', [
@@ -78,6 +87,8 @@ class HistoryArticleController extends Controller
 
     public function update(Request $request, HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         $dataForm = $request->all();
 
         $historyArticle->update($dataForm);
@@ -95,6 +106,8 @@ class HistoryArticleController extends Controller
 
     public function editImages(HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         return Inertia::render('admin/historyArticle/edit/images', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
         ]);
@@ -102,6 +115,8 @@ class HistoryArticleController extends Controller
 
     public function updateImages(Request $request, HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         try {
             $this->handleImageUpdate($request, $historyArticle);
 
@@ -118,6 +133,8 @@ class HistoryArticleController extends Controller
 
     public function editContent(HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         return Inertia::render('admin/historyArticle/edit/content', [
             'historyArticle' => new HistoryArticleResource($historyArticle),
         ]);
@@ -125,6 +142,8 @@ class HistoryArticleController extends Controller
 
     public function updateContent(Request $request, HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         try {
             $this->handleContentUpdate($request, $historyArticle);
 
@@ -141,6 +160,8 @@ class HistoryArticleController extends Controller
 
     public function editSources(HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         $historyArticle->load('sources');
 
         return Inertia::render('admin/historyArticle/edit/sources', [
@@ -150,6 +171,8 @@ class HistoryArticleController extends Controller
 
     public function updateSources(Request $request, HistoryArticle $historyArticle)
     {
+        Gate::authorize('update', HistoryArticle::class);
+
         $this->syncUuids($request->sources_uuids, $historyArticle->sources());
 
         session()->flash('success', true);
@@ -161,6 +184,8 @@ class HistoryArticleController extends Controller
 
     public function destroy(HistoryArticle $historyArticle)
     {
+        Gate::authorize('delete', HistoryArticle::class);
+
         $historyArticle->delete();
 
         session()->flash('success', true);
@@ -172,6 +197,8 @@ class HistoryArticleController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', HistoryArticle::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,

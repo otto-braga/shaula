@@ -11,7 +11,7 @@ use App\Traits\ParsesUuids;
 use App\Traits\SyncsAuthors;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
-use Carbon\Carbon;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class ReviewController extends Controller
@@ -29,6 +29,8 @@ class ReviewController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Review::class);
+
         $reviews = Review::latest()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -48,11 +50,15 @@ class ReviewController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Review::class);
+
         return Inertia::render('admin/review/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Review::class);
+
         $dataForm = $request->all();
 
         $review = Review::create($dataForm);
@@ -69,6 +75,8 @@ class ReviewController extends Controller
 
     public function edit(Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         $review->load('authors');
 
         return Inertia::render('admin/review/edit/index', [
@@ -78,6 +86,8 @@ class ReviewController extends Controller
 
     public function update(Request $request, Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         $dataForm = $request->all();
 
         $review->update($dataForm);
@@ -94,6 +104,8 @@ class ReviewController extends Controller
 
     public function editImages(Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         return Inertia::render('admin/review/edit/images', [
             'review' => new ReviewResource($review),
         ]);
@@ -101,6 +113,8 @@ class ReviewController extends Controller
 
     public function updateImages(Request $request, Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         try {
             $this->handleImageUpdate($request, $review);
 
@@ -117,6 +131,8 @@ class ReviewController extends Controller
 
     public function editContent(Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         return Inertia::render('admin/review/edit/content', [
             'review' => new ReviewResource($review),
         ]);
@@ -124,6 +140,8 @@ class ReviewController extends Controller
 
     public function updateContent(Request $request, Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         try {
             $this->handleContentUpdate($request, $review);
 
@@ -140,6 +158,8 @@ class ReviewController extends Controller
 
     public function editSources(Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         $review->load('sources');
 
         return Inertia::render('admin/review/edit/sources', [
@@ -149,6 +169,8 @@ class ReviewController extends Controller
 
     public function updateSources(Request $request, Review $review)
     {
+        Gate::authorize('update', Review::class);
+
         $this->syncUuids($request->sources_uuids, $review->sources());
 
         session()->flash('success', true);
@@ -160,6 +182,8 @@ class ReviewController extends Controller
 
     public function destroy(Review $review)
     {
+        Gate::authorize('delete', Review::class);
+
         $review->delete();
 
         session()->flash('success', true);
@@ -171,6 +195,8 @@ class ReviewController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Review::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,
