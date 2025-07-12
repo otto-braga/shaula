@@ -8,6 +8,7 @@ import { FilePond, registerPlugin } from 'react-filepond';
 import { Button } from '@/components/ui/button';
 import { CheckIcon, DeleteIcon } from 'lucide-react';
 import { FileProps } from '@/types/file';
+import InputError from '../input-error';
 registerPlugin(FilePondPluginImagePreview);
 
 type EditImagesProps = {
@@ -60,6 +61,9 @@ export default function EditImages({
                 }}
                 allowMultiple={true}
             />
+            <InputError className="mt-2" message={errors?.files} />
+            <InputError className="mt-2" message={errors?.files_to_remove} />
+            <InputError className="mt-2" message={errors?.primary_image_uuid} />
 
             <div className="flex flex-row gap-2">
                 {stored_images.map((image, index) => (

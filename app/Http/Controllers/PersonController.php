@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PersonEditRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\PersonResource;
 use App\Models\Person;
@@ -57,20 +58,33 @@ class PersonController extends Controller
         return Inertia::render('admin/person/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(PersonEditRequest $request)
     {
         Gate::authorize('create', Person::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $person = Person::create($dataForm);
+            $person = Person::create(
+                $request->only([
+                    'name',
+                    'date_of_birth',
+                    'date_of_death',
+                    'links',
+                    'chronology',
+                ])
+            );
 
-        $this->syncUuids($request->genders_uuids, $person->genders());
-        $this->syncUuids($request->cities_uuids, $person->cities());
-        $this->syncUuids($request->periods_uuids, $person->periods());
+            $this->syncUuids($request->genders_uuids, $person->genders());
+            $this->syncUuids($request->cities_uuids, $person->cities());
+            $this->syncUuids($request->periods_uuids, $person->periods());
 
-        session()->flash('success', true);
-        return redirect()->route('people.edit', $person);
+            session()->flash('success', true);
+            return redirect()->route('people.edit', $person);
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -90,20 +104,33 @@ class PersonController extends Controller
         ]);
     }
 
-    public function update(Request $request, Person $person)
+    public function update(PersonEditRequest $request, Person $person)
     {
         Gate::authorize('update', Person::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $person->update($dataForm);
+            $person->update(
+                $request->only([
+                    'name',
+                    'date_of_birth',
+                    'date_of_death',
+                    'links',
+                    'chronology',
+                ])
+            );
 
-        $this->syncUuids($request->genders_uuids, $person->genders());
-        $this->syncUuids($request->cities_uuids, $person->cities());
-        $this->syncUuids($request->periods_uuids, $person->periods());
+            $this->syncUuids($request->genders_uuids, $person->genders());
+            $this->syncUuids($request->cities_uuids, $person->cities());
+            $this->syncUuids($request->periods_uuids, $person->periods());
 
-        session()->flash('success', true);
-        return redirect()->route('people.edit', $person);
+            session()->flash('success', true);
+            return redirect()->route('people.edit', $person);
+        } catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -118,11 +145,13 @@ class PersonController extends Controller
         ]);
     }
 
-    public function updateImages(Request $request, Person $person)
+    public function updateImages(PersonEditRequest $request, Person $person)
     {
         Gate::authorize('update', Person::class);
 
         try {
+            $request->validated();
+
             $this->handleImageUpdate($request, $person);
 
             session()->flash('success', true);
@@ -145,7 +174,7 @@ class PersonController extends Controller
         ]);
     }
 
-    public function updateChronology(Request $request, Person $person)
+    public function updateChronology(PersonEditRequest $request, Person $person)
     {
         Gate::authorize('update', Person::class);
 
@@ -172,7 +201,7 @@ class PersonController extends Controller
         ]);
     }
 
-    public function updateContent(Request $request, Person $person)
+    public function updateContent(PersonEditRequest $request, Person $person)
     {
         Gate::authorize('update', Person::class);
 
@@ -201,7 +230,7 @@ class PersonController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request, Person $person)
+    public function updateSources(PersonEditRequest $request, Person $person)
     {
         Gate::authorize('update', Person::class);
 
