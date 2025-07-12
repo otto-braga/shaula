@@ -10,6 +10,7 @@ use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class PeriodController extends Controller
@@ -26,6 +27,8 @@ class PeriodController extends Controller
 
     public function index()
     {
+        Gate::authorize('view', Period::class);
+
         $periods = Period::query()
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
@@ -45,11 +48,15 @@ class PeriodController extends Controller
 
     public function create()
     {
+        Gate::authorize('create', Period::class);
+
         return Inertia::render('admin/period/edit/index');
     }
 
     public function store(Request $request)
     {
+        Gate::authorize('create', Period::class);
+
         $dataForm = $request->all();
 
         $period = Period::create($dataForm);
@@ -63,6 +70,8 @@ class PeriodController extends Controller
 
     public function edit(Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         return Inertia::render('admin/period/edit/index', [
             'period' => new PeriodResource($period),
         ]);
@@ -70,6 +79,8 @@ class PeriodController extends Controller
 
     public function update(Request $request, Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         $dataForm = $request->all();
 
         $period->update($dataForm);
@@ -83,6 +94,8 @@ class PeriodController extends Controller
 
     public function editImages(Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         return Inertia::render('admin/period/edit/images', [
             'period' => new PeriodResource($period),
         ]);
@@ -90,6 +103,8 @@ class PeriodController extends Controller
 
     public function updateImages(Request $request, Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         try {
             $this->handleImageUpdate($request, $period);
 
@@ -106,6 +121,8 @@ class PeriodController extends Controller
 
     public function editContent(Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         return Inertia::render('admin/period/edit/content', [
             'period' => new PeriodResource($period),
         ]);
@@ -113,6 +130,8 @@ class PeriodController extends Controller
 
     public function updateContent(Request $request, Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         try {
             $this->handleContentUpdate($request, $period);
 
@@ -129,6 +148,8 @@ class PeriodController extends Controller
 
     public function editSources(Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         $period->load('sources');
 
         return Inertia::render('admin/period/edit/sources', [
@@ -138,6 +159,8 @@ class PeriodController extends Controller
 
     public function updateSources(Request $request, Period $period)
     {
+        Gate::authorize('update', Period::class);
+
         $this->syncUuids($request->sources_uuids, $period->sources());
 
         session()->flash('success', true);
@@ -149,6 +172,8 @@ class PeriodController extends Controller
 
     public function destroy(Period $period)
     {
+        Gate::authorize('delete', Period::class);
+
         $period->delete();
 
         session()->flash('success', true);
@@ -160,6 +185,8 @@ class PeriodController extends Controller
 
     public function fetchSelectOptions(Request $request)
     {
+        Gate::authorize('view', Period::class);
+
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,

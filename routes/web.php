@@ -171,7 +171,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('periodos/{period:slug}/update/content', [PeriodController::class, 'updateContent'])->name('periods.update.content');
     Route::get('periodos/{period:slug}/editar/fontes', [PeriodController::class, 'editSources'])->name('periods.edit.sources');
     Route::post('periodos/{period:slug}/update/sources', [PeriodController::class, 'updateSources'])->name('periods.update.sources');
-    Route::delete('periodos/{period}', [PeriodController::class, 'destroy'])->name('periods.destroy');
+    Route::delete('periodos/{period:uuid}/delete', [PeriodController::class, 'destroy'])->name('periods.destroy');
     Route::get('periodos/fetch/options', [PeriodController::class, 'fetchSelectOptions'])->name('periods.fetch.options');
 
     // People
