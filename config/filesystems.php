@@ -4,6 +4,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Filesystem Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may configure the filesystem settings for your application.
+    | The "local" driver, as well as a variety of cloud based drivers are
+    | available to your application for file storage.
+    |
+    | Supported Drivers: "local", "ftp", "sftp", "s3"
+    |
+    */
+
+    // 'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 10240), // 10 MB
+    'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 1024), // 1 MB
+
+    /*
+    |--------------------------------------------------------------------------
     | Default Filesystem Disk
     |--------------------------------------------------------------------------
     |

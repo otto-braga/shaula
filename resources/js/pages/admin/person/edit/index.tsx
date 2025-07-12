@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Person } from '@/types/person';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
 import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
@@ -21,7 +21,7 @@ export default function Index({
 }) {
     const isEdit = !!person;
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         name: person ? person.data.name : '',
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
@@ -33,6 +33,7 @@ export default function Index({
         links: person ? person.data.links : '',
         chronology: person ? person.data.chronology : '',
     });
+    const { errors } = usePage().props
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

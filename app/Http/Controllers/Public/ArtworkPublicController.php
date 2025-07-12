@@ -14,7 +14,6 @@ class ArtworkPublicController extends Controller
      */
     public function show($slug)
     {
-
         $artwork = Artwork::where('slug', $slug)->firstOrFail();
 
         return Inertia::render('artwork/show', [
