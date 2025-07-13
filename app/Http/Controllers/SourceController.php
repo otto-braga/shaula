@@ -133,7 +133,7 @@ class SourceController extends Controller
     {
         Gate::authorize('view', Source::class);
 
-        $options = SourceCategory::fetchAsSelectOption($request->search);
+        $options = SourceCategory::fetchAsSelectOptions($request->search);
         return response()->json($options);
     }
 

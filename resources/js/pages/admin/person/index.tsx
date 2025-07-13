@@ -1,5 +1,5 @@
 import DeleteDialog from '@/components/common/delete-dialog';
-import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
+import { PaginationProps } from '@/components/pagination/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
@@ -57,8 +57,6 @@ export default function Index({ people }: { people: Props }) {
                         </Card>
                     ))}
                 </div>
-
-                <PaginationControls pagination={people.meta} />
 
             </section>
         </AppLayout>

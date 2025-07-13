@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import EditPeople from '@/components/edit/edit-people';
@@ -11,7 +11,7 @@ export default function People({
 }: {
     artwork: { data: Artwork };
 }) {
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         activitiesPeople: artwork.data.people.map((person) => ({
             activity_uuid: person.pivot.activity?.uuid,
             activity_name: person.pivot.activity?.name,
@@ -19,6 +19,7 @@ export default function People({
             person_name: person.name,
         })) as ActivityPerson[],
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

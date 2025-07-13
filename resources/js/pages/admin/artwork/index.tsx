@@ -1,11 +1,12 @@
+import { AdminIndexBar } from '@/components/admin-index-bar/admin-index-bar';
 import DeleteDialog from '@/components/common/delete-dialog';
-import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
+import { PaginationProps } from '@/components/pagination/pagination';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
 import { Person } from '@/types/person';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
 import { Edit, Eye } from 'lucide-react';
 
 type Props = {
@@ -28,7 +29,7 @@ export default function Index({ artworks }: { artworks: Props }) {
                         </Link>
                     </div>
 
-                    <PaginationControls pagination={artworks.meta} className="mt-4" />
+                    <AdminIndexBar index_route='artworks.index' pagination_meta={artworks.meta} />
 
                     <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
                         {artworks?.data?.map((artwork) => (
@@ -74,8 +75,6 @@ export default function Index({ artworks }: { artworks: Props }) {
                             </Card>
                         ))}
                     </div>
-
-                    <PaginationControls pagination={artworks.meta} className="mt-4" />
 
                 </div>
             </section>

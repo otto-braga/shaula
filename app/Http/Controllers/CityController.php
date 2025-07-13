@@ -82,6 +82,6 @@ class CityController extends Controller
     {
         Gate::authorize('view', City::class);
 
-        return City::fetchAsSelectOption($request->q);
+        return City::fetchAsSelectOptions($request->q);
     }
 }

@@ -3,7 +3,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Artwork } from '@/types/artwork';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
@@ -18,7 +18,7 @@ export default function Index({
     const isEdit = !!artwork;
 
 
-    const { data, setData, post, patch, errors, processing } = useForm({
+    const { data, setData, post, patch, processing } = useForm({
         title: artwork ? artwork.data.title : '' as string,
         date: artwork ? new Date(artwork.data.date).getUTCFullYear() : '' as string,
 
@@ -31,6 +31,7 @@ export default function Index({
         dimensions: artwork ? artwork.data.dimensions : '',
         materials: artwork ? artwork.data.materials : '',
     });
+    const { errors } = usePage().props
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

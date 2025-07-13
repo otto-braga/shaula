@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\ArtworkEditRequest;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
@@ -36,7 +36,11 @@ class ArtworkController extends Controller
     {
         Gate::authorize('view', Artwork::class);
 
-        $artworks = Artwork::query()
+        $artworks = Artwork::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('title', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -60,7 +64,7 @@ class ArtworkController extends Controller
         return Inertia::render('admin/artwork/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(ArtworkEditRequest $request)
     {
         Gate::authorize('create', Artwork::class);
 
@@ -97,7 +101,7 @@ class ArtworkController extends Controller
         ]);
     }
 
-    public function update(Request $request, Artwork $artwork)
+    public function update(ArtworkEditRequest $request, Artwork $artwork)
     {
         Gate::authorize('update', Artwork::class);
 
@@ -138,7 +142,7 @@ class ArtworkController extends Controller
         ]);
     }
 
-    public function updatePeople(Request $request, Artwork $artwork)
+    public function updatePeople(ArtworkEditRequest $request, Artwork $artwork)
     {
         $this->handlePeopleUpdate($request, $artwork);
 
@@ -158,7 +162,7 @@ class ArtworkController extends Controller
         ]);
     }
 
-    public function updateImages(Request $request, Artwork $artwork)
+    public function updateImages(ArtworkEditRequest $request, Artwork $artwork)
     {
         Gate::authorize('update', Artwork::class);
 
@@ -185,7 +189,7 @@ class ArtworkController extends Controller
         ]);
     }
 
-    public function updateContent(Request $request, Artwork $artwork)
+    public function updateContent(ArtworkEditRequest $request, Artwork $artwork)
     {
         Gate::authorize('update', Artwork::class);
 
@@ -214,7 +218,7 @@ class ArtworkController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request, Artwork $artwork)
+    public function updateSources(ArtworkEditRequest $request, Artwork $artwork)
     {
         Gate::authorize('update', Artwork::class);
 
@@ -240,7 +244,7 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(ArtworkEditRequest $request)
     {
         Gate::authorize('view', Artwork::class);
 

@@ -82,6 +82,6 @@ class ActivityController extends Controller
     {
         Gate::authorize('view', Activity::class);
 
-        return Activity::fetchAsSelectOption($request->q);
+        return Activity::fetchAsSelectOptions($request->q);
     }
 }
