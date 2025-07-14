@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\GenderResource;
 use App\Models\Gender;
 use App\Traits\HasCommonPaginationConstants;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -18,7 +19,11 @@ class GenderController extends Controller
     {
         Gate::authorize('view', Gender::class);
 
-        $genders = Gender::query()
+        $genders = Gender::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -27,39 +32,39 @@ class GenderController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', Gender::class);
 
-        $request->validate([
-            'name' => 'required|unique:genders',
-        ]);
-
         try {
-            Gender::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Identidade de gênero criada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar identidade de gênero.');
+            $request->validated();
+
+            Gender::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Gender $gender)
+    public function update(AuxEditRequest $request, Gender $gender)
     {
         Gate::authorize('update', Gender::class);
 
-        request()->validate([
-            'name' => 'required|unique:genders',
-        ]);
-
         try {
-            $gender->update([
-                'name' => request('name'),
-            ]);
-            return redirect()->back()->with('success', 'Identidade de gênero atualizada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar identidade de gênero.');
+            $request->validated();
+
+            $gender->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -69,18 +74,24 @@ class GenderController extends Controller
 
         try {
             $gender->delete();
-            return redirect()->back()->with('success', 'Identidade de gênero deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar identidade de gênero.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Gender::class);
+
+        $request->validated();
 
         return Gender::fetchAsSelectOptions($request->q);
     }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\LanguageResource;
 use App\Models\Language;
 use App\Traits\HasCommonPaginationConstants;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -18,7 +19,11 @@ class LanguageController extends Controller
     {
         Gate::authorize('view', Language::class);
 
-        $languages = Language::query()
+        $languages = Language::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -27,39 +32,39 @@ class LanguageController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', Language::class);
 
-        $request->validate([
-            'name' => 'required|unique:languages',
-        ]);
-
         try {
-            Language::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Linguagem criada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar linguagem.');
+            $request->validated();
+
+            Language::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Language $language)
+    public function update(AuxEditRequest $request, Language $language)
     {
         Gate::authorize('update', Language::class);
 
-        request()->validate([
-            'name' => 'required|unique:languages',
-        ]);
-
         try {
-            $language->update([
-                'name' => request('name'),
-            ]);
-            return redirect()->back()->with('success', 'Linguagem atualizada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar linguagem.');
+            $request->validated();
+
+            $language->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -69,18 +74,24 @@ class LanguageController extends Controller
 
         try {
             $language->delete();
-            return redirect()->back()->with('success', 'Linguagem deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar gender.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Language::class);
+
+        $request->validated();
 
         return Language::fetchAsSelectOptions($request->q);
     }

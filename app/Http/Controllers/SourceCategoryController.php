@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
 use App\Http\Requests\FetchRequest;
 use App\Http\Resources\SourceCategoryResource;
 use App\Models\SourceCategory;
 use App\Traits\HasCommonPaginationConstants;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class SourceCategoryController extends Controller
@@ -18,7 +18,11 @@ class SourceCategoryController extends Controller
     {
         Gate::authorize('view', SourceCategory::class);
 
-        $souceCategories = SourceCategory::query()
+        $souceCategories = SourceCategory::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -27,39 +31,39 @@ class SourceCategoryController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', SourceCategory::class);
 
-        $request->validate([
-            'name' => 'required|unique:source_categories',
-        ]);
-
         try {
-            SourceCategory::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Categoria de fonte criada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar categoria de fonte.');
+            $request->validated();
+
+            SourceCategory::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Request $request, SourceCategory $sourceCategory)
+    public function update(AuxEditRequest $request, SourceCategory $sourceCategory)
     {
         Gate::authorize('update', SourceCategory::class);
 
-        $request->validate([
-            'name' => 'required|unique:source_categories',
-        ]);
-
         try {
-            $sourceCategory->update([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Categoria de fonte atualizada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar categoria de fonte.');
+            $request->validated();
+
+            $sourceCategory->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
 
     }
@@ -70,9 +74,13 @@ class SourceCategoryController extends Controller
 
         try {
             $sourceCategory->delete();
-            return redirect()->back()->with('success', 'Categoria de fonte deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar categoria de fonte.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -82,6 +90,8 @@ class SourceCategoryController extends Controller
     public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', SourceCategory::class);
+
+        $request->validated();
 
         return SourceCategory::fetchAsSelectOptions($request->q);
     }

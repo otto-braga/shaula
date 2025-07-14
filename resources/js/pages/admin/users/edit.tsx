@@ -2,11 +2,10 @@ import AppLayout from '@/layouts/app-layout';
 import InputError from '@/components/input-error';
 import { Label } from '@/components/ui/label';
 import { User } from '@/types/user';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { LazyLoadingSelectWithStates, SelectWithStates } from '@/components/select/lazy-loading-select';
+import { SelectWithStates } from '@/components/select/lazy-loading-select';
 import { SearchResult } from '@/types/search-result';
-import { MultiValue } from 'react-select';
 import SubmitButton from '@/components/edit/submit-button';
 
 export default function Index({
@@ -16,10 +15,10 @@ export default function Index({
 }) {
     const isEdit = !!user;
 
-    const { data, setData, post, patch, errors, processing } = useForm({
-        name: user ? user.name : '' as string,
+    const { data, setData, post, processing } = useForm({
         role_uuid: user ? user.role?.uuid : '' as string,
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

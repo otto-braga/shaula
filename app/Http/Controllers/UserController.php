@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
+use App\Http\Requests\UserEditRequest;
 use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
@@ -27,7 +29,12 @@ class UserController extends Controller
             $users = $users->where('name', '!=', 'dev');
         }
 
-        $users = $users->orderBy('name')
+        $users = $users->where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
+            ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return Inertia::render('admin/users/index', [
@@ -44,11 +51,13 @@ class UserController extends Controller
         ]);
     }
 
-    public function update(Request $request, User $user)
+    public function update(UserEditRequest $request, User $user)
     {
         Gate::authorize('update', User::class);
 
         try {
+            $request->validated();
+
             $role = Role::where('uuid', $request->role_uuid)->first();
 
             if ($role) {
@@ -58,7 +67,8 @@ class UserController extends Controller
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -73,7 +83,8 @@ class UserController extends Controller
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -82,9 +93,11 @@ class UserController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', User::class);
+
+        $request->validated();
 
         return User::fetchAsSelectOptions($request->q);
     }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\AwardResource;
 use App\Models\Award;
 use App\Traits\HasCommonPaginationConstants;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class AwardController extends Controller
@@ -17,7 +18,11 @@ class AwardController extends Controller
     {
         Gate::authorize('view', Award::class);
 
-        $awards = Award::query()
+        $awards = Award::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -26,42 +31,39 @@ class AwardController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', Award::class);
 
-        $request->validate([
-            'name' => 'required|unique:awards',
-            'promoter' => 'optional|string|max:255',
-        ]);
-
         try {
-            Award::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Prêmio criado com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar prêmio.');
+            $request->validated();
+
+            Award::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Request $request, Award $award)
+    public function update(AuxEditRequest $request, Award $award)
     {
         Gate::authorize('update', Award::class);
 
-        $request->validate([
-            'name' => 'required|unique:awards,name,' . $award->id,
-            'promoter' => 'optional|string|max:255',
-        ]);
-
         try {
-            $award->update([
-                'name' => $request->name,
-                'promoter' => $request->promoter,
-            ]);
-            return redirect()->back()->with('success', 'Prêmio atualizado com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar prêmio.');
+            $request->validated();
+
+            $award->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -71,18 +73,24 @@ class AwardController extends Controller
 
         try {
             $award->delete();
-            return redirect()->back()->with('success', 'Prêmio deletado com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar prêmio.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Award::class);
+
+        $request->validated();
 
         return Award::fetchAsSelectOptions($request->q);
     }

@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\CategoryResource;
 use App\Models\Category;
 use App\Traits\HasCommonPaginationConstants;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -18,7 +19,11 @@ class CategoryController extends Controller
     {
         Gate::authorize('view', Category::class);
 
-        $categories = Category::query()
+        $categories = Category::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -27,40 +32,39 @@ class CategoryController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', Category::class);
 
-        $request->validate([
-            'name' => 'required|unique:categories',
-        ]);
-
         try {
-            Category::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Categoria criada com sucesso.');
-        } catch (\Exception $e) {
-            dd($e->getMessage());
-            return redirect()->back()->with('error', 'Erro ao criar categoria.');
+            $request->validated();
+
+            Category::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Category $category)
+    public function update(AuxEditRequest $request, Category $category)
     {
         Gate::authorize('update', Category::class);
 
-        request()->validate([
-            'name' => 'required|unique:categories',
-        ]);
-
         try {
-            $category->update([
-                'name' => request('name'),
-            ]);
-            return redirect()->back()->with('success', 'Categoria atualizada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar categoria.');
+            $request->validated();
+
+            $category->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -70,18 +74,24 @@ class CategoryController extends Controller
 
         try {
             $category->delete();
-            return redirect()->back()->with('success', 'Categoria deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar categoria.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Category::class);
+
+        $request->validated();
 
         return Category::fetchAsSelectOptions($request->q);
     }
