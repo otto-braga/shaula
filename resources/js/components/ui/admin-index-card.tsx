@@ -72,18 +72,19 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
             )}
 
             <CardFooter>
-                <div className="mt-2 flex w-full justify-end gap-2">
+                <div className="m-2 flex w-full h-10 justify-center gap-2">
                     <Link href={route(props.show_route, props.model)}>
-                        <Button variant={'secondary'}>
-                            <Eye className="h-5 w-5" />
+                        <Button variant={'secondary'} className="h-full">
+                            <Eye />
                         </Button>
                     </Link>
                     <Link href={route(props.edit_route, props.model)}>
-                        <Button variant={'secondary'}>
-                            <Edit className="h-5 w-5" />
+                        <Button variant={'secondary'} className="h-full">
+                            <Edit />
                         </Button>
                     </Link>
                     <DeleteDialog
+                        className="h-full"
                         resourceId={props.model.uuid}
                         resourceName={props.model.name ?? props.model.title}
                         deleteRoute="reviews.destroy"

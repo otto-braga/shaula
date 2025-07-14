@@ -5,13 +5,14 @@ import { Trash } from 'lucide-react';
 import { useState } from 'react';
 
 interface DeleteDialogProps {
+    className?: string;
     resourceId: number | string;
     resourceName: string;
     deleteRoute: string;
     onSuccess: () => void;
 }
 
-export default function DeleteDialog({ resourceId, resourceName, deleteRoute, onSuccess }: DeleteDialogProps) {
+export default function DeleteDialog({ className, resourceId, resourceName, deleteRoute, onSuccess }: DeleteDialogProps) {
     const [isOpen, setIsOpen] = useState(false);
     const { delete: destroy, processing } = useForm();
 
@@ -27,9 +28,9 @@ export default function DeleteDialog({ resourceId, resourceName, deleteRoute, on
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>
+            <DialogTrigger asChild className={className}>
                 <Button variant="outline" onClick={() => setIsOpen(true)}>
-                    <Trash size={16} className="text-red-600" />
+                    <Trash className="text-red-600" />
                 </Button>
             </DialogTrigger>
             <DialogContent>
