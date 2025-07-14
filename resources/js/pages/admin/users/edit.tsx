@@ -6,7 +6,7 @@ import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import { SelectWithStates } from '@/components/select/lazy-loading-select';
 import { SearchResult } from '@/types/search-result';
-import SubmitButton from '@/components/edit/submit-button';
+import SubmitConfirmationButton from '@/components/edit/submit-confirmation-button';
 
 export default function Index({
     user,
@@ -45,9 +45,9 @@ export default function Index({
                         <form onSubmit={submit} className="space-y-3 bg-inherit">
                             <div className="flex justify-between items-center">
                                 <h1 className="text-2xl font-bold">{user.name}</h1>
-                                <SubmitButton
+                                <SubmitConfirmationButton
+                                    onSubmit={submit}
                                     processing={processing}
-                                    isEdit={isEdit}
                                 />
                             </div>
 

@@ -6,9 +6,13 @@ import { useEffect, useState, } from 'react';
 export default function SubmitButton({
     processing,
     isEdit = false,
+    isSubmit = true,
+    onClick,
 }: {
     processing: boolean;
     isEdit?: boolean;
+    isSubmit?: boolean;
+    onClick?: () => void;
 }) {
     const { flash } = usePage().props as { error?: boolean, flash?: { success?: boolean } };
 
@@ -25,7 +29,8 @@ export default function SubmitButton({
     }, [flash]);
 
     return (
-        <Button type="submit"
+        <Button type={isSubmit ? 'submit' : 'button'}
+            onClick={onClick}
             disabled={processing || isTimedMessageShown}
             className={
                 'rounded min-w-[8em]' +
