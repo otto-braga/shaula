@@ -67,8 +67,7 @@ export default function AuxDialogForm({ model, route_base_name = '', title = '' 
                     <div className="flex items-center">
                         {!model ? (
                             <>
-                                <Plus size={16} />
-                                <span>{title}</span>
+                                Cadastrar
                             </>
                         ) : (
                             <span>Editar</span>
@@ -77,7 +76,7 @@ export default function AuxDialogForm({ model, route_base_name = '', title = '' 
                 </Button>
             </DialogTrigger>
             <DialogContent>
-                <DialogTitle>{model ? 'Editar ' + model.name : 'Criar ' + title}</DialogTitle>
+                <DialogTitle>{model ? 'Editar ' + model.name : 'Criar'}</DialogTitle>
                 <form className="space-y-6" onSubmit={handleSubmit}>
                     <div className="grid gap-2">
                         <Label htmlFor="name" className="sr-only">

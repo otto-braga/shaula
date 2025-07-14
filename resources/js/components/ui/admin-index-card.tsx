@@ -6,14 +6,19 @@ import { Edit, Eye } from 'lucide-react';
 import { Person } from '@/types/person';
 import { City } from '@/types/city';
 import { FileCard } from './file-card';
+import AuxDialogForm from '../aux-form/aux-dialog-form';
 
 export type AdminIndexCardProps = {
     model: any;
+    route_base_name: string;
     edit_route: string;
     show_route: string;
+    is_aux?: boolean;
 };
 
 export function AdminIndexCard(props : AdminIndexCardProps) {
+    const is_aux = props.is_aux || false;
+
     return (
         <Card key={props.model.uuid} className="flex flex-col justify-between">
             <CardHeader>
@@ -73,16 +78,26 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
 
             <CardFooter>
                 <div className="m-2 flex w-full h-10 justify-center gap-2">
-                    <Link href={route(props.show_route, props.model)}>
-                        <Button variant={'secondary'} className="h-full">
-                            <Eye />
-                        </Button>
-                    </Link>
-                    <Link href={route(props.edit_route, props.model)}>
-                        <Button variant={'secondary'} className="h-full">
-                            <Edit />
-                        </Button>
-                    </Link>
+                    { is_aux ? (
+                        <AuxDialogForm
+                            model={props.model}
+                            title={props.model.title ?? props.model.name}
+                            route_base_name={props.route_base_name}
+                        />
+                    ) : (<>
+                        <Link href={route(props.edit_route, props.model)}>
+                            <Button variant={'secondary'} className="h-full">
+                                <Edit />
+                            </Button>
+                        </Link>
+
+                        <Link href={route(props.show_route, props.model)}>
+                            <Button variant={'secondary'} className="h-full">
+                                <Eye />
+                            </Button>
+                        </Link>
+                    </>)}
+
                     <DeleteDialog
                         className="h-full"
                         resourceId={props.model.uuid}

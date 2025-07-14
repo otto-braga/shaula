@@ -17,7 +17,6 @@ class AwardResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
-            'promoter' => $this->promoter,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

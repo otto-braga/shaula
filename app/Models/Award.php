@@ -18,6 +18,5 @@ class Award extends Model
 
     protected $fillable = [
         'name',
-        'promoter',
     ];
 }

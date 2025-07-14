@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AuxEditRequest;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\ActivityResource;
 use App\Models\Activity;
 use App\Traits\HasCommonPaginationConstants;
@@ -18,7 +20,11 @@ class ActivityController extends Controller
     {
         Gate::authorize('view', Activity::class);
 
-        $activities = Activity::query()
+        $activities = Activity::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -27,39 +33,39 @@ class ActivityController extends Controller
         ]);
     }
 
-    public function store(Request $request)
+    public function store(AuxEditRequest $request)
     {
         Gate::authorize('create', Activity::class);
 
-        $request->validate([
-            'name' => 'required|unique:activities',
-        ]);
-
         try {
-            Activity::create([
-                'name' => $request->name,
-            ]);
-            return redirect()->back()->with('success', 'Atividade criada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao criar atividade.');
+            $request->validated();
+
+            Activity::create($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
-    public function update(Activity $activity)
+    public function update(AuxEditRequest $request, Activity $activity)
     {
         Gate::authorize('update', Activity::class);
 
-        request()->validate([
-            'name' => 'required|unique:activities',
-        ]);
-
         try {
-            $activity->update([
-                'name' => request('name'),
-            ]);
-            return redirect()->back()->with('success', 'Atividade atualizada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao atualizar atividade.');
+            $request->validated();
+
+            $activity->update($request->only('name'));
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
@@ -69,18 +75,24 @@ class ActivityController extends Controller
 
         try {
             $activity->delete();
-            return redirect()->back()->with('success', 'Atividade deletada com sucesso.');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Erro ao deletar atividade.');
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Exception $e) {
+            session()->flash('success', false);
+            return redirect()->back();
         }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Activity::class);
+
+        $request->validated();
 
         return Activity::fetchAsSelectOptions($request->q);
     }
