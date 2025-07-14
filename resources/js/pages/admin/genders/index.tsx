@@ -1,3 +1,4 @@
+import AuxDialogForm from '@/components/aux-form/aux-dialog-form';
 import DeleteDialog from '@/components/common/delete-dialog';
 import GenderDialogForm from '@/components/gender/gender-dialog-form';
 import { PaginationControls, PaginationProps } from '@/components/pagination/pagination';
@@ -19,7 +20,11 @@ export default function Index({ genders }: { genders: Props }) {
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold">Identidades de Gênero</h1>
-                        <GenderDialogForm />
+                        <AuxDialogForm
+                            model={null}
+                            title='Id. de Gênero'
+                            route_base_name='genders'
+                        />
                     </div>
 
                     <PaginationControls pagination={genders.meta} className="mt-4" />
@@ -31,7 +36,11 @@ export default function Index({ genders }: { genders: Props }) {
                                     <CardTitle>{gender.name}</CardTitle>
                                 </CardHeader>
                                 <CardFooter className="flex justify-end gap-2">
-                                    <GenderDialogForm gender={gender} />
+                                    <AuxDialogForm
+                                        model={gender}
+                                        title='Id. de Gênero'
+                                        route_base_name='genders'
+                                    />
                                     <DeleteDialog
                                         resourceId={gender.uuid}
                                         resourceName={gender.name}
