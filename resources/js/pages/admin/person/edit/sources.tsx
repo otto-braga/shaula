@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import EditSources from '@/components/edit/edit-sources';
@@ -10,9 +10,10 @@ export default function Sources({
 }: {
     person: { data: Person },
 }) {
-    const { data, setData, post, patch, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         sources_uuids: person ? person.data.sources?.map((source) => source.uuid) : [] as string[],
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -39,6 +40,8 @@ export default function Sources({
                                 model={person}
                                 data={data}
                                 setData={setData}
+                                errors={errors}
+                                processing={processing}
                             />
                         </form>
                     </div>

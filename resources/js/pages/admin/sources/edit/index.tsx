@@ -3,7 +3,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Source } from '@/types/source';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import HtmlEditor from '@/components/edit/html-editor';
@@ -19,13 +19,14 @@ export default function Index({
 }) {
     const isEdit = !!source;
 
-    const { data, setData, post, patch, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         title: source ? source.data.title : String(),
         source_categories_uuids: source ? source.data.source_categories?.map((source_category) => source_category.uuid) : [] as string[],
         files: Array<File>(),
         delete_file: false as boolean,
         content: source ? source.data.content as string : String(),
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

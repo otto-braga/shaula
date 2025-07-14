@@ -84,6 +84,6 @@ class AwardController extends Controller
     {
         Gate::authorize('view', Award::class);
 
-        return Award::fetchAsSelectOption($request->q);
+        return Award::fetchAsSelectOptions($request->q);
     }
 }

@@ -82,6 +82,6 @@ class LanguageController extends Controller
     {
         Gate::authorize('view', Language::class);
 
-        return Language::fetchAsSelectOption($request->q);
+        return Language::fetchAsSelectOptions($request->q);
     }
 }

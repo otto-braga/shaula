@@ -3,7 +3,7 @@ import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Period } from '@/types/period';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useEffect } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 
@@ -14,11 +14,12 @@ export default function Index({
 }) {
     const isEdit = !!period;
 
-    const { data, setData, post, patch, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         name: period ? period.data.name : '' as string,
         start_date: period ? period.data.start_date : '' as string,
         end_date: period ? period.data.end_date : '' as string,
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

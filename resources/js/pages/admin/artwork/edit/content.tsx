@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Artwork } from '@/types/artwork';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import EditTabs from '@/components/edit/edit-tabs';
@@ -13,11 +13,12 @@ export default function Content({
 }) {
     console.log('mentions', artwork.data.mentions);
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         content: artwork.data.content as string ?? String(),
         files: Array<File>(),
         files_to_remove: Array<string>(),
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

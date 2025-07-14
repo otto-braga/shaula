@@ -6,7 +6,6 @@ import { Person } from '@/types/person';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler, useRef } from 'react';
 
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import EditTabs from '@/components/edit/edit-tabs';

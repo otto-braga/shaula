@@ -3,9 +3,8 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { Review } from '@/types/review';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { LazyLoadingMultiSelect } from '@/components/select/lazyLoadingMultiSelect';
 import EditTabs from '@/components/edit/edit-tabs';
 import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
 import { MultiValue } from 'react-select';
@@ -22,13 +21,14 @@ export default function Index({
 
     console.log(review);
 
-    const { data, setData, post, patch, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         title: review ? review.data.title : '',
         date: review ? review.data.date : '',
 
         authors_uuids: review ? review.data.authors.map((author) => author.uuid) : [] as string[],
         categories_uuids: review ? review.data.categories?.map((category) => category.uuid) : [] as string[],
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

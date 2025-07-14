@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Period } from '@/types/period';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import EditTabs from '@/components/edit/edit-tabs';
@@ -13,11 +13,12 @@ export default function Content({
 }) {
     console.log('mentions', period.data.mentions);
 
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         content: period.data.content as string ?? String(),
         files: Array<File>(),
         files_to_remove: Array<string>(),
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

@@ -21,8 +21,10 @@ class BaseEditRequest extends FormRequest
 
     public function rules(): array
     {
-        if ($this->routeName === 'update') {
+        if ($this->routeName === 'update' || $this->routeName === 'store') {
             return $this->indexRules();
+        } elseif ($this->routeName === 'update.people') {
+            return $this->peopleRules();
         } elseif ($this->routeName === 'update.images') {
             return $this->imagesRules();
         } elseif ($this->routeName === 'update.content') {
@@ -35,8 +37,10 @@ class BaseEditRequest extends FormRequest
 
     public function messages(): array
     {
-        if ($this->routeName === 'update') {
+        if ($this->routeName === 'update' || $this->routeName === 'store') {
             return $this->indexMessages();
+        } elseif ($this->routeName === 'update.people') {
+            return $this->peopleMessages();
         } elseif ($this->routeName === 'update.images') {
             return $this->imagesMessages();
         } elseif ($this->routeName === 'update.content') {
@@ -55,6 +59,34 @@ class BaseEditRequest extends FormRequest
     protected function indexMessages(): array
     {
         return [];
+    }
+
+    protected function peopleRules(): array
+    {
+        return [
+            'activitiesPeople' => ['nullable', 'array'],
+            'activitiesPeople.*.activity_uuid' => ['required', 'string', Rule::exists('activities', 'uuid')],
+            'activitiesPeople.*.activity_name' => ['required', 'string'],
+            'activitiesPeople.*.person_uuid' => ['required', 'string', Rule::exists('people', 'uuid')],
+            'activitiesPeople.*.person_name' => ['required', 'string'],
+        ];
+    }
+
+    protected function peopleMessages(): array
+    {
+        return [
+            'activitiesPeople.array' => 'Deve ser uma lista de atividades.',
+            'activitiesPeople.*.activity_uuid.required' => 'Obrigatório.',
+            'activitiesPeople.*.activity_uuid.string' => 'Deve ser um índice válido.',
+            'activitiesPeople.*.activity_uuid.exists' => 'A atividade deve existir.',
+            'activitiesPeople.*.activity_name.required' => 'Obrigatório.',
+            'activitiesPeople.*.activity_name.string' => 'Deve ser texto.',
+            'activitiesPeople.*.person_uuid.required' => 'Obrigatório.',
+            'activitiesPeople.*.person_uuid.string' => 'Deve ser um índice válido.',
+            'activitiesPeople.*.person_uuid.exists' => 'A pessoa deve existir.',
+            'activitiesPeople.*.person_name.required' => 'Obrigatório.',
+            'activitiesPeople.*.person_name.string' => 'Deve ser texto.',
+        ];
     }
 
     protected function imagesRules(): array
@@ -85,7 +117,7 @@ class BaseEditRequest extends FormRequest
             'files_to_remove.array' => 'Deve ser uma lista de índices.',
             'files_to_remove.*.string' => 'Deve ser um índice válido.',
             'primary_image_uuid.string' => 'Deve ser um índice válido.',
-            'primary_image_uuid.exists' => 'A imagem primária deve existir.',
+            'primary_image_uuid.exists' => 'A imagem deve existir.',
         ];
     }
 

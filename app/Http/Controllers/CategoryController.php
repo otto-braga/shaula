@@ -83,6 +83,6 @@ class CategoryController extends Controller
     {
         Gate::authorize('view', Category::class);
 
-        return Category::fetchAsSelectOption($request->q);
+        return Category::fetchAsSelectOptions($request->q);
     }
 }
