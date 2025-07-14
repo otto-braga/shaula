@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Traits\HasCommonPaginationConstants;
@@ -23,7 +24,12 @@ class RoleController extends Controller
             $roles = $roles->where('name', '!=', 'dev');
         }
 
-        $roles = $roles->orderBy('name')
+        $roles = $roles->where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('label', 'like', '%' . request()->q . '%');
+                }
+            })
+            ->orderBy('name')
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
         return inertia('admin/roles/index', [
@@ -35,9 +41,11 @@ class RoleController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Role::class);
+
+        $request->validated();
 
         return Role::fetchAsSelectOptions($request->q);
     }
