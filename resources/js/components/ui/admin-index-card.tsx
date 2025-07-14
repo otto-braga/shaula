@@ -92,7 +92,7 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
                     <CardContent className="flex h-full items-end">
                         <div className="flex flex-col items-center justify-center w-full">
                             <div className="text-sm text-gray-500 line-clamp-5 pt-2 pb-2">
-                                {props.model.role.name}
+                                {props.model.role.label}
                             </div>
                         </div>
                     </CardContent>
