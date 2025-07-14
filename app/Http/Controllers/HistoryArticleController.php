@@ -31,7 +31,11 @@ class HistoryArticleController extends Controller
     {
         Gate::authorize('view', HistoryArticle::class);
 
-        $historyArticles = HistoryArticle::query()
+        $historyArticles = HistoryArticle::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('title', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 

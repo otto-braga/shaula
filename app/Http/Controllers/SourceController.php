@@ -28,7 +28,11 @@ class SourceController extends Controller
     {
         Gate::authorize('view', Source::class);
 
-        $sources = Source::query()
+        $sources = Source::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('title', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 

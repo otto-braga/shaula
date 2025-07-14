@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { Review } from '@/types/review';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import EditImages from '@/components/edit/edit-images';
@@ -10,11 +10,12 @@ export default function Images({
 }: {
     review: { data: Review };
 }) {
-    const { data, setData, post, errors, processing } = useForm({
+    const { data, setData, post, processing } = useForm({
         files: Array<File>(),
         files_to_remove: Array<string>(),
         primary_image_uuid: review.data.primary_image?.uuid || '',
     });
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

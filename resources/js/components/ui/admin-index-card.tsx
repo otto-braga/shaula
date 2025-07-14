@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Edit, Eye } from 'lucide-react';
 import { Person } from '@/types/person';
 import { City } from '@/types/city';
+import { FileCard } from './file-card';
 
 export type AdminIndexCardProps = {
     model: any;
@@ -17,22 +18,11 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
         <Card key={props.model.uuid} className="flex flex-col justify-between">
             <CardHeader>
 
-                <CardTitle className="items-center justify-center text-center mb-3">
+                <CardTitle className="items-center justify-center text-center mb-1">
                     <h3 className="line-clamp-1 font-semibold">{props.model.title ?? props.model.name}</h3>
                 </CardTitle>
 
-                {props.model.primary_image?.path ? (
-                    <img src={`${props.model.primary_image.path}`} alt={props.model.title} className="aspect-square rounded object-cover" />
-                ) : (
-                    <div className="flex aspect-square items-center justify-center rounded bg-gray-800/50 text-white/50">
-                        Sem imagem
-                    </div>
-                )}
-
-            </CardHeader>
-
-            <CardContent>
-                <div className="text-xs text-gray-500 justify-center text-center">
+                <div className="text-sm text-gray-500 justify-center text-center">
                     {props.model.date && (
                         <p>{new Date(props.model.date).toLocaleDateString()}</p>
                     )}
@@ -59,12 +49,27 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
                     ) : null
                 )}
 
-                {/* {props.model.content && (
-                    <div className="line-clamp-3 text-xs text-gray-500 justify-center text-center"
-                        dangerouslySetInnerHTML={{ __html: props.model.content }}
-                    />
-                )} */}
-            </CardContent>
+            </CardHeader>
+
+            {(props.model.primary_image?.path || props.model.content) && (
+                <CardContent className="flex h-full items-end">
+                    {props.model.primary_image?.path ? (
+                        <img src={`${props.model.primary_image.path}`} alt={props.model.title} className="w-full aspect-video rounded object-cover" />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center w-full">
+                            <div className="aspect-video pt-2 pb-2 line-clamp-5 text-sm text-gray-500"
+                                dangerouslySetInnerHTML={{ __html: props.model.content }}
+                            />
+                            {props.model.file && (
+                                <FileCard
+                                    file={props.model.file}
+                                    className="h-32 w-full object-cover rounded-lg"
+                                />
+                            )}
+                        </div>
+                    )}
+                </CardContent>
+            )}
 
             <CardFooter>
                 <div className="mt-2 flex w-full justify-end gap-2">
@@ -80,7 +85,7 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
                     </Link>
                     <DeleteDialog
                         resourceId={props.model.uuid}
-                        resourceName={props.model.title}
+                        resourceName={props.model.name ?? props.model.title}
                         deleteRoute="reviews.destroy"
                         onSuccess={() => window.location.reload()}
                     />

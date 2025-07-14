@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Validation\Rule;
 
-class ReviewEditRequest extends BaseEditRequest
+class PeriodEditRequest extends BaseEditRequest
 {
     protected function indexRules(): array
     {

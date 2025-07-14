@@ -29,7 +29,11 @@ class PeriodController extends Controller
     {
         Gate::authorize('view', Period::class);
 
-        $periods = Period::query()
+        $periods = Period::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('name', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 

@@ -34,7 +34,7 @@ export default function DeleteDialog({ resourceId, resourceName, deleteRoute, on
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Confirmar Exclusão</DialogTitle>
-                <p>Tem certeza de que deseja excluir {resourceName}?</p>
+                <p>Tem certeza de que deseja excluir "<b>{resourceName}</b>"?</p>
                 <DialogFooter className="gap-2">
                     <DialogClose asChild>
                         <Button variant="secondary" onClick={() => setIsOpen(false)}>
