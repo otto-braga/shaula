@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
+use App\Http\Requests\SourceEditRequest;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
 use App\Models\SourceCategory;
 use App\Traits\HandlesFiles;
 use App\Traits\HasCommonPaginationConstants;
-use App\Traits\HasFile;
-use App\Traits\HasMention;
 use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -56,26 +56,37 @@ class SourceController extends Controller
         return Inertia::render('admin/sources/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(SourceEditRequest $request)
     {
         Gate::authorize('create', Source::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $source = Source::create($dataForm);
+            $source = Source::create(
+                $request->only([
+                    'title',
+                    'content',
+                ])
+            );
 
-        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
+            $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
-        if ($request->has('files') && count($request->files) > 0) {
-            if ($source->file) {
-                $this->deleteFile($source->file->id);
+            if ($request->has('files') && count($request->files) > 0) {
+                if ($source->file) {
+                    $this->deleteFile($source->file->id);
+                }
+                $this->storeFile($request, $source, 'general');
+                $source->file->update(['is_primary' => true]);
             }
-            $this->storeFile($request, $source, 'general');
-            $source->file->update(['is_primary' => true]);
-        }
 
-        session()->flash('success', true);
-        return redirect()->route('sources.edit', $source);
+            session()->flash('success', true);
+            return redirect()->route('sources.edit', $source);
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -90,31 +101,42 @@ class SourceController extends Controller
         ]);
     }
 
-    public function update(Request $request, Source $source)
+    public function update(SourceEditRequest $request, Source $source)
     {
         Gate::authorize('update', Source::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $source->update($dataForm);
+            $source->update(
+                $request->only([
+                    'title',
+                    'content',
+                ])
+            );
 
-        $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
+            $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
-        if ($request->has('delete_file') && $request->delete_file) {
-            if ($source->file) {
-                $this->deleteFile($source->file->id);
+            if ($request->has('delete_file') && $request->delete_file) {
+                if ($source->file) {
+                    $this->deleteFile($source->file->id);
+                }
             }
-        }
 
-        if ($request->has('files') && count($request->files) > 0) {
-            if ($source->file) {
-                $this->deleteFile($source->file->id);
+            if ($request->has('files') && count($request->files) > 0) {
+                if ($source->file) {
+                    $this->deleteFile($source->file->id);
+                }
+                $this->storeFile($request, $source, 'general');
             }
-            $this->storeFile($request, $source, 'general');
-        }
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -124,22 +146,20 @@ class SourceController extends Controller
     {
         Gate::authorize('delete', Source::class);
 
-        $source->delete();
+        try {
+            $source->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
-
-    public function fetchCategorySelectOptions(Request $request)
-    {
-        Gate::authorize('view', Source::class);
-
-        $options = SourceCategory::fetchAsSelectOptions($request->search);
-        return response()->json($options);
-    }
 
     public function fetchSingle($uuid)
     {
@@ -149,9 +169,11 @@ class SourceController extends Controller
         return response()->json(new SourceResource($source));
     }
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Source::class);
+
+        $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([

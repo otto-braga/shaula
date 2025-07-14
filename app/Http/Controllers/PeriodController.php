@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
+use App\Http\Requests\PeriodEditRequest;
 use App\Http\Resources\PeriodResource;
 use App\Models\Period;
 use App\Traits\HandlesFiles;
@@ -9,7 +11,6 @@ use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use App\Traits\UpdatesContent;
 use App\Traits\UpdatesImages;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -57,16 +58,28 @@ class PeriodController extends Controller
         return Inertia::render('admin/period/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(PeriodEditRequest $request)
     {
         Gate::authorize('create', Period::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $period = Period::create($dataForm);
+            $period = Period::create(
+                $request->only([
+                    'name',
+                    'start_date',
+                    'end_date',
+                ])
+            );
 
-        session()->flash('success', true);
-        return redirect()->route('periods.edit', $period);
+            session()->flash('success', true);
+            return redirect()->route('periods.edit', $period);
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -81,16 +94,28 @@ class PeriodController extends Controller
         ]);
     }
 
-    public function update(Request $request, Period $period)
+    public function update(PeriodEditRequest $request, Period $period)
     {
         Gate::authorize('update', Period::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $period->update($dataForm);
+            $period->update(
+                $request->only([
+                    'name',
+                    'start_date',
+                    'end_date',
+                ])
+            );
 
-        session()->flash('success', true);
-        return redirect()->route('periods.edit', $period);
+            session()->flash('success', true);
+            return redirect()->route('periods.edit', $period);
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -105,11 +130,13 @@ class PeriodController extends Controller
         ]);
     }
 
-    public function updateImages(Request $request, Period $period)
+    public function updateImages(PeriodEditRequest $request, Period $period)
     {
         Gate::authorize('update', Period::class);
 
         try {
+            $request->validated();
+
             $this->handleImageUpdate($request, $period);
 
             session()->flash('success', true);
@@ -132,11 +159,13 @@ class PeriodController extends Controller
         ]);
     }
 
-    public function updateContent(Request $request, Period $period)
+    public function updateContent(PeriodEditRequest $request, Period $period)
     {
         Gate::authorize('update', Period::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $period);
 
             session()->flash('success', true);
@@ -161,14 +190,22 @@ class PeriodController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request, Period $period)
+    public function updateSources(PeriodEditRequest $request, Period $period)
     {
         Gate::authorize('update', Period::class);
 
-        $this->syncUuids($request->sources_uuids, $period->sources());
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->syncUuids($request->sources_uuids, $period->sources());
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -178,18 +215,26 @@ class PeriodController extends Controller
     {
         Gate::authorize('delete', Period::class);
 
-        $period->delete();
+        try {
+            $period->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Period::class);
+
+        $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([

@@ -9,7 +9,7 @@ class PeriodEditRequest extends BaseEditRequest
     protected function indexRules(): array
     {
         return [
-            'title' => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'date' => ['nullable', 'date'],
             'authors_uuids' => ['nullable', 'array'],
             'authors_uuids.*' => ['uuid', Rule::exists('people', 'uuid')],
@@ -21,9 +21,9 @@ class PeriodEditRequest extends BaseEditRequest
     protected function indexMessages(): array
     {
         return [
-            'title.required' => 'Obrigatório.',
-            'title.string' => 'Deve ser texto.',
-            'title.max' => 'Não deve ter mais de 255 caracteres.',
+            'name.required' => 'Obrigatório.',
+            'name.string' => 'Deve ser texto.',
+            'name.max' => 'Não deve ter mais de 255 caracteres.',
             'date.date' => 'Deve ser uma data válida.',
             'authors_uuids.array' => 'Deve ser uma lista de índices.',
             'authors_uuids.*.uuid' => 'Deve ser um índice válido.',

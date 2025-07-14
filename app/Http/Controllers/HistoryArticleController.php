@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Requests\FetchRequest;
+use App\Http\Requests\HistoryArticleEditRequest;
 use App\Http\Resources\HistoryArticleResource;
 use App\Models\HistoryArticle;
 use App\Traits\HandlesFiles;
@@ -59,20 +60,32 @@ class HistoryArticleController extends Controller
         return Inertia::render('admin/historyArticle/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(HistoryArticleEditRequest $request)
     {
         Gate::authorize('create', HistoryArticle::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $historyArticle = HistoryArticle::create($dataForm);
+            $historyArticle = HistoryArticle::create(
+                $request->only([
+                    'title',
+                    'date',
+                    'links',
+                ])
+            );
 
-        $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->categories_uuids, $historyArticle->categories());
-        $this->syncUuids($request->periods_uuids, $historyArticle->periods());
+            $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->categories_uuids, $historyArticle->categories());
+            $this->syncUuids($request->periods_uuids, $historyArticle->periods());
 
-        session()->flash('success', true);
-        return redirect()->route('history_articles.edit', $historyArticle);
+            session()->flash('success', true);
+            return redirect()->route('history_articles.edit', $historyArticle);
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -89,20 +102,32 @@ class HistoryArticleController extends Controller
         ]);
     }
 
-    public function update(Request $request, HistoryArticle $historyArticle)
+    public function update(HistoryArticleEditRequest $request, HistoryArticle $historyArticle)
     {
         Gate::authorize('update', HistoryArticle::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $historyArticle->update($dataForm);
+            $historyArticle->update(
+                $request->only([
+                    'title',
+                    'date',
+                    'links',
+                ])
+            );
 
-        $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->categories_uuids, $historyArticle->categories());
-        $this->syncUuids($request->periods_uuids, $historyArticle->periods());
+            $this->syncUuids($request->authors_uuids, $historyArticle->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->categories_uuids, $historyArticle->categories());
+            $this->syncUuids($request->periods_uuids, $historyArticle->periods());
 
-        session()->flash('success', true);
-        return redirect()->route('history_articles.edit', $historyArticle);
+            session()->flash('success', true);
+            return redirect()->route('history_articles.edit', $historyArticle);
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -117,11 +142,13 @@ class HistoryArticleController extends Controller
         ]);
     }
 
-    public function updateImages(Request $request, HistoryArticle $historyArticle)
+    public function updateImages(HistoryArticleEditRequest $request, HistoryArticle $historyArticle)
     {
         Gate::authorize('update', HistoryArticle::class);
 
         try {
+            $request->validated();
+
             $this->handleImageUpdate($request, $historyArticle);
 
             session()->flash('success', true);
@@ -144,11 +171,13 @@ class HistoryArticleController extends Controller
         ]);
     }
 
-    public function updateContent(Request $request, HistoryArticle $historyArticle)
+    public function updateContent(HistoryArticleEditRequest $request, HistoryArticle $historyArticle)
     {
         Gate::authorize('update', HistoryArticle::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $historyArticle);
 
             session()->flash('success', true);
@@ -173,14 +202,22 @@ class HistoryArticleController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request, HistoryArticle $historyArticle)
+    public function updateSources(HistoryArticleEditRequest $request, HistoryArticle $historyArticle)
     {
         Gate::authorize('update', HistoryArticle::class);
 
-        $this->syncUuids($request->sources_uuids, $historyArticle->sources());
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->syncUuids($request->sources_uuids, $historyArticle->sources());
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -190,18 +227,26 @@ class HistoryArticleController extends Controller
     {
         Gate::authorize('delete', HistoryArticle::class);
 
-        $historyArticle->delete();
+        try {
+            $historyArticle->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', HistoryArticle::class);
+
+        $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([

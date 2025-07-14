@@ -70,14 +70,20 @@ class ArtworkController extends Controller
         Gate::authorize('create', Artwork::class);
 
         try {
-            $dataForm = $request->except(['date']);
+            $request->validated();
+
+            $artwork = Artwork::create(
+                $request->only([
+                    'title',
+                    'dimensions',
+                    'materials',
+                ])
+            );
 
             if ($request->has('date')) {
                 $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-                $dataForm['date'] = Carbon::parse($date, 'UTC')->startOfDay();
+                $artwork->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
             }
-
-            $artwork = Artwork::create($dataForm);
 
             $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
             $this->syncUuids($request->languages_uuids, $artwork->languages());
@@ -112,22 +118,35 @@ class ArtworkController extends Controller
     {
         Gate::authorize('update', Artwork::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        if ($request->has('date')) {
-            $dataForm['date'] = $request->date . '-01-01'; // Default to June 1st if only year is provided
+            $artwork->update(
+                $request->only([
+                    'title',
+                    'dimensions',
+                    'materials',
+                ])
+            );
+
+            if ($request->has('date')) {
+                $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
+                $artwork->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
+            }
+
+            $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->languages_uuids, $artwork->languages());
+            $this->syncUuids($request->awards_uuids, $artwork->awards());
+            $this->syncUuids($request->categories_uuids, $artwork->categories());
+            $this->syncUuids($request->periods_uuids, $artwork->periods());
+
+            session()->flash('success', true);
+            return redirect()->route('artworks.edit', $artwork);
         }
-
-        $artwork->update($dataForm);
-
-        $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->languages_uuids, $artwork->languages());
-        $this->syncUuids($request->awards_uuids, $artwork->awards());
-        $this->syncUuids($request->categories_uuids, $artwork->categories());
-        $this->syncUuids($request->periods_uuids, $artwork->periods());
-
-        session()->flash('success', true);
-        return redirect()->route('artworks.edit', $artwork);
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -151,10 +170,18 @@ class ArtworkController extends Controller
 
     public function updatePeople(ArtworkEditRequest $request, Artwork $artwork)
     {
-        $this->handlePeopleUpdate($request, $artwork);
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->handlePeopleUpdate($request, $artwork);
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -174,11 +201,14 @@ class ArtworkController extends Controller
         Gate::authorize('update', Artwork::class);
 
         try {
+            $request->validated();
+
             $this->handleImageUpdate($request, $artwork);
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -201,6 +231,8 @@ class ArtworkController extends Controller
         Gate::authorize('update', Artwork::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $artwork);
 
             session()->flash('success', true);
@@ -229,10 +261,18 @@ class ArtworkController extends Controller
     {
         Gate::authorize('update', Artwork::class);
 
-        $this->syncUuids($request->sources_uuids, $artwork->sources());
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->syncUuids($request->sources_uuids, $artwork->sources());
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -242,10 +282,16 @@ class ArtworkController extends Controller
     {
         Gate::authorize('delete', Artwork::class);
 
-        $artwork->delete();
+        try {
+            $artwork->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------

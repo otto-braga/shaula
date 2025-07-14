@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
 use App\Http\Requests\ReviewEditRequest;
-use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use App\Traits\HandlesFiles;
@@ -64,12 +64,23 @@ class ReviewController extends Controller
     {
         Gate::authorize('create', Review::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $review = Review::create($dataForm);
+            $review = Review::create(
+                $request->only([
+                    'title',
+                    'date',
+                ])
+            );
 
-        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->categories_uuids, $review->categories());
+            $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->categories_uuids, $review->categories());
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -93,12 +104,23 @@ class ReviewController extends Controller
     {
         Gate::authorize('update', Review::class);
 
-        $dataForm = $request->all();
+        try {
+            $request->validated();
 
-        $review->update($dataForm);
+            $review->update(
+                $request->only([
+                    'title',
+                    'date',
+                ])
+            );
 
-        $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->categories_uuids, $review->categories());
+            $this->syncUuids($request->authors_uuids, $review->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->categories_uuids, $review->categories());
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
 
         session()->flash('success', true);
         return redirect()->route('reviews.edit', $review);
@@ -121,6 +143,8 @@ class ReviewController extends Controller
         Gate::authorize('update', Review::class);
 
         try {
+            $request->validated();
+
             $this->handleImageUpdate($request, $review);
 
             session()->flash('success', true);
@@ -148,6 +172,8 @@ class ReviewController extends Controller
         Gate::authorize('update', Review::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $review);
 
             session()->flash('success', true);
@@ -176,10 +202,18 @@ class ReviewController extends Controller
     {
         Gate::authorize('update', Review::class);
 
-        $this->syncUuids($request->sources_uuids, $review->sources());
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->syncUuids($request->sources_uuids, $review->sources());
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -189,18 +223,26 @@ class ReviewController extends Controller
     {
         Gate::authorize('delete', Review::class);
 
-        $review->delete();
+        try {
+            $review->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Review::class);
+
+        $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([

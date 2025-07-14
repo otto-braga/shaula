@@ -283,19 +283,13 @@ class PersonController extends Controller
     {
         Gate::authorize('view', Person::class);
 
-        try {
-            $request->validated();
+        $request->validated();
 
-            return (new SearchController())->fetchMulti(
-                $request->merge([
-                    'limit' => 5,
-                    'only' => ['people'],
-                ])
-            );
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
+        return (new SearchController())->fetchMulti(
+            $request->merge([
+                'limit' => 5,
+                'only' => ['people'],
+            ])
+        );
     }
 }

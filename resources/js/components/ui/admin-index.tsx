@@ -9,6 +9,7 @@ export type AdminIndexProps = {
     title: string;
     route_base_name: string;
     index_route?: string;
+    create_route?: string;
     edit_route?: string;
     show_route?: string;
     index: {
@@ -19,6 +20,7 @@ export type AdminIndexProps = {
 
 export function AdminIndex(props: AdminIndexProps) {
     const index_route = props.index_route || `${props.route_base_name}.index`;
+    const create_route = props.create_route || `${props.route_base_name}.create`;
     const edit_route = props.edit_route || `${props.route_base_name}.edit`;
     const show_route = props.show_route || `public.${props.route_base_name}.show`;
 
@@ -29,7 +31,7 @@ export function AdminIndex(props: AdminIndexProps) {
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold">{props.title}</h1>
-                        <Link href={route('reviews.create')} prefetch>
+                        <Link href={route(create_route)} prefetch>
                             <Button>Cadastrar</Button>
                         </Link>
                     </div>

@@ -29,9 +29,9 @@ class ArtworkEditRequest extends BaseEditRequest
     protected function indexMessages(): array
     {
         return [
-            'name.required' => 'Obrigatório.',
-            'name.string' => 'Deve ser texto.',
-            'name.max' => 'Não deve ter mais de 255 caracteres.',
+            'title.required' => 'Obrigatório.',
+            'title.string' => 'Deve ser texto.',
+            'title.max' => 'Não deve ter mais de 255 caracteres.',
             'date.date' => 'Deve ser uma data válida.',
             'dimensions.string' => 'Deve ser texto.',
             'materials.string' => 'Deve ser texto.',

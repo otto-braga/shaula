@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\SourceCategoryResource;
 use App\Models\SourceCategory;
 use App\Traits\HasCommonPaginationConstants;
@@ -78,10 +79,10 @@ class SourceCategoryController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', SourceCategory::class);
 
-        return SourceCategory::fetchSelectOptions($request->q);
+        return SourceCategory::fetchAsSelectOptions($request->q);
     }
 }

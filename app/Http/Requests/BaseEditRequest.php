@@ -21,7 +21,7 @@ class BaseEditRequest extends FormRequest
 
     public function rules(): array
     {
-        if ($this->routeName === 'update') {
+        if ($this->routeName === 'update' || $this->routeName === 'store') {
             return $this->indexRules();
         } elseif ($this->routeName === 'update.people') {
             return $this->peopleRules();
@@ -37,7 +37,7 @@ class BaseEditRequest extends FormRequest
 
     public function messages(): array
     {
-        if ($this->routeName === 'update') {
+        if ($this->routeName === 'update' || $this->routeName === 'store') {
             return $this->indexMessages();
         } elseif ($this->routeName === 'update.people') {
             return $this->peopleMessages();
