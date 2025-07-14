@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\FetchRequest;
 use App\Http\Requests\PersonEditRequest;
-use Illuminate\Http\Request;
 use App\Http\Resources\PersonResource;
 use App\Models\Person;
 use App\Traits\HandlesFiles;
@@ -81,7 +81,8 @@ class PersonController extends Controller
 
             session()->flash('success', true);
             return redirect()->route('people.edit', $person);
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -127,7 +128,8 @@ class PersonController extends Controller
 
             session()->flash('success', true);
             return redirect()->route('people.edit', $person);
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -156,7 +158,8 @@ class PersonController extends Controller
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -179,11 +182,14 @@ class PersonController extends Controller
         Gate::authorize('update', Person::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $person);
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -206,11 +212,14 @@ class PersonController extends Controller
         Gate::authorize('update', Person::class);
 
         try {
+            $request->validated();
+
             $this->handleContentUpdate($request, $person);
 
             session()->flash('success', true);
             return redirect()->back();
-        } catch (\Throwable $e) {
+        }
+        catch (\Throwable $e) {
             session()->flash('success', false);
             return redirect()->back();
         }
@@ -234,10 +243,18 @@ class PersonController extends Controller
     {
         Gate::authorize('update', Person::class);
 
-        $this->syncUuids($request->sources_uuids, $person->sources());
+        try {
+            $request->validated();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            $this->syncUuids($request->sources_uuids, $person->sources());
+
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -247,24 +264,38 @@ class PersonController extends Controller
     {
         Gate::authorize('delete', Person::class);
 
-        $person->delete();
+        try {
+            $person->delete();
 
-        session()->flash('success', true);
-        return redirect()->back();
+            session()->flash('success', true);
+            return redirect()->back();
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Person::class);
 
-        return (new SearchController())->fetchMulti(
-            $request->merge([
-                'limit' => 5,
-                'only' => ['people'],
-            ])
-        );
+        try {
+            $request->validated();
+
+            return (new SearchController())->fetchMulti(
+                $request->merge([
+                    'limit' => 5,
+                    'only' => ['people'],
+                ])
+            );
+        }
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 }

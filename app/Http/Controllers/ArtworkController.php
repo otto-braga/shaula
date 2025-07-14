@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ArtworkEditRequest;
-use Illuminate\Http\Request;
+use App\Http\Requests\FetchRequest;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
@@ -69,23 +69,29 @@ class ArtworkController extends Controller
     {
         Gate::authorize('create', Artwork::class);
 
-        $dataForm = $request->except(['date']);
+        try {
+            $dataForm = $request->except(['date']);
 
-        if ($request->has('date')) {
-            $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-            $dataForm['date'] = Carbon::parse($date, 'UTC')->startOfDay();
+            if ($request->has('date')) {
+                $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
+                $dataForm['date'] = Carbon::parse($date, 'UTC')->startOfDay();
+            }
+
+            $artwork = Artwork::create($dataForm);
+
+            $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->languages_uuids, $artwork->languages());
+            $this->syncUuids($request->awards_uuids, $artwork->awards());
+            $this->syncUuids($request->categories_uuids, $artwork->categories());
+            $this->syncUuids($request->periods_uuids, $artwork->periods());
+
+            session()->flash('success', true);
+            return redirect()->route('artworks.edit', $artwork);
         }
-
-        $artwork = Artwork::create($dataForm);
-
-        $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
-        $this->syncUuids($request->languages_uuids, $artwork->languages());
-        $this->syncUuids($request->awards_uuids, $artwork->awards());
-        $this->syncUuids($request->categories_uuids, $artwork->categories());
-        $this->syncUuids($request->periods_uuids, $artwork->periods());
-
-        session()->flash('success', true);
-        return redirect()->route('artworks.edit', $artwork);
+        catch (\Throwable $e) {
+            session()->flash('success', false);
+            return redirect()->back();
+        }
     }
 
     // -------------------------------------------------------------------------
@@ -245,9 +251,11 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(Request $request)
+    public function fetchSelectOptions(FetchRequest $request)
     {
         Gate::authorize('view', Artwork::class);
+
+        $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([
