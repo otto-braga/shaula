@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ArtworkEditRequest;
+use Illuminate\Http\Request;
 use App\Http\Resources\ActivityResource;
 use App\Http\Resources\ArtworkResource;
 use App\Models\Activity;
@@ -244,7 +245,7 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // FETCH
 
-    public function fetchSelectOptions(ArtworkEditRequest $request)
+    public function fetchSelectOptions(Request $request)
     {
         Gate::authorize('view', Artwork::class);
 

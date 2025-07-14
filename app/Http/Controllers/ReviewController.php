@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ReviewEditRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
@@ -31,7 +32,11 @@ class ReviewController extends Controller
     {
         Gate::authorize('view', Review::class);
 
-        $reviews = Review::latest()
+        $reviews = Review::where(function ($query) {
+                if (request()->has('q') && request()->q) {
+                    $query->where('title', 'like', '%' . request()->q . '%');
+                }
+            })
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
@@ -55,7 +60,7 @@ class ReviewController extends Controller
         return Inertia::render('admin/review/edit/index');
     }
 
-    public function store(Request $request)
+    public function store(ReviewEditRequest $request)
     {
         Gate::authorize('create', Review::class);
 
@@ -84,7 +89,7 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function update(Request $request, Review $review)
+    public function update(ReviewEditRequest $request, Review $review)
     {
         Gate::authorize('update', Review::class);
 
@@ -111,7 +116,7 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function updateImages(Request $request, Review $review)
+    public function updateImages(ReviewEditRequest $request, Review $review)
     {
         Gate::authorize('update', Review::class);
 
@@ -138,7 +143,7 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function updateContent(Request $request, Review $review)
+    public function updateContent(ReviewEditRequest $request, Review $review)
     {
         Gate::authorize('update', Review::class);
 
@@ -167,7 +172,7 @@ class ReviewController extends Controller
         ]);
     }
 
-    public function updateSources(Request $request, Review $review)
+    public function updateSources(ReviewEditRequest $request, Review $review)
     {
         Gate::authorize('update', Review::class);
 
