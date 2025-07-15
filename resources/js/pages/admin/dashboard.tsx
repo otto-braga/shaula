@@ -1,7 +1,9 @@
-import { AdminSearchBar } from '@/components/admin-search-bar/admin-search-bar';
+import { AdminDashboardSearchBar } from '@/components/admin-dashboard-search-bar/admin-dashboard-search-bar';
 import DashboardLatestCard from '@/components/dashboard/dashboard-latest-card';
 import AppLayout from '@/layouts/app-layout';
+import { SearchResult } from '@/types/search-result';
 import { Head } from '@inertiajs/react';
+import { useState } from 'react';
 
 type DashboardLatest = {
     uuid: string;
@@ -15,10 +17,14 @@ type DashboardLatest = {
 type DashboardProps = {
     latest: { data: DashboardLatest[] };
     latest_aux: { data: DashboardLatest[] };
+    q: string;
 };
 
 export default function Dashboard(props: DashboardProps) {
     console.log('Dashboard props:', props);
+
+    // const [result, setResult] = useState<{ data: SearchResult[] }>({ data: [] });
+
     return (
         <AppLayout>
             <Head title="Dashboard" />
@@ -29,9 +35,9 @@ export default function Dashboard(props: DashboardProps) {
                         <h1 className="text-2xl font-bold">Dashboard</h1>
                     </div>
 
-                    <AdminSearchBar
+                    <AdminDashboardSearchBar
+                        q={props.q}
                         className="mt-4"
-                        route="admin.dashboard"
                     />
 
                     <div className="py-4">

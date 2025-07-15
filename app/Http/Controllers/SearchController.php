@@ -97,7 +97,9 @@ class SearchController extends Controller
             $searchQuery = (new SearchQuery())
                 ->setIndexUid($indexUid)
                 ->setFilter([$filterString])
-                ->setQuery($query);
+                ->setQuery($query)
+                // order by updated_at desc
+                ->setSort(['updated_at:desc']);
 
             array_push($multisearchQueries, $searchQuery);
         }
@@ -186,7 +188,7 @@ class SearchController extends Controller
 
     public function fetchSearch(Request $request)
     {
-        $query = $request->q ?? null;
+        $query = $request->q ?? '';
         $page = (int) $request->page ?? 1;
         $page_size = $request->page_size ?? 5;
 
@@ -197,7 +199,7 @@ class SearchController extends Controller
 
         $offset = $page_size * ($page - 1) < 0 ? 0 : $page_size * ($page - 1);
 
-        if ($query) {
+        // if ($query) {
             $client = new Client(
                 config('scout.meilisearch.host'),
                 config('scout.meilisearch.key')
@@ -224,7 +226,7 @@ class SearchController extends Controller
                 $offset = $last_page * $page_size;
                 $federation->setOffset($offset);
             }
-        }
+        // }
 
         return [
             'q' => $query,
