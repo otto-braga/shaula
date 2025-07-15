@@ -7,8 +7,6 @@ import { Link } from '@inertiajs/react';
 
 import 'keen-slider/keen-slider.min.css';
 
-import LightGallery from 'lightgallery/react';
-
 // import styles
 import 'lightgallery/css/lg-thumbnail.css';
 import 'lightgallery/css/lg-zoom.css';
@@ -18,14 +16,11 @@ import 'lightgallery/css/lightgallery.css';
 import 'lightgallery/scss/lg-zoom.scss';
 import 'lightgallery/scss/lightgallery.scss';
 
+import ExpandableImage from '@/components/expandable-image';
 import { SourceCard } from '@/components/ui/source-card';
 import 'keen-slider/keen-slider.min.css';
 
 export default function Index({ review }: { review: { data: Review } }) {
-    console.log(review);
-
-    // const [isOpen, setIsOpen] = useState(false);
-
     return (
         <PublicLayout head="Crítica">
             {/* barra inferior para informações da crítica, apenas mobile */}
@@ -157,28 +152,16 @@ export default function Index({ review }: { review: { data: Review } }) {
                     <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 text-lg lg:text-xl" />
                 </section>
                 <section className="lg:col-span-2">
-                    {/* {review.data.images.length > 0 && (
-                            <div className="grid grid-cols-1 gap-3">
-                                {review.data.images.map((image) => (
-                                    <img
-                                        key={image.uuid}
-                                        src={`${image.path ? image.path : 'https://placehold.co/1280x900'}`}
-                                        alt="Review Image"
-                                        className=""
-                                    />
-                                ))}
-                            </div>
-                        )} */}
-
-                    <LightGallery speed={500} elementClassNames="grid grid-cols-1 lg:grid-cols-2 items-end gap-8 justify-items-right">
-                        <img
-                            src={`${review.data.primary_image ? review.data.primary_image.path : 'https://placehold.co/1280x900'}`}
-                            alt="Review Image"
-                            className=""
-                        />
-                        <img src={`https://placehold.co/900x1280`} alt="Review Image" className="" />
-                        <img src={`https://placehold.co/900x1280`} alt="Review Image" className="" />
-                    </LightGallery>
+                    <div className="grid grid-cols-2 items-end gap-8">
+                        {review.data.images.map((image) => (
+                            <ExpandableImage
+                                key={image.uuid}
+                                src={`${image.path ? image.path : 'https://placehold.co/900x1280'}`}
+                                alt="History Article Image"
+                                // className="cursor-pointer object-cover"
+                            />
+                        ))}
+                    </div>
                 </section>
             </div>
 
