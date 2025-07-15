@@ -1,7 +1,6 @@
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { SourceCard } from '@/components/ui/source-card';
 import PublicLayout from '@/layouts/public-layout';
-import { formatDate } from '@/lib/utils';
 import { Artwork } from '@/types/artwork';
 import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
@@ -136,6 +135,16 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
 
                 {/* Pics */}
                 <section className="space-y-6 md:col-span-2 md:pr-6 lg:col-span-3 lg:pr-8">
+                    <div className="text-center md:hidden">
+                        <h1 className="text-xl font-medium">{artwork.data.title}</h1>
+                        <div className="space-x-3">
+                            {artwork.data.authors.map((author) => (
+                                <Link href={route('public.people.show', author)} key={author.uuid}>
+                                    <span className="underline">{author.name}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
                     {artwork.data.images.map((image) => (
                         <img src={image.path} className="w-full" />
                     ))}
