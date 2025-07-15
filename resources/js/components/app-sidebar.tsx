@@ -10,14 +10,18 @@ import {
     Circle,
     CircleDashed,
     CircleDotDashed,
+    CircleDotIcon,
     Clock,
     ContactRound,
+    FileSpreadsheet,
     Folder,
     FolderArchive,
+    FolderClosed,
     LayoutGrid,
     PersonStanding,
     Text,
     Transgender,
+    User,
     Workflow,
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -60,7 +64,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Fontes',
         href: route('sources.index'),
-        icon: Building2,
+        icon: FileSpreadsheet,
     },
 
 ];
@@ -87,19 +91,19 @@ const auxNavItems: NavItem[] = [
         icon: CircleDashed,
     },
     {
-        title: 'Categorias',
-        href: route('categories.index'),
-        icon: CircleDotDashed,
-    },
-    {
         title: 'Prêmios',
         href: route('awards.index'),
-        icon: Circle
+        icon: CircleDotDashed
+    },
+    {
+        title: 'Categorias',
+        href: route('categories.index'),
+        icon: Folder
     },
     {
         title: 'Categorias de Fonte',
         href: route('source_categories.index'),
-        icon: Folder
+        icon: FolderClosed
     },
 ];
 
@@ -112,7 +116,7 @@ const adminNavItems: NavItem[] = [
     {
         title: 'Usuários',
         href: route('users.index'),
-        icon: PersonStanding,
+        icon: User,
     },
 ];
 
@@ -138,7 +142,7 @@ export function AppSidebar() {
 
             {/* <SidebarSeparator /> */}
 
-            <SidebarContent>
+            <SidebarContent className='mt-4'>
                 <NavMain items={dashboardNavItems} title="Dashboard" />
                 {/* { (isDevUser() || isAdminUser()) && (<>
                     <SidebarSeparator />
