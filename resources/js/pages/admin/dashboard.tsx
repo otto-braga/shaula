@@ -1,33 +1,69 @@
-import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
+import { AdminSearchBar } from '@/components/admin-search-bar/admin-search-bar';
+import DashboardLatestCard from '@/components/dashboard/dashboard-latest-card';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Dashboard',
-        href: route('dashboard'),
-    },
-];
+type DashboardLatest = {
+    uuid: string;
+    slug?: string;
+    label: string;
+    route: string;
+    created_at: string;
+    updated_at: string;
+};
 
-export default function Dashboard() {
+type DashboardProps = {
+    latest: { data: DashboardLatest[] };
+    latest_aux: { data: DashboardLatest[] };
+};
+
+export default function Dashboard(props: DashboardProps) {
+    console.log('Dashboard props:', props);
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
+        <AppLayout>
             <Head title="Dashboard" />
-            <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-                <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+            <div className="m-4 border-2 rounded-2xl p-4">
+                <AdminSearchBar
+                    className=""
+                    route="admin.dashboard"
+                />
+            </div>
+
+            <div className="m-4 border-2 rounded-2xl p-4">
+                <h1 className="mb-4 text-lg font-bold">Útimas Atualizações</h1>
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+
+                    <div className="flex flex-col gap-2 w-full border rounded-2xl p-4">
+                        <h2 className="text-md font-semibold">Conteúdo Principal</h2>
+                        {props.latest.data.length > 0 && (
+                            props.latest.data.map((item, index) => (
+                                <DashboardLatestCard
+                                    key={item.uuid + item.label + item.route + index}
+                                    slug={item.slug}
+                                    name={item.label}
+                                    route_base_name={item.route}
+                                    is_aux={false}
+                                />
+                            ))
+                        )}
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
+                    <div className="flex flex-col gap-2 w-full border rounded-2xl p-4">
+                        <h2 className="text-md font-semibold">Conteúdo Auxiliar</h2>
+                        {props.latest_aux.data.length > 0 && (
+                            props.latest_aux.data.map((item, index) => (
+                                <DashboardLatestCard
+                                    key={item.uuid + item.label + item.route + index}
+                                    uuid={item.uuid}
+                                    name={item.label}
+                                    route_base_name={item.route}
+                                    is_aux={true}
+                                />
+                            ))
+                        )}
                     </div>
-                    <div className="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border">
-                        <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
-                    </div>
-                </div>
-                <div className="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 overflow-hidden rounded-xl border md:min-h-min">
-                    <PlaceholderPattern className="absolute inset-0 size-full stroke-neutral-900/20 dark:stroke-neutral-100/20" />
+
                 </div>
             </div>
         </AppLayout>

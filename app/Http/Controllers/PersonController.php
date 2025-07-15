@@ -126,6 +126,10 @@ class PersonController extends Controller
             $this->syncUuids($request->cities_uuids, $person->cities());
             $this->syncUuids($request->periods_uuids, $person->periods());
 
+            $person->update([
+                'updated_at' => now(),
+            ]);
+
             session()->flash('success', true);
             return redirect()->route('people.edit', $person);
         }
