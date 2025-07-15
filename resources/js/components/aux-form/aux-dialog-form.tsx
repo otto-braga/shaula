@@ -4,7 +4,6 @@ import { Dialog, DialogClose, DialogContent, DialogFooter, DialogTitle, DialogTr
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useForm, usePage } from '@inertiajs/react';
-import { Plus } from 'lucide-react';
 import { FormEventHandler, useState } from 'react';
 
 interface AuxDialogFormProps {
