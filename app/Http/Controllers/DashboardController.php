@@ -76,8 +76,9 @@ class DashboardController extends Controller
             $merged = $latest[$i]->merge($latest[$i - 1]);
             $latest_merged = array_merge($latest_merged, $merged->toArray());
         }
-        $latest_merged = collect($latest_merged)->sortByDesc('updated_at')->take(10)->values()->all();
-
+        $latest_merged = collect($latest_merged)
+            ->unique('label')
+            ->sortByDesc('updated_at')->take(10)->values()->all();
 
         $latest_aux = [];
         $indexes_aux = [
@@ -112,7 +113,9 @@ class DashboardController extends Controller
             $merged = $latest_aux[$i]->merge($latest_aux[$i - 1]);
             $latest_aux_merged = array_merge($latest_aux_merged, $merged->toArray());
         }
-        $latest_aux_merged = collect($latest_aux_merged)->sortByDesc('updated_at')->take(10)->values()->all();
+        $latest_aux_merged = collect($latest_aux_merged)
+            ->unique('label')
+            ->sortByDesc('updated_at')->take(10)->values()->all();
 
         return Inertia::render('admin/dashboard', [
             'latest' => DashboardLatestResource::collection($latest_merged),
