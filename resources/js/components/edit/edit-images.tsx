@@ -65,12 +65,12 @@ export default function EditImages({
             <InputError className="mt-2" message={errors?.files_to_remove} />
             <InputError className="mt-2" message={errors?.primary_image_uuid} />
 
-            <div className="flex flex-row gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {stored_images.map((image, index) => (
-                    <div key={image.uuid} className='flex flex-col items-center'>
+                    <div key={image.uuid} className='flex flex-col items-center w-full'>
                         <img key={image.uuid + 'image'} src={image.path} alt={image.path}
                             className={
-                                'object-cover w-32 h-32 rounded-lg shadow-md'
+                                'object-cover w-full h-32 rounded-lg shadow-md'
                                 + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
                             }
                         />
@@ -78,8 +78,9 @@ export default function EditImages({
                             <Button
                                 key={image.uuid + 'select_button'}
                                 type="button"
+                                variant={'secondary'}
                                 className={
-                                    (image.uuid == imageToSelect ? 'bg-blue-600 hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
+                                    (image.uuid == imageToSelect ? 'bg-blue-600 text-secondary hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
                                 }
                                 onClick={
                                     () => {
@@ -92,8 +93,9 @@ export default function EditImages({
                             <Button
                                 key={image.uuid + 'delete_button'}
                                 type="button"
+                                variant={'secondary'}
                                 className={
-                                    (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
+                                    (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 text-secondary hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
                                 }
                                 onClick={
                                     () => {

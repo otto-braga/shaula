@@ -21,6 +21,32 @@ type EditTabsProps = {
     hasSourcesTab?: boolean;
 };
 
+function EditTabsLink({
+    slug,
+    route_base_name,
+    desired_route,
+    isEdit,
+    children,
+}: {
+    slug: string;
+    route_base_name: string;
+    desired_route: string;
+    isEdit: boolean;
+    children: React.ReactNode;
+}) {
+    desired_route = desired_route ? '.' + desired_route : '';
+    return (
+        <Link
+            className={
+                'flex items-center -ml-2 pl-8 justify-center h-8 border-r border-t rounded-tr px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit' + desired_route) ? ' border-r-2 font-semibold' : '')
+            }
+            href={isEdit ? route(route_base_name + '.edit' + desired_route, slug) : ''}
+        >
+            {children}
+        </Link>
+    );
+}
+
 export default function EditTabs({
     model,
     route_base_name,
@@ -81,70 +107,47 @@ export default function EditTabs({
     const isEdit = !!model;
 
     return (
-        <div className={"flex flex-col gap-2" + (className ? ' ' + className : '')}>
+        <div className={"flex flex-col gap-2 pt-4" + (className ? ' ' + className : '')}>
             <div className="flex flex-col">
-                <h2 className="text-lg">{isEdit ? `${
+                <h2 className="text-xl font-bold text-center">{isEdit ? `${
                     'title' in model.data ? model.data.title : (
                         'name' in model.data ? model.data.name : ''
                     )
                 }` : '[novo cadastro]'}</h2>
             </div>
-            <div className="flex flex-row items-center justify-between rounded p-3 dark:border">
-                <div className={'flex flex-wrap gap-2 divide-x' + (!isEdit ? ' pointer-events-none' : '')}>
+            <div className="flex flex-row items-center justify-between rounded dark:border">
+                <div className={'flex py-4 overflow-x-auto'
+                    + (!isEdit ? ' pointer-events-none' : '')
+                }>
                     {isEdit && (
                         <>
 
-                            <Link
-                                className={
-                                    'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit') ? ' font-bold underline' : '')
-                                }
-                                href={isEdit ? route(route_base_name + '.edit', model?.data) : ''}
-                            >
-                                Dados
-                            </Link>
+                            <EditTabsLink slug={model.data.slug ?? ''} route_base_name={route_base_name} desired_route="" isEdit={isEdit}>
+                                Editar
+                            </EditTabsLink>
 
-                            { hasPeopleTab && (
-                                <Link
-                                    className={
-                                        'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit.people') ? ' font-bold underline' : '')
-                                    }
-                                    href={isEdit ? route(route_base_name + '.edit.people', model?.data) : ''}
-                                >
+                            {hasPeopleTab && (
+                                <EditTabsLink slug={model.data.slug ?? ''} route_base_name={route_base_name} desired_route="people" isEdit={isEdit}>
                                     Pessoas
-                                </Link>
+                                </EditTabsLink>
                             )}
 
-                            { hasImagesTab && (
-                                <Link
-                                    className={
-                                        'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit.images') ? ' font-bold underline' : '')
-                                    }
-                                    href={isEdit ? route(route_base_name + '.edit.images', model?.data) : ''}
-                                >
+                            {hasImagesTab && (
+                                <EditTabsLink slug={model.data.slug ?? ''} route_base_name={route_base_name} desired_route="images" isEdit={isEdit}>
                                     Imagens
-                                </Link>
+                                </EditTabsLink>
                             )}
 
-                            { hasContentTab && (
-                                <Link
-                                    className={
-                                        'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit.content') ? ' font-bold underline' : '')
-                                    }
-                                    href={isEdit ? route(route_base_name + '.edit.content', model?.data) : ''}
-                                >
+                            {hasContentTab && (
+                                <EditTabsLink slug={model.data.slug ?? ''} route_base_name={route_base_name} desired_route="content" isEdit={isEdit}>
                                     Conteúdo
-                                </Link>
+                                </EditTabsLink>
                             )}
 
-                            { hasSourcesTab && (
-                                <Link
-                                    className={
-                                        'px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit.sources') ? ' font-bold underline' : '')
-                                    }
-                                    href={isEdit ? route(route_base_name + '.edit.sources', model?.data) : ''}
-                                >
-                                    Fontes
-                                </Link>
+                            {hasSourcesTab && (
+                            <EditTabsLink slug={model.data.slug ?? ''} route_base_name={route_base_name} desired_route="sources" isEdit={isEdit}>
+                                Fontes
+                            </EditTabsLink>
                             )}
 
                         </>
@@ -155,7 +158,7 @@ export default function EditTabs({
                     <Button type="submit"
                         disabled={processing || isTimedMessageShown}
                         className={
-                            'rounded min-w-[8em]' +
+                            'rounded min-w-[4em]' +
                             (
                                 isTimedMessageShown ?
                                     (

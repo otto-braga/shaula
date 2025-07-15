@@ -19,6 +19,8 @@ import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
 type HtmlEditorProps = {
+    className?: string;
+    toolbar_sticky_offset?: number;
     content: string;
     content_images: { uuid: string; path: string }[];
     data: {
@@ -37,6 +39,8 @@ type HtmlEditorProps = {
 };
 
 export default function HtmlEditor({
+    className = '',
+    toolbar_sticky_offset = 116,
     content,
     content_images,
     data,
@@ -172,7 +176,7 @@ export default function HtmlEditor({
 
     return (
         <>
-            <div className="sticky top-96">
+            <div className={className}>
                 <Editor
                     tinymceScriptSrc="/tinymce/tinymce.min.js"
                     licenseKey="gpl"
@@ -200,7 +204,7 @@ export default function HtmlEditor({
                         ],
 
                         toolbar_sticky: true,
-                        toolbar_sticky_offset: 100,
+                        toolbar_sticky_offset: toolbar_sticky_offset,
 
                         min_height: 500,
                         autoresize_bottom_margin: 0,
