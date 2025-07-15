@@ -42,7 +42,7 @@ export function AdminIndex({
     return (
         <AppLayout>
             <Head title={title} />
-            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
+            <section className="px-4 py-4 text-gray-800 dark:text-gray-200">
                 <div className="mx-auto lg:px-8">
                     <div className="flex justify-between items-center">
                         <h1 className="text-2xl font-bold">{title}</h1>
