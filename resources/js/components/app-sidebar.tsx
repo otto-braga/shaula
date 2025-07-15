@@ -128,7 +128,7 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+            {/* <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
@@ -138,24 +138,24 @@ export function AppSidebar() {
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarHeader>
+            </SidebarHeader> */}
 
             {/* <SidebarSeparator /> */}
 
-            <SidebarContent className='mt-4'>
-                <NavMain items={dashboardNavItems} title="Dashboard" />
+            <SidebarContent className='mt-2 gap-4'>
+                <NavMain items={dashboardNavItems} title="Início" />
                 {/* { (isDevUser() || isAdminUser()) && (<>
                     <SidebarSeparator />
                     <NavMain items={adminNavItems} title="Administrativos" />
                 </>)} */}
                 <AuthorizationCheck role_names={['dev', 'admin']}>
-                    <SidebarSeparator />
-                    <NavMain items={adminNavItems} title="Administrativos" />
+                    {/* <SidebarSeparator /> */}
+                    <NavMain items={adminNavItems} title="Administração"/>
                 </AuthorizationCheck>
-                <SidebarSeparator />
-                <NavMain items={mainNavItems} title="Conteúdo" />
-                <SidebarSeparator />
-                <NavMain items={auxNavItems} title="Auxiliares" />
+                {/* <SidebarSeparator /> */}
+                <NavMain items={mainNavItems} title="Conteúdo Principal" />
+                {/* <SidebarSeparator /> */}
+                <NavMain items={auxNavItems} title="Conteúdo Auxiliar" />
             </SidebarContent>
 
             {/* <SidebarSeparator /> */}
