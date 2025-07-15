@@ -142,7 +142,7 @@ export function AppSidebar() {
 
             {/* <SidebarSeparator /> */}
 
-            <SidebarContent className='mt-2 gap-4'>
+            <SidebarContent className='mt-2 gap-8'>
                 <NavMain items={dashboardNavItems} title="Início" />
                 {/* { (isDevUser() || isAdminUser()) && (<>
                     <SidebarSeparator />
