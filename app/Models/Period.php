@@ -40,6 +40,8 @@ class Period extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
+            'slug' => $this->slug,
+            'route_base_name' => $this->getTable(),
             'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->name ?? '',
@@ -47,6 +49,9 @@ class Period extends Model
 
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
+
+            'updated_at' => $this->updated_at ? $this->updated_at->timestamp : null,
+            'created_at' => $this->created_at ? $this->created_at->timestamp : null,
         ];
     }
 

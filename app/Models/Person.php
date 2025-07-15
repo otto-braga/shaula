@@ -45,6 +45,8 @@ class Person extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
+            'slug' => $this->slug,
+            'route_base_name' => $this->getTable(),
             'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->fullLabel ?? '',
@@ -56,6 +58,9 @@ class Person extends Model
             'periods' => $this->periods->pluck('name')->toArray(),
             'cities' => $this->cities->pluck('name')->toArray(),
             'artworks' => $this->artworks->pluck('title')->toArray(),
+
+            'updated_at' => $this->updated_at ? $this->updated_at->timestamp : null,
+            'created_at' => $this->created_at ? $this->created_at->timestamp : null,
         ];
     }
 

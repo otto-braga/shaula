@@ -41,6 +41,8 @@ class HistoryArticle extends Model
         return [
             'id' => (int) $this->id,
             'uuid' => $this->uuid,
+            'slug' => $this->slug,
+            'route_base_name' => $this->getTable(),
             'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->title ?? '',
@@ -52,6 +54,9 @@ class HistoryArticle extends Model
             'periods' => $this->periods->pluck('name')->toArray(),
             'categories' => $this->categories->pluck('name')->toArray(),
             'authors' => $this->authors->pluck('name')->toArray(),
+
+            'updated_at' => $this->updated_at ? $this->updated_at->timestamp : null,
+            'created_at' => $this->created_at ? $this->created_at->timestamp : null,
         ];
     }
 

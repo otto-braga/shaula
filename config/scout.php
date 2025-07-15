@@ -158,6 +158,10 @@ return [
                     'periods',
                     'categories'
                 ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
+                ],
             ],
 
             'people' => [
@@ -170,6 +174,10 @@ return [
                     'periods',
                     'cities',
                 ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
+                ],
             ],
 
             'reviews' => [
@@ -180,6 +188,10 @@ return [
                 ],
                 'filterableAttributes' => [
                     'categories',
+                ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
                 ],
             ],
 
@@ -193,6 +205,10 @@ return [
                     'periods',
                     'categories',
                 ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
+                ],
             ],
 
             'sources' => [
@@ -203,6 +219,10 @@ return [
                 'filterableAttributes' => [
                     'source_categories',
                 ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
+                ],
             ],
 
             'periods' => [
@@ -211,6 +231,10 @@ return [
                     'content',
                 ],
                 'filterableAttributes' => [
+                ],
+                'sortableAttributes' => [
+                    'created_at',
+                    'updated_at',
                 ],
             ],
         ],

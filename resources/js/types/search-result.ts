@@ -1,6 +1,8 @@
 export type SearchResult = {
     uuid: string;
     type?: string;
+    slug?: string;
+    route_base_name?: string;
     route?: string;
 
     label: string;

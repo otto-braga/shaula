@@ -117,6 +117,7 @@ class DashboardController extends Controller
         return Inertia::render('admin/dashboard', [
             'latest' => DashboardLatestResource::collection($latest_merged),
             'latest_aux' => DashboardLatestResource::collection($latest_aux_merged),
+            'q' => $request->q ?? '',
         ]);
     }
 }
