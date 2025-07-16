@@ -1,9 +1,9 @@
-import AppLayout from '@/layouts/app-layout';
 import { Review } from '@/types/review';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
 import EditImages from '@/components/edit/edit-images';
+import EditLayout from '@/components/edit/edit-layout';
 
 export default function Images({
     review,
@@ -27,31 +27,23 @@ export default function Images({
     };
 
     return (
-        <AppLayout>
-            <Head title="Produções" />
-            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
-                <div className="mx-auto lg:px-8">
-                    <div className="">
-                        <form onSubmit={submit} className="space-y-6 bg-inherit">
-                            <EditTabs
-                                model={review}
-                                route_base_name="reviews"
-                                processing={processing}
-                            />
-
-                            <EditImages
-                                stored_images={review.data.images}
-                                stored_primary_image_uuid={review.data.primary_image?.uuid}
-                                data={data}
-                                setData={setData}
-                                errors={errors}
-                                processing={processing}
-                            />
-                        </form>
-                    </div>
-                </div>
-            </section>
-        </AppLayout>
+        <EditLayout>
+            <form onSubmit={submit} className="space-y-6 bg-inherit">
+                <EditTabs
+                    model={review}
+                    route_base_name="reviews"
+                    processing={processing}
+                />
+                <EditImages
+                    stored_images={review.data.images}
+                    stored_primary_image_uuid={review.data.primary_image?.uuid}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                />
+            </form>
+        </EditLayout>
     );
 }
 
