@@ -40,6 +40,7 @@ export default function Content({
                 />
                 <HtmlEditor
                     content={person.data.content}
+                    toolbar_sticky={true}
                     content_images={person.data.content_images}
                     data={data}
                     setData={setData}

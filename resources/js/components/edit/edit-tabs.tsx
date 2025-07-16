@@ -38,7 +38,7 @@ function EditTabsLink({
     return (
         <Link
             className={
-                'flex items-center -ml-2 pl-8 justify-center h-8 border-r border-t rounded-tr px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit' + desired_route) ? ' border-r-2 font-semibold' : '')
+                'flex items-center pl-8 justify-center h-8 border-r border-t rounded-t px-3' + (!isEdit ? ' text-slate-300' : '') + (route().current(route_base_name + '.edit' + desired_route) ? ' border-r-2 font-semibold bg-accent' : '')
             }
             href={isEdit ? route(route_base_name + '.edit' + desired_route, slug) : ''}
         >
@@ -115,7 +115,7 @@ export default function EditTabs({
                     )
                 }` : '[novo cadastro]'}</h2>
             </div>
-            <div className="flex flex-row items-center justify-between rounded dark:border">
+            <div className="flex flex-row items-center justify-between rounded">
                 <div className={'flex py-4 overflow-x-auto'
                     + (!isEdit ? ' pointer-events-none' : '')
                 }>

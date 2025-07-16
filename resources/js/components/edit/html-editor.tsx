@@ -20,6 +20,7 @@ import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
 type HtmlEditorProps = {
     className?: string;
+    toolbar_sticky?: boolean;
     toolbar_sticky_offset?: number;
     content: string;
     content_images: { uuid: string; path: string }[];
@@ -40,6 +41,7 @@ type HtmlEditorProps = {
 
 export default function HtmlEditor({
     className = '',
+    toolbar_sticky = false,
     toolbar_sticky_offset = 116,
     content,
     content_images,
@@ -203,7 +205,7 @@ export default function HtmlEditor({
                             'autoresize',
                         ],
 
-                        toolbar_sticky: true,
+                        toolbar_sticky: toolbar_sticky,
                         toolbar_sticky_offset: toolbar_sticky_offset,
 
                         min_height: 500,
