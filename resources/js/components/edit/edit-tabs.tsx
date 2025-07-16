@@ -115,8 +115,8 @@ export default function EditTabs({
                     )
                 }` : '[novo cadastro]'}</h2>
             </div>
-            <div className="flex flex-row items-center justify-between rounded">
-                <div className={'flex py-4 overflow-x-auto'
+            <div className="flex flex-row overflow-x-hidden w-full items-center justify-between rounded">
+                <div className={'flex py-4 mr-4 overflow-x-scroll w-full'
                     + (!isEdit ? ' pointer-events-none' : '')
                 }>
                     {isEdit && (
@@ -154,11 +154,11 @@ export default function EditTabs({
                     )}
                 </div>
 
-                <div className="ml-8 flex justify-end">
+                <div className="flex justify-end">
                     <Button type="submit"
                         disabled={processing || isTimedMessageShown}
                         className={
-                            'rounded min-w-[4em]' +
+                            'w-32' +
                             (
                                 isTimedMessageShown ?
                                     (

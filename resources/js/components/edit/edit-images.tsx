@@ -4,6 +4,7 @@ import { FilePondFile, FilePondInitialFile } from 'filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
+// import './filepond-custom.css';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button } from '@/components/ui/button';
 import { CheckIcon, DeleteIcon } from 'lucide-react';
@@ -60,6 +61,7 @@ export default function EditImages({
                     setImages(imageItems.map((imageItem) => imageItem.file as File));
                 }}
                 allowMultiple={true}
+                labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.'
             />
             <InputError className="mt-2" message={errors?.files} />
             <InputError className="mt-2" message={errors?.files_to_remove} />
@@ -80,8 +82,10 @@ export default function EditImages({
                                 type="button"
                                 variant={'secondary'}
                                 className={
-                                    (image.uuid == imageToSelect ? 'bg-blue-600 text-secondary hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
-                                }
+                                    (image.uuid == imageToSelect
+                                        ? 'bg-green-600 text-primary'
+                                        : 'bg-secondary'
+                                )}
                                 onClick={
                                     () => {
                                         setImageToSelect(image.uuid);
@@ -95,8 +99,10 @@ export default function EditImages({
                                 type="button"
                                 variant={'secondary'}
                                 className={
-                                    (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 text-secondary hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
-                                }
+                                    (imagesToRemove.find(uuid => uuid === image.uuid)
+                                        ? 'bg-red-600 text-primary hover:bg-red-500'
+                                        : 'bg-secondary hover:bg-red-500'
+                                )}
                                 onClick={
                                     () => {
                                         if (!imagesToRemove.find(uuid => uuid === image.uuid)) {

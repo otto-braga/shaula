@@ -175,3 +175,11 @@
         @apply bg-background text-foreground;
     }
 }
+
+.dark .filepond--panel-root {
+    background-color: var(--secondary);
+}
+
+.dark .filepond--drop-label {
+    color: var(--primary);
+}

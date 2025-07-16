@@ -18,6 +18,8 @@ import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
+import tailwindConfig from '../../../../tailwind.config';
+
 type HtmlEditorProps = {
     className?: string;
     toolbar_sticky?: boolean;
@@ -41,7 +43,7 @@ type HtmlEditorProps = {
 
 export default function HtmlEditor({
     className = '',
-    toolbar_sticky = false,
+    toolbar_sticky = true,
     toolbar_sticky_offset = 116,
     content,
     content_images,
@@ -266,16 +268,54 @@ export default function HtmlEditor({
             </div>
 
             <Modal show={showGallery} onClose={closeGallery}>
-                <div>
+                <div className="p-4">
+                    <div className="mb-4 flex justify-between gap-2">
+                        <h1 className="text-lg font-semibold">Galeria do texto</h1>
+                        <div className="flex-1"/>
+                        <Button
+                            type="button"
+                            variant="secondary"
+                            onClick={closeGallery}
+                        >
+                            Fechar
+                        </Button>
+                        <Button
+                            type="submit"
+                            onClick={(e) => {
+                                setImages([]);
+                                submit(e);
+                            }}
+                            disabled={processing || isTimedMessageShown}
+                            className={(isTimedMessageShown ? (flash?.success ? ' bg-green-400' : ' bg-red-400') : '')}
+                        >
+                            {processing ? (
+                                'Salvando...'
+                            ) : isTimedMessageShown ? (
+                                flash?.success ? (
+                                    <div className="flex items-center gap-2">
+                                        Salvo! <CheckIcon className="h-16 w-16" />
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-2">
+                                        Erro! <XIcon className="h-16 w-16" />
+                                    </div>
+                                )
+                            ) : (
+                                'Aplicar'
+                            )}
+                        </Button>
+                    </div>
+
                     <FilePond
                         files={images}
                         onupdatefiles={(imageItems: FilePondFile[]) => {
                             setImages(imageItems.map((imageItem) => imageItem.file as File));
                         }}
                         allowMultiple={true}
+                        labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.'
                     />
 
-                    <div className="flex flex-row gap-2">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
                         {content_images.map((image, index) => (
                             <div key={image.uuid} className="flex flex-col items-center">
                                 <img
@@ -283,7 +323,7 @@ export default function HtmlEditor({
                                     src={image.path}
                                     alt={image.path}
                                     className={
-                                        'h-32 w-32 rounded-lg object-cover shadow-md' +
+                                        'h-32 rounded-lg object-cover shadow-md' +
                                         (imagesToRemove.find((uuid) => uuid === image.uuid) ? ' opacity-50' : '')
                                     }
                                 />
@@ -291,7 +331,8 @@ export default function HtmlEditor({
                                     <Button
                                         key={image.uuid + 'select_button'}
                                         type="button"
-                                        className={'bg-gray-100 hover:bg-blue-300'}
+                                        variant={'secondary'}
+                                        className='text-sm'
                                         onClick={() => {
                                             editorRef?.current?.execCommand(
                                                 'mceInsertContent',
@@ -301,15 +342,16 @@ export default function HtmlEditor({
                                             closeGallery();
                                         }}
                                     >
-                                        <CheckIcon /> Adicionar ao texto
+                                        Adic. ao texto
                                     </Button>
                                     <Button
                                         key={image.uuid + 'delete_button'}
                                         type="button"
+                                        variant={'secondary'}
                                         className={
                                             imagesToRemove.find((uuid) => uuid === image.uuid)
-                                                ? 'bg-red-600 hover:bg-red-300'
-                                                : 'bg-gray-100 hover:bg-red-300'
+                                                ? 'bg-red-600 text-primary hover:bg-red-500'
+                                                : 'bg-secondary hover:bg-red-500'
                                         }
                                         onClick={() => {
                                             if (!imagesToRemove.find((uuid) => uuid === image.uuid)) {
@@ -325,39 +367,11 @@ export default function HtmlEditor({
                             </div>
                         ))}
                     </div>
-
-                    <div className="ml-8 flex justify-center">
-                        <Button
-                            type="submit"
-                            onClick={(e) => {
-                                setImages([]);
-                                submit(e);
-                            }}
-                            disabled={processing || isTimedMessageShown}
-                            className={'min-w-[8em] rounded' + (isTimedMessageShown ? (flash?.success ? ' bg-green-400' : ' bg-red-400') : '')}
-                        >
-                            {processing ? (
-                                'Salvando...'
-                            ) : isTimedMessageShown ? (
-                                flash?.success ? (
-                                    <div className="flex items-center gap-2">
-                                        Salvo! <CheckIcon className="h-16 w-16" />
-                                    </div>
-                                ) : (
-                                    <div className="flex items-center gap-2">
-                                        Erro! <XIcon className="h-16 w-16" />
-                                    </div>
-                                )
-                            ) : (
-                                'Salvar'
-                            )}
-                        </Button>
-                    </div>
                 </div>
             </Modal>
 
             <Modal show={showMentions} onClose={closeMentionModal}>
-                <div className="h-100 p-4">
+                <div className="h-150 p-4 z-50">
                     <h2 className="mb-4 text-lg font-semibold">Mencionar</h2>
                     <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
                     <LazyLoadingSelect

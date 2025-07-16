@@ -59,11 +59,15 @@ export default function Modal({
                     leaveFrom="opacity-100 translate-y-0 sm:scale-100"
                     leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
+                    <div className="fixed inset-0 w-screen overflow-y-auto p-4">
+                    <div className="flex min-h-full items-center justify-center">
                     <DialogPanel
-                        className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full dark:bg-gray-800 ${maxWidthClass}`}
+                        className={`mb-6 transform overflow-hidden rounded-lg bg-white shadow-xl transition-all sm:mx-auto sm:w-full dark:bg-background border-2 ${maxWidthClass}`}
                     >
                         {children}
                     </DialogPanel>
+                    </div>
+                    </div>
                 </TransitionChild>
             </Dialog>
         </Transition>

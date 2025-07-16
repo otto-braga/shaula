@@ -79,7 +79,7 @@ export default function Index({
                     <InputError className="mt-2" message={errors.name} />
                 </div>
 
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-col sm:flex-row gap-3">
                     <div className="w-full">
                         <Label htmlFor="date">Data de Nascimento</Label>
                         <Input

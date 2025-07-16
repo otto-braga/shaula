@@ -10,7 +10,6 @@ export default function Select(props: SelectProps<any>) {
         control: (base) => ({
             ...base,
             borderRadius: '0.5rem',
-            zIndex: 1000, // Ensure the control appears above other elements
         }),
         menu: (base) => ({
             ...base,
