@@ -27,6 +27,7 @@ export default function Select(props: SelectProps<any>) {
                 ...base,
                 backgroundColor: 'var(--background)',
                 borderColor: 'var(--border)',
+                borderRadius: '0.5rem',
                 boxShadow: 'none',
                 '&:hover': {
                     borderColor: 'var(--border-hover)',
