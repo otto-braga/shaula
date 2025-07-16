@@ -33,7 +33,6 @@ export default function Content({
         <EditLayout>
             <form onSubmit={submit} className="space-y-3 bg-inherit">
                 <EditTabs
-                    className='sticky z-50 top-0 bg-background'
                     model={person}
                     route_base_name="people"
                     processing={processing}

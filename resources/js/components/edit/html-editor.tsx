@@ -18,8 +18,6 @@ import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 import { SearchResult } from '@/types/search-result';
 import { LazyLoadingSelect } from '../select/lazy-loading-select';
 
-import tailwindConfig from '../../../../tailwind.config';
-
 type HtmlEditorProps = {
     className?: string;
     toolbar_sticky?: boolean;
@@ -43,7 +41,7 @@ type HtmlEditorProps = {
 
 export default function HtmlEditor({
     className = '',
-    toolbar_sticky = true,
+    toolbar_sticky = false,
     toolbar_sticky_offset = 116,
     content,
     content_images,

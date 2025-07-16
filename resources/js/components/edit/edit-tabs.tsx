@@ -1,13 +1,22 @@
 import { Button } from '@/components/ui/button';
-import { Artwork } from '@/types/artwork';
-import { HistoryArticle } from '@/types/historyArticle';
-import { Period } from '@/types/period';
-import { Person } from '@/types/person';
-import { Review } from '@/types/review';
-import { Source } from '@/types/source';
+import { Person, PersonLabels } from '@/types/person';
+import { Artwork, ArtworkLabels } from '@/types/artwork';
+import { Review, ReviewLabels } from '@/types/review';
+import { Period, PeriodLabels } from '@/types/period';
+import { HistoryArticle, HistoryArticleLabels } from '@/types/historyArticle';
+import { Source, SourceLabels } from '@/types/source';
 import { Link, usePage } from '@inertiajs/react';
 import { CheckIcon, XIcon } from 'lucide-react';
 import { useEffect, useState,  } from 'react';
+
+enum Labels {
+    people = PersonLabels.TYPE_LABEL,
+    artworks = ArtworkLabels.TYPE_LABEL,
+    reviews = ReviewLabels.TYPE_LABEL,
+    history_articles = HistoryArticleLabels.TYPE_LABEL,
+    periods = PeriodLabels.TYPE_LABEL,
+    sources = SourceLabels.TYPE_LABEL,
+};
 
 type EditTabsProps = {
     model?: { data: Person | Artwork | Review | HistoryArticle | Period | Source };
@@ -106,16 +115,25 @@ export default function EditTabs({
 
     const isEdit = !!model;
 
+    console.log('EditTabs model',  (model));
+
     return (
         <div className={"flex flex-col gap-2 pt-4" + (className ? ' ' + className : '')}>
             <div className="flex flex-col">
-                <h2 className="text-xl font-bold text-center">{isEdit ? `${
+                <div className="flex flex-col items-center justify-center flex-wrap gap-2 sm:flex-row">
+                <h2 className="flex-1 text-xl font-bold text-center">{isEdit ? `${
                     'title' in model.data ? model.data.title : (
                         'name' in model.data ? model.data.name : ''
                     )
                 }` : '[novo cadastro]'}</h2>
+                {Labels[route_base_name as keyof typeof Labels] && (
+                    <span className="self-center text-xs text-muted-foreground border py-1 px-2 rounded sm:self-end">
+                        {Labels[route_base_name as keyof typeof Labels]}
+                    </span>
+                )}
+                </div>
             </div>
-            <div className="flex flex-row overflow-x-hidden w-full items-center justify-between rounded">
+            <div className="text-xs flex flex-col overflow-x-hidden w-full items-center justify-between rounded sm:flex-row">
                 <div className={'flex py-4 mr-4 overflow-x-scroll w-full'
                     + (!isEdit ? ' pointer-events-none' : '')
                 }>
@@ -158,7 +176,7 @@ export default function EditTabs({
                     <Button type="submit"
                         disabled={processing || isTimedMessageShown}
                         className={
-                            'w-32' +
+                            'w-24 text-xs' +
                             (
                                 isTimedMessageShown ?
                                     (

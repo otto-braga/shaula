@@ -8,6 +8,13 @@ import { Period } from "./period";
 import { Person } from "./person";
 import { Source } from "./source";
 
+export enum ArtworkLabels {
+    ROUTE = 'artworks',
+    TYPE = 'artwork',
+    TYPE_LABEL = 'Obra',
+    TYPE_PLURAL = 'Obras'
+}
+
 export type Artwork = {
     uuid: string;
     slug: string;
@@ -28,7 +35,7 @@ export type Artwork = {
     people: Person[];
 
     activities: Activity[];
-    
+
     pivot: {
         activity: Activity | null;
         is_author: boolean;

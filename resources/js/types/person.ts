@@ -9,6 +9,13 @@ import { Period } from "./period";
 import { Review } from "./review";
 import { Source } from "./source";
 
+export enum PersonLabels {
+    ROUTE = 'people',
+    TYPE = 'person',
+    TYPE_LABEL = 'Pessoa',
+    TYPE_PLURAL = 'Pessoas'
+}
+
 export type Person = {
     uuid: string;
     slug: string;

@@ -4,6 +4,13 @@ import { Mention } from "./mention";
 import { Person } from "./person";
 import { Source } from "./source";
 
+export enum ReviewLabels {
+    ROUTE = 'reviews',
+    TYPE = 'review',
+    TYPE_LABEL = 'Crítica',
+    TYPE_PLURAL = 'Críticas'
+}
+
 export type Review = {
     uuid: string;
     slug: string;
