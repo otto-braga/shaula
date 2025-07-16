@@ -161,7 +161,8 @@
     --sidebar-accent: #222F3e;
     /* --sidebar-accent: oklch(0.269 0 0); */
     --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-border: #222F3e;
+    /* --sidebar-border: oklch(0.269 0 0); */
     --sidebar-ring: oklch(0.439 0 0);
 }
 

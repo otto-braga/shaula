@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button';
-import Select, { SingleValue } from 'react-select';
+import { SingleValue } from 'react-select';
+import Select from '../select/select-styled';
 
 type PaginationLink = {
     url: string | null;
@@ -55,13 +56,6 @@ function PaginationControls({ pagination, className }: { pagination: PaginationP
                         }}
                         isSearchable={false}
                         isClearable={false}
-                        styles={{
-                            control: (base) => ({
-                                ...base,
-                                minHeight: '32px',
-                                height: '32px',
-                            }),
-                        }}
                     />
 
                     <Button

@@ -1,11 +1,9 @@
-import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
-import { NavUser } from './nav-user';
 import { Link } from '@inertiajs/react';
 import AppLogo from './app-logo';
-import AppearanceToggleTab from './appearance-tabs';
 import AppearanceToggleSidebarHeader from './appearance-toggle-sidebar-header';
+import { NavUserSidebarHeader } from './nav-user-sidebar-header';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     return (
@@ -14,15 +12,21 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                 <Link href={route('public.home')} prefetch className='flex items-center gap-2'>
                     <AppLogo />
                 </Link>
+
                 <div className="flex-1"></div>
-                <SidebarTrigger className="-ml-1 flex-0" />
+
+                <div className="flex-0">
+                    <SidebarTrigger />
+                </div>
 
                 {/* cycle between light, dark and system modes */}
-                <AppearanceToggleSidebarHeader className="flex-0" />
+                <div className="flex-0">
+                    <AppearanceToggleSidebarHeader />
+                </div>
 
                 {/* <Breadcrumbs breadcrumbs={breadcrumbs} /> */}
                 <div className="flex-0">
-                    <NavUser />
+                    <NavUserSidebarHeader />
                 </div>
             </div>
         </header>

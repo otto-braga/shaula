@@ -2,6 +2,8 @@ import { Appearance, useAppearance } from '@/hooks/use-appearance';
 import { cn } from '@/lib/utils';
 import { LucideIcon, Monitor, Moon, Sun } from 'lucide-react';
 import { ButtonHTMLAttributes, useEffect, useState } from 'react';
+import { SidebarMenuButton } from './ui/sidebar';
+import { Button } from "@/components/ui/button"
 
 export default function AppearanceToggleSidebarHeader({ className = '', ...props }: ButtonHTMLAttributes<HTMLButtonElement>) {
     // This component is used in the sidebar header to toggle appearance settings.
@@ -36,16 +38,18 @@ export default function AppearanceToggleSidebarHeader({ className = '', ...props
     // The button's styles change based on the current appearance mode
 
     return (
-        <button
+        <Button
+            variant="ghost"
+            size="icon"
             onClick={handleClick}
             className={cn(
-                'flex items-center rounded-md px-3.5 py-1.5 transition-colors',
-                'hover:bg-neutral-200/60 hover:text-black dark:text-neutral-400 dark:hover:bg-neutral-700/60',
+                'h-7 w-7',
+                'hover:bg-accent hover:text-black dark:text-neutral-400 dark:hover:bg-accent',
                 className,
             )}
             {...props}
         >
-            <Icon className="h-4 w-4" />
-        </button>
+            <Icon />
+        </Button>
     );
 }
