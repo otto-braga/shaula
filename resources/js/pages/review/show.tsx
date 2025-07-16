@@ -123,16 +123,6 @@ export default function Index({ review }: { review: { data: Review } }) {
                             </div>
                         </div>
                     )}
-                    {review.data.sources.length > 0 && (
-                        <div className="space-y-3">
-                            <p className="font-semibold">Fontes</p>
-                            {review.data.sources.map((source, index) => (
-                                <div key={'source' + index}>
-                                    <SourceCard source={source} className="" />
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </section>
                 <section className="md:col-span-2 md:pr-6 lg:col-span-3 lg:pr-8">
                     <div>
@@ -149,7 +139,21 @@ export default function Index({ review }: { review: { data: Review } }) {
                         <span className="text-sm text-slate-500">{formatDate(review.data.date)}</span>
                     </div>
 
-                    <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 text-lg lg:text-xl" />
+                    <div className="divide-y">
+                        <div dangerouslySetInnerHTML={{ __html: review.data.content }} className="mt-3 pb-6 text-lg lg:text-xl" />
+                        <div className="pt-6">
+                            {review.data.sources.length > 0 && (
+                                <div className="space-y-3">
+                                    <p className="text-lg font-semibold">Fontes</p>
+                                    {review.data.sources.map((source, index) => (
+                                        <div key={'source' + index}>
+                                            <SourceCard source={source} className="text-lg" />
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </section>
                 <section className="lg:col-span-2">
                     <div className="grid grid-cols-2 items-end gap-8">

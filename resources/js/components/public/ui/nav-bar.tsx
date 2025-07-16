@@ -22,6 +22,10 @@ const navItems: NavItem[] = [
         title: 'História',
         href: '/historia/artigos',
     },
+    {
+        title: 'Sobre',
+        href: '/sobre',
+    },
 ];
 
 export function NavBar() {
