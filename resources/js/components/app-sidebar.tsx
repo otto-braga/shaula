@@ -100,11 +100,6 @@ const auxNavItems: NavItem[] = [
         href: route('categories.index'),
         icon: Folder
     },
-    {
-        title: 'Categorias de Fonte',
-        href: route('source_categories.index'),
-        icon: FolderClosed
-    },
 ];
 
 const adminNavItems: NavItem[] = [

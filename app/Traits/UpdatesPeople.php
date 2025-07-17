@@ -72,5 +72,7 @@ trait UpdatesPeople
                 }
             }
         }
+
+        $model->save();
     }
 }

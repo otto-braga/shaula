@@ -43,5 +43,7 @@ trait UpdatesImages
                 $model->images()->first()->update(['is_primary' => true]);
             }
         }
+
+        $model->save();
     }
 }

@@ -252,6 +252,8 @@ class PersonController extends Controller
 
             $this->syncUuids($request->sources_uuids, $person->sources());
 
+            $person->save();
+
             session()->flash('success', true);
             return redirect()->back();
         }

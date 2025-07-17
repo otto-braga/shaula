@@ -207,6 +207,8 @@ class ReviewController extends Controller
 
             $this->syncUuids($request->sources_uuids, $review->sources());
 
+            $review->save();
+
             session()->flash('success', true);
             return redirect()->back();
         }
