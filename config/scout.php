@@ -151,8 +151,8 @@ return [
             'artworks' => [
                 'searchableAttributes' => [
                     'title',
-                    'authors',
-                    'periods',
+                    // 'authors',
+                    // 'periods',
                 ],
                 'filterableAttributes' => [
                     'periods',
@@ -167,8 +167,8 @@ return [
             'people' => [
                 'searchableAttributes' => [
                     'name',
-                    'artworks',
-                    'periods',
+                    // 'artworks',
+                    // 'periods',
                 ],
                 'filterableAttributes' => [
                     'periods',
@@ -183,8 +183,8 @@ return [
             'reviews' => [
                 'searchableAttributes' => [
                     'title',
-                    'authors',
-                    'artworks',
+                    // 'authors',
+                    // 'artworks',
                 ],
                 'filterableAttributes' => [
                     'categories',
@@ -198,8 +198,8 @@ return [
             'history_articles' => [
                 'searchableAttributes' => [
                     'title',
-                    'authors',
-                    'periods',
+                    // 'authors',
+                    // 'periods',
                 ],
                 'filterableAttributes' => [
                     'periods',
