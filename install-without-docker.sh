@@ -22,14 +22,6 @@ rm -rf public/storage
 php artisan storage:link
 
 echo
-echo Waiting 15 seconds for the database to be ready...
-echo
-sleep 15
-php artisan migrate
-php artisan db:seed
-echo
-
-echo
 echo Optimizing application...
 echo
 php artisan optimize
