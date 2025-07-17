@@ -16,18 +16,23 @@ function FileCard({
             <div className={`flex flex-col items-center justify-items-center ${className}`}>
             </div>
         ) : (
-            file?.mime_type === 'application/pdf' ? (
-                <iframe
-                    key={file.uuid + 'pdf'}
-                    src={file.path}
-                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
-                    title={file.path}
-                />
-            ) : (
-                <img key={file?.uuid + 'file'} src={file?.path} alt={file?.path}
-                    className={`object-cover flex flex-col items-center justify-items-center ${className}`}
-                />
-            )
+            <div className={`flex flex-col items-center justify-items-center ${className}`} {...props}>
+                <p className='text-xs text-center break-all text-wrap my-2'>
+                    {file.original_name || `Arquivo ${file.uuid}`}
+                </p>
+                {file?.mime_type === 'application/pdf' ? (
+                    <iframe
+                        key={file.uuid + 'pdf'}
+                        src={file.path}
+                        className={`object-cover flex flex-col items-center justify-items-center ${className}`}
+                        title={file.path}
+                    />
+                ) : (
+                    <img key={file?.uuid + 'file'} src={file?.path} alt={file?.path}
+                        className={`object-cover flex flex-col items-center justify-items-center ${className}`}
+                    />
+                )}
+            </div>
         )
     )
 }

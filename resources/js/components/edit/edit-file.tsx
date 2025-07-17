@@ -45,6 +45,7 @@ export default function EditFile({
                         setFiles(imageItems.map((imageItem) => imageItem.file as File));
                     }}
                     allowMultiple={false}
+                    labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.<br />Após carregar, clique em Salvar para fazer o upload.'
                 />
             </div>
 
