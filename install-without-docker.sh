@@ -29,5 +29,5 @@ php artisan optimize
 echo
 echo Building frontend assets...
 echo
-pnpm intall
+pnpm install
 pnpm build
