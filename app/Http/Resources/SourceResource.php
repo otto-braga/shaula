@@ -19,8 +19,6 @@ class SourceResource extends JsonResource
 
             'file' => new FileResource($this->file),
 
-            'source_categories' => new JsonResource($this->sourceCategories),
-
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

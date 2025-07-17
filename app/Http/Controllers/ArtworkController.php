@@ -266,6 +266,8 @@ class ArtworkController extends Controller
 
             $this->syncUuids($request->sources_uuids, $artwork->sources());
 
+            $artwork->save();
+
             session()->flash('success', true);
             return redirect()->back();
         }

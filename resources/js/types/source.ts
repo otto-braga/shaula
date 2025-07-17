@@ -1,5 +1,4 @@
 import { FileProps } from "./file";
-import { SourceCategory } from "./source-category";
 
 export enum SourceLabels {
     ROUTE = 'sources',
@@ -14,7 +13,6 @@ export type Source = {
 
     title: string;
     content: string;
-    source_categories: SourceCategory[];
     file: FileProps | null;
 
     created_at: string;

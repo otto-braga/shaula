@@ -211,6 +211,8 @@ class HistoryArticleController extends Controller
 
             $this->syncUuids($request->sources_uuids, $historyArticle->sources());
 
+            $historyArticle->save();
+
             session()->flash('success', true);
             return redirect()->back();
         }

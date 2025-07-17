@@ -73,9 +73,6 @@ class SourceFactory extends Factory
                 'is_primary' => true,
             ]);
 
-            $source->sourceCategories()->attach(
-                SourceCategory::inRandomOrder()->take(2)->pluck('id')->toArray()
-            );
         });
     }
 }

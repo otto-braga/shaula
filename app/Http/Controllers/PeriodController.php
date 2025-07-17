@@ -199,6 +199,8 @@ class PeriodController extends Controller
 
             $this->syncUuids($request->sources_uuids, $period->sources());
 
+            $period->save();
+
             session()->flash('success', true);
             return redirect()->back();
         }

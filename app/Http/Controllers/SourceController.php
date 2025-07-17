@@ -6,11 +6,9 @@ use App\Http\Requests\FetchRequest;
 use App\Http\Requests\SourceEditRequest;
 use App\Http\Resources\SourceResource;
 use App\Models\Source;
-use App\Models\SourceCategory;
 use App\Traits\HandlesFiles;
 use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -114,8 +112,6 @@ class SourceController extends Controller
                     'content',
                 ])
             );
-
-            $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
 
             if ($request->has('delete_file') && $request->delete_file) {
                 if ($source->file) {
