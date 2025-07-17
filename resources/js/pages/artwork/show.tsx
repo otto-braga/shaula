@@ -60,16 +60,6 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                 </div>
                             </div>
                         )}
-                        {artwork.data.sources.length > 0 && (
-                            <div>
-                                <p className="font-semibold">Fontes</p>
-                                {artwork.data.sources.map((source, index) => (
-                                    <div key={'source' + index}>
-                                        <SourceCard source={source} className="line-clamp-1" />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 </MobileDetailBar>
 
@@ -121,16 +111,6 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                             </div>
                         </div>
                     )}
-                    {artwork.data.sources.length > 0 && (
-                        <div>
-                            <p className="font-semibold">Fontes</p>
-                            {artwork.data.sources.map((source, index) => (
-                                <div key={'source' + index}>
-                                    <SourceCard source={source} className="line-clamp-1" />
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </section>
 
                 {/* Pics */}
@@ -162,7 +142,19 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                             ))}
                         </div>
                     </div>
-                    <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="mt-6 text-lg" />
+                    <div className="space-y-6 divide-y *:pb-6">
+                        <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="mt-6 text-lg" />
+                        {artwork.data.sources.length > 0 && (
+                            <div className="space-y-3">
+                                <p className="font-medium">Fontes</p>
+                                {artwork.data.sources.map((source, index) => (
+                                    <div key={'source' + index}>
+                                        <SourceCard source={source} className="" />
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
                 </section>
             </div>
         </PublicLayout>

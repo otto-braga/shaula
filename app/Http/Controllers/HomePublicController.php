@@ -21,4 +21,9 @@ class HomePublicController extends Controller
             'artworks' => ArtworkResource::collection($artworks)
         ]);
     }
+
+    public function about()
+    {
+        return Inertia::render('about/index');
+    }
 }

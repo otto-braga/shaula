@@ -56,7 +56,10 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::name('public.')->group(function () {
+
     Route::get('/', [HomePublicController::class, 'index'])->name('home');
+
+    Route::get('/sobre', [HomePublicController::class, 'about'])->name('about');
 
     Route::get('/critica', [ReviewPublicController::class, 'index'])->name('reviews.index');
     Route::get('/critica/{review:slug}', [ReviewPublicController::class, 'show'])->name('reviews.show');
