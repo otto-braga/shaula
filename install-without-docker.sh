@@ -11,6 +11,11 @@ echo
 php artisan key:generate
 
 echo
+echo Installing dependencies...
+echo
+composer install --no-interaction --optimize-autoloader --no-dev
+
+echo
 echo Generating storage link...
 echo
 rm -rf public/storage
