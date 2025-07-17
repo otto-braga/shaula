@@ -88,7 +88,6 @@ class DashboardController extends Controller
             Language::class,
             Category::class,
             Award::class,
-            SourceCategory::class,
         ];
 
         foreach ($indexes_aux as $key => $index) {
