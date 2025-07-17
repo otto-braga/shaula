@@ -124,12 +124,12 @@ export default function EditSources({
                             />
                             <FileCard
                                 file={source.file ?? null}
-                                className="h-32 rounded"
+                                className="w-full h-32 rounded"
                             />
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className="mt-2 w-60"
+                                className="mt-2 w-full"
                                 onClick={() => {
                                     setSources(sources.filter((s) => s.uuid !== source.uuid));
                                 }}
