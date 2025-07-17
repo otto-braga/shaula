@@ -61,7 +61,7 @@ export default function EditImages({
                     setImages(imageItems.map((imageItem) => imageItem.file as File));
                 }}
                 allowMultiple={true}
-                labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.'
+                labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.<br />Após carregar, clique em Salvar para fazer o upload.'
             />
             <InputError className="mt-2" message={errors?.files} />
             <InputError className="mt-2" message={errors?.files_to_remove} />
@@ -76,6 +76,9 @@ export default function EditImages({
                                 + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
                             }
                         />
+                        <p className='flex-1 flex items-center text-xs text-center mt-2 break-all text-wrap my-2'>
+                            {image.original_name || `Imagem ${index + 1}`}
+                        </p>
                         <div className='w-full flex flex-col justify-between'>
                             <Button
                                 key={image.uuid + 'select_button'}

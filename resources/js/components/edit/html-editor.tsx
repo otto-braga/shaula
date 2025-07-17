@@ -23,7 +23,7 @@ type HtmlEditorProps = {
     toolbar_sticky?: boolean;
     toolbar_sticky_offset?: number;
     content: string;
-    content_images: { uuid: string; path: string }[];
+    content_images: { uuid: string; path: string; original_name: string }[];
     data: {
         content: string;
         files?: File[];
@@ -325,6 +325,9 @@ export default function HtmlEditor({
                                         (imagesToRemove.find((uuid) => uuid === image.uuid) ? ' opacity-50' : '')
                                     }
                                 />
+                                <p className='flex-1 flex items-center text-xs text-center mt-2 break-all text-wrap my-2'>
+                                    {image.original_name || `Imagem ${index + 1}`}
+                                </p>
                                 <div className="flex w-full flex-col justify-between">
                                     <Button
                                         key={image.uuid + 'select_button'}
