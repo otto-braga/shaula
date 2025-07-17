@@ -17,11 +17,6 @@ rm -rf public/storage
 docker compose exec app php artisan storage:link
 
 echo
-echo Information of new containers:
-echo
-docker ps
-
-echo
 echo Waiting 15 seconds for the database to be ready...
 echo
 sleep 15
