@@ -1,9 +1,9 @@
 #!/bin/bash
 
 echo
-echo Clearing config...
+echo Clearing optimization...
 echo
-docker compose exec app php artisan config:clear
+docker compose exec app php artisan optimize:clear
 
 echo
 echo Generating key...
