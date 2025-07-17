@@ -6,8 +6,9 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { type SharedData } from '@/types';
 import { usePage } from '@inertiajs/react';
 import { ChevronsUpDown } from 'lucide-react';
+import { UserInfoSidebarHeader } from './user-info-sidebar-header';
 
-export function NavUser() {
+export function NavUserSidebarHeader() {
     const { auth } = usePage<SharedData>().props;
     const { state } = useSidebar();
     const isMobile = useIsMobile();
@@ -18,7 +19,7 @@ export function NavUser() {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton size="lg" className="text-sidebar-accent-foreground data-[state=open]:bg-sidebar-accent group">
-                            <UserInfo user={auth.user} />
+                            <UserInfoSidebarHeader user={auth.user} />
                             {/* <ChevronsUpDown className="ml-auto size-4" /> */}
                         </SidebarMenuButton>
                     </DropdownMenuTrigger>

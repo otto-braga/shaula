@@ -4,6 +4,7 @@ import { FilePondFile, FilePondInitialFile } from 'filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
+// import './filepond-custom.css';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Button } from '@/components/ui/button';
 import { CheckIcon, DeleteIcon } from 'lucide-react';
@@ -60,27 +61,34 @@ export default function EditImages({
                     setImages(imageItems.map((imageItem) => imageItem.file as File));
                 }}
                 allowMultiple={true}
+                labelIdle='Arraste e solte arquivos aqui ou <span class="filepond--label-action">clique para selecionar</span>.<br />Após carregar, clique em Salvar para fazer o upload.'
             />
             <InputError className="mt-2" message={errors?.files} />
             <InputError className="mt-2" message={errors?.files_to_remove} />
             <InputError className="mt-2" message={errors?.primary_image_uuid} />
 
-            <div className="flex flex-row gap-2">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
                 {stored_images.map((image, index) => (
-                    <div key={image.uuid} className='flex flex-col items-center'>
+                    <div key={image.uuid} className='flex flex-col items-center w-full'>
                         <img key={image.uuid + 'image'} src={image.path} alt={image.path}
                             className={
-                                'object-cover w-32 h-32 rounded-lg shadow-md'
+                                'object-cover w-full h-32 rounded-lg shadow-md'
                                 + (imagesToRemove.find(uuid => uuid === image.uuid) ? ' opacity-50' : '')
                             }
                         />
+                        <p className='flex-1 flex items-center text-xs text-center mt-2 break-all text-wrap my-2'>
+                            {image.original_name || `Imagem ${index + 1}`}
+                        </p>
                         <div className='w-full flex flex-col justify-between'>
                             <Button
                                 key={image.uuid + 'select_button'}
                                 type="button"
+                                variant={'secondary'}
                                 className={
-                                    (image.uuid == imageToSelect ? 'bg-blue-600 hover:bg-blue-300' : 'bg-gray-100 hover:bg-blue-300')
-                                }
+                                    (image.uuid == imageToSelect
+                                        ? 'bg-green-600 text-primary'
+                                        : 'bg-secondary'
+                                )}
                                 onClick={
                                     () => {
                                         setImageToSelect(image.uuid);
@@ -92,9 +100,12 @@ export default function EditImages({
                             <Button
                                 key={image.uuid + 'delete_button'}
                                 type="button"
+                                variant={'secondary'}
                                 className={
-                                    (imagesToRemove.find(uuid => uuid === image.uuid) ? 'bg-red-600 hover:bg-red-300' : 'bg-gray-100 hover:bg-red-300')
-                                }
+                                    (imagesToRemove.find(uuid => uuid === image.uuid)
+                                        ? 'bg-red-600 text-primary hover:bg-red-500'
+                                        : 'bg-secondary hover:bg-red-500'
+                                )}
                                 onClick={
                                     () => {
                                         if (!imagesToRemove.find(uuid => uuid === image.uuid)) {

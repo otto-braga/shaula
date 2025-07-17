@@ -1,10 +1,10 @@
-import AppLayout from '@/layouts/app-layout';
 import { Review } from '@/types/review';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import EditTabs from '@/components/edit/edit-tabs';
 import HtmlEditor from '@/components/edit/html-editor';
+import EditLayout from '@/components/edit/edit-layout';
 
 export default function Content({
     review,
@@ -30,32 +30,23 @@ export default function Content({
     };
 
     return (
-        <AppLayout>
-            <Head title="Produções" />
-            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
-                <div className="mx-auto lg:px-8">
-                    <div className="">
-                        <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <EditTabs
-                                model={review}
-                                route_base_name="reviews"
-                                processing={processing}
-                            />
-
-                            <HtmlEditor
-                                content={review.data.content}
-                                content_images={review.data.content_images}
-                                data={data}
-                                setData={setData}
-                                errors={errors}
-                                processing={processing}
-                                submit={submit}
-                            />
-
-                        </form>
-                    </div>
-                </div>
-            </section>
-        </AppLayout>
+        <EditLayout>
+            <form onSubmit={submit} className="space-y-3 bg-inherit">
+                <EditTabs
+                    model={review}
+                    route_base_name="reviews"
+                    processing={processing}
+                />
+                <HtmlEditor
+                    content={review.data.content}
+                    content_images={review.data.content_images}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    submit={submit}
+                />
+            </form>
+        </EditLayout>
     );
 }

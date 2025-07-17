@@ -10,14 +10,18 @@ import {
     Circle,
     CircleDashed,
     CircleDotDashed,
+    CircleDotIcon,
     Clock,
     ContactRound,
+    FileSpreadsheet,
     Folder,
     FolderArchive,
+    FolderClosed,
     LayoutGrid,
     PersonStanding,
     Text,
     Transgender,
+    User,
     Workflow,
 } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -60,7 +64,7 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Fontes',
         href: route('sources.index'),
-        icon: Building2,
+        icon: FileSpreadsheet,
     },
 
 ];
@@ -87,19 +91,19 @@ const auxNavItems: NavItem[] = [
         icon: CircleDashed,
     },
     {
-        title: 'Categorias',
-        href: route('categories.index'),
-        icon: CircleDotDashed,
-    },
-    {
         title: 'Prêmios',
         href: route('awards.index'),
-        icon: Circle
+        icon: CircleDotDashed
+    },
+    {
+        title: 'Categorias',
+        href: route('categories.index'),
+        icon: Folder
     },
     {
         title: 'Categorias de Fonte',
         href: route('source_categories.index'),
-        icon: Folder
+        icon: FolderClosed
     },
 ];
 
@@ -112,7 +116,7 @@ const adminNavItems: NavItem[] = [
     {
         title: 'Usuários',
         href: route('users.index'),
-        icon: PersonStanding,
+        icon: User,
     },
 ];
 
@@ -124,34 +128,34 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader>
+            {/* <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={route('dashboard')} prefetch>
+                            <Link href={route('public.home')} prefetch>
                                 <AppLogo />
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
-            </SidebarHeader>
+            </SidebarHeader> */}
 
             {/* <SidebarSeparator /> */}
 
-            <SidebarContent>
-                <NavMain items={dashboardNavItems} title="Dashboard" />
+            <SidebarContent className='mt-2 gap-8'>
+                <NavMain items={dashboardNavItems} title="Início" />
                 {/* { (isDevUser() || isAdminUser()) && (<>
                     <SidebarSeparator />
                     <NavMain items={adminNavItems} title="Administrativos" />
                 </>)} */}
                 <AuthorizationCheck role_names={['dev', 'admin']}>
-                    <SidebarSeparator />
-                    <NavMain items={adminNavItems} title="Administrativos" />
+                    {/* <SidebarSeparator /> */}
+                    <NavMain items={adminNavItems} title="Administração"/>
                 </AuthorizationCheck>
-                <SidebarSeparator />
-                <NavMain items={mainNavItems} title="Conteúdo" />
-                <SidebarSeparator />
-                <NavMain items={auxNavItems} title="Auxiliares" />
+                {/* <SidebarSeparator /> */}
+                <NavMain items={mainNavItems} title="Conteúdo Principal" />
+                {/* <SidebarSeparator /> */}
+                <NavMain items={auxNavItems} title="Conteúdo Auxiliar" />
             </SidebarContent>
 
             {/* <SidebarSeparator /> */}

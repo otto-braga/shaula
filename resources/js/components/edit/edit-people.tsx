@@ -126,11 +126,11 @@ export default function EditPeople({
 
                 <div className="mt-4">
                     {getActivitiesList(data.activitiesPeople).map((activity) => (
-                        <div key={'activity' + activity.activity_uuid} className="flex flex-col gap-2 mb-4">
+                        <div key={'activity' + activity.activity_uuid} className="flex flex-col gap-2 mb-4 p-2 border rounded-md">
                             <Label className="text-lg">{activity.activity_name}</Label>
-                            <div className="flex items-center gap-2">
+                            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
                                 {data.activitiesPeople.filter((pa) => pa.activity_uuid === activity.activity_uuid).map((person) => (
-                                    <div key={activity.activity_uuid + person.person_uuid} className="flex items-center gap-2 border p-2 rounded-md bg-gray-100 dark:bg-gray-700">
+                                    <div key={activity.activity_uuid + person.person_uuid} className="flex items-center gap-2 border p-2 rounded-md bg-secondary">
                                         <span>{person.person_name}</span>
                                         <Button
                                             type="button"

@@ -1,10 +1,10 @@
-import AppLayout from '@/layouts/app-layout';
 import { Period } from '@/types/period';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import EditTabs from '@/components/edit/edit-tabs';
 import HtmlEditor from '@/components/edit/html-editor';
+import EditLayout from '@/components/edit/edit-layout';
 
 export default function Content({
     period,
@@ -30,32 +30,25 @@ export default function Content({
     };
 
     return (
-        <AppLayout>
-            <Head title="Produções" />
-            <section className="px-4 py-12 text-gray-800 dark:text-gray-200">
-                <div className="mx-auto lg:px-8">
-                    <div className="">
-                        <form onSubmit={submit} className="space-y-3 bg-inherit">
-                            <EditTabs
-                                model={period}
-                                route_base_name="periods"
-                                processing={processing}
-                            />
+        <EditLayout>
+            <form onSubmit={submit} className="space-y-3 bg-inherit">
+                <EditTabs
+                    model={period}
+                    route_base_name="periods"
+                    processing={processing}
+                />
 
-                            <HtmlEditor
-                                content={period.data.content}
-                                content_images={period.data.content_images}
-                                data={data}
-                                setData={setData}
-                                errors={errors}
-                                processing={processing}
-                                submit={submit}
-                            />
+                <HtmlEditor
+                    content={period.data.content}
+                    content_images={period.data.content_images}
+                    data={data}
+                    setData={setData}
+                    errors={errors}
+                    processing={processing}
+                    submit={submit}
+                />
 
-                        </form>
-                    </div>
-                </div>
-            </section>
-        </AppLayout>
+            </form>
+        </EditLayout>
     );
 }

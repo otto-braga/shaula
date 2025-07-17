@@ -115,21 +115,21 @@ export default function EditSources({
             />
             <InputError className="mt-2" message={errors?.sources_uuids} />
 
-            <div className="mt-4 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {sources?.map((source) => (
-                    <div key={source.uuid + source.title} className="mt-2 p-4 border rounded-lg bg-white dark:bg-gray-800 flex flex-col justify-between">
+                    <div key={source.uuid + source.title} className="mt-2 p-4 border rounded-lg flex flex-col items-center justify-between">
                             <p className="text-sm font-semibold">{source.title}</p>
-                            <p className="text-sm text-gray-500 h-32 overflow-hidden mb-2"
+                            <p className="text-sm text-gray-500 h-full overflow-hidden mb-2"
                                 dangerouslySetInnerHTML={{ __html: source.content ?? '' }}
                             />
                             <FileCard
                                 file={source.file ?? null}
-                                className="h-32"
+                                className="w-full h-32 rounded"
                             />
                             <Button
                                 type="button"
                                 variant="secondary"
-                                className="mt-2"
+                                className="mt-2 w-full"
                                 onClick={() => {
                                     setSources(sources.filter((s) => s.uuid !== source.uuid));
                                 }}

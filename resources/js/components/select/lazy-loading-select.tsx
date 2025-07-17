@@ -1,7 +1,8 @@
 import { SearchResult } from "@/types/search-result";
 import { handleReactSelectStyling } from "@/utils/react-select-styling";
 import { use, useEffect, useState } from "react";
-import Select, { MultiValue, SingleValue, components } from 'react-select';
+import { MultiValue, SingleValue, components } from 'react-select';
+import Select from "./select-styled";
 
 type LazyLoadingSelectProps = {
     [key: string]: any; // Allow additional props
@@ -22,7 +23,7 @@ function LazyLoadingSelect({
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."
             components={{ MenuList: CustomMenuList }}
-            styles={handleReactSelectStyling()}
+            // styles={handleReactSelectStyling()}
         />
     </>)
 }
@@ -86,7 +87,7 @@ function LazyLoadingSelectWithStates({
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."
             components={{ MenuList: CustomMenuList }}
-            styles={handleReactSelectStyling()}
+            // styles={handleReactSelectStyling()}
         />
     </>)
 }
@@ -158,7 +159,7 @@ function SelectWithStates({
             noOptionsMessage={() => 'Nenhum resultado.'}
             // placeholder="Digite para buscar..."
             // components={{ MenuList: CustomMenuList }}
-            styles={handleReactSelectStyling()}
+            // styles={handleReactSelectStyling()}
         />
     </>)
 }
@@ -208,7 +209,7 @@ function LazyLoadingSingleSelectWithStates({
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."
             components={{ MenuList: CustomMenuList }}
-            styles={handleReactSelectStyling()}
+            // styles={handleReactSelectStyling()}
         />
     </>)
 }
@@ -258,7 +259,7 @@ function LazyLoadingMultiSelectWithStates({
             noOptionsMessage={() => 'Nenhum resultado.'}
             placeholder="Digite para buscar..."
             components={{ MenuList: CustomMenuList }}
-            styles={handleReactSelectStyling()}
+            // styles={handleReactSelectStyling()}
         />
     </>)
 }

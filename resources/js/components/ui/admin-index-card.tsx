@@ -68,13 +68,13 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
                         <img src={`${props.model.primary_image.path}`} alt={props.model.title} className="w-full aspect-video rounded object-cover" />
                     ) : (
                         <div className="flex flex-col items-center justify-center w-full">
-                            <div className="aspect-video pt-2 pb-2 line-clamp-5 text-sm text-gray-500"
+                            <div className="aspect-video pb-2 line-clamp-5 text-sm text-gray-500"
                                 dangerouslySetInnerHTML={{ __html: props.model.content }}
                             />
                             {props.model.file && (
                                 <FileCard
                                     file={props.model.file}
-                                    className="h-32 w-full object-cover rounded-lg"
+                                    className="flex-1 h-32 w-full object-cover rounded-lg"
                                 />
                             )}
                         </div>

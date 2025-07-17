@@ -37,8 +37,6 @@ export function AdminIndex({
     const update_route = `${route_base_name}.update`;
     const show_route = `public.${route_base_name}.show`;
 
-    console.log('has_create', has_create);
-
     return (
         <AppLayout>
             <Head title={title} />
