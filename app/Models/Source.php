@@ -7,7 +7,7 @@ use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Builder;
 
 class Source extends Model
@@ -15,8 +15,8 @@ class Source extends Model
     use
         HasFactory,
         HasUuid,
-        HasSlug,
-        Searchable;
+        HasSlug;
+        // Searchable;
 
     protected $fillable = [
         'title',

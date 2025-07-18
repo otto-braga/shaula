@@ -18,8 +18,8 @@ class Period extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions,
-        Searchable;
+        HasMentions;
+        // Searchable;
 
     protected $table = 'periods';
 

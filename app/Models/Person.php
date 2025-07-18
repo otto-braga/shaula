@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class Person extends Model
 {
@@ -20,8 +20,8 @@ class Person extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions,
-        Searchable;
+        HasMentions;
+        // Searchable;
 
     protected $table = 'people';
 

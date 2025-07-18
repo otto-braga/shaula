@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class Review extends Model
 {
@@ -18,8 +18,8 @@ class Review extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions,
-        Searchable;
+        HasMentions;
+        // Searchable;
 
     protected $table = 'reviews';
 

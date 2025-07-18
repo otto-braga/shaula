@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SearchResultResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Meilisearch\Client;
-use Meilisearch\Contracts\MultiSearchFederation;
-use Meilisearch\Contracts\SearchQuery;
+// use Illuminate\Support\Facades\DB;
+// use Meilisearch\Client;
+// use Meilisearch\Contracts\MultiSearchFederation;
+// use Meilisearch\Contracts\SearchQuery;
 
 class SearchController extends Controller
 {
