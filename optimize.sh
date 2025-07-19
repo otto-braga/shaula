@@ -64,3 +64,11 @@ rm -rf public
 mkdir public
 mkdir public/build
 cp -a build/. public/build/
+
+# cd public
+# ln -s ../storage/app/public storage
+# cd ..
+
+cd storage
+ln -s app/public/files files
+cd ..

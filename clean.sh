@@ -1,6 +1,6 @@
 #!/bin/bash
 
-rm -rf .env
+# rm -rf .env
 rm -rf .env.example
 
 rm -rf .git
@@ -12,5 +12,8 @@ rm -rf .docker
 rm -rf .dockerignore
 rm -rf docker-compose.yml
 rm -rf Dockerfile
+
+rm -rf .meilisearch-data
+rm -rf artisan
 
 rm -rf optimize.sh
