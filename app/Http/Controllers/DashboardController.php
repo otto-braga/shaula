@@ -72,6 +72,9 @@ class DashboardController extends Controller
 
         $latest_merged = [];
         for ($i = 1; $i < count($latest); $i++) {
+            if (!is_array($latest[$i - 1]) || !is_array($latest[$i])) {
+                continue;
+            }
             $merged = $latest[$i]->merge($latest[$i - 1]);
             $latest_merged = array_merge($latest_merged, $merged->toArray());
         }

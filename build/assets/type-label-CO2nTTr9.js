@@ -1,0 +1,1 @@
+function r(e){switch(e){case"artworks":return"Obra";case"reviews":return"Crítica";case"people":return"Pessoa";case"sources":return"Fonte";case"history_articles":return"Artigo de História";default:return e}}export{r as t};

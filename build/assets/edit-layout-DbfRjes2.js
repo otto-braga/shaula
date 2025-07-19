@@ -1,0 +1,1 @@
+import{j as s,H as e}from"./app-RD4YkSLs.js";import{A as r}from"./app-layout-QDXit8dA.js";function o({children:a,...t}){return s.jsxs(r,{children:[s.jsx(e,{title:"Editor"}),s.jsx("section",{className:"px-4 text-gray-800 dark:text-gray-200",children:s.jsx("div",{className:"mx-auto lg:px-8",children:s.jsx("div",{className:t.className,children:a})})})]})}export{o as E};
