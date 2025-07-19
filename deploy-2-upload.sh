@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# rm -rf .env
+rm -rf .env
 rm -rf .env.example
+mv .env.deploy .env
 
 rm -rf .git
 rm -rf .github
@@ -15,5 +16,3 @@ rm -rf Dockerfile
 
 rm -rf .meilisearch-data
 rm -rf artisan
-
-rm -rf optimize.sh
