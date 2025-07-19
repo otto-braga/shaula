@@ -1,5 +1,10 @@
 #!/bin/bash
 
+rm -rf deploy
+mkdir deploy
+cp -a . deploy/
+cd deploy
+
 composer install --no-dev --prefer-dist
 composer remove laravel/scout
 composer remove meilisearch/meilisearch-php
@@ -8,8 +13,16 @@ composer update --no-dev --prefer-dist
 pnpm install --prod
 pnpm build
 
-php artisan optimize:clear
-php artisan optimize
+# php artisan optimize:clear
+php artisan config:clear
+php artisan event:clear
+php artisan route:clear
+php artisan view:clear
+# php artisan optimize
+php artisan config:cache
+php artisan event:cache
+php artisan route:cache
+php artisan view:cache
 
 # rm -rf .env
 # rm -rf .env.example
@@ -36,3 +49,10 @@ rm -rf supervisord.log
 rm -rf supervisord.pid
 
 rm -rf node_modules
+
+rm -rf components.json artisan composer.json composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
+
+cp -a public .
+rm -rf public
+mkdir public
+mv build public/build
