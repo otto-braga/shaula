@@ -1,7 +1,6 @@
 #!/bin/bash
 
 rm -rf deploy
-mkdir deploy
 cp -a . deploy/
 cd deploy
 
@@ -52,7 +51,6 @@ rm -rf node_modules
 
 rm -rf components.json artisan composer.json composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
 
-cp -a public .
+cp -a public/. .
 rm -rf public
-mkdir public
-mv build public/build
+cp -a build/. public/build/
