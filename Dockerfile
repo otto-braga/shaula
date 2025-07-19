@@ -50,8 +50,6 @@ USER $user
 # Expose ports
 ARG app_port
 EXPOSE $app_port
-ARG vite_port
-EXPOSE $vite_port
 
 # Start php-fpm server
 CMD ["php-fpm"]

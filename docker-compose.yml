@@ -8,7 +8,6 @@ services:
                 user: ${SYS_USER}
                 uid: ${SYS_UID}
                 app_port: ${APP_PORT}
-                vite_port: ${VITE_PORT}
         working_dir: /var/www
         volumes:
             - ./:/var/www
@@ -82,8 +81,8 @@ services:
         ports:
             - ${MEILISEARCH_PORT}:7700
         environment:
-            MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
-            MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
+            # MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
+            # MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
             MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
         volumes:
             - ./.meilisearch-data:/meilisearch-data
