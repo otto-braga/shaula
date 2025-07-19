@@ -11,22 +11,28 @@ pnpm build
 php artisan optimize:clear
 php artisan optimize
 
-rm -rf .docker
-rm -rf .git
-rm -rf .github
-rm -rf .meilisearch-data
-rm -rf node_modules
-rm -rf .dockerignore
+# rm -rf .env
+# rm -rf .env.example
+
+# rm -rf .git
+# rm -rf .github
+# rm -rf .gitattributes
+# rm -rf .gitignore
+
+# rm -rf .docker
+# rm -rf .dockerignore
+# rm -rf docker-compose.yml
+# rm -rf Dockerfile
+
+rm -rf install.sh
+
 rm -rf .editorconfig
-rm -rf .env
-rm -rf .env.example
-rm -rf .gitattributes
-rm -rf .gitignore
 rm -rf .prettierignore
 rm -rf .prettierrc
-rm -rf docker-compose.yml
-rm -rf Dockerfile
-rm -rf install.sh
+
+rm -rf .meilisearch-data
 rm -rf meilisearch-index.sh
 rm -rf supervisord.log
 rm -rf supervisord.pid
+
+rm -rf node_modules
