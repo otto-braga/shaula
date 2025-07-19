@@ -49,7 +49,7 @@ rm -rf supervisord.pid
 
 rm -rf node_modules
 
-rm -rf components.json artisan composer.json composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
+rm -rf components.json artisan composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
 
 rm public/storage
 rm public/index.php
