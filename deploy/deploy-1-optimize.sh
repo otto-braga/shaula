@@ -1,8 +1,8 @@
 #!/bin/bash
 
-rm -rf deploy
-cp -a . deploy/
-cd deploy
+rm -rf deployment
+cp -a .. deployment/
+cd deployment # Move to the deployment directory
 
 composer install --no-dev --prefer-dist
 composer remove laravel/scout
@@ -38,11 +38,14 @@ rm -rf node_modules
 
 rm -rf components.json composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
 
-mv index.php.deploy index.php
+rm -rf deploy-1-optimize.sh
+rm -rf deploy-2-migrate.sh
+rm -rf deploy-3-upload.sh
+
+cp ../index.php.deploy index.php
 
 rm -rf .docker/nginx/nginx.conf
-mv .docker/nginx/nginx.conf.deploy .docker/nginx/nginx.conf
-rm -rf .docker/nginx/nginx.conf.deploy
+cp ../nginx.conf.deploy .docker/nginx/nginx.conf
 
 rm public/storage
 rm public/index.php
@@ -56,6 +59,6 @@ cp -a build/. public/build/
 # ln -s ../storage/app/public storage
 # cd ..
 
-cd storage
+cd storage # Move to the storage directory inside deployment
 ln -s app/public/files files
-cd ..
+cd .. # Move to the deployment directory

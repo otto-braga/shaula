@@ -1,8 +1,10 @@
 #!/bin/bash
 
+cd deployment
+
 rm -rf .env
 rm -rf .env.example
-mv .env.deploy .env
+cp ../.env.deploy .env
 
 rm -rf .git
 rm -rf .github
