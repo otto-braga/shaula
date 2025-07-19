@@ -51,6 +51,10 @@ rm -rf node_modules
 
 rm -rf components.json artisan composer.json composer.lock eslint.config.js package.json package-lock.json phpunit.xml pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts
 
+rm public/storage
+rm public/index.php
 cp -a public/. .
 rm -rf public
+mkdir public
+mkdir public/build
 cp -a build/. public/build/
