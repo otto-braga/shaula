@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Move to the script's directory
+cd "$(dirname "$0")"
+
 cd deployment
 
 rm -rf .env

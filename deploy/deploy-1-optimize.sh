@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Move to the script's directory
+cd "$(dirname "$0")"
+
 rm -rf deployment
 cp -a .. deployment/
 cd deployment # Move to the deployment directory
