@@ -58,6 +58,9 @@ mkdir public
 mkdir public/build
 cp -a build/. public/build/
 
+rm docker-compose.yml
+cp ../docker-compose.yml.deploy docker-compose.yml
+
 # cd public
 # ln -s ../storage/app/public storage
 # cd ..

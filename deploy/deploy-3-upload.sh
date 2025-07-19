@@ -5,6 +5,8 @@ cd "$(dirname "$0")"
 
 cd deployment
 
+docker compose down -v
+
 rm -rf .env
 rm -rf .env.example
 cp ../.env.deploy .env

@@ -1,6 +1,6 @@
 services:
     app:
-        container_name: ${APP_NAME}-app
+        container_name: ${APP_NAME}-deploy-app
         build:
             context: .
             target: php
@@ -20,7 +20,7 @@ services:
             - application
 
     nginx:
-        container_name: ${APP_NAME}-nginx
+        container_name: ${APP_NAME}-deploy-nginx
         image: nginx:alpine
         volumes:
             - ./:/var/www
@@ -33,7 +33,7 @@ services:
         command: '/bin/sh -c ''nginx -g "daemon off;"'''
 
     mysql:
-        container_name: ${APP_NAME}-mysql
+        container_name: ${APP_NAME}-deploy-mysql
         image: mysql:8.0
         ports:
             - ${FORWARD_DB_PORT}:3306
@@ -49,7 +49,7 @@ services:
             - application
 
     phpmyadmin:
-        container_name: ${APP_NAME}-phpmyadmin
+        container_name: ${APP_NAME}-deploy-phpmyadmin
         image: phpmyadmin/phpmyadmin
         restart: unless-stopped
         links:
@@ -65,53 +65,9 @@ services:
         networks:
             - application
 
-    redis:
-        container_name: ${APP_NAME}-redis
-        image: redis:alpine
-        restart: unless-stopped
-        ports:
-            - ${REDIS_PORT}:6379
-        networks:
-            - application
-
-    meilisearch:
-        container_name: ${APP_NAME}-meilisearch
-        image: getmeili/meilisearch:latest
-        restart: unless-stopped
-        ports:
-            - ${MEILISEARCH_PORT}:7700
-        environment:
-            # MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
-            # MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
-            MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
-        volumes:
-            - ./.meilisearch-data:/meilisearch-data
-        networks:
-            - application
-
-    supervisor:
-        container_name: ${APP_NAME}-supervisor
-        build:
-            context: .
-            dockerfile: ./.docker/supervisor/supervisor.dockerfile
-            target: supervisor
-            args:
-                user: ${SYS_USER}
-                uid: ${SYS_UID}
-        working_dir: /var/www
-        volumes:
-            - ./:/var/www
-            - ./.docker/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-        command: supervisord -c /etc/supervisor/conf.d/supervisord.conf
-        restart: unless-stopped
-        depends_on:
-            - mysql
-        networks:
-            - application
-
 
 
 
 networks:
   application:
-    name: ${APP_NAME}
+    name: ${APP_NAME}-deploy
