@@ -32,6 +32,7 @@ use App\Http\Controllers\AwardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ExecuteArtisanCommandController;
 use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
@@ -56,6 +57,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::name('public.')->group(function () {
+    Route::get('/run-command/{name_of_command}', ExecuteArtisanCommandController::class);
 
     Route::get('/', [HomePublicController::class, 'index'])->name('home');
 
@@ -87,10 +89,6 @@ Route::name('public.')->group(function () {
 });
 
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' => ''], function () {
-    // Route::get('/', function () {
-    //     return Inertia::render('admin/dashboard');
-    // })->name('dashboard');
-
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::redirect('settings', 'settings/profile');

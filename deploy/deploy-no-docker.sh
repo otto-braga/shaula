@@ -3,23 +3,12 @@
 # Move to the script's directory
 cd "$(dirname "$0")"
 
-cd deployment
-
-docker compose down -v
+cd deployment # Move to the deployment directory
 
 rm -rf .env
 rm -rf .env.example
 cp ../.env.deploy .env
-
-rm -rf .git
-rm -rf .github
-rm -rf .gitattributes
-rm -rf .gitignore
-
 rm -rf .docker
 rm -rf .dockerignore
 rm -rf docker-compose.yml
 rm -rf Dockerfile
-
-rm -rf .meilisearch-data
-rm -rf artisan

@@ -57,5 +57,7 @@ class DatabaseSeeder extends Seeder
         $user->role()->associate(
             Role::where('name', 'editor')->firstOrFail()
         )->save();
+
+        $this->call(TestSeeder::class);
     }
 }
