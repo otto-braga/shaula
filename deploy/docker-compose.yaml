@@ -1,0 +1,103 @@
+services:
+    app:
+        container_name: ${APP_NAME}-app
+        image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+        working_dir: /var/www
+        restart: unless-stopped
+        environment:
+            - APP_ENV=production
+            - APP_DEBUG=false
+            - APP_NAME=shaula
+            - VITE_APP_NAME="${APP_NAME}"
+            # - APP_URL=https://shaula.ufrn.br:2046
+            - APP_KEY=base64:gt1HRK7aQV6JV7XWW9MBbSnAvudM+7iRrUk7BREGR8o=
+            - DB_CONNECTION=${DB_CONNECTION}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
+        depends_on:
+            - mysql
+        networks:
+            - application
+
+    nginx:
+        container_name: ${APP_NAME}-nginx
+        image: nginx:alpine
+        volumes:
+            - ./:/var/www
+            - ./.docker/nginx:/etc/nginx/conf.d
+        restart: unless-stopped
+        ports:
+            - ${APP_PORT}:80
+        networks:
+            - application
+        command: '/bin/sh -c ''nginx -g "daemon off;"'''
+
+    mysql:
+        container_name: ${APP_NAME}-mysql
+        image: mysql:8.0
+        ports:
+            - 3306:3306
+        environment:
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        volumes:
+            - ./.docker/mysql:/docker-entrypoint-initdb.d
+        restart: unless-stopped
+        networks:
+            - application
+
+    redis:
+        container_name: ${APP_NAME}-redis
+        image: redis:alpine
+        restart: unless-stopped
+        ports:
+            - ${REDIS_PORT}:6379
+        networks:
+            - application
+
+    meilisearch:
+        container_name: ${APP_NAME}-meilisearch
+        image: getmeili/meilisearch:latest
+        restart: unless-stopped
+        ports:
+            - ${MEILISEARCH_PORT}:7700
+        environment:
+            # MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
+            # MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
+            MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
+        volumes:
+            - ./.meilisearch-data:/meilisearch-data
+        networks:
+            - application
+
+    supervisor:
+        container_name: ${APP_NAME}-supervisor
+        build:
+            context: .
+            dockerfile: ./.docker/supervisor/supervisor.dockerfile
+            target: supervisor
+            args:
+                user: ${SYS_USER}
+                uid: ${SYS_UID}
+        working_dir: /var/www
+        volumes:
+            - ./:/var/www
+            - ./.docker/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
+        command: supervisord -c /etc/supervisor/conf.d/supervisord.conf
+        restart: unless-stopped
+        depends_on:
+            - mysql
+        networks:
+            - application
+
+
+
+
+networks:
+  application:
+    name: ${APP_NAME}

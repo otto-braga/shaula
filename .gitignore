@@ -23,3 +23,13 @@ yarn-error.log
 supervisord.log
 supervisord.pid
 deploy/deployment
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+override.tf
+override.tf.json
+plan.out
+

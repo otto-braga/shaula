@@ -1,0 +1,71 @@
+name: Deploy Application
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::614575055279:role/github-actions
+          role-session-name: github-actions-session
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push Docker image
+        run: |
+          # Use o Dockerfile otimizado de multi-stage
+          docker build -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula .
+          docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
+
+      - name: Create .env file for production
+        # Este step cria o .env localmente, sem expor os segredos
+        run: |
+          echo "APP_ENV=production" > .env
+          echo "APP_DEBUG=false" >> .env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
+          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+          echo "DB_HOST=mysql" >> .env
+          echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> .env
+
+      - name: Copy files to EC2 via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '.env,./deploy/docker-compose.yml,./.docker/nginx/nginx.conf'
+          target: '/home/ubuntu'
+
+      - name: Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ec2-user
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/ubuntu
+
+            # O .env, docker-compose.yml e nginx.conf já foram copiados
+            # O login no ECR precisa ser feito para o docker-compose puxar a imagem
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
+
+            # Inicia os contêineres usando o arquivo docker-compose que foi copiado
+            docker-compose up -d --force-recreate
