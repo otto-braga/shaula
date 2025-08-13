@@ -68,4 +68,4 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
-            docker-compose up -d --force-recreate
+            docker compose up -d --force-recreate
