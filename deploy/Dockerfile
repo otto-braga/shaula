@@ -15,9 +15,8 @@ RUN npm run build
 # --
 FROM php:8.2-fpm AS php
 
-# Install system dependencies
-RUN apt-get update -y
-RUN apt-get install -y \
+# Instala as dependências do sistema
+RUN apt-get update -y && apt-get install -y \
     curl \
     libpq-dev \
     libpng-dev \
@@ -25,9 +24,10 @@ RUN apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev \
-    # Install PHP extensions
-    RUN docker-php-ext-install \
+    libzip-dev
+
+# Instala as extensões PHP 
+RUN docker-php-ext-install \
     pdo_mysql \
     mbstring \
     exif \
