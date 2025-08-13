@@ -39,23 +39,26 @@ RUN docker-php-ext-install \
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create a new user
-ARG user=www-data
+#ARG user=www-data
 # ARG uid=1000
 # RUN useradd -G www-data,root -d /home/$user $user
-RUN chown -R $user:$user /home/$user
+#RUN chown -R $user:$user /home/$user
 
 # Set working directory
 WORKDIR /var/www
 
 # Copia o código da aplicação e os assets compilados do estágio anterior
-COPY --chown=$user:$user . /var/www/
-COPY --from=assets-builder --chown=$user:$user /app/public /var/www/public
+#COPY --chown=$user:$user . /var/www/
+#COPY --from=assets-builder --chown=$user:$user /app/public /var/www/public
+
+COPY --chown=www-data:www-data . /var/www/
+COPY --from=assets-builder --chown=www-data:www-data /app/public /var/www/public
 
 RUN composer install --no-dev --optimize-autoloader
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 # Set the user for the container
-USER $user
+USER www-data
 
 # Expõe a porta e inicia o servidor
 EXPOSE 9000
