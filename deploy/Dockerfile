@@ -40,7 +40,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Create a new user
 ARG user=www-data
-ARG uid=1000
+ARG uid=1001
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN chown -R $user:$user /home/$user
 
