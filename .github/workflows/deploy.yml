@@ -30,7 +30,7 @@ jobs:
       - name: Build and push Docker image
         run: |
           # Use o Dockerfile otimizado de multi-stage
-          docker build -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula .
+          docker build -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula .
           docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
       - name: Create .env file for production
