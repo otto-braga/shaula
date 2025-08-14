@@ -69,7 +69,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.docker/supervisor.dockerfile,.docker/supervisord.conf'
+          source: '.docker/supervisor/supervisor.dockerfile,.docker/supervisor/supervisord.conf'
           target: '/home/ubuntu/'
 
       - name: Copy nginx.conf to EC2
