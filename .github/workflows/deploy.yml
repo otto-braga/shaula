@@ -81,6 +81,10 @@ jobs:
           script: |
             cd /home/ubuntu
 
+            # Move os arquivos para os locais corretos
+            mv deploy/docker-compose.yaml ./docker-compose.yaml
+            mv .docker/nginx/nginx.conf ./nginx.conf
+
             # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
