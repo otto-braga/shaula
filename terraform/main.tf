@@ -5,6 +5,7 @@ resource "aws_instance" "instance" {
   subnet_id              = data.aws_subnets.default.ids[0]
   vpc_security_group_ids = [aws_security_group.webserver.id]
   user_data              = file("${path.module}/userdata.sh")
+  iam_instance_profile   = aws_iam_instance_profile.ec2_profile.name
 
   key_name = aws_key_pair.public_key.key_name
 
