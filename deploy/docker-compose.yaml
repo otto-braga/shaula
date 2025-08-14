@@ -77,17 +77,18 @@ services:
 
     supervisor:
         container_name: ${APP_NAME}-supervisor
-        image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+        build:
+            context: .
+            dockerfile: ./.docker/supervisor/supervisor.dockerfile
+            target: supervisor
+            args:
+                user: ${SYS_USER}
+                uid: ${SYS_UID}
         working_dir: /var/www
         volumes:
             - ./:/var/www
             - ./.docker/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-        command: |
-            sh -c "
-            apt-get update && 
-            apt-get install -y supervisor && 
-            supervisord -c /etc/supervisor/conf.d/supervisord.conf
-            "
+        command: supervisord -c /etc/supervisor/conf.d/supervisord.conf
         restart: unless-stopped
         depends_on:
             - mysql
