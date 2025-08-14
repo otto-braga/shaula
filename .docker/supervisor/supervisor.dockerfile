@@ -35,6 +35,13 @@ WORKDIR /var/www
 COPY --chown=www-data . /var/www/
 COPY . /var/www
 
+# Create Laravel directories if they don't exist
+RUN mkdir -p /var/www/storage/logs \
+    && mkdir -p /var/www/storage/framework/cache \
+    && mkdir -p /var/www/storage/framework/sessions \
+    && mkdir -p /var/www/storage/framework/views \
+    && mkdir -p /var/www/bootstrap/cache
+
 # Set permissions for laravel logs
 RUN chmod -R 775 /var/www/storage
 
