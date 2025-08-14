@@ -34,7 +34,6 @@ jobs:
           docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
       - name: Create .env file for production
-        # Este step cria o .env localmente, sem expor os segredos
         run: |
           echo "APP_NAME=shaula" >> .env
           echo "APP_PORT=80" >> .env
@@ -51,40 +50,13 @@ jobs:
           echo "MEILISEARCH_PORT=7700" >> .env
           echo "REDIS_PORT=6379" >> .env
 
-      - name: Copy .env file to EC2
+      - name: Copy files to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.env'
-          target: '/home/ubuntu/'
-
-      - name: Copy docker-compose.yml to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'deploy/docker-compose.yaml'
-          target: '/home/ubuntu/'
-
-      # - name: Copy supervisor files to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: '.docker/supervisor/supervisor.dockerfile,.docker/supervisor/supervisord.conf'
-      #     target: '/home/ubuntu/'
-
-      - name: Copy nginx.conf to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.docker/nginx/nginx.conf'
+          source: '.env,deploy/docker-compose.yaml,.docker/nginx/nginx.conf'
           target: '/home/ubuntu/'
 
       - name: Deploy on EC2 via SSH
@@ -99,9 +71,29 @@ jobs:
             # Move os arquivos para os locais corretos
             mv deploy/docker-compose.yaml ./docker-compose.yaml
 
-            # O .env, docker-compose.yml e nginx.conf já foram copiados
-            # O login no ECR precisa ser feito para o docker-compose puxar a imagem
+            # Cria o diretório nginx se não existir
+            mkdir -p nginx
+            mv .docker/nginx/nginx.conf ./nginx/nginx.conf
+
+            # Login no ECR
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
-            # Inicia os contêineres usando o arquivo docker-compose que foi copiado
+            # Para containers antigos
+            docker compose down || true
+
+            # Puxa a nova imagem
+            docker compose pull
+
+            # Inicia os contêineres
             docker compose up -d --force-recreate
+
+            # Aguarda os containers subirem
+            sleep 30
+
+            # Executa as migrações
+            docker compose exec -T app php artisan migrate --force
+
+            # Limpa e otimiza
+            docker compose exec -T app php artisan config:cache
+            docker compose exec -T app php artisan route:cache
+            docker compose exec -T app php artisan view:cache
