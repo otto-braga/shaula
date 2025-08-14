@@ -70,7 +70,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: '.docker/supervisor.dockerfile,.docker/supervisord.conf'
-          target: '/home/ubuntu/.docker'
+          target: '/home/ubuntu/'
 
       - name: Copy nginx.conf to EC2
         uses: appleboy/scp-action@v0.1.4
