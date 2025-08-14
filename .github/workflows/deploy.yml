@@ -63,14 +63,14 @@ jobs:
           source: 'deploy/docker-compose.yaml'
           target: '/home/ubuntu/'
 
-      - name: Copy supervisor files to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.docker/supervisor/supervisor.dockerfile,.docker/supervisor/supervisord.conf'
-          target: '/home/ubuntu/'
+      # - name: Copy supervisor files to EC2
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: '.docker/supervisor/supervisor.dockerfile,.docker/supervisor/supervisord.conf'
+      #     target: '/home/ubuntu/'
 
       - name: Copy nginx.conf to EC2
         uses: appleboy/scp-action@v0.1.4
