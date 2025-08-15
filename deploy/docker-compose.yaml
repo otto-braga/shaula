@@ -6,6 +6,7 @@ services:
         restart: unless-stopped
         volumes:
             - app-data:/var/www
+            - storage_files:/var/www/storage/app/public
         environment:
             - APP_ENV=production
             - APP_DEBUG=false
@@ -29,6 +30,7 @@ services:
         image: nginx:alpine
         volumes:
             - app-data:/var/www
+            - storage_files:/var/www/storage/app/public
             - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
         restart: unless-stopped
         ports:
@@ -100,6 +102,7 @@ services:
 
 volumes:
   app-data:
+  storage_files:
 
 networks:
   application:
