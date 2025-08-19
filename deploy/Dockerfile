@@ -24,7 +24,8 @@ RUN apt-get update -y && apt-get install -y \
     libxml2-dev \
     zip \
     unzip \
-    libzip-dev
+    libzip-dev \
+    supervisor
 
 # Instala as extensões PHP 
 RUN docker-php-ext-install \
@@ -38,18 +39,8 @@ RUN docker-php-ext-install \
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Create a new user
-#ARG user=www-data
-# ARG uid=1000
-# RUN useradd -G www-data,root -d /home/$user $user
-#RUN chown -R $user:$user /home/$user
-
 # Set working directory
 WORKDIR /var/www
-
-# Copia o código da aplicação e os assets compilados do estágio anterior
-#COPY --chown=$user:$user . /var/www/
-#COPY --from=assets-builder --chown=$user:$user /app/public /var/www/public
 
 COPY --chown=www-data:www-data . /var/www/
 COPY --from=assets-builder --chown=www-data:www-data /app/public /var/www/public
@@ -58,7 +49,6 @@ RUN composer install --no-dev --optimize-autoloader
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
-
 
 # Set the user for the container
 USER www-data

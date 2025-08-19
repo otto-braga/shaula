@@ -36,7 +36,7 @@ jobs:
       - name: Create .env file for production
         # Este step cria o .env localmente, sem expor os segredos
         run: |
-          echo "APP_NAME=shaula" >> .env
+          "APP_echo NAME=shaula" >> .env
           echo "APP_PORT=80" >> .env
           echo "APP_ENV=production" >> .env
           echo "APP_DEBUG=false" >> .env
@@ -68,15 +68,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'deploy/docker-compose.yaml'
           target: '/home/ubuntu/'
-
-      # - name: Copy supervisor files to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: '.docker/supervisor/supervisor.dockerfile,.docker/supervisor/supervisord.conf'
-      #     target: '/home/ubuntu/'
 
       - name: Copy nginx.conf to EC2
         uses: appleboy/scp-action@v0.1.4

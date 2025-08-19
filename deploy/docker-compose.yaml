@@ -79,27 +79,6 @@ services:
         networks:
             - application
 
-    supervisor:
-        container_name: ${APP_NAME}-supervisor
-        build:
-            context: .
-            dockerfile: ./.docker/supervisor/supervisor.dockerfile
-            target: supervisor
-            args:
-                user: ${SYS_USER}
-                uid: ${SYS_UID}
-        working_dir: /var/www
-        volumes:
-            - ./:/var/www
-            - ./.docker/supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf
-        command: supervisord -c /etc/supervisor/conf.d/supervisord.conf
-        restart: unless-stopped
-        depends_on:
-            - mysql
-        networks:
-            - application
-
-
 volumes:
   app-data:
   storage_files:
