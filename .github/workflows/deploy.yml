@@ -36,7 +36,7 @@ jobs:
       - name: Create .env file for production
         # Este step cria o .env localmente, sem expor os segredos
         run: |
-          "APP_echo NAME=shaula" >> .env
+          echo "APP_NAME=shaula" >> .env
           echo "APP_PORT=80" >> .env
           echo "APP_ENV=production" >> .env
           echo "APP_DEBUG=false" >> .env
