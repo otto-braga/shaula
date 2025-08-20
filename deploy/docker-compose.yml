@@ -31,8 +31,8 @@ services:
         image: nginx:alpine
         volumes:
             - app-data:/var/www
-            # - /home/ubuntu/storage_files:/var/www/storage/app/public
-            # - nginx:/etc/nginx/conf.d
+            - /home/ubuntu/storage_files:/var/www/storage/app/public
+            - nginx:/etc/nginx/conf.d
             - ./deploy/.docker/nginx:/etc/nginx/conf.d
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
