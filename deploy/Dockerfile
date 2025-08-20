@@ -58,6 +58,8 @@ COPY --chown=www-data:www-data . /var/www/
 COPY --from=assets-builder --chown=www-data:www-data /app/public /var/www/public
 
 RUN composer install --no-dev --optimize-autoloader
+RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf

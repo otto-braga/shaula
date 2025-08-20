@@ -36,20 +36,28 @@ jobs:
       - name: Create .env file for production
         # Este step cria o .env localmente, sem expor os segredos
         run: |
-          echo "APP_NAME=shaula" >> .env
-          echo "APP_PORT=80" >> .env
-          echo "APP_ENV=production" >> .env
+          echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
+          echo "APP_PORT=${{ vars.APP_PORT }}" >> .env
+          echo "APP_ENV=${{ vars.APP_ENV }}" >> .env
           echo "APP_DEBUG=${{ vars.APP_DEBUG }}" >> .env
           echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "DB_CONNECTION=mysql" >> .env
+          echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
+          echo "DB_CONNECTION=${{ vars.DB_CONNECTION }}" >> .env
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_HOST=mysql" >> .env
+          echo "DB_HOST=${{ vars.DB_HOST }}" >> .env
           echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> .env
-          echo "MEILISEARCH_PORT=7700" >> .env
-          echo "REDIS_PORT=6379" >> .env
+          echo "MEILISEARCH_PORT=${{ vars.MEILISEARCH_PORT }}" >> .env
+          echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
+          echo "FILESYSTEM_DISK=${{ vars.FILESYSTEM_DISK }}" >> .env
+          echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
+          echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
+          echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}" >> .env
+          echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
+          echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
+          echo "AWS_ENDPOINT=${{ secrets.AWS_ENDPOINT }}" >> .env
+          echo "AWS_USE_PATH_STYLE_ENDPOINT=${{ secrets.AWS_USE_PATH_STYLE_ENDPOINT }}" >> .env
 
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@v0.1.4
