@@ -87,7 +87,7 @@ jobs:
             cd /home/ubuntu
 
             # Move os arquivos para os locais corretos
-            mv deploy/docker-compose.yaml ./docker-compose.yml
+            mv deploy/docker-compose.yml ./docker-compose.yml
 
             # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
