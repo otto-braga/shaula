@@ -6,7 +6,7 @@ services:
         restart: unless-stopped
         volumes:
             - app-data:/var/www
-            - storage_files:/var/www/storage/app/public
+            - /home/ubuntu/storage_files:/var/www/storage/app/public
         env_file: .env
         # environment:
         #     - APP_ENV=production
