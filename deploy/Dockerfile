@@ -7,8 +7,20 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
-RUN npm run build 
+RUN npm run build
 
+ARG APP_ENV=${APP_ENV}
+ARG APP_DEBUG=${APP_DEBUG}
+ARG APP_NAME=${APP_NAME}
+ARG VITE_APP_NAME=${APP_NAME}
+ARG APP_URL=${APP_URL}
+ARG APP_KEY=${APP_KEY}
+ARG DB_CONNECTION=${DB_CONNECTION}
+ARG DB_HOST=${DB_HOST}
+ARG DB_PORT=${DB_PORT}
+ARG DB_DATABASE=${DB_DATABASE}
+ARG DB_USERNAME=${DB_USERNAME}
+ARG DB_PASSWORD=${DB_PASSWORD}
 
 # --
 # Estágio 2: Imagem final para a aplicação Laravel (PHP-FPM)
@@ -27,7 +39,7 @@ RUN apt-get update -y && apt-get install -y \
     libzip-dev \
     supervisor
 
-# Instala as extensões PHP 
+# Instala as extensões PHP
 RUN docker-php-ext-install \
     pdo_mysql \
     mbstring \

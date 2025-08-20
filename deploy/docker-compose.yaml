@@ -9,7 +9,7 @@ services:
             - storage_files:/var/www/storage/app/public
         environment:
             - APP_ENV=production
-            - APP_DEBUG=false
+            - APP_DEBUG=true
             - APP_NAME=shaula
             - VITE_APP_NAME="${APP_NAME}"
             - APP_URL=https://shaula.com.br
