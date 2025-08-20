@@ -33,7 +33,7 @@ services:
             # - /home/ubuntu/app-data:/var/www
             # - /home/ubuntu/storage_files:/var/www/storage/app/public
             # - nginx:/etc/nginx/conf.d
-            - ./.docker/nginx:/etc/nginx/conf.d
+            - ./deploy/.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
         ports:
