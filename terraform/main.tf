@@ -81,6 +81,31 @@ resource "aws_iam_role" "ecr_read_only_role" {
 
 }
 
+# Política customizada para acesso ao S3
+resource "aws_iam_role_policy" "s3_access_policy" {
+  name = "s3-access-policy"
+  role = aws_iam_role.ecr_read_only_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject",
+          "s3:ListBucket"
+        ]
+        Resource = [
+          aws_s3_bucket.storage.arn,
+          "${aws_s3_bucket.storage.arn}/*"
+        ]
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy_attachment" "ecr_read_only_attachment" {
   role       = aws_iam_role.ecr_read_only_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
@@ -89,4 +114,41 @@ resource "aws_iam_role_policy_attachment" "ecr_read_only_attachment" {
 resource "aws_iam_instance_profile" "ec2_profile" {
   name = "ec2-instance-profile"
   role = aws_iam_role.ecr_read_only_role.name
+}
+
+
+# S3 Bucket para storage
+resource "aws_s3_bucket" "storage" {
+  bucket = "shaula-storage-bucket-${random_id.bucket_suffix.hex}"
+}
+
+# Sufixo aleatório para garantir unicidade do nome do bucket
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}
+
+# Bloqueio de acesso público
+resource "aws_s3_bucket_public_access_block" "storage_pab" {
+  bucket = aws_s3_bucket.storage.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Output com informações importantes
+output "bucket_name" {
+  description = "Nome do bucket S3"
+  value       = aws_s3_bucket.storage.bucket
+}
+
+output "bucket_arn" {
+  description = "ARN do bucket S3"
+  value       = aws_s3_bucket.storage.arn
+}
+
+output "instance_public_ip" {
+  description = "IP público da instância EC2"
+  value       = aws_instance.instance.public_ip
 }
