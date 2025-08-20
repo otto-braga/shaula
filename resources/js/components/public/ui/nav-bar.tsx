@@ -50,7 +50,7 @@ export function NavBar() {
 
     return (
         <nav
-            className={`fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b bg-white px-4 transition-transform duration-300 ${
+            className={`fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b bg-white px-4 transition-transform duration-300 dark:bg-gray-950 ${
                 showNavbar ? 'translate-y-0' : '-translate-y-full'
             }`}
         >
