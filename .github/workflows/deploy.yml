@@ -36,29 +36,29 @@ jobs:
       - name: Create .env file for production
         # Este step cria o .env localmente, sem expor os segredos
         run: |
-          echo "APP_NAME=shaula" >> .env
-          echo "APP_PORT=80" >> .env
-          echo "APP_ENV=production" >> .env
-          echo "APP_DEBUG=false" >> .env
-          echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
-          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
-          echo "DB_PORT=3306" >> .env
-          echo "DB_CONNECTION=mysql" >> .env
-          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> .env
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-          echo "DB_HOST=mysql" >> .env
-          echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> .env
-          echo "MEILISEARCH_PORT=7700" >> .env
-          echo "REDIS_PORT=6379" >> .env
+          echo "APP_NAME=shaula" >> prod.env
+          echo "APP_PORT=80" >> prod.env
+          echo "APP_ENV=production" >> prod.env
+          echo "APP_DEBUG=false" >> prod.env
+          echo "APP_KEY=${{ secrets.APP_KEY }}" >> prod.env
+          echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> prod.env
+          echo "DB_PORT=3306" >> prod.env
+          echo "DB_CONNECTION=mysql" >> prod.env
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> prod.env
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> prod.env
+          echo "DB_HOST=mysql" >> prod.env
+          echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> prod.env
+          echo "MEILISEARCH_PORT=7700" >> prod.env
+          echo "REDIS_PORT=6379" >> prod.env
 
-      - name: Copy .env file to EC2
+      - name: Copy prod.env file to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.env'
-          target: '/home/ubuntu/'
+          source: 'prod.env'
+          target: '/home/ubuntu/prod.env'
 
       - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
@@ -67,16 +67,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'deploy/docker-compose.yaml'
-          target: '/home/ubuntu/'
+          target: '/home/ubuntu/docker-compose.yaml'
 
-      - name: Copy nginx.conf to EC2
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.docker/nginx/nginx.conf'
-          target: '/home/ubuntu/'
+      # - name: Copy nginx.conf to EC2
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: 'deploy/.docker/nginx/nginx.conf'
+      #     target: '/home/ubuntu/'
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
@@ -88,7 +88,7 @@ jobs:
             cd /home/ubuntu
 
             # Move os arquivos para os locais corretos
-            mv deploy/docker-compose.yaml ./docker-compose.yaml
+            # mv deploy/docker-compose.yaml ./docker-compose.yaml
 
             # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
