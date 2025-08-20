@@ -4,8 +4,8 @@ services:
         image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
         working_dir: /var/www
         restart: unless-stopped
-        # volumes:
-            # - /home/ubuntu/app-data:/var/www
+        volumes:
+            - /home/ubuntu/app-data:/var/www
             # - /home/ubuntu/storage_files:/var/www/storage/app/public
         env_file: .env
         # environment:
@@ -30,7 +30,7 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            # - /home/ubuntu/app-data:/var/www
+            - /home/ubuntu/app-data:/var/www
             # - /home/ubuntu/storage_files:/var/www/storage/app/public
             # - nginx:/etc/nginx/conf.d
             - ./deploy/.docker/nginx:/etc/nginx/conf.d
