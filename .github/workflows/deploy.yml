@@ -86,7 +86,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'deploy/.docker/nginx/nginx.conf'
           target: '/home/ubuntu/'
-          strip_components: 3
+          strip_components: 2
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
