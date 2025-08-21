@@ -48,10 +48,6 @@ RUN docker-php-ext-install \
     bcmath \
     gd
 
-RUN mkdir /etc/nginx
-RUN mkdir /etc/nginx/conf.d
-RUN touch /etc/nginx/conf.d/default.conf
-
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
