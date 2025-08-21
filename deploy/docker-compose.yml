@@ -71,7 +71,7 @@ services:
             - application
 
 volumes:
-  app-data:
+  app-data: /home/ubuntu/app-data
 #   storage_files:
 
 networks:
