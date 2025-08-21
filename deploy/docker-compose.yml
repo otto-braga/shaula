@@ -5,8 +5,10 @@ services:
         working_dir: /var/www
         restart: unless-stopped
         volumes:
-            - app-data:/var/www
-            # - storage_files:/var/www/storage/app/public
+            # Monta apenas os diretórios que precisam persistir
+            - storage-data:/var/www/storage
+            - bootstrap-cache:/var/www/bootstrap/cache
+            # NÃO monta /var/www/public para preservar os assets compilados
         env_file: .env
         depends_on:
             - mysql
@@ -17,8 +19,8 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            - app-data:/var/www
-            # - storage_files:/var/www/storage/app/public
+            # Compartilha apenas os arquivos estáticos com nginx
+            - storage-data:/var/www/storage
             - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
@@ -30,7 +32,6 @@ services:
         command: '/bin/sh -c ''nginx -g "daemon off;"'''
         depends_on:
             - app
-
 
     mysql:
         container_name: ${APP_NAME}-mysql
@@ -72,9 +73,9 @@ services:
             - application
 
 volumes:
-  app-data:
+  storage-data:
+  bootstrap-cache:
   mysql-data:
-#   storage_files:
 
 networks:
   application:
