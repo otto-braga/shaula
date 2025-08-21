@@ -42,7 +42,9 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 COPY --chown=www-data:www-data . /var/www/
-COPY --from=assets-builder --chown=www-data:www-data /app/public /var/www/public
+
+# GUARDA os assets buildados em um local seguro
+COPY --from=assets-builder --chown=www-data:www-data /app/public /opt/assets-backup
 
 RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -51,9 +53,51 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
+# Script robusto para sincronizar assets
+RUN echo '#!/bin/bash\n\
+set -e\n\
+\n\
+echo "=== Verificando assets ==="\n\
+\n\
+# Verifica se precisa sincronizar assets\n\
+if [ ! -f "/var/www/public/build/manifest.json" ]; then\n\
+    echo "Assets não encontrados. Sincronizando..."\n\
+    \n\
+    # Garante que o diretório existe\n\
+    mkdir -p /var/www/public\n\
+    \n\
+    # Copia APENAS os assets buildados (preserva outros arquivos)\n\
+    if [ -d "/opt/assets-backup/build" ]; then\n\
+        cp -r /opt/assets-backup/build /var/www/public/\n\
+        echo "Assets copiados com sucesso!"\n\
+    else\n\
+        echo "AVISO: Assets buildados não encontrados em /opt/assets-backup/build"\n\
+    fi\n\
+    \n\
+    # Copia outros assets importantes se existirem\n\
+    for file in favicon.ico robots.txt; do\n\
+        if [ -f "/opt/assets-backup/$file" ]; then\n\
+            cp "/opt/assets-backup/$file" "/var/www/public/"\n\
+        fi\n\
+    done\n\
+    \n\
+    # Ajusta permissões\n\
+    chown -R www-data:www-data /var/www/public\n\
+    \n\
+    echo "Sincronização concluída!"\n\
+else\n\
+    echo "Assets já existem, prosseguindo..."\n\
+fi\n\
+\n\
+echo "=== Iniciando PHP-FPM ==="\n\
+exec "$@"' > /usr/local/bin/sync-assets.sh
+
+RUN chmod +x /usr/local/bin/sync-assets.sh
+
 # Set the user for the container
 USER www-data
 
 # Expõe a porta e inicia o servidor
 EXPOSE 9000
+ENTRYPOINT ["/usr/local/bin/sync-assets.sh"]
 CMD ["php-fpm"]
