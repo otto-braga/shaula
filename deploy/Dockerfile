@@ -67,6 +67,10 @@ RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php
 # Set the user for the container
 USER www-data
 
+RUN mkdir /etc/nginx
+RUN mkdir /etc/nginx/conf.d
+RUN touch /etc/nginx/conf.d/default.conf
+
 # Expõe a porta e inicia o servidor
 EXPOSE 9000
 CMD ["php-fpm"]
