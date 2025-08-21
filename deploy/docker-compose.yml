@@ -5,9 +5,8 @@ services:
         working_dir: /var/www
         restart: unless-stopped
         volumes:
-            # Apenas dados que PRECISAM persistir
-            - storage-data:/var/www/storage
-            - bootstrap-cache:/var/www/bootstrap/cache
+            - app-data:/var/www
+            # - storage_files:/var/www/storage/app/public
         env_file: .env
         depends_on:
             - mysql
@@ -18,8 +17,8 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            # Nginx precisa acessar apenas arquivos estáticos
-            - app-public:/usr/share/nginx/html:ro
+            - app-data:/var/www
+            # - storage_files:/var/www/storage/app/public
             - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
@@ -28,17 +27,10 @@ services:
             - "443:443"
         networks:
             - application
+        command: '/bin/sh -c ''nginx -g "daemon off;"'''
         depends_on:
             - app
 
-    # Container init que roda uma vez e para
-    assets-init:
-        container_name: ${APP_NAME}-assets-init
-        image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
-        volumes:
-            - app-public:/shared
-        command: sh -c "cp -r /var/www/public/* /shared/ && echo 'Assets copiados'"
-        restart: "no"
 
     mysql:
         container_name: ${APP_NAME}-mysql
@@ -80,10 +72,9 @@ services:
             - application
 
 volumes:
-  storage-data:     # Para uploads e arquivos gerados pela app
-  bootstrap-cache:  # Para cache do Laravel
-  app-public:       # Para assets estáticos
+  app-data:
   mysql-data:
+#   storage_files:
 
 networks:
   application:
