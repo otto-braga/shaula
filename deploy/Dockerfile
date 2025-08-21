@@ -54,19 +54,17 @@ RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Script simples para sincronizar assets
-RUN cat > /usr/local/bin/sync-assets.sh << 'EOF'
-#!/bin/bash
-# Verifica se os assets buildados precisam ser copiados
-if [ ! -f /var/www/public/build/manifest.json ]; then
-    echo "Copiando assets buildados para o volume compartilhado..."
-    cp -r /tmp/built-assets/* /var/www/public/
-    chown -R www-data:www-data /var/www/public
-    echo "Assets sincronizados com sucesso!"
-fi
-
-# Executa o comando original (PHP-FPM)
-exec "$@"
-EOF
+RUN echo '#!/bin/bash\n\
+# Verifica se os assets buildados precisam ser copiados\n\
+if [ ! -f /var/www/public/build/manifest.json ]; then\n\
+    echo "Copiando assets buildados para o volume compartilhado..."\n\
+    cp -r /tmp/built-assets/* /var/www/public/\n\
+    chown -R www-data:www-data /var/www/public\n\
+    echo "Assets sincronizados com sucesso!"\n\
+fi\n\
+\n\
+# Executa o comando original (PHP-FPM)\n\
+exec "$@"' > /usr/local/bin/sync-assets.sh
 
 RUN chmod +x /usr/local/bin/sync-assets.sh
 
