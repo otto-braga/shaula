@@ -44,6 +44,7 @@ services:
             MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         volumes:
             - ./.docker/mysql:/docker-entrypoint-initdb.d
+            - mysql-data:/var/lib/mysql
         restart: unless-stopped
         networks:
             - application
@@ -72,6 +73,7 @@ services:
 
 volumes:
   app-data:
+  mysql-data:
 #   storage_files:
 
 networks:
