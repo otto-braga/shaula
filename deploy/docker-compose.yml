@@ -6,21 +6,20 @@ services:
         restart: unless-stopped
         volumes:
             - app-data:/var/www
-            # - /home/ubuntu/storage_files:/var/www/storage/app/public
-        env_file: .env
-        # environment:
-        #     - APP_ENV=production
-        #     - APP_DEBUG=true
-        #     - APP_NAME=shaula
-        #     - VITE_APP_NAME="${APP_NAME}"
-        #     - APP_URL=https://shaula.com.br
-        #     - APP_KEY=base64:gt1HRK7aQV6JV7XWW9MBbSnAvudM+7iRrUk7BREGR8o=
-        #     - DB_CONNECTION=${DB_CONNECTION}
-        #     - DB_HOST=${DB_HOST}
-        #     - DB_PORT=${DB_PORT}
-        #     - DB_DATABASE=${DB_DATABASE}
-        #     - DB_USERNAME=${DB_USERNAME}
-        #     - DB_PASSWORD=${DB_PASSWORD}
+            - storage_files:/var/www/storage/app/public
+        environment:
+            - APP_ENV=production
+            - APP_DEBUG=false
+            - APP_NAME=shaula
+            - VITE_APP_NAME="${APP_NAME}"
+            - APP_URL=https://shaula.com.br
+            - APP_KEY=base64:gt1HRK7aQV6JV7XWW9MBbSnAvudM+7iRrUk7BREGR8o=
+            - DB_CONNECTION=${DB_CONNECTION}
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=${DB_PORT}
+            - DB_DATABASE=${DB_DATABASE}
+            - DB_USERNAME=${DB_USERNAME}
+            - DB_PASSWORD=${DB_PASSWORD}
         depends_on:
             - mysql
         networks:
@@ -31,9 +30,8 @@ services:
         image: nginx:alpine
         volumes:
             - app-data:/var/www
-            # - /home/ubuntu/storage_files:/var/www/storage/app/public
-            # - nginx:/etc/nginx/conf.d
-            - ./deploy/.docker/nginx:/etc/nginx/conf.d
+            - storage_files:/var/www/storage/app/public
+            - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
         ports:
