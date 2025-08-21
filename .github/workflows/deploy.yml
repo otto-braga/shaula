@@ -101,10 +101,14 @@ jobs:
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
+            docker compose down
+
+            docker volume rm ${APP_NAME}_app-data 2>/dev/null || echo "Volume não existe ou já foi removido"
+
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
             docker compose up -d --force-recreate
 
-            sleep 30
+            # sleep 30
 
             # docker compose exec -T app php artisan storage:link
             # docker compose exec -T app php artisan config:cache
