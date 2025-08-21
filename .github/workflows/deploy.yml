@@ -102,9 +102,7 @@ jobs:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
             docker compose down
-
-            docker volume rm ${APP_NAME}_app-data 2>/dev/null || echo "Volume não existe ou já foi removido"
-
+            
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
             docker compose up -d --force-recreate
 
