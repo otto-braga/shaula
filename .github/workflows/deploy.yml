@@ -78,15 +78,15 @@ jobs:
           target: '/home/ubuntu/'
           strip_components: 1
 
-      # - name: Copy nginx.conf to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: 'deploy/.docker/nginx/nginx.conf'
-      #     target: '/home/ubuntu/'
-      #     strip_components: 2
+      - name: Copy nginx.conf to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'deploy/.docker/nginx/nginx.conf'
+          target: '/home/ubuntu/'
+          strip_components: 3
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
