@@ -34,12 +34,11 @@ jobs:
           docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
       - name: Create .env file for production
-        # Este step cria o .env localmente, sem expor os segredos
         run: |
           echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
           echo "APP_PORT=${{ vars.APP_PORT }}" >> .env
           echo "APP_ENV=${{ vars.APP_ENV }}" >> .env
-          echo "APP_DEBUG=true" >> .env
+          echo "APP_DEBUG=${{ vars.APP_DEBUG }}" >> .env
           echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
           echo "DB_PORT=${{ vars.DB_PORT }}" >> .env

@@ -8,19 +8,6 @@ services:
             - app-data:/var/www
             - storage_files:/var/www/storage/app/public
         env_file: .env
-        # environment:
-        #     - APP_ENV=production
-        #     - APP_DEBUG=true
-        #     - APP_NAME=shaula
-        #     - VITE_APP_NAME="${APP_NAME}"
-        #     - APP_URL=https://shaula.com.br
-        #     - APP_KEY=base64:gt1HRK7aQV6JV7XWW9MBbSnAvudM+7iRrUk7BREGR8o=
-        #     - DB_CONNECTION=${DB_CONNECTION}
-        #     - DB_HOST=${DB_HOST}
-        #     - DB_PORT=${DB_PORT}
-        #     - DB_DATABASE=${DB_DATABASE}
-        #     - DB_USERNAME=${DB_USERNAME}
-        #     - DB_PASSWORD=${DB_PASSWORD}
         depends_on:
             - mysql
         networks:
@@ -77,8 +64,6 @@ services:
         ports:
             - ${MEILISEARCH_PORT}:7700
         environment:
-            # MEILI_NO_ANALYTICS: ${MEILISEARCH_NO_ANALYTICS}
-            # MEILI_NO_SENTRY: ${MEILISEARCH_NO_SENTRY}
             MEILI_MASTER_KEY: ${MEILISEARCH_KEY}
         volumes:
             - ./.meilisearch-data:/meilisearch-data
