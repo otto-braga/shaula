@@ -9,6 +9,12 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+# Debug: verificar se o build funcionou
+RUN echo "=== VERIFICANDO BUILD ===" && \
+    ls -la /app/public/ && \
+    echo "=== PASTA BUILD ===" && \
+    ls -la /app/public/build/ 2>/dev/null || echo "ERRO: Pasta build não foi criada!"
+
 # --
 # Estágio 2: Imagem final para a aplicação Laravel (PHP-FPM)
 # --
@@ -43,8 +49,11 @@ WORKDIR /var/www
 
 COPY --chown=www-data:www-data . /var/www/
 
-# GUARDA os assets buildados em um local seguro
+# SEMPRE guarda os assets buildados, mesmo se já existirem no volume
 COPY --from=assets-builder --chown=www-data:www-data /app/public /opt/assets-backup
+
+# Debug: verificar se foi copiado
+RUN ls -la /opt/assets-backup/ && ls -la /opt/assets-backup/build/ 2>/dev/null || echo "Build folder não encontrado no backup"
 
 RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 RUN composer install --no-dev --optimize-autoloader
@@ -59,36 +68,33 @@ set -e\n\
 \n\
 echo "=== Verificando assets ==="\n\
 \n\
-# Verifica se precisa sincronizar assets\n\
-if [ ! -f "/var/www/public/build/manifest.json" ]; then\n\
-    echo "Assets não encontrados. Sincronizando..."\n\
-    \n\
-    # Garante que o diretório existe\n\
-    mkdir -p /var/www/public\n\
-    \n\
-    # Copia APENAS os assets buildados (preserva outros arquivos)\n\
-    if [ -d "/opt/assets-backup/build" ]; then\n\
-        cp -r /opt/assets-backup/build /var/www/public/\n\
-        echo "Assets copiados com sucesso!"\n\
-    else\n\
-        echo "AVISO: Assets buildados não encontrados em /opt/assets-backup/build"\n\
-    fi\n\
-    \n\
-    # Copia outros assets importantes se existirem\n\
-    for file in favicon.ico robots.txt; do\n\
-        if [ -f "/opt/assets-backup/$file" ]; then\n\
-            cp "/opt/assets-backup/$file" "/var/www/public/"\n\
-        fi\n\
-    done\n\
-    \n\
-    # Ajusta permissões\n\
-    chown -R www-data:www-data /var/www/public\n\
-    \n\
-    echo "Sincronização concluída!"\n\
+# SEMPRE sincroniza os assets (garante que estão atualizados)\n\
+echo "Sincronizando assets da imagem..."\n\
+\n\
+# Garante que o diretório existe\n\
+mkdir -p /var/www/public\n\
+\n\
+# Copia SEMPRE os assets buildados da imagem\n\
+if [ -d "/opt/assets-backup/build" ]; then\n\
+    # Remove assets antigos e copia novos\n\
+    rm -rf /var/www/public/build\n\
+    cp -r /opt/assets-backup/build /var/www/public/\n\
+    echo "Assets atualizados com sucesso!"\n\
 else\n\
-    echo "Assets já existem, prosseguindo..."\n\
+    echo "AVISO: Assets buildados não encontrados em /opt/assets-backup/build"\n\
 fi\n\
 \n\
+# Copia outros assets importantes\n\
+for file in favicon.ico robots.txt; do\n\
+    if [ -f "/opt/assets-backup/$file" ]; then\n\
+        cp "/opt/assets-backup/$file" "/var/www/public/"\n\
+    fi\n\
+done\n\
+\n\
+# Ajusta permissões\n\
+chown -R www-data:www-data /var/www/public\n\
+\n\
+echo "Sincronização concluída!"\n\
 echo "=== Iniciando PHP-FPM ==="\n\
 exec "$@"' > /usr/local/bin/sync-assets.sh
 
