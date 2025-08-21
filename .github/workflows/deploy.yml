@@ -29,9 +29,9 @@ jobs:
 
       - name: Build and push Docker image
         run: |
-          # Use o Dockerfile otimizado de multi-stage
-          docker build -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula .
-          docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
+          docker build --no-cache -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:$(date +%s) .
+          docker tag 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:$(date +%s) 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+          docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
 
       - name: Create .env file for production
         run: |
