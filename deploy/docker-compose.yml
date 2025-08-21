@@ -5,7 +5,7 @@ services:
         working_dir: /var/www
         restart: unless-stopped
         volumes:
-            - app-data:/var/www
+            - /home/ubuntu/app-data:/var/www
             # - storage_files:/var/www/storage/app/public
         env_file: .env
         depends_on:
@@ -17,7 +17,7 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            - app-data:/var/www
+            - /home/ubuntu/app-data:/var/www
             # - storage_files:/var/www/storage/app/public
             - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
@@ -70,8 +70,8 @@ services:
         networks:
             - application
 
-volumes:
-  app-data: /home/ubuntu/app-data
+# volumes:
+#   app-data:
 #   storage_files:
 
 networks:
