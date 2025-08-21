@@ -83,7 +83,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'deploy/.docker/nginx/nginx.conf'
+          source: '.docker/nginx/nginx.conf'
           target: '/home/ubuntu/'
 
       - name: Deploy on EC2 via SSH
@@ -96,18 +96,18 @@ jobs:
             cd /home/ubuntu
 
             # Move os arquivos para os locais corretos
-            # mv deploy/docker-compose.yml ./docker-compose.yml
+            mv deploy/docker-compose.yml ./docker-compose.yml
 
             # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
-            docker compose up -d --build --no-deps --force-recreate -d --remove-orphans
+            docker compose up -d --force-recreate
 
             sleep 30
 
-            # docker compose exec -T app php artisan storage:link
-            # docker compose exec -T app php artisan config:cache
-            # docker compose exec -T app php artisan route:cache
-            # docker compose exec -T app php artisan view:cache
+            docker compose exec -T app php artisan storage:link
+            docker compose exec -T app php artisan config:cache
+            docker compose exec -T app php artisan route:cache
+            docker compose exec -T app php artisan view:cache
