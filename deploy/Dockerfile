@@ -9,6 +9,10 @@ RUN npm install
 COPY . .
 RUN npm run build
 
+# Debug: Listar o que foi buildado
+RUN echo "=== ASSETS BUILDADOS ===" && ls -la /app/public/ && echo "=== BUILD FOLDER ===" && ls -la /app/public/build/ 2>/dev/null || echo "Build folder não encontrado"
+
+
 # --
 # Estágio 2: Imagem final para a aplicação Laravel (PHP-FPM)
 # --
