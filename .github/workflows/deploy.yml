@@ -95,7 +95,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'deploy/nginx.conf'
-          target: '/home/ubuntu/app/.docker/nginx/'
+          target: '/home/ubuntu/app/.docker/nginx'
           strip_components: 1
 
       - name: Deploy on EC2 via SSH
