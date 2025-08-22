@@ -39,7 +39,7 @@ RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 RUN composer install --no-dev --optimize-autoloader
 
 # Define permissões
-RUN chmod -R 775 /var/www/storage /var/www/bootstrap
+# RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 # Configura PHP-FPM
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
