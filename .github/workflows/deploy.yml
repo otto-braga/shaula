@@ -113,7 +113,7 @@ jobs:
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
-            docker compose down -v
+            docker compose down
 
             docker compose pull
 
