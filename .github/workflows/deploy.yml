@@ -107,6 +107,9 @@ jobs:
           script: |
             cd /home/ubuntu/app
 
+            mkdir -p /etc/nginx/conf.d/
+            touch default.conf
+
             # Move os arquivos para os locais corretos
             # mv deploy/docker-compose.yml ./docker-compose.yml
 
@@ -128,10 +131,6 @@ jobs:
             docker compose exec -T app php artisan route:cache
             docker compose exec -T app php artisan view:cache
             docker compose exec -T app php migrate:fresh --seed
-
-            npm install
-
-            npm run build
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
