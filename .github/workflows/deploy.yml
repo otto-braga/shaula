@@ -153,9 +153,9 @@ jobs:
 
             # sleep 30
 
-            docker compose exec app composer install --no-dev --optimize-autoloader
-            docker compose exec app composer require laravel/scout predis/predis meilisearch/meilisearch-php http-interop/http-factory-guzzle
-            docker compose exec app composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+            # docker compose exec app composer install --no-dev --optimize-autoloader
+            docker compose exec app composer require laravel/scout predis/predis meilisearch/meilisearch-php http-interop/http-factory-guzzle league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies --no-dev --optimize-autoloader
+            # docker compose exec app composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
             # docker compose exec app php artisan vendor:publish --provider="Laravel\Scout\ScoutServiceProvider"
 
             docker compose exec app php artisan storage:link
