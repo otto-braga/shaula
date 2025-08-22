@@ -98,14 +98,14 @@ jobs:
           target: '/home/ubuntu/app'
           strip_components: 1
 
-      - name: Copy
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ubuntu
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.'
-          target: '/home/ubuntu/app/var/www'
+      # - name: Copy
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ secrets.SSH_HOST }}
+      #     username: ubuntu
+      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #     source: '.'
+      #     target: '/home/ubuntu/app/var/www'
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
@@ -134,6 +134,8 @@ jobs:
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
             docker compose up -d --force-recreate
+
+            docker compose cp app:/var/www ./var/www
 
             # sleep 30
 
