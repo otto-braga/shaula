@@ -1,7 +1,10 @@
 services:
     app:
         container_name: ${APP_NAME}-app
-        image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+        # image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+        build:
+            context: .
+            target: php
         working_dir: /var/www
         restart: unless-stopped
         env_file: .env

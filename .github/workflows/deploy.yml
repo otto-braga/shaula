@@ -28,16 +28,16 @@ jobs:
       # - name: Build assets
       #   run: npm run build
 
-      - name: Configure AWS Credentials with OIDC
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: us-east-1
-          role-to-assume: arn:aws:iam::614575055279:role/github-actions
-          role-session-name: github-actions-session
+      # - name: Configure AWS Credentials with OIDC
+      #   uses: aws-actions/configure-aws-credentials@v4
+      #   with:
+      #     aws-region: us-east-1
+      #     role-to-assume: arn:aws:iam::614575055279:role/github-actions
+      #     role-session-name: github-actions-session
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       # - name: Build and push Docker image
       #   run: |
@@ -98,14 +98,14 @@ jobs:
           target: '/home/ubuntu/app'
           strip_components: 1
 
-      # - name: Copy
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: '.'
-      #     target: '/home/ubuntu/app/var/www'
+      - name: Copy
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '.'
+          target: '/home/ubuntu/app/var/www'
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
@@ -114,6 +114,8 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            docker compose down -v
+
             sudo systemctl restart docker
 
             cd /home/ubuntu/app
@@ -126,16 +128,14 @@ jobs:
 
             # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
+            # aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
-            # docker compose down -v
-
-            docker compose pull
+            # docker compose pull
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
             docker compose up -d --force-recreate
 
-            docker compose cp app:/var/www ./var/www
+            # docker compose cp app:/var/www ./var/www
 
             # sleep 30
 
