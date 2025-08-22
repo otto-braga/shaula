@@ -1,19 +1,8 @@
 # --
-# Estágio 1: Build dos assets com Node.js
+# Imagem para a aplicação Laravel (PHP-FPM)
+# Assets são buildados no GitHub Actions
 # --
-FROM node:trixie-slim AS assets-builder
-
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-RUN npm cache clean --force
-RUN npm run build
-
-# --
-# Estágio 2: Imagem final para a aplicação Laravel (PHP-FPM)
-# --
-FROM php:8.2-fpm AS php
+FROM php:8.2-fpm
 
 # Instala as dependências do sistema
 RUN apt-get update -y && apt-get install -y \
@@ -42,14 +31,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Set working directory
 WORKDIR /var/www
 
+# Copia todos os arquivos (incluindo os assets já buildados)
 COPY --chown=www-data:www-data . /var/www/
-COPY --from=assets-builder --chown=www-data:www-data /app/public /var/www/public
 
+# Instala dependências PHP
 RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 RUN composer install --no-dev --optimize-autoloader
 
+# Define permissões
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
+# Configura PHP-FPM
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Set the user for the container
