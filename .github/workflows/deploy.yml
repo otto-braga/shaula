@@ -133,10 +133,10 @@ jobs:
             sudo mkdir -p /etc/nginx/conf.d/
             sudo touch /etc/nginx/conf.d/default.conf
 
-            cd /home/ubuntu/app/var/www
-            composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
-            composer install --no-dev --optimize-autoloader
-            cd /home/ubuntu/app
+            # cd /home/ubuntu/app/var/www
+            # composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+            # composer install --no-dev --optimize-autoloader
+            # cd /home/ubuntu/app
 
             # Move os arquivos para os locais corretos
             # mv deploy/docker-compose.yml ./docker-compose.yml
@@ -148,7 +148,7 @@ jobs:
             # docker compose pull
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
-            docker compose up -d
+            docker compose up -d --build --no-deps --force-recreate -d --remove-orphans
 
             # docker compose cp app:/var/www ./var/www
 
