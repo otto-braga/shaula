@@ -98,12 +98,6 @@ jobs:
       #    target: '/home/ubuntu/.docker/nginx/'
       #    strip_components: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-          cache: 'npm'
-
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
         with:
@@ -120,7 +114,7 @@ jobs:
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
 
-            docker compose down -v
+            # docker compose down -v
 
             # docker compose pull
 
@@ -138,3 +132,12 @@ jobs:
             npm install
 
             npm run build
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: cd /home/ubuntu/app; npm install; npm run build
