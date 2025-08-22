@@ -128,15 +128,10 @@ jobs:
 
             docker compose down -v
 
-            sudo systemctl restart docker
+            # sudo systemctl restart docker
 
             sudo mkdir -p /etc/nginx/conf.d/
             sudo touch /etc/nginx/conf.d/default.conf
-
-            cd /home/ubuntu/app/var/www
-            composer install --no-dev --optimize-autoloader
-            composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
-            cd /home/ubuntu/app
 
             # Move os arquivos para os locais corretos
             # mv deploy/docker-compose.yml ./docker-compose.yml
@@ -153,6 +148,9 @@ jobs:
             # docker compose cp app:/var/www ./var/www
 
             # sleep 30
+
+            docker compose exec app composer install --no-dev --optimize-autoloader
+            docker compose exec app composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 
             docker compose exec app php artisan storage:link
             docker compose exec app php artisan config:cache

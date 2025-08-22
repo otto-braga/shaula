@@ -33,7 +33,7 @@ WORKDIR /var/www
 
 # Copia todos os arquivos (incluindo os assets já buildados)
 COPY --chown=www-data:www-data . /var/www/
-COPY . /var/www
+# COPY . /var/www
 
 # Instala dependências PHP
 # RUN composer install --no-dev --optimize-autoloader
