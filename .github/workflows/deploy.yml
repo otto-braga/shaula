@@ -107,7 +107,7 @@ jobs:
           script: |
             cd /home/ubuntu/app
 
-            mkdir -p /etc/nginx/conf.d/
+            sudo mkdir -p /etc/nginx/conf.d/
             touch default.conf
 
             # Move os arquivos para os locais corretos
