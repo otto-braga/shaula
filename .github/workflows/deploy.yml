@@ -89,7 +89,7 @@ jobs:
           strip_components: 1
 
       - name: Install dependencies
-        run: chown ubuntu:ubuntu /home/ubuntu/app/.docker
+        run: chown ubuntu /home/ubuntu/app/.docker
 
       - name: Copy nginx.conf to EC2
         uses: appleboy/scp-action@v0.1.4
