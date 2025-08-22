@@ -78,6 +78,16 @@ jobs:
           source: '.env'
           target: '/home/ubuntu/app'
 
+      - name: Copy Dockerfile to EC2
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ubuntu
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'deploy/Dockerfile'
+          target: '/home/ubuntu/app'
+          strip_components: 1
+
       - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
