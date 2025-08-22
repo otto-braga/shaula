@@ -32,7 +32,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copia todos os arquivos (incluindo os assets já buildados)
-COPY --chown=ubuntu:ubuntu . /var/www/
+# COPY --chown=ubuntu:ubuntu . /var/www/
 # COPY . /var/www
 
 # Instala dependências PHP
@@ -46,7 +46,7 @@ COPY --chown=ubuntu:ubuntu . /var/www/
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Set the user for the container
-USER ubuntu
+# USER ubuntu
 
 # Expõe a porta e inicia o servidor
 EXPOSE 9000
