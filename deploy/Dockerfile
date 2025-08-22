@@ -2,7 +2,7 @@
 # Imagem para a aplicação Laravel (PHP-FPM)
 # Assets são buildados no GitHub Actions
 # --
-FROM php:8.2-fpm
+FROM php:8.2-fpm AS php
 
 # Instala as dependências do sistema
 RUN apt-get update -y && apt-get install -y \
