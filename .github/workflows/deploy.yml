@@ -108,7 +108,7 @@ jobs:
             cd /home/ubuntu/app
 
             sudo mkdir -p /etc/nginx/conf.d/
-            sudo touch default.conf
+            sudo touch /etc/nginx/conf.d/default.conf
 
             # Move os arquivos para os locais corretos
             # mv deploy/docker-compose.yml ./docker-compose.yml
