@@ -134,8 +134,8 @@ jobs:
             sudo touch /etc/nginx/conf.d/default.conf
 
             # cd /home/ubuntu/app/var/www
-            # composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
             # composer install --no-dev --optimize-autoloader
+            # composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
             # cd /home/ubuntu/app
 
             # Move os arquivos para os locais corretos
