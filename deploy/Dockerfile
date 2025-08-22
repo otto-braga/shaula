@@ -36,8 +36,8 @@ COPY --chown=www-data:www-data . /var/www/
 COPY . /var/www
 
 # Instala dependências PHP
-RUN composer install --no-dev --optimize-autoloader
-RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+# RUN composer install --no-dev --optimize-autoloader
+# RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 
 # Define permissões
 # RUN chmod -R 775 /var/www/storage /var/www/bootstrap
