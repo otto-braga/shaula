@@ -114,11 +114,11 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd /home/ubuntu/app
+
             docker compose down -v
 
             sudo systemctl restart docker
-
-            cd /home/ubuntu/app
 
             sudo mkdir -p /etc/nginx/conf.d/
             sudo touch /etc/nginx/conf.d/default.conf
