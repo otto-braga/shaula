@@ -133,7 +133,7 @@ jobs:
             sudo mkdir -p /etc/nginx/conf.d/
             sudo touch /etc/nginx/conf.d/default.conf
 
-            sudo chown www-data:www-data ./var/www
+            sudo chown ubuntu:ubuntu ./var/www
             chmod -R 775 /var/www/storage /var/www/bootstrap
 
             # Move os arquivos para os locais corretos
