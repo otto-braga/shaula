@@ -4,7 +4,7 @@ services:
         image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
         working_dir: /var/www
         restart: unless-stopped
-        volumes:
+        #volumes:
             # - app-data:/var/www
             # ./:/var/www
             # - storage_files:/var/www/storage/app/public
