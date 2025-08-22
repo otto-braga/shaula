@@ -39,10 +39,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Build and push Docker image
-      #   run: |
-      #     docker build --no-cache -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest .
-      #     docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+      - name: Build and push Docker image
+        run: |
+          docker build --no-cache -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest .
+          docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
 
       - name: Create .env file for production
         run: |
