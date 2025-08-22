@@ -143,7 +143,7 @@ jobs:
             # docker compose pull
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
-            docker compose up -d --force-recreate
+            docker compose up -d
 
             # docker compose cp app:/var/www ./var/www
 
