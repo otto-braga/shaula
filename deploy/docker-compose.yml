@@ -6,7 +6,7 @@ services:
         restart: unless-stopped
         env_file: .env
         volumes:
-            - /home/ubuntu/app/:/var/www
+            - ./:/var/www
         depends_on:
             - mysql
         networks:
@@ -16,7 +16,7 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            - /home/ubuntu/app/:/var/www
+            - ./:/var/www
             - /home/ubuntu/app/.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
