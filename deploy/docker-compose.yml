@@ -5,7 +5,7 @@ services:
         working_dir: /var/www
         restart: unless-stopped
         env_file: .env
-        volumes:
+        #volumes:
             #- app-data:/var/www/
         depends_on:
             - mysql
