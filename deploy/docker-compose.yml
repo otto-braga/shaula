@@ -7,7 +7,7 @@ services:
             target: php
         working_dir: /var/www
         restart: unless-stopped
-        env_file: ../.env
+        env_file: .env
         volumes:
             - ../:/var/www
         depends_on:

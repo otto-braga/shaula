@@ -76,7 +76,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: '.env'
-          target: '/home/ubuntu/app'
+          target: '/home/ubuntu/app/deploy'
 
       # - name: Copy Dockerfile to EC2
       #   uses: appleboy/scp-action@v0.1.4
