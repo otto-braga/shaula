@@ -4,10 +4,8 @@ services:
         image: 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
         working_dir: /var/www
         restart: unless-stopped
-        #volumes:
-            # - app-data:/var/www
-            # ./:/var/www
-            # - storage_files:/var/www/storage/app/public
+        volumes:
+            - app-files:/var/www  # ADICIONAR esta linha
         env_file: .env
         depends_on:
             - mysql
@@ -18,11 +16,8 @@ services:
         container_name: ${APP_NAME}-nginx
         image: nginx:alpine
         volumes:
-            - app-files:/var/www:ro
-            # - app-data:/var/www
-            # - ./:/var/www:ro
-            # - storage_files:/var/www/storage/app/public
-            - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf
+            - app-files:/var/www:ro  # Volume compartilhado (somente leitura)
+            - ./.docker/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
         restart: unless-stopped
         ports:
@@ -30,10 +25,8 @@ services:
             - "443:443"
         networks:
             - application
-        command: '/bin/sh -c ''nginx -g "daemon off;"'''
         depends_on:
             - app
-
 
     mysql:
         container_name: ${APP_NAME}-mysql
@@ -75,9 +68,9 @@ services:
             - application
 
 volumes:
-  app-files:
-  mysql-data:
+    app-files:
+    mysql-data:
 
 networks:
-  application:
-    name: ${APP_NAME}
+    application:
+        name: ${APP_NAME}
