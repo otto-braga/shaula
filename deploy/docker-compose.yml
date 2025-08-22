@@ -75,9 +75,8 @@ services:
             - application
 
 volumes:
-  app-files:
-  mysql-data:
-#   storage_files:
+    app-files:
+    mysql-data:
 
 networks:
   application:
