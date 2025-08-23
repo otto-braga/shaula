@@ -28,21 +28,21 @@ jobs:
       - name: Build assets
         run: npm run build
 
-      # - name: Configure AWS Credentials with OIDC
-      #   uses: aws-actions/configure-aws-credentials@v4
-      #   with:
-      #     aws-region: us-east-1
-      #     role-to-assume: arn:aws:iam::614575055279:role/github-actions
-      #     role-session-name: github-actions-session
+      - name: Configure AWS Credentials with OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-east-1
+          role-to-assume: arn:aws:iam::614575055279:role/github-actions
+          role-session-name: github-actions-session
 
-      # - name: Login to Amazon ECR
-      #   id: login-ecr
-      #   uses: aws-actions/amazon-ecr-login@v2
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
 
-      # - name: Build and push Docker image
-      #   run: |
-      #     docker build --no-cache -f deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest .
-      #     docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
+      - name: Build and push Docker image
+        run: |
+          docker build --no-cache -f ./deploy/Dockerfile -t 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest .
+          docker push 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula:latest
 
       - name: Create .env file for production
         run: |
@@ -76,46 +76,26 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: '.env'
-          target: '/home/ubuntu/app/deploy'
+          target: '/home/ubuntu/'
 
-      # - name: Copy Dockerfile to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: 'deploy/Dockerfile'
-      #     target: '/home/ubuntu/app'
-      #     strip_components: 1
-
-      # - name: Copy docker-compose.yml to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: 'deploy/docker-compose.yml'
-      #     target: '/home/ubuntu/app'
-      #     strip_components: 1
-
-      # - name: Copy nginx.conf to EC2
-      #   uses: appleboy/scp-action@v0.1.4
-      #   with:
-      #     host: ${{ secrets.SSH_HOST }}
-      #     username: ubuntu
-      #     key: ${{ secrets.SSH_PRIVATE_KEY }}
-      #     source: 'deploy/nginx.conf'
-      #     target: '/home/ubuntu/app'
-      #     strip_components: 1
-
-      - name: Copy
+      - name: Copy docker-compose.yml to EC2
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.'
-          target: '/home/ubuntu/app'
+          source: 'deploy/docker-compose.yml'
+          target: '/home/ubuntu/'
+
+      #- name: Copy nginx.conf to EC2
+      #  uses: appleboy/scp-action@v0.1.4
+      #  with:
+      #    host: ${{ secrets.SSH_HOST }}
+      #    username: ubuntu
+      #    key: ${{ secrets.SSH_PRIVATE_KEY }}
+      #    source: 'deploy/nginx.conf'
+      #    target: '/home/ubuntu/.docker/nginx/'
+      #    strip_components: 1
 
       - name: Deploy on EC2 via SSH
         uses: appleboy/ssh-action@v0.1.7
@@ -124,27 +104,25 @@ jobs:
           username: ubuntu
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/ubuntu/app
+            cd /home/ubuntu
 
-            sudo mkdir -p /etc/nginx/conf.d/
-            sudo touch /etc/nginx/conf.d/default.conf
+            # Move os arquivos para os locais corretos
+            mv deploy/docker-compose.yml ./docker-compose.yml
 
-            sudo chown ubuntu:ubuntu .
-            chmod -R 775 ./storage ./bootstrap
-
-            cd ./deploy
-
+            # O .env, docker-compose.yml e nginx.conf já foram copiados
             # O login no ECR precisa ser feito para o docker-compose puxar a imagem
-            # aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
-            # docker compose pull
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 614575055279.dkr.ecr.us-east-1.amazonaws.com/shaula
+
+            docker compose down
+
+            docker compose pull
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
-            docker compose up -d --build --no-deps --force-recreate -d --remove-orphans
+            docker compose up -d --force-recreate
 
-            docker compose exec app composer install --no-dev --optimize-autoloader
-            docker compose exec app composer require laravel/scout predis/predis meilisearch/meilisearch-php http-interop/http-factory-guzzle league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+            # sleep 30
 
-            docker compose exec app php artisan storage:link
-            docker compose exec app php artisan config:cache
-            docker compose exec app php artisan route:cache
-            docker compose exec app php artisan view:cache
+            # docker compose exec -T app php artisan storage:link
+            # docker compose exec -T app php artisan config:cache
+            # docker compose exec -T app php artisan route:cache
+            # docker compose exec -T app php artisan view:cache

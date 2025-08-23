@@ -2,7 +2,7 @@
 # Imagem para a aplicação Laravel (PHP-FPM)
 # Assets são buildados no GitHub Actions
 # --
-FROM php:8.2-fpm AS php
+FROM php:8.2-fpm
 
 # Instala as dependências do sistema
 RUN apt-get update -y && apt-get install -y \
@@ -32,21 +32,20 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 # Copia todos os arquivos (incluindo os assets já buildados)
-# COPY --chown=ubuntu:ubuntu . /var/www/
-# COPY . /var/www
+COPY --chown=www-data:www-data . /var/www/
 
 # Instala dependências PHP
-# RUN composer install --no-dev --optimize-autoloader
-# RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
+RUN composer install --no-dev --optimize-autoloader
 
 # Define permissões
-# RUN chmod -R 775 /var/www/storage /var/www/bootstrap
+RUN chmod -R 775 /var/www/storage /var/www/bootstrap
 
 # Configura PHP-FPM
 RUN sed -i 's/listen = 127.0.0.1:9000/listen = 0.0.0.0:9000/' /usr/local/etc/php-fpm.d/www.conf
 
 # Set the user for the container
-# USER ubuntu
+USER www-data
 
 # Expõe a porta e inicia o servidor
 EXPOSE 9000
