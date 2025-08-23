@@ -12,7 +12,7 @@ export default function Index({ reviews, artworks }: { reviews: { data: Review[]
                 <Link href="/critica" className="inline-block">
                     <span className="flex items-center hover:underline">
                         <h2 className="text-red text-3xl">ÚLTIMAS CRÍTICAS -TESTE 4</h2>
-                        <h2 className="text-red-600">teste com ECR</h2>
+                        <h2 className="text-8xl text-red-600">teste com ECR -2 </h2>
                         <ArrowUpRight size={32} />
                     </span>
                 </Link>
