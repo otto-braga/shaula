@@ -117,7 +117,7 @@ jobs:
             docker compose down
 
             docker image prune -a -f
-            docker volume prune -a -f
+            docker volume prune -f
 
             docker compose pull
 
