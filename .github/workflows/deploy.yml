@@ -116,6 +116,8 @@ jobs:
 
             docker compose down
 
+            docker image prune -a -f
+
             docker compose pull
 
             # Inicia os contêineres usando o arquivo docker-compose que foi copiado
