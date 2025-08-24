@@ -6,7 +6,7 @@ services:
         restart: unless-stopped
         env_file: .env
         volumes:
-            - app-data:/var/www/
+            - /var/www/
         depends_on:
             - mysql
         networks:
@@ -18,9 +18,8 @@ services:
         volumes:
             - ./nginx.conf:/etc/nginx/conf.d/default.conf
             - /etc/letsencrypt:/etc/letsencrypt:ro
-            - app-data:/var/www
-        #volumes_from:
-        #   - app
+        volumes_from:
+            - app
         restart: unless-stopped
         ports:
             - ${APP_PORT}:80
@@ -70,8 +69,7 @@ services:
             - application
 
 volumes:
-    mysql-data:
-    app-data:
+    mysql-data:  # Apenas dados do MySQL são persistentes
 
 networks:
     application:

@@ -14,9 +14,7 @@ RUN apt-get update -y && apt-get install -y \
     zip \
     unzip \
     libzip-dev \
-    supervisor \
-    nodejs \
-    npm
+    supervisor
 
 # Instala as extensões PHP
 RUN docker-php-ext-install \
@@ -39,9 +37,6 @@ COPY --chown=www-data:www-data . /var/www/
 # Instala dependências PHP
 RUN composer require league/flysystem-aws-s3-v3 "^3.0" --with-all-dependencies
 RUN composer install --no-dev --optimize-autoloader
-
-RUN npm install
-RUN npm run build
 
 # Define permissões
 RUN chmod -R 775 /var/www/storage /var/www/bootstrap
