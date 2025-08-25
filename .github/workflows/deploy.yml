@@ -48,8 +48,8 @@ jobs:
         run: |
           echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
           echo "APP_PORT=${{ vars.APP_PORT }}" >> .env
-          echo "APP_ENV=${{ vars.APP_ENV }}" >> .env
-          echo "APP_DEBUG=${{ vars.APP_DEBUG }}" >> .env
+          echo "APP_ENV=local" >> .env
+          echo "APP_DEBUG=true" >> .env
           echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
           echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
