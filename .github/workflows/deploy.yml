@@ -60,7 +60,7 @@ jobs:
           echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> .env
           echo "MEILISEARCH_PORT=${{ vars.MEILISEARCH_PORT }}" >> .env
           echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
-          echo "FILESYSTEM_DISK=local" >> .env
+          echo "FILESYSTEM_DISK=s3" >> .env
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           echo "AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}" >> .env
