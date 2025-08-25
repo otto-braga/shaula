@@ -67,7 +67,7 @@ trait HasFile
         $file = File::find($fileId);
 
         if ($file) {
-            Storage::disk('s3')->delete($file->path);
+            Storage::disk('public')->delete($file->path);
             $file->delete();
         }
     }

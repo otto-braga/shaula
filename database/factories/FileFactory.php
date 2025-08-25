@@ -53,10 +53,10 @@ class FileFactory extends Factory
                     $directory = 'files/dummy';
                     $name = '_dummy_png_'.$user->id;
 
-                    Storage::disk('s3')->makeDirectory($directory);
+                    Storage::disk('public')->makeDirectory($directory);
 
                     $url = "https://dummyimage.com/" . sprintf('%04d', rand(200, 800)) . "x" . sprintf('%04d', rand(200, 800)) . "/" . sprintf('%06X', mt_rand(0, 0xFFFFFF)) . "/" . sprintf('%06X', mt_rand(0, 0xFFFFFF)) . ".png";
-                    $file_storage_path = Storage::disk('s3')->path($directory.'/'.$name.'.png');
+                    $file_storage_path = Storage::disk('public')->path($directory.'/'.$name.'.png');
                     $file_path = $directory.'/'.$name.'.png';
 
                     $user->update([
@@ -76,10 +76,10 @@ class FileFactory extends Factory
                     $directory = 'files/dummy';
                     $name = '_dummy_pdf_'.$user->id;
 
-                    Storage::disk('s3')->makeDirectory($directory);
+                    Storage::disk('public')->makeDirectory($directory);
 
                     $url = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf";
-                    $file_storage_path = Storage::disk('s3')->path($directory.'/'.$name.'.pdf');
+                    $file_storage_path = Storage::disk('public')->path($directory.'/'.$name.'.pdf');
                     $file_path = $directory.'/'.$name.'.pdf';
 
                     $user->update([
@@ -93,7 +93,7 @@ class FileFactory extends Factory
                     }
 
                     file_put_contents($file_storage_path, file_get_contents($url));
-                    $path = Storage::putFile('s3/files/dummy/', new \Illuminate\Http\File($file_storage_path));
+                    $path = Storage::putFile('public/files/dummy/', new \Illuminate\Http\File($file_storage_path));
                 }
             });
     }
