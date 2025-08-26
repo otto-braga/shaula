@@ -33,7 +33,7 @@ trait HasFile
         $uploadedFilesIds = [];
 
         foreach ($validated['files'] as $file) {
-            $filePath = $file->store($storeDirectory, 'public');
+            $filePath = $file->store($storeDirectory, 's3');
 
             $uploadedFile = File::create(
                 [
