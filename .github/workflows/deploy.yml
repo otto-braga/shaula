@@ -64,8 +64,8 @@ jobs:
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
           echo "AWS_DEFAULT_REGION=us-east-1" >> .env
-          echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
-          echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
+          echo "AWS_BUCKET=shaula-storage-bucket-ef262901" >> .env
+          echo "AWS_URL=https://shaula-storage-bucket-ef262901.s3.us-east-1.amazonaws.com" >> .env
           echo "AWS_ENDPOINT=${{ secrets.AWS_ENDPOINT }}" >> .env
           echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
 
