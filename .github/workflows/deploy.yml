@@ -67,7 +67,7 @@ jobs:
           echo "AWS_BUCKET=${{ secrets.AWS_BUCKET }}" >> .env
           echo "AWS_URL=${{ secrets.AWS_URL }}" >> .env
           echo "AWS_ENDPOINT=${{ secrets.AWS_ENDPOINT }}" >> .env
-          echo "AWS_USE_PATH_STYLE_ENDPOINT=${{ secrets.AWS_USE_PATH_STYLE_ENDPOINT }}" >> .env
+          echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
 
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@v0.1.4
