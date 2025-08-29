@@ -11,7 +11,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
 
     return (
         <PublicLayout head="Obra">
-            <div className="relative grid gap-8 bg-white p-4 pt-8 md:grid-cols-3 md:px-8 lg:grid-cols-6 lg:gap-8 lg:divide-x lg:pt-12">
+            <div className="relative grid gap-8 bg-white dark:bg-zinc-950 p-4 pt-8 md:grid-cols-3 md:px-8 lg:grid-cols-6 lg:gap-8 lg:divide-x lg:pt-12">
                 <MobileDetailBar>
                     <div className="space-y-2">
                         <div>

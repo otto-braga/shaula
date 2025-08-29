@@ -65,15 +65,17 @@ export default function Index({ person }: { person: { data: Person } }) {
                 </section>
                 {/* bio e crono */}
                 <section className="mt-6 border-t pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 md:pr-4">
-                    <div className="space-y-4 md:sticky md:top-24">
+                    <div className="space-y-4 md:sticky md:top-24 divide-y">
                         <div className="space-y-4">
                             <h2 className="text-xl font-medium uppercase">BIOGRAFIA</h2>
                             <div dangerouslySetInnerHTML={{ __html: person.data.content }} className="pb-6 text-lg" />
                         </div>
-                        <div className="space-y-3">
-                            <h2 className="text-xl font-medium uppercase">CRONOLOGIA</h2>
-                            <div dangerouslySetInnerHTML={{ __html: person.data.chronology }} className="pb-6 text-lg" />
-                        </div>
+                        {person.data.chronology && (
+                            <div className="space-y-3">
+                                <h2 className="text-lg font-medium uppercase">CRONOLOGIA</h2>
+                                <div dangerouslySetInnerHTML={{ __html: person.data.chronology }} className="pb-6 text-lg" />
+                            </div>
+                        )}
                     </div>
                 </section>
                 {/* 2cols com sobre e producoes */}

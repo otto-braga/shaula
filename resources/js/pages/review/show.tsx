@@ -90,7 +90,7 @@ export default function Index({ review }: { review: { data: Review } }) {
                 </div> */}
             </div>
 
-            <div className="relative grid gap-8 bg-white p-4 pt-8 md:grid-cols-3 md:px-8 lg:grid-cols-6 lg:gap-8 lg:divide-x lg:pt-12">
+            <div className="relative grid gap-8 bg-white dark:bg-zinc-950 p-4 pt-8 md:grid-cols-3 md:px-8 lg:grid-cols-6 lg:gap-8 lg:divide-x lg:pt-12">
                 <section className="hidden space-y-3 divide-y *:pb-3 lg:col-span-1 lg:block lg:pr-8">
                     <div>
                         <p className="font-semibold">Autoria</p>
