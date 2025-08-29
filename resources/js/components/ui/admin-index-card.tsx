@@ -25,6 +25,8 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
     const has_edit = props.has_edit || true;
     const has_delete = props.has_delete || true;
 
+    console.log(props);
+
     return (
         <Card key={props.model.uuid} className="flex flex-col justify-between">
             <CardHeader>
@@ -130,7 +132,7 @@ export function AdminIndexCard(props : AdminIndexCardProps) {
                             className="h-full"
                             resourceId={props.model.uuid}
                             resourceName={props.model.name ?? props.model.title}
-                            deleteRoute="reviews.destroy"
+                            deleteRoute={`${props.route_base_name}.destroy`}
                             onSuccess={() => window.location.reload()}
                         />
                     )}
