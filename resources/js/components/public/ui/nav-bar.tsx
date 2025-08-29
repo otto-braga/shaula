@@ -4,6 +4,7 @@ import { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import SearchBar from './search-bar';
+import AppearanceToggleSidebarHeader from '@/components/appearance-toggle-sidebar-header';
 
 const navItems: NavItem[] = [
     {
@@ -87,7 +88,10 @@ export function NavBar() {
                         </Link>
                     ))}
                 </div>
-                <SearchBar />
+                <div className='flex items-center'>
+                    <SearchBar />
+                    <AppearanceToggleSidebarHeader />
+                </div>
             </div>
         </nav>
     );
