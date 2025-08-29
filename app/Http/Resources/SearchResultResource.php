@@ -17,6 +17,11 @@ class SearchResultResource extends JsonResource
     {
         $image_path = $this['primary_image_path'] ?? null;
         $file_path = $this['file_path'] ?? null;
+
+        $file_url = ''; // solução paliativa. search no select nao estava funcionando
+        if (!empty($this['primary_image_path'])) {
+            $file_url = Storage::disk('s3')->url($this['primary_image_path']);
+        }
         return [
             'uuid' => $this['uuid'] ?? '',
             'type' => $this['_federation']['indexUid'] ?? '',
@@ -39,7 +44,8 @@ class SearchResultResource extends JsonResource
             'cities' => $this['cities'] ?? [], // for Person
             'artworks' => $this['artworks'] ?? [], // for Person and Review
 
-            'file_path' => asset(Storage::url($file_path)) ?? '', // for Source
+            #'file_path' => asset(Storage::url($file_path)) ?? '', // for Source
+            'file_path' => $file_url, // solução paliativa. search no select nao estava funcionando
             'source_categories' => $this['source_categories'] ?? '', // for Source
         ];
     }
