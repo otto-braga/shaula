@@ -18,9 +18,24 @@ class SearchResultResource extends JsonResource
         $image_path = $this['primary_image_path'] ?? null;
         $file_path = $this['file_path'] ?? null;
 
-        $file_url = ''; // solução paliativa. search no select nao estava funcionando
-        if (!empty($this['primary_image_path'])) {
-            $file_url = Storage::disk('s3')->url($this['primary_image_path']);
+        // Gerar URLs de forma segura, solução paliativa, selects com busca nao estavam funcionando
+        $file_url = '';
+        $primary_image_url = '';
+
+        if (!empty($image_path)) {
+            try {
+                $primary_image_url = Storage::disk('s3')->url($image_path);
+            } catch (\Exception $e) {
+                $primary_image_url = '';
+            }
+        }
+
+        if (!empty($file_path)) {
+            try {
+                $file_url = Storage::disk('s3')->url($file_path);
+            } catch (\Exception $e) {
+                $file_url = '';
+            }
         }
         return [
             'uuid' => $this['uuid'] ?? '',
@@ -35,7 +50,8 @@ class SearchResultResource extends JsonResource
 
             'content' => $this['content'] ?? '',
             'primary_image_path' => $image_path ?? '',
-            'primary_image_url' => asset(Storage::url($image_path)) ?? '',
+            #'primary_image_url' => asset(Storage::url($image_path)) ?? '',
+            'primary_image_url' => $primary_image_url, // solução paliativa. search no select nao estava funcionando
 
             'periods' => $this['periods'] ?? [], // for Artwork, Person and HistoryArticle
             'categories' => $this['categories'] ?? [], // for Artwork, Review and HistoryArticle
