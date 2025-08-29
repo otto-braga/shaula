@@ -5,6 +5,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import SearchBar from './search-bar';
 import AppearanceToggleSidebarHeader from '@/components/appearance-toggle-sidebar-header';
+import { Menu } from 'lucide-react';
 
 const navItems: NavItem[] = [
     {
@@ -60,9 +61,13 @@ export function NavBar() {
 
             <div className="md:hidden">
                 <Sheet>
-                    <SheetTrigger asChild>
-                        <Button variant="ghost">Open</Button>
-                    </SheetTrigger>
+                    <div className='flex items-center'>
+                        <AppearanceToggleSidebarHeader />
+                        <SheetTrigger asChild>
+                            <Button variant="ghost"><Menu /></Button>
+                        </SheetTrigger>
+
+                    </div>
                     <SheetContent>
                         <SheetHeader>
                             <div className="flex justify-center">
