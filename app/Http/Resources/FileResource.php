@@ -22,7 +22,8 @@ class FileResource extends JsonResource
             'name' => $this->name,
             'original_name' => $this->original_name,
             'mime_type' => $this->mime_type,
-            'path' => Storage::disk('s3')->url($this->path),
+            // 'path' => Storage::disk('s3')->url($this->path),
+            'path' => asset(Storage::url($this->path)),
 
             'collection' => $this->collection,
             'size' => $this->size,
