@@ -25,7 +25,7 @@ trait HandlesFiles
         $directory = 'files/' . class_basename($fileable) . '/' . $fileable->uuid;
 
         $validated = $request->validate([
-            "files.*" => "required|mimes:jpeg,jpg,png",
+            "files.*" => "required|mimes:jpeg,jpg,png,pdf",
         ]);
 
         $storeDirectory = $directory . '/' . $collection;
@@ -33,7 +33,7 @@ trait HandlesFiles
         $uploadedFilesIds = [];
 
         foreach ($validated['files'] as $file) {
-            $filePath = $file->store($storeDirectory, 's3');
+            $filePath = $file->store($storeDirectory);
 
             $uploadedFile = File::create(
                 [
@@ -67,7 +67,7 @@ trait HandlesFiles
         $file = File::find($fileId);
 
         if ($file) {
-            Storage::disk('s3')->delete($file->path);
+            Storage::disk()->delete($file->path);
             $file->delete();
         }
     }

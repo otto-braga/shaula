@@ -23,7 +23,7 @@ trait UpdatesImages
     protected function handleImageUpdate(Request $request, Model $model): void
     {
         if ($request->has('files') && count($request->files) > 0) {
-            $this->storeFile($request, $model, 'general');
+            $this->storeFile($request, $model, 'general'); /* HandlesFiles Trait */
         }
 
         if ($request->has('files_to_remove') && count($request->files_to_remove) > 0) {
