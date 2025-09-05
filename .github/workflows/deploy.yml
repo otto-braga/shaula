@@ -48,8 +48,8 @@ jobs:
         run: |
           echo "APP_NAME=${{ vars.APP_NAME }}" >> .env
           echo "APP_PORT=${{ vars.APP_PORT }}" >> .env
-          echo "APP_ENV=local" >> .env
-          echo "APP_DEBUG=true" >> .env
+          echo "APP_ENV=${{ vars.APP_ENV }}" >> .env
+          echo "APP_DEBUG=${{ vars.APP_DEBUG }}" >> .env
           echo "APP_KEY=${{ secrets.APP_KEY }}" >> .env
           echo "DB_DATABASE=${{ secrets.DB_DATABASE }}" >> .env
           echo "DB_PORT=${{ vars.DB_PORT }}" >> .env
@@ -60,14 +60,14 @@ jobs:
           echo "MEILISEARCH_KEY=${{ secrets.MEILISEARCH_KEY }}" >> .env
           echo "MEILISEARCH_PORT=${{ vars.MEILISEARCH_PORT }}" >> .env
           echo "REDIS_PORT=${{ vars.REDIS_PORT }}" >> .env
-          echo "FILESYSTEM_DISK=s3" >> .env
+          echo "FILESYSTEM_DISK=${{ vars.FILESYSTEM_DISK }}" >> .env
           echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> .env
           echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> .env
-          echo "AWS_DEFAULT_REGION=us-east-1" >> .env
-          echo "AWS_BUCKET=shaula-storage-bucket-ef262901" >> .env
-          echo "AWS_URL=https://shaula-storage-bucket-ef262901.s3.us-east-1.amazonaws.com" >> .env
+          echo "AWS_DEFAULT_REGION=${{ vars.AWS_DEFAULT_REGION }}" >> .env
+          echo "AWS_BUCKET=${{ vars.AWS_BUCKET }}" >> .env
+          echo "AWS_URL=${{ vars.AWS_URL }}" >> .env
           echo "AWS_ENDPOINT=${{ secrets.AWS_ENDPOINT }}" >> .env
-          echo "AWS_USE_PATH_STYLE_ENDPOINT=false" >> .env
+          echo "AWS_USE_PATH_STYLE_ENDPOINT=${{ vars.AWS_USE_PATH_STYLE_ENDPOINT }}" >> .env
 
       - name: Copy .env file to EC2
         uses: appleboy/scp-action@v0.1.4

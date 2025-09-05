@@ -15,8 +15,8 @@ return [
     |
     */
 
-    // 'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 10240), // 10 MB
-    'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 1024), // 1 MB
+    'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 10240), // 10 MB
+    // 'max_file_size' => env('FILESYSTEM_MAX_FILE_SIZE', 1024), // 1 MB
 
     /*
     |--------------------------------------------------------------------------
