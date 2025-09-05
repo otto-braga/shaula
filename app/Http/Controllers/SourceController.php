@@ -68,14 +68,13 @@ class SourceController extends Controller
                 ])
             );
 
-            $this->syncUuids($request->source_categories_uuids, $source->sourceCategories());
-
             if ($request->has('files') && count($request->files) > 0) {
-                if ($source->file) {
+
+                if ($source->file != null) {
                     $this->deleteFile($source->file->id);
                 }
+
                 $this->storeFile($request, $source, 'general');
-                $source->file->update(['is_primary' => true]);
             }
 
             session()->flash('success', true);

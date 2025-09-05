@@ -13,6 +13,7 @@ export default function Index({ sources }: { sources: Props }) {
             title="Fontes"
             route_base_name="sources"
             index={{ data: sources.data, meta: sources.meta }}
+            has_show={false}
         />
     );
 }

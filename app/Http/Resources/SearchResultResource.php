@@ -24,7 +24,7 @@ class SearchResultResource extends JsonResource
 
         if (!empty($image_path)) {
             try {
-                $primary_image_url = Storage::disk('s3')->url($image_path);
+                $primary_image_url = Storage::disk()->url($image_path);
             } catch (\Exception $e) {
                 $primary_image_url = '';
             }
@@ -32,7 +32,7 @@ class SearchResultResource extends JsonResource
 
         if (!empty($file_path)) {
             try {
-                $file_url = Storage::disk('s3')->url($file_path);
+                $file_url = Storage::disk()->url($file_path);
             } catch (\Exception $e) {
                 $file_url = '';
             }

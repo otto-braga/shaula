@@ -33,7 +33,7 @@ trait HasFile
         $uploadedFilesIds = [];
 
         foreach ($validated['files'] as $file) {
-            $filePath = $file->store($storeDirectory, 's3');
+            $filePath = $file->store($storeDirectory);
 
             $uploadedFile = File::create(
                 [
@@ -67,7 +67,7 @@ trait HasFile
         $file = File::find($fileId);
 
         if ($file) {
-            Storage::disk('s3')->delete($file->path);
+            Storage::disk()->delete($file->path);
             $file->delete();
         }
     }
