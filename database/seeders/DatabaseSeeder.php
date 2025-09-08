@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use App\Models\Role;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -20,6 +22,57 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->call(UserSeeder::class);
+        $password = 'mudar@shaula';
+
+        // dev
+
+        $user = User::create([
+            'name' => 'dev',
+            'email' => 'dev',
+            'password' => Hash::make($password),
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'dev')->firstOrFail()
+        )->save();
+
+        // admin
+
+        $user = User::create([
+            'name' => 'Coordenação 1',
+            'email' => 'coordenacao-1',
+            'password' => Hash::make($password),
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'admin')->firstOrFail()
+        )->save();
+
+        $user = User::create([
+            'name' => 'Coordenação 2',
+            'email' => 'coordenacao-2',
+            'password' => Hash::make($password),
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'admin')->firstOrFail()
+        )->save();
+
+        // editor
+
+        $user = User::create([
+            'name' => 'Edição 1',
+            'email' => 'edicao-1',
+            'password' => Hash::make($password),
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'editor')->firstOrFail()
+        )->save();
+
+        $user = User::create([
+            'name' => 'Edição 2',
+            'email' => 'edicao-2',
+            'password' => Hash::make($password),
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'editor')->firstOrFail()
+        )->save();
     }
 }
