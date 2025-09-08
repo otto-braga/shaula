@@ -11,7 +11,7 @@ export default function Index({ reviews, artworks }: { reviews: { data: Review[]
             <section className="px-4 py-8 md:p-8">
                 <Link href="/critica" className="inline-block">
                     <span className="flex items-center hover:underline">
-                        <h2 className="text-red text-3xl">ÚLTIMAS CRÍTICAS -teste</h2>
+                        <h2 className="text-red text-3xl">ÚLTIMAS CRÍTICAS</h2>
                         <ArrowUpRight size={32} />
                     </span>
                 </Link>
