@@ -48,10 +48,10 @@ return [
         ],
         'admin' => [
             'label' => 'Coordenador',
-            'description' => 'Acesso quase total ao sistema, exceto edição de funções e usuários. Pode atribuir funções a usuários.',
+            'description' => 'Acesso quase total ao sistema, exceto edição de funções e usuários.',
             'permissions' => [
-                Role::class => VIEW,
-                User::class => NO_DELETE,
+                Role::class => NONE,
+                User::class => NONE,
 
                 Person::class => ALL,
                 Artwork::class => ALL,

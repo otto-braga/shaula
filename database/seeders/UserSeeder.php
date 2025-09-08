@@ -14,25 +14,46 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
+        // dev
+
         $user = User::factory()->create([
             'name' => 'dev',
-            'email' => 'dev@test.com',
+            'email' => 'dev',
         ]);
         $user->role()->associate(
             Role::where('name', 'dev')->firstOrFail()
         )->save();
 
+        // admin
+
         $user = User::factory()->create([
-            'name' => 'Usuário Coordenador',
-            'email' => 'admin@test.com',
+            'name' => 'Coordenação 1',
+            'email' => 'coordenacao-1',
         ]);
         $user->role()->associate(
             Role::where('name', 'admin')->firstOrFail()
         )->save();
 
         $user = User::factory()->create([
-            'name' => 'Usuário Editor',
-            'email' => 'editor@test.com',
+            'name' => 'Coordenação 2',
+            'email' => 'coordenacao-2',
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'admin')->firstOrFail()
+        )->save();
+
+        // editor
+
+        $user = User::factory()->create([
+            'name' => 'Edição 1',
+            'email' => 'edicao-1',
+        ]);
+        $user->role()->associate(
+            Role::where('name', 'editor')->firstOrFail()
+        )->save();
+        $user = User::factory()->create([
+            'name' => 'Edição 2',
+            'email' => 'edicao-2',
         ]);
         $user->role()->associate(
             Role::where('name', 'editor')->firstOrFail()

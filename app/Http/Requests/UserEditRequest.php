@@ -10,6 +10,7 @@ class UserEditRequest extends BaseEditRequest
     {
         return [
             'role_uuid' => ['required', 'string', Rule::exists('roles', 'uuid')],
+            'password' => ['nullable', 'string', 'min:3', 'max:255']
         ];
     }
 
@@ -19,6 +20,9 @@ class UserEditRequest extends BaseEditRequest
             'role_uuid.required' => 'Obrigatório.',
             'role_uuid.string' => 'Deve ser texto.',
             'role_uuid.exists' => 'Deve ser uma função válida.',
+            'password.string' => 'Deve ser texto.',
+            'password.min' => 'Deve ter no mínimo :min caracteres.',
+            'password.max' => 'Deve ter no máximo :max caracteres.',
         ];
     }
 }

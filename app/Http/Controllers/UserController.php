@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Traits\HasCommonPaginationConstants;
 use App\Traits\ParsesUuids;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
@@ -63,6 +64,12 @@ class UserController extends Controller
             if ($role) {
                 $user->role()->associate($role);
                 $user->save();
+            }
+
+            if ($request->password) {
+                $user->update([
+                    'password' => Hash::make($request->password),
+                ]);
             }
 
             session()->flash('success', true);

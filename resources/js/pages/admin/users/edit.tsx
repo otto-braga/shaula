@@ -7,6 +7,7 @@ import { SelectWithStates } from '@/components/select/lazy-loading-select';
 import { SearchResult } from '@/types/search-result';
 import SubmitConfirmationButton from '@/components/edit/submit-confirmation-button';
 import EditLayout from '@/components/edit/edit-layout';
+import { Input } from '@/components/ui/input';
 
 export default function Index({
     user,
@@ -17,6 +18,7 @@ export default function Index({
 
     const { data, setData, post, processing } = useForm({
         role_uuid: user ? user.role?.uuid : '' as string,
+        password: '' as string,
     });
     const { errors } = usePage().props;
 
@@ -59,6 +61,16 @@ export default function Index({
                         }}
                     />
                     <InputError className="mt-2" message={errors.role_uuid} />
+                </div>
+
+                <div>
+                    <Label htmlFor="password">Senha</Label>
+                    <Input
+                        id="password"
+                        type="password"
+                        onChange={(e) => setData('password', e.target.value)}
+                    />
+                    <InputError className="mt-2" message={errors.password} />
                 </div>
 
             </form>
