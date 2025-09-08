@@ -62,9 +62,4 @@ class Source extends Model
     {
         return $this->morphOne(File::class, 'fileable');
     }
-
-    public function files(): MorphOne
-    {
-        return $this->morphOne(File::class, 'fileable');
-    }
 }
