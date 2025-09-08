@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasFiles;
 use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
@@ -18,7 +19,8 @@ class Review extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions;
+        HasMentions,
+        HasFiles;
         // Searchable;
 
     protected $table = 'reviews';

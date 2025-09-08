@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasFiles;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -15,7 +16,8 @@ class Source extends Model
     use
         HasFactory,
         HasUuid,
-        HasSlug;
+        HasSlug,
+        HasFiles;
         // Searchable;
 
     protected $fillable = [
@@ -57,6 +59,11 @@ class Source extends Model
     }
 
     public function file(): MorphOne
+    {
+        return $this->morphOne(File::class, 'fileable');
+    }
+
+    public function files(): MorphOne
     {
         return $this->morphOne(File::class, 'fileable');
     }
