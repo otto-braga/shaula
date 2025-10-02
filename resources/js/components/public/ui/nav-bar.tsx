@@ -13,16 +13,16 @@ const navItems: NavItem[] = [
         href: '/',
     },
     {
-        title: 'Crítica',
-        href: '/critica',
-    },
-    {
         title: 'Pessoas',
         href: '/pessoas',
     },
     {
         title: 'História',
         href: '/historia/artigos',
+    },
+    {
+        title: 'Crítica',
+        href: '/critica',
     },
     {
         title: 'Sobre',
