@@ -81,18 +81,28 @@ export default function Index({
                     <div className="mt-3 space-y-6">
                         <h1 className="font-medium">SHAULA - CRÍTICA</h1>
                         <p className="max-w-sm text-justify">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Numquam accusamus tenetur doloribus perspiciatis consequatur
-                            accusantium amet voluptatem odio. Molestias ullam, nisi accusamus velit recusandae deleniti voluptates aut corrupti
-                            explicabo libero. Reiciendis repellendus quod ipsa, molestias et harum eaque quae.
+                            Esta seção busca divulgar os textos produzidos pelos estudantes da 
+                            disciplina de Crítica de Arte do curso de Artes Visuais da UFRN, bem 
+                            como publicar textos escritos por colaboradores convidados. Assim, objetiva-se 
+                            a promoção do debate crítico sobre a arte contemporânea e as práticas curatoriais 
+                            mais recentes. O ponto de vista adotado é a crítica de arte dedicada às artes visuais 
+                            no RN e a partir do Nordeste.
                         </p>
                         <div className="space-y-3">
                             <div>
-                                <p className="font-medium">Editora Chefe</p>
+                                <p className="font-medium">Coordenadores</p>
                                 <p>Fabíola Alves</p>
+                                <p>Everardo Araújo</p>
                             </div>
                             <div>
-                                <p className="font-medium">Editora Jr. / Redatora</p>
-                                <p>Maria Sucar</p>
+                                <p className="font-medium">Programadores</p>
+                                <p>Danilo Andrade</p>
+                                <p>Otto Braga</p>
+                            </div>
+                            <div>
+                                <p className="font-medium">Estudantes bolsistas</p>
+                                <p>Maria Sucar(2024)</p>
+                                <p>Danilo Andrade(2023 e 2025)</p>
                             </div>
                         </div>
                     </div>
@@ -141,7 +151,7 @@ export default function Index({
                     <PaginationWithAnchor links={reviews.meta.links} anchor="#criticas" />
                 </div>
                 <div className="md:col-span-1">
-                    <div className="divide-y">
+                    <div className="divide-y hidden">
                         <div className="flex justify-between py-3">
                             <p>Categorias</p>
                             <ChevronDown />
