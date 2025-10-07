@@ -3,11 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ArtworkResource extends JsonResource
+class ExhibitResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
@@ -16,7 +15,7 @@ class ArtworkResource extends JsonResource
             'slug' => $this->slug,
 
             'title' => $this->title,
-            'date' => Carbon::parse($this->date),
+            'date' => $this->date,
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
 
@@ -35,14 +34,9 @@ class ArtworkResource extends JsonResource
 
             'categories' => CategoryResource::collection($this->categories),
             'periods' => PeriodResource::collection($this->periods),
-            'languages' => LanguageResource::collection($this->languages),
             'awards' => AwardResource::collection($this->awards),
 
-            'year' => Carbon::parse($this->date)->year, // Apenas o ano, sem o mês e dia
-            'dimensions' => $this->dimensions,
-            'materials' => $this->materials,
-
-            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
+            'artworks' => ArtworkResource::collection($this->artworks),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

@@ -1,29 +1,26 @@
-import { HistoryArticle } from '@/types/historyArticle';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-
 import EditTabs from '@/components/edit/edit-tabs';
-import HtmlEditor from '@/components/edit/html-editor';
+import EditSources from '@/components/edit/edit-sources';
+import { Exhibit } from '@/types/exhibit';
 import EditLayout from '@/components/edit/edit-layout';
 
-export default function Content({
-    historyArticle,
+export default function Sources({
+    exhibit,
 }: {
-    historyArticle: { data: HistoryArticle }
+    exhibit: { data: Exhibit },
 }) {
     const { data, setData, post, processing } = useForm({
-        content: historyArticle.data.content as string ?? String(),
-        files: Array<File>(),
-        files_to_remove: Array<string>(),
+        sources_uuids: exhibit ? exhibit.data.sources?.map((source) => source.uuid) : [] as string[],
     });
     const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        post(route('history_articles.update.content', historyArticle.data), {
+        post(route('exhibits.update.sources', exhibit.data), {
             preserveScroll: true,
-            preserveState: true,
+            preserveState: false,
         });
     };
 
@@ -31,21 +28,17 @@ export default function Content({
         <EditLayout>
             <form onSubmit={submit} className="space-y-3 bg-inherit">
                 <EditTabs
-                    model={historyArticle}
-                    route_base_name="history_articles"
+                    model={exhibit}
+                    route_base_name="exhibits"
                     processing={processing}
                 />
-
-                <HtmlEditor
-                    content={historyArticle.data.content}
-                    content_images={historyArticle.data.content_images}
+                <EditSources
+                    model={exhibit}
                     data={data}
                     setData={setData}
                     errors={errors}
                     processing={processing}
-                    submit={submit}
                 />
-
             </form>
         </EditLayout>
     );

@@ -1,21 +1,21 @@
 import { Activity } from "./activity";
+import { Artwork } from "./artwork";
 import { Award } from "./award";
 import { Category } from "./category";
-import { Exhibit } from "./exhibit";
 import { FileProps } from "./file";
 import { Language } from "./language";
 import { Period } from "./period";
 import { Person } from "./person";
 import { Source } from "./source";
 
-export enum ArtworkLabels {
-    ROUTE = 'artworks',
-    TYPE = 'artwork',
-    TYPE_LABEL = 'Obra',
-    TYPE_PLURAL = 'Obras'
+export enum ExhibitLabels {
+    ROUTE = 'exhibits',
+    TYPE = 'exhibit',
+    TYPE_LABEL = 'Exposição',
+    TYPE_PLURAL = 'Exposições'
 }
 
-export type Artwork = {
+export type Exhibit = {
     uuid: string;
     slug: string;
 
@@ -43,14 +43,9 @@ export type Artwork = {
     categories: Category[];
 
     periods: Period[];
-    languages: Language[];
     awards: Award[];
 
-    year: string;
-    dimensions: string;
-    materials: string;
-
-    exhibits: Exhibit[];
+    artworks: Artwork[];
 
     created_at: string;
     updated_at: string;

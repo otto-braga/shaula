@@ -91,8 +91,6 @@ class ArtworkFactory extends Factory
             foreach ($sources as $source) {
                 $artwork->sources()->attach($source);
             }
-
-            MentionFactory::generateMentions($artwork);
         });
     }
 }

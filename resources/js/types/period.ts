@@ -21,7 +21,6 @@ export type Period = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    mentions: Mention[];
     sources: Source[];
 
     history_articles: HistoryArticle[];

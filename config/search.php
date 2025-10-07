@@ -22,6 +22,23 @@ return [
             ],
         ],
 
+        Exhibit::class => [
+            'indexUid' => 'exhibits',
+            'searchableAttributes' => [
+                'title',
+                // 'artworks',
+                // 'periods',
+            ],
+            'filterableAttributes' => [
+                'periods',
+                'cities',
+            ],
+            'sortableAttributes' => [
+                'created_at',
+                'updated_at',
+            ],
+        ],
+
         Person::class => [
             'indexUid' => 'people',
             'searchableAttributes' => [

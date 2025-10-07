@@ -46,18 +46,6 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                             ))}
                         </div>
                     )}
-                    {historyArticle.data.mentions.length > 0 && (
-                        <div className="">
-                            <p className="font-medium">Menções</p>
-                            <div className="mt-2 flex flex-col gap-1">
-                                {historyArticle.data.mentions.map((mention, index) => (
-                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
-                                        <p className="line-clamp-1">{mention['name']}</p>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
-                    )}
                     {historyArticle.data.sources.length > 0 && (
                         <div className="space-y-2">
                             <p className="font-semibold">Fontes</p>
@@ -104,16 +92,6 @@ export default function Show({ historyArticle }: { historyArticle: { data: Histo
                                 ))}
                             </div>
                         )}
-                        <div className="">
-                            <p className="font-medium">Menções</p>
-                            <div className="mt-2 flex flex-col gap-1">
-                                {historyArticle.data.mentions.map((mention, index) => (
-                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
-                                        <p className="line-clamp-1">{mention['name']}</p>
-                                    </Link>
-                                ))}
-                            </div>
-                        </div>
                         {historyArticle.data.sources.length > 0 && (
                             <div className="space-y-2">
                                 <p className="font-semibold">Fontes</p>

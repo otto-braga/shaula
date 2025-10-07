@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -10,15 +9,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Laravel\Scout\Searchable;
+// use Laravel\Scout\Searchable;
 
 class Period extends Model
 {
     use
         HasFactory,
         HasUuid,
-        HasSlug,
-        HasMentions;
+        HasSlug;
         // Searchable;
 
     protected $table = 'periods';
