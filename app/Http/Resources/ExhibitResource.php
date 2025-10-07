@@ -7,7 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ArtworkResource extends JsonResource
+class ExhibitResource extends JsonResource
 {
     public function toArray(Request $request): array
     {

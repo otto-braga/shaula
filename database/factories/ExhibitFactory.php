@@ -2,6 +2,18 @@
 
 namespace Database\Factories;
 
+use App\Models\Activity;
+use App\Models\Artwork;
+use App\Models\Award;
+use App\Models\Category;
+use App\Models\File;
+use App\Models\HistoryArticle;
+use App\Models\Language;
+use App\Models\Period;
+use App\Models\Person;
+use App\Models\Review;
+use App\Models\Source;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +29,68 @@ class ExhibitFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'title' => $this->faker->sentence,
+            // 'date' => Carbon::parse($this->faker->date, 'UTC'),
+            'date' => Carbon::parse($this->faker->year . '-06-01', 'UTC')->startOfDay(), // Default to June 1st if only year is provided
+            'content' => json_encode($this->faker->text(4000)),
+            'dimensions' => $this->faker->word,
+            'materials' => $this->faker->word,
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function ($artwork) {
+            $authors = Person::inRandomOrder()->take(rand(1, 3))->get();
+            foreach ($authors as $author) {
+                $artwork->authors()->attach($author, ['is_author' => true]);
+            }
+
+            $activities = Activity::inRandomOrder()->take(rand(0, 3))->get();
+            foreach ($activities as $activity) {
+                $people = Person::inRandomOrder()->take(rand(1, 3))->get();
+                foreach ($people as $person) {
+                    $artwork->people()->attach($person, ['activity_id' => $activity->id]);
+                }
+            }
+
+            $categories = Category::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($categories as $category) {
+                $artwork->categories()->attach($category);
+            }
+
+            $languages = Language::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($languages as $language) {
+                $artwork->languages()->attach($language);
+            }
+
+            $awards = Award::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($awards as $award) {
+                $artwork->awards()->attach($award);
+            }
+
+            $periods = Period::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($periods as $period) {
+                $artwork->periods()->attach($period);
+            }
+
+            File::factory(rand(0, 4))->create([
+                'mime_type' => 'image/png',
+            ])->each(function ($file) use ($artwork) {
+                $file->update([
+                    'fileable_id' => $artwork->id,
+                    'fileable_type' => Artwork::class,
+                ]);
+            });
+
+            if ($artwork->images()->count() > 0) {
+                $artwork->images()->first()->update(['is_primary' => true]);
+            }
+
+            $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
+            foreach ($sources as $source) {
+                $artwork->sources()->attach($source);
+            }
+        });
     }
 }

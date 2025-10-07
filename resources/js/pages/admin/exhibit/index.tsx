@@ -1,9 +1,9 @@
 import { PaginationProps } from '@/components/pagination/pagination';
 import { AdminIndex } from '@/components/ui/admin-index';
-import { Artwork } from '@/types/artwork';
+import { Exhibit } from '@/types/exhibit';
 
 type Props = {
-    data: Artwork[];
+    data: Exhibit[];
     meta: PaginationProps;
 };
 

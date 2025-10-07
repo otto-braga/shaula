@@ -28,6 +28,7 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\ArtworkController;
+use App\Http\Controllers\ExhibitController;
 use App\Http\Controllers\AwardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
@@ -212,6 +213,24 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::post('/obras/{artwork:slug}/update/sources', [ArtworkController::class, 'updateSources'])->name('artworks.update.sources');
     Route::delete('/obras/{artwork:uuid}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
     Route::get('/obras/fetch/options', [ArtworkController::class, 'fetchSelectOptions'])->name('artworks.fetch.options');
+
+    // Exhibits
+    Route::get('/exposicoes', [ExhibitController::class, 'index'])->name('exhibits.index');
+    Route::get('/exposicoes/criar', [ExhibitController::class, 'create'])->name('exhibits.create');
+    Route::post('/exposicoes/store', [ExhibitController::class, 'store'])->name('exhibits.store');
+    Route::get('/exposicoes/{exhibit:slug}', [ExhibitController::class, 'show'])->name('exhibits.show');
+    Route::get('/exposicoes/{exhibit:slug}/editar', [ExhibitController::class, 'edit'])->name('exhibits.edit');
+    Route::post('/exposicoes/{exhibit:slug}/update', [ExhibitController::class, 'update'])->name('exhibits.update');
+    Route::get('/exposicoes/{exhibit:slug}/editar/pessoas', [ExhibitController::class, 'editPeople'])->name('exhibits.edit.people');
+    Route::post('/exposicoes/{exhibit:slug}/update/people', [ExhibitController::class, 'updatePeople'])->name('exhibits.update.people');
+    Route::get('/exposicoes/{exhibit:slug}/editar/imagens', [ExhibitController::class, 'editImages'])->name('exhibits.edit.images');
+    Route::post('/exposicoes/{exhibit:slug}/update/images', [ExhibitController::class, 'updateImages'])->name('exhibits.update.images');
+    Route::get('/exposicoes/{exhibit:slug}/editar/conteudo', [ExhibitController::class, 'editContent'])->name('exhibits.edit.content');
+    Route::post('/exposicoes/{exhibit:slug}/update/content', [ExhibitController::class, 'updateContent'])->name('exhibits.update.content');
+    Route::get('/exposicoes/{exhibit:slug}/editar/fontes', [ExhibitController::class, 'editSources'])->name('exhibits.edit.sources');
+    Route::post('/exposicoes/{exhibit:slug}/update/sources', [ExhibitController::class, 'updateSources'])->name('exhibits.update.sources');
+    Route::delete('/exposicoes/{exhibit:uuid}/delete', [ExhibitController::class, 'destroy'])->name('exhibits.destroy');
+    Route::get('/exposicoes/fetch/options', [ExhibitController::class, 'fetchSelectOptions'])->name('exhibits.fetch.options');
 
     // Reviews
     Route::get('/criticas', [ReviewController::class, 'index'])->name('reviews.index');

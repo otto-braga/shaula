@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ArtworkEditRequest;
+use App\Http\Requests\ExhibitEditRequest;
 use App\Http\Requests\FetchRequest;
 use App\Http\Resources\ActivityResource;
-use App\Http\Resources\ArtworkResource;
+use App\Http\Resources\ExhibitResource;
 use App\Models\Activity;
-use App\Models\Artwork;
+use App\Models\Exhibit;
 use App\Traits\HandlesFiles;
 use App\Traits\HasCommonPaginationConstants;
 use App\Traits\SyncsAuthors;
@@ -19,7 +19,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
-class ArtworkController extends Controller
+class ExhibitController extends Controller
 {
     use
         HandlesFiles,
@@ -35,9 +35,9 @@ class ArtworkController extends Controller
 
     public function index()
     {
-        Gate::authorize('view', Artwork::class);
+        Gate::authorize('view', Exhibit::class);
 
-        $artworks = Artwork::where(function ($query) {
+        $exhibits = Exhibit::where(function ($query) {
                 if (request()->has('q') && request()->q) {
                     $query->where('title', 'like', '%' . request()->q . '%');
                 }
@@ -45,12 +45,12 @@ class ArtworkController extends Controller
             ->latest()
             ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
 
-        return Inertia::render('admin/artwork/index', [
-            'artworks' => ArtworkResource::collection($artworks),
+        return Inertia::render('admin/exhibit/index', [
+            'exhibits' => ExhibitResource::collection($exhibits),
         ]);
     }
 
-    public function show(Artwork $artwork)
+    public function show(Exhibit $exhibit)
     {
         //
     }
@@ -60,19 +60,19 @@ class ArtworkController extends Controller
 
     public function create()
     {
-        Gate::authorize('create', Artwork::class);
+        Gate::authorize('create', Exhibit::class);
 
-        return Inertia::render('admin/artwork/edit/index');
+        return Inertia::render('admin/exhibit/edit/index');
     }
 
-    public function store(ArtworkEditRequest $request)
+    public function store(ExhibitEditRequest $request)
     {
-        Gate::authorize('create', Artwork::class);
+        Gate::authorize('create', Exhibit::class);
 
         try {
             $request->validated();
 
-            $artwork = Artwork::create(
+            $exhibit = Exhibit::create(
                 $request->only([
                     'title',
                     'dimensions',
@@ -82,17 +82,16 @@ class ArtworkController extends Controller
 
             if ($request->has('date')) {
                 $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-                $artwork->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
+                $exhibit->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
             }
 
-            $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
-            $this->syncUuids($request->languages_uuids, $artwork->languages());
-            $this->syncUuids($request->awards_uuids, $artwork->awards());
-            $this->syncUuids($request->categories_uuids, $artwork->categories());
-            $this->syncUuids($request->periods_uuids, $artwork->periods());
+            $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->awards_uuids, $exhibit->awards());
+            $this->syncUuids($request->categories_uuids, $exhibit->categories());
+            $this->syncUuids($request->periods_uuids, $exhibit->periods());
 
             session()->flash('success', true);
-            return redirect()->route('artworks.edit', $artwork);
+            return redirect()->route('exhibits.edit', $exhibit);
         }
         catch (\Throwable $e) {
             session()->flash('success', false);
@@ -103,25 +102,25 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // EDIT
 
-    public function edit(Artwork $artwork)
+    public function edit(Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
-        $artwork->load('authors');
+        $exhibit->load('authors');
 
-        return Inertia::render('admin/artwork/edit/index', [
-            'artwork' => new ArtworkResource($artwork),
+        return Inertia::render('admin/exhibit/edit/index', [
+            'exhibit' => new ExhibitResource($exhibit),
         ]);
     }
 
-    public function update(ArtworkEditRequest $request, Artwork $artwork)
+    public function update(ExhibitEditRequest $request, Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
         try {
             $request->validated();
 
-            $artwork->update(
+            $exhibit->update(
                 $request->only([
                     'title',
                     'dimensions',
@@ -131,17 +130,16 @@ class ArtworkController extends Controller
 
             if ($request->has('date')) {
                 $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-                $artwork->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
+                $exhibit->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
             }
 
-            $this->syncUuids($request->authors_uuids, $artwork->authors(), $this->syncAuthors(...));
-            $this->syncUuids($request->languages_uuids, $artwork->languages());
-            $this->syncUuids($request->awards_uuids, $artwork->awards());
-            $this->syncUuids($request->categories_uuids, $artwork->categories());
-            $this->syncUuids($request->periods_uuids, $artwork->periods());
+            $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
+            $this->syncUuids($request->awards_uuids, $exhibit->awards());
+            $this->syncUuids($request->categories_uuids, $exhibit->categories());
+            $this->syncUuids($request->periods_uuids, $exhibit->periods());
 
             session()->flash('success', true);
-            return redirect()->route('artworks.edit', $artwork);
+            return redirect()->route('exhibits.edit', $exhibit);
         }
         catch (\Throwable $e) {
             session()->flash('success', false);
@@ -152,28 +150,28 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // EDIT PEOPLE
 
-    public function editPeople(Artwork $artwork)
+    public function editPeople(Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
-        $artwork->load('people');
+        $exhibit->load('people');
 
         $activities = Activity::query()
             ->take(5)
             ->get();
 
-        return Inertia::render('admin/artwork/edit/people', [
-            'artwork' => new ArtworkResource($artwork),
+        return Inertia::render('admin/exhibit/edit/people', [
+            'exhibit' => new ExhibitResource($exhibit),
             'activities' => ActivityResource::collection($activities),
         ]);
     }
 
-    public function updatePeople(ArtworkEditRequest $request, Artwork $artwork)
+    public function updatePeople(ExhibitEditRequest $request, Exhibit $exhibit)
     {
         try {
             $request->validated();
 
-            $this->handlePeopleUpdate($request, $artwork);
+            $this->handlePeopleUpdate($request, $exhibit);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -187,23 +185,23 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // EDIT IMAGES
 
-    public function editImages(Artwork $artwork)
+    public function editImages(Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
-        return Inertia::render('admin/artwork/edit/images', [
-            'artwork' => new ArtworkResource($artwork),
+        return Inertia::render('admin/exhibit/edit/images', [
+            'exhibit' => new ExhibitResource($exhibit),
         ]);
     }
 
-    public function updateImages(ArtworkEditRequest $request, Artwork $artwork)
+    public function updateImages(ExhibitEditRequest $request, Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
         try {
             $request->validated();
 
-            $this->handleImageUpdate($request, $artwork);
+            $this->handleImageUpdate($request, $exhibit);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -217,23 +215,23 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // EDIT CONTENT
 
-    public function editContent(Artwork $artwork)
+    public function editContent(Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
-        return Inertia::render('admin/artwork/edit/content', [
-            'artwork' => new ArtworkResource($artwork),
+        return Inertia::render('admin/exhibit/edit/content', [
+            'exhibit' => new ExhibitResource($exhibit),
         ]);
     }
 
-    public function updateContent(ArtworkEditRequest $request, Artwork $artwork)
+    public function updateContent(ExhibitEditRequest $request, Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
         try {
             $request->validated();
 
-            $this->handleContentUpdate($request, $artwork);
+            $this->handleContentUpdate($request, $exhibit);
 
             session()->flash('success', true);
             return redirect()->back();
@@ -246,27 +244,27 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // EDIT SOURCES
 
-    public function editSources(Artwork $artwork)
+    public function editSources(Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
-        $artwork->load('sources');
+        $exhibit->load('sources');
 
-        return Inertia::render('admin/artwork/edit/sources', [
-            'artwork' => new ArtworkResource($artwork),
+        return Inertia::render('admin/exhibit/edit/sources', [
+            'exhibit' => new ExhibitResource($exhibit),
         ]);
     }
 
-    public function updateSources(ArtworkEditRequest $request, Artwork $artwork)
+    public function updateSources(ExhibitEditRequest $request, Exhibit $exhibit)
     {
-        Gate::authorize('update', Artwork::class);
+        Gate::authorize('update', Exhibit::class);
 
         try {
             $request->validated();
 
-            $this->syncUuids($request->sources_uuids, $artwork->sources());
+            $this->syncUuids($request->sources_uuids, $exhibit->sources());
 
-            $artwork->save();
+            $exhibit->save();
 
             session()->flash('success', true);
             return redirect()->back();
@@ -280,12 +278,12 @@ class ArtworkController extends Controller
     // -------------------------------------------------------------------------
     // DELETE
 
-    public function destroy(Artwork $artwork)
+    public function destroy(Exhibit $exhibit)
     {
-        Gate::authorize('delete', Artwork::class);
+        Gate::authorize('delete', Exhibit::class);
 
         try {
-            $artwork->delete();
+            $exhibit->delete();
 
             session()->flash('success', true);
             return redirect()->back();
@@ -301,14 +299,14 @@ class ArtworkController extends Controller
 
     public function fetchSelectOptions(FetchRequest $request)
     {
-        Gate::authorize('view', Artwork::class);
+        Gate::authorize('view', Exhibit::class);
 
         $request->validated();
 
         return (new SearchController())->fetchMulti(
             $request->merge([
                 'limit' => 5,
-                'only' => ['artworks'],
+                'only' => ['exhibits'],
             ])
         );
     }

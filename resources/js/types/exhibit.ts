@@ -7,14 +7,14 @@ import { Period } from "./period";
 import { Person } from "./person";
 import { Source } from "./source";
 
-export enum ArtworkLabels {
+export enum ExhibitLabels {
     ROUTE = 'artworks',
     TYPE = 'artwork',
     TYPE_LABEL = 'Obra',
     TYPE_PLURAL = 'Obras'
 }
 
-export type Artwork = {
+export type Exhibit = {
     uuid: string;
     slug: string;
 

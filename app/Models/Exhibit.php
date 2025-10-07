@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 // use Laravel\Scout\Searchable;
 
-class Artwork extends Model
+class Exhibit extends Model
 {
     use
         HasFactory,
@@ -22,14 +22,12 @@ class Artwork extends Model
         HasFiles;
         // Searchable;
 
-    protected $table = 'artworks';
+    protected $table = 'exhibits';
 
     protected $fillable = [
         'title',
         'date',
         'content',
-        'dimensions',
-        'materials',
     ];
 
     public function searchableAs(): string
@@ -108,11 +106,6 @@ class Artwork extends Model
     public function periods(): MorphToMany
     {
         return $this->morphToMany(Period::class, 'periodizable');
-    }
-
-    public function languages(): BelongsToMany
-    {
-        return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');
     }
 
     // Files.
