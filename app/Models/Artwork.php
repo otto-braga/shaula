@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\HasFiles;
-use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +19,6 @@ class Artwork extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions,
         HasFiles;
         // Searchable;
 

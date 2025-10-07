@@ -110,6 +110,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('busca/fetch/search', [SearchController::class, 'fetchSearch'])->name('search.fetch.search');
     Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
     Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
+    Route::get('busca/fetch/select-options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.select.options');
 
     // Roles
     Route::get('funcoes', [RoleController::class, 'index'])->name('roles.index');

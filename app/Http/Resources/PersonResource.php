@@ -30,8 +30,6 @@ class PersonResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
-            'mentions' => MentionResource::collection($this->mentions()),
-
             'sources' => SourceResource::collection($this->sources),
 
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),

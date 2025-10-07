@@ -28,7 +28,6 @@ export type Artwork = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
-    mentions: Mention[];
     sources: Source[];
 
     // Pessoas que não são autores, mas estão ligadas à obra por meio de uma atividade
