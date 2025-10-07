@@ -35,7 +35,6 @@ type HtmlEditorProps = {
     submit: FormEventHandler;
 
     hasGallery?: boolean;
-    hasMentions?: boolean;
     hasImageUpload?: boolean;
 };
 
@@ -52,13 +51,11 @@ export default function HtmlEditor({
     submit,
 
     hasGallery = true,
-    hasMentions = true,
 }: HtmlEditorProps) {
     const toolbar =
         'undo redo | ' +
         (hasGallery ? 'gallery | ' : '') +
         'media | ' +
-        (hasMentions ? 'mentions | ' : '') +
         'link | ' +
         'bold italic forecolor | alignleft aligncenter ' +
         'alignright alignjustify |  outdent indent | ' +
@@ -147,7 +144,6 @@ export default function HtmlEditor({
 
     const [fetchedMentions, setFetchedMentions] = useState<SearchResult[]>([]);
     const [selectedMention, setSelectedMention] = useState<SearchResult | null>(null);
-    const [shouldAddCharacter, setShouldAddCharacter] = useState<boolean>(true);
 
     const openMentionModal = () => {
         setShowMentions(true);
@@ -163,11 +159,6 @@ export default function HtmlEditor({
     };
 
     const closeMentionModal = () => {
-        if (!selectedMention && shouldAddCharacter) {
-            editorRef?.current?.execCommand('mceInsertContent', false, '@');
-            editorRef?.current?.focus();
-        }
-        setShouldAddCharacter(false);
         setShowMentions(false);
         setSelectedMention(null);
         setFetchedMentions([]);
@@ -246,25 +237,6 @@ export default function HtmlEditor({
                                 });
                             }
 
-                            // Handle @ mentions
-                            if (hasMentions) {
-                                editor.ui.registry.addButton('mentions', {
-                                    text: 'Mencionar',
-                                    onAction: () => {
-                                        setShouldAddCharacter(false);
-                                        openMentionModal();
-                                    },
-                                });
-
-                                editor.on('keydown', (e) => {
-                                    if (e.key === '@') {
-                                        e.preventDefault();
-                                        setShouldAddCharacter(true);
-                                        openMentionModal();
-                                    }
-                                });
-                            }
-
                             editor.on('ExecCommand', function(e) {
                                 //if the command refers to the link dialog opening
                                 if (e.command === 'mceLink') {
@@ -291,7 +263,6 @@ export default function HtmlEditor({
                                         customButton.onclick = function() {
                                             // close the dialog and open the mention modal
                                             editor.windowManager.close();
-                                            setShouldAddCharacter(false);
                                             openMentionModal();
                                         };
 
@@ -417,8 +388,7 @@ export default function HtmlEditor({
 
             <Modal show={showMentions} onClose={closeMentionModal}>
                 <div className="p-4 z-50 overflow-visible">
-                    <h2 className="mb-4 text-lg font-semibold">Mencionar</h2>
-                    <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
+                    <p className="mb-2">Digite o nome da entrada que deseja linkar:</p>
                     <LazyLoadingSelect
                         options={fetchedMentions}
                         value={selectedMention}
@@ -441,7 +411,7 @@ export default function HtmlEditor({
                         menuPortalTarget={document.body}
                         styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 9999 }) }}
                     />
-                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir a menção.</p>
+                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir o link.</p>
                 </div>
             </Modal>
         </>

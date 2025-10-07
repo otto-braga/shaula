@@ -76,7 +76,6 @@ export default function Index({
                     processing={processing}
                     submit={submit}
                     hasGallery={false}
-                    hasMentions={false}
                 />
 
             </form>
