@@ -43,7 +43,6 @@ return [
                 Language::class => DEV,
                 Category::class => DEV,
                 Award::class => DEV,
-                SourceCategory::class => DEV,
             ],
         ],
         'admin' => [
@@ -66,7 +65,6 @@ return [
                 Language::class => ALL,
                 Category::class => ALL,
                 Award::class => ALL,
-                SourceCategory::class => ALL,
             ],
         ],
         'editor' => [
@@ -86,7 +84,6 @@ return [
                 Language::class => NO_DELETE,
                 Category::class => NO_DELETE,
                 Award::class => NO_DELETE,
-                SourceCategory::class => NO_DELETE,
             ],
         ],
     ],

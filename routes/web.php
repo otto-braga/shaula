@@ -36,7 +36,6 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
-use App\Http\Controllers\MentionController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
@@ -49,7 +48,6 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
-use App\Http\Controllers\SourceCategoryController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -257,13 +255,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/fontes/{source:uuid}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
     Route::get('/fontes/fetch/{uuid}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
-
-    // Source Categories
-    Route::get('/categorias-fontes', [SourceCategoryController::class, 'index'])->name('source_categories.index');
-    Route::post('/categorias-fontes/store', [SourceCategoryController::class, 'store'])->name('source_categories.store');
-    Route::put('/categorias-fontes/{sourceCategory:uuid}/update', [SourceCategoryController::class, 'update'])->name('source_categories.update');
-    Route::delete('/categorias-fontes/{sourceCategory:uuid}/delete', [SourceCategoryController::class, 'destroy'])->name('source_categories.destroy');
-    Route::get('/categorias-fontes/fetch/options', [SourceCategoryController::class, 'fetchSelectOptions'])->name('source_categories.fetch.options');
 
     // Connection Checks
     Route::get('/check/db', [ConnectionChecker::class, 'isDatabaseReady'])->name('check.db');
