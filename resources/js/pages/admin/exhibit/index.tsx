@@ -7,12 +7,12 @@ type Props = {
     meta: PaginationProps;
 };
 
-export default function Index({ artworks }: { artworks: Props }) {
+export default function Index({ exhibits }: { exhibits: Props }) {
     return (
         <AdminIndex
-            title="Obras"
-            route_base_name="artworks"
-            index={{ data: artworks.data, meta: artworks.meta }}
+            title="Exposições"
+            route_base_name="exhibits"
+            index={{ data: exhibits.data, meta: exhibits.meta }}
         />
     );
 }

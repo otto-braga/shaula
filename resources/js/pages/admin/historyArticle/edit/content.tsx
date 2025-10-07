@@ -11,8 +11,6 @@ export default function Content({
 }: {
     historyArticle: { data: HistoryArticle }
 }) {
-    console.log('mentions', historyArticle.data.mentions);
-
     const { data, setData, post, processing } = useForm({
         content: historyArticle.data.content as string ?? String(),
         files: Array<File>(),

@@ -2,8 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Artwork;
-use App\Models\File;
+use App\Models\Exhibit;
 use Illuminate\Database\Seeder;
 
 class ExhibitSeeder extends Seeder
@@ -13,6 +12,6 @@ class ExhibitSeeder extends Seeder
      */
     public function run(): void
     {
-        Artwork::factory(20)->create();
+        Exhibit::factory(20)->create();
     }
 }

@@ -8,10 +8,10 @@ import { Person } from "./person";
 import { Source } from "./source";
 
 export enum ExhibitLabels {
-    ROUTE = 'artworks',
-    TYPE = 'artwork',
-    TYPE_LABEL = 'Obra',
-    TYPE_PLURAL = 'Obras'
+    ROUTE = 'exhibits',
+    TYPE = 'exhibit',
+    TYPE_LABEL = 'Exposição',
+    TYPE_PLURAL = 'Exposições'
 }
 
 export type Exhibit = {
@@ -42,12 +42,7 @@ export type Exhibit = {
     categories: Category[];
 
     periods: Period[];
-    languages: Language[];
     awards: Award[];
-
-    year: string;
-    dimensions: string;
-    materials: string;
 
     created_at: string;
     updated_at: string;

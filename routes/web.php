@@ -40,6 +40,7 @@ use App\Http\Controllers\LanguageController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
+use App\Http\Controllers\Public\ExhibitPublicController;
 use App\Http\Controllers\Public\HistoryArticlePublicController;
 use App\Http\Controllers\Public\PeriodPublicController;
 use App\Http\Controllers\Public\PersonPublicController;
@@ -67,6 +68,8 @@ Route::name('public.')->group(function () {
     Route::get('/pessoas/{person:slug}', [PersonPublicController::class, 'show'])->name('people.show');
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
+
+    Route::get('/exposicoes/{exhibit:slug}', [ExhibitPublicController::class, 'show'])->name('exhibits.show');
 
     Route::redirect('historia', 'historia/artigos');
     Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');

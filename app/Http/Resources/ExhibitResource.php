@@ -35,12 +35,7 @@ class ExhibitResource extends JsonResource
 
             'categories' => CategoryResource::collection($this->categories),
             'periods' => PeriodResource::collection($this->periods),
-            'languages' => LanguageResource::collection($this->languages),
             'awards' => AwardResource::collection($this->awards),
-
-            'year' => Carbon::parse($this->date)->year, // Apenas o ano, sem o mês e dia
-            'dimensions' => $this->dimensions,
-            'materials' => $this->materials,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

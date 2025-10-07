@@ -1,4 +1,4 @@
-import { Artwork } from '@/types/artwork';
+import { Exhibit } from '@/types/exhibit';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
@@ -7,12 +7,12 @@ import { ActivityPerson } from '@/types/activity-person';
 import EditLayout from '@/components/edit/edit-layout';
 
 export default function People({
-    artwork,
+    exhibit,
 }: {
-    artwork: { data: Artwork };
+    exhibit: { data: Exhibit };
 }) {
     const { data, setData, post, processing } = useForm({
-        activitiesPeople: artwork.data.people.map((person) => ({
+        activitiesPeople: exhibit.data.people.map((person) => ({
             activity_uuid: person.pivot.activity?.uuid,
             activity_name: person.pivot.activity?.name,
             person_uuid: person.uuid,
@@ -23,7 +23,7 @@ export default function People({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        post(route('artworks.update.people', artwork.data), {
+        post(route('exhibits.update.people', exhibit.data), {
             preserveScroll: true,
             preserveState: false,
         });
@@ -33,8 +33,8 @@ export default function People({
         <EditLayout>
             <form onSubmit={submit} className="space-y-6 bg-inherit">
                 <EditTabs
-                    model={artwork}
-                    route_base_name="artworks"
+                    model={exhibit}
+                    route_base_name="exhibits"
                     processing={processing}
                 />
 

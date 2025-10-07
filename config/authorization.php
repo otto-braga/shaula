@@ -32,6 +32,7 @@ return [
 
                 Person::class => DEV,
                 Artwork::class => DEV,
+                Exhibit::class => DEV,
                 Review::class => DEV,
                 Period::class => DEV,
                 HistoryArticle::class => DEV,
@@ -54,6 +55,7 @@ return [
 
                 Person::class => ALL,
                 Artwork::class => ALL,
+                Exhibit::class => ALL,
                 Review::class => ALL,
                 Period::class => ALL,
                 HistoryArticle::class => ALL,
@@ -73,6 +75,7 @@ return [
             'permissions' => [
                 Person::class => NO_DELETE,
                 Artwork::class => NO_DELETE,
+                Exhibit::class => NO_DELETE,
                 Review::class => NO_DELETE,
                 Period::class => NO_DELETE,
                 HistoryArticle::class => NO_DELETE,

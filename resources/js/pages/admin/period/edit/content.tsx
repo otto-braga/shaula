@@ -11,8 +11,6 @@ export default function Content({
 }: {
     period: { data: Period }
 }) {
-    console.log('mentions', period.data.mentions);
-
     const { data, setData, post, processing } = useForm({
         content: period.data.content as string ?? String(),
         files: Array<File>(),

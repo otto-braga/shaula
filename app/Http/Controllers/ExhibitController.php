@@ -75,8 +75,6 @@ class ExhibitController extends Controller
             $exhibit = Exhibit::create(
                 $request->only([
                     'title',
-                    'dimensions',
-                    'materials',
                 ])
             );
 
@@ -123,8 +121,6 @@ class ExhibitController extends Controller
             $exhibit->update(
                 $request->only([
                     'title',
-                    'dimensions',
-                    'materials',
                 ])
             );
 
