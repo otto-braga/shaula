@@ -23,10 +23,10 @@ export default function Index({
         date: artwork ? new Date(artwork.data.date).getUTCFullYear() : '' as string,
 
         authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
-        periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as number[],
+        periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as string[],
         languages_uuids: artwork ? artwork.data.languages?.map((language) => language.uuid) : [] as string[],
-        categories_uuids: artwork ? artwork.data.categories?.map((category) => category.uuid) : [] as number[],
-        awards_uuids: artwork ? artwork.data.awards?.map((award) => award.uuid) : [] as number[],
+        categories_uuids: artwork ? artwork.data.categories?.map((category) => category.uuid) : [] as string[],
+        awards_uuids: artwork ? artwork.data.awards?.map((award) => award.uuid) : [] as string[],
 
         dimensions: artwork ? artwork.data.dimensions : '',
         materials: artwork ? artwork.data.materials : '',

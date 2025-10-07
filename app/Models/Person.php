@@ -165,4 +165,11 @@ class Person extends Model
     {
         return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
     }
+
+    // Awards.
+
+    public function awards(): MorphToMany
+    {
+        return $this->morphToMany(Award::class, 'awardable', 'awardables');
+    }
 }

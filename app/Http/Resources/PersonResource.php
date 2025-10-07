@@ -44,6 +44,7 @@ class PersonResource extends JsonResource
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'genders' => new Collection($this->genders),
             'cities' => CityResource::collection($this->cities),
+            'awards' => AwardResource::collection($this->awards),
 
             'links' => $this->links,
 

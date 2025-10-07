@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('artwork_award', function (Blueprint $table) {
+        Schema::create('awardables', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('artwork_id')->constrained('artworks')->onDelete('cascade');
             $table->foreignId('award_id')->constrained('awards')->onDelete('cascade');
-            $table->unique(['artwork_id', 'award_id'])->index('artwork_award_unique');
+            $table->morphs('awardable');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('artwork_award');
+        Schema::dropIfExists('awardables');
     }
 };

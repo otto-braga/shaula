@@ -1,10 +1,10 @@
 import { Activity } from "./activity";
 import { Artwork } from "./artwork";
+import { Award } from "./award";
 import { City } from "./city";
 import { FileProps } from "./file";
 import { Gender } from "./gender";
 import { Language } from "./language";
-import { Mention } from "./mention";
 import { Period } from "./period";
 import { Review } from "./review";
 import { Source } from "./source";
@@ -46,6 +46,7 @@ export type Person = {
     reviews: Review[];
     genders: Gender[];
     cities: City[];
+    awards: Award[];
 
     links: string;
 

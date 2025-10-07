@@ -3,7 +3,6 @@ import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Language } from "./language";
-import { Mention } from "./mention";
 import { Period } from "./period";
 import { Person } from "./person";
 import { Source } from "./source";

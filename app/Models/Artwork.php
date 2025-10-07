@@ -115,11 +115,6 @@ class Artwork extends Model
         return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');
     }
 
-    public function awards(): BelongsToMany
-    {
-        return $this->belongsToMany(Award::class, 'artwork_award', 'artwork_id', 'award_id');
-    }
-
     // Files.
 
     public function files(): MorphMany
@@ -153,5 +148,12 @@ class Artwork extends Model
     public function sources(): MorphToMany
     {
         return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
+    }
+
+    // Awards.
+
+    public function awards(): MorphToMany
+    {
+        return $this->morphToMany(Award::class, 'awardable', 'awardables');
     }
 }
