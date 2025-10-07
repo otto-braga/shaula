@@ -10,7 +10,7 @@ class ExhibitEditRequest extends BaseEditRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'date' => ['nullable', 'date_format:Y'],
+            'date' => ['nullable', 'date'],
             'authors_uuids' => ['nullable', 'array'],
             'authors_uuids.*' => ['string', Rule::exists('people', 'uuid')],
             'periods_uuids' => ['nullable', 'array'],
@@ -19,6 +19,8 @@ class ExhibitEditRequest extends BaseEditRequest
             'categories_uuids.*' => ['string', Rule::exists('categories', 'uuid')],
             'awards_uuids' => ['nullable', 'array'],
             'awards_uuids.*' => ['string', Rule::exists('awards', 'uuid')],
+            'artworks_uuids' => ['nullable', 'array'],
+            'artworks_uuids.*' => ['string', Rule::exists('artworks', 'uuid')],
         ];
     }
 
@@ -41,6 +43,9 @@ class ExhibitEditRequest extends BaseEditRequest
             'awards_uuids.array' => 'Deve ser uma lista de índices.',
             'awards_uuids.*.string' => 'Deve ser um índice válido.',
             'awards_uuids.*.exists' => 'O prêmio deve existir.',
+            'artworks_uuids.array' => 'Deve ser uma lista de índices.',
+            'artworks_uuids.*.string' => 'Deve ser um índice válido.',
+            'artworks_uuids.*.exists' => 'A obra deve existir.',
         ];
     }
 }

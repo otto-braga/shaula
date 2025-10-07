@@ -108,6 +108,13 @@ class Exhibit extends Model
         return $this->morphToMany(Period::class, 'periodizable');
     }
 
+    // Artworks.
+
+    public function artworks(): BelongsToMany
+    {
+        return $this->belongsToMany(Artwork::class, 'artwork_exhibit', 'exhibit_id', 'artwork_id');
+    }
+
     // Files.
 
     public function files(): MorphMany

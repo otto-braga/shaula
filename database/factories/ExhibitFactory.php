@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use App\Models\Activity;
+use App\Models\Artwork;
 use App\Models\Exhibit;
 use App\Models\Award;
 use App\Models\Category;
@@ -10,7 +11,6 @@ use App\Models\File;
 use App\Models\Period;
 use App\Models\Person;
 use App\Models\Source;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -27,7 +27,7 @@ class ExhibitFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence,
-            'date' => Carbon::parse($this->faker->date, 'UTC'),
+            'date' => $this->faker->date(),
             'content' => json_encode($this->faker->text(4000)),
         ];
     }
@@ -79,6 +79,11 @@ class ExhibitFactory extends Factory
             $sources = Source::inRandomOrder()->take(rand(0, 4))->get();
             foreach ($sources as $source) {
                 $exhibit->sources()->attach($source);
+            }
+
+            $artworks = Artwork::inRandomOrder()->take(rand(0, 5))->get();
+            foreach ($artworks as $artwork) {
+                $exhibit->artworks()->attach($artwork);
             }
         });
     }

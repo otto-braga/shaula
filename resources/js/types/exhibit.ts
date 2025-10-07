@@ -1,4 +1,5 @@
 import { Activity } from "./activity";
+import { Artwork } from "./artwork";
 import { Award } from "./award";
 import { Category } from "./category";
 import { FileProps } from "./file";
@@ -43,6 +44,8 @@ export type Exhibit = {
 
     periods: Period[];
     awards: Award[];
+
+    artworks: Artwork[];
 
     created_at: string;
     updated_at: string;

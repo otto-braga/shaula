@@ -115,6 +115,13 @@ class Artwork extends Model
         return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');
     }
 
+    // Exhibits.
+
+    public function exhibits(): BelongsToMany
+    {
+        return $this->belongsToMany(Exhibit::class, 'artwork_exhibit', 'artwork_id', 'exhibit_id');
+    }
+
     // Files.
 
     public function files(): MorphMany

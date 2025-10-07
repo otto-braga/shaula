@@ -75,18 +75,15 @@ class ExhibitController extends Controller
             $exhibit = Exhibit::create(
                 $request->only([
                     'title',
+                    'date',
                 ])
             );
-
-            if ($request->has('date')) {
-                $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-                $exhibit->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
-            }
 
             $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
             $this->syncUuids($request->awards_uuids, $exhibit->awards());
             $this->syncUuids($request->categories_uuids, $exhibit->categories());
             $this->syncUuids($request->periods_uuids, $exhibit->periods());
+            $this->syncUuids($request->artworks_uuids, $exhibit->artworks());
 
             session()->flash('success', true);
             return redirect()->route('exhibits.edit', $exhibit);
@@ -121,18 +118,15 @@ class ExhibitController extends Controller
             $exhibit->update(
                 $request->only([
                     'title',
+                    'date',
                 ])
             );
-
-            if ($request->has('date')) {
-                $date = $request->date . '-01-01'; // Default to January 1st if only year is provided
-                $exhibit->update(['date' => Carbon::parse($date, 'UTC')->startOfDay()]);
-            }
 
             $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
             $this->syncUuids($request->awards_uuids, $exhibit->awards());
             $this->syncUuids($request->categories_uuids, $exhibit->categories());
             $this->syncUuids($request->periods_uuids, $exhibit->periods());
+            $this->syncUuids($request->artworks_uuids, $exhibit->artworks());
 
             session()->flash('success', true);
             return redirect()->route('exhibits.edit', $exhibit);

@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Models\Activity;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -16,7 +15,7 @@ class ExhibitResource extends JsonResource
             'slug' => $this->slug,
 
             'title' => $this->title,
-            'date' => Carbon::parse($this->date),
+            'date' => $this->date,
             'authors' => PersonResource::collection($this->authors),
             'content' => $this->content,
 
@@ -36,6 +35,8 @@ class ExhibitResource extends JsonResource
             'categories' => CategoryResource::collection($this->categories),
             'periods' => PeriodResource::collection($this->periods),
             'awards' => AwardResource::collection($this->awards),
+
+            'artworks' => ArtworkResource::collection($this->artworks),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

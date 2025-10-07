@@ -42,6 +42,8 @@ class ArtworkResource extends JsonResource
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
 
+            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
+
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

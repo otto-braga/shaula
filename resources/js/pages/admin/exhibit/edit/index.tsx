@@ -26,6 +26,7 @@ export default function Index({
         periods_uuids: exhibit ? exhibit.data.periods?.map((period) => period.uuid) : [] as string[],
         categories_uuids: exhibit ? exhibit.data.categories?.map((category) => category.uuid) : [] as string[],
         awards_uuids: exhibit ? exhibit.data.awards?.map((award) => award.uuid) : [] as string[],
+        artworks_uuids: exhibit ? exhibit.data.artworks?.map((artwork) => artwork.uuid) : [] as string[],
 
     });
     const { errors } = usePage().props
@@ -136,6 +137,21 @@ export default function Index({
                         }}
                     />
                     <InputError className="mt-2" message={errors.awards_uuids} />
+                </div>
+
+                <div>
+                    <Label htmlFor="artworks_uuids">Obras</Label>
+                    <LazyLoadingSelectWithStates
+                        isMulti
+                        routeName={'artworks.fetch.options'}
+                        value={exhibit?.data.artworks?.map(
+                            artwork => ({ uuid: artwork.uuid, label: artwork.title })
+                        )}
+                        onChange={(options: MultiValue<SearchResult>) => {
+                            setData('artworks_uuids', options.map((option) => (option.uuid)))
+                        }}
+                    />
+                    <InputError className="mt-2" message={errors.artworks_uuids} />
                 </div>
 
             </form>

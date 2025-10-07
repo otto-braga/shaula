@@ -1,6 +1,7 @@
 import { Activity } from "./activity";
 import { Award } from "./award";
 import { Category } from "./category";
+import { Exhibit } from "./exhibit";
 import { FileProps } from "./file";
 import { Language } from "./language";
 import { Period } from "./period";
@@ -48,6 +49,8 @@ export type Artwork = {
     year: string;
     dimensions: string;
     materials: string;
+
+    exhibits: Exhibit[];
 
     created_at: string;
     updated_at: string;
