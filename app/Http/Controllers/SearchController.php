@@ -22,6 +22,7 @@ class SearchController extends Controller
                     'artworks',
                     'reviews',
                     'history_articles',
+                    'exhibits',
                 ],
             ])
         );
