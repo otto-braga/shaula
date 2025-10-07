@@ -265,9 +265,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/categorias-fontes/{sourceCategory:uuid}/delete', [SourceCategoryController::class, 'destroy'])->name('source_categories.destroy');
     Route::get('/categorias-fontes/fetch/options', [SourceCategoryController::class, 'fetchSelectOptions'])->name('source_categories.fetch.options');
 
-    // Mentions
-    Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
-
     // Connection Checks
     Route::get('/check/db', [ConnectionChecker::class, 'isDatabaseReady'])->name('check.db');
     Route::get('/check/redis', [ConnectionChecker::class, 'isRedisReady'])->name('check.redis');
