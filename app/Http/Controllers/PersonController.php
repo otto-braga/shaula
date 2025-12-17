@@ -78,7 +78,6 @@ class PersonController extends Controller
             $this->syncUuids($request->genders_uuids, $person->genders());
             $this->syncUuids($request->cities_uuids, $person->cities());
             $this->syncUuids($request->periods_uuids, $person->periods());
-            $this->syncUuids($request->awards_uuids, $person->awards());
 
             session()->flash('success', true);
             return redirect()->route('people.edit', $person);
@@ -126,7 +125,6 @@ class PersonController extends Controller
             $this->syncUuids($request->genders_uuids, $person->genders());
             $this->syncUuids($request->cities_uuids, $person->cities());
             $this->syncUuids($request->periods_uuids, $person->periods());
-            $this->syncUuids($request->awards_uuids, $person->awards());
 
             $person->update([
                 'updated_at' => now(),

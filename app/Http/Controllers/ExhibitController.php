@@ -2,302 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ExhibitEditRequest;
-use App\Http\Requests\FetchRequest;
-use App\Http\Resources\ActivityResource;
-use App\Http\Resources\ExhibitResource;
-use App\Models\Activity;
 use App\Models\Exhibit;
-use App\Traits\HandlesFiles;
-use App\Traits\HasCommonPaginationConstants;
-use App\Traits\SyncsAuthors;
-use App\Traits\ParsesUuids;
-use App\Traits\UpdatesContent;
-use App\Traits\UpdatesImages;
-use App\Traits\UpdatesPeople;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
+use Illuminate\Http\Request;
 
 class ExhibitController extends Controller
 {
-    use
-        HandlesFiles,
-        ParsesUuids,
-        SyncsAuthors,
-        UpdatesPeople,
-        UpdatesImages,
-        UpdatesContent,
-        HasCommonPaginationConstants;
-
-    // -------------------------------------------------------------------------
-    // INDEX
-
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        Gate::authorize('view', Exhibit::class);
-
-        $exhibits = Exhibit::where(function ($query) {
-                if (request()->has('q') && request()->q) {
-                    $query->where('title', 'like', '%' . request()->q . '%');
-                }
-            })
-            ->latest()
-            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
-
-        return Inertia::render('admin/exhibit/index', [
-            'exhibits' => ExhibitResource::collection($exhibits),
-        ]);
+        //
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        //
+    }
+
+    /**
+     * Display the specified resource.
+     */
     public function show(Exhibit $exhibit)
     {
         //
     }
 
-    // -------------------------------------------------------------------------
-    // CREATE
-
-    public function create()
-    {
-        Gate::authorize('create', Exhibit::class);
-
-        return Inertia::render('admin/exhibit/edit/index');
-    }
-
-    public function store(ExhibitEditRequest $request)
-    {
-        Gate::authorize('create', Exhibit::class);
-
-        try {
-            $request->validated();
-
-            $exhibit = Exhibit::create(
-                $request->only([
-                    'title',
-                    'date',
-                ])
-            );
-
-            $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
-            $this->syncUuids($request->awards_uuids, $exhibit->awards());
-            $this->syncUuids($request->categories_uuids, $exhibit->categories());
-            $this->syncUuids($request->periods_uuids, $exhibit->periods());
-            $this->syncUuids($request->artworks_uuids, $exhibit->artworks());
-
-            session()->flash('success', true);
-            return redirect()->route('exhibits.edit', $exhibit);
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT
-
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit(Exhibit $exhibit)
     {
-        Gate::authorize('update', Exhibit::class);
-
-        $exhibit->load('authors');
-
-        return Inertia::render('admin/exhibit/edit/index', [
-            'exhibit' => new ExhibitResource($exhibit),
-        ]);
+        //
     }
 
-    public function update(ExhibitEditRequest $request, Exhibit $exhibit)
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Exhibit $exhibit)
     {
-        Gate::authorize('update', Exhibit::class);
-
-        try {
-            $request->validated();
-
-            $exhibit->update(
-                $request->only([
-                    'title',
-                    'date',
-                ])
-            );
-
-            $this->syncUuids($request->authors_uuids, $exhibit->authors(), $this->syncAuthors(...));
-            $this->syncUuids($request->awards_uuids, $exhibit->awards());
-            $this->syncUuids($request->categories_uuids, $exhibit->categories());
-            $this->syncUuids($request->periods_uuids, $exhibit->periods());
-            $this->syncUuids($request->artworks_uuids, $exhibit->artworks());
-
-            session()->flash('success', true);
-            return redirect()->route('exhibits.edit', $exhibit);
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
+        //
     }
 
-    // -------------------------------------------------------------------------
-    // EDIT PEOPLE
-
-    public function editPeople(Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        $exhibit->load('people');
-
-        $activities = Activity::query()
-            ->take(5)
-            ->get();
-
-        return Inertia::render('admin/exhibit/edit/people', [
-            'exhibit' => new ExhibitResource($exhibit),
-            'activities' => ActivityResource::collection($activities),
-        ]);
-    }
-
-    public function updatePeople(ExhibitEditRequest $request, Exhibit $exhibit)
-    {
-        try {
-            $request->validated();
-
-            $this->handlePeopleUpdate($request, $exhibit);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT IMAGES
-
-    public function editImages(Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        return Inertia::render('admin/exhibit/edit/images', [
-            'exhibit' => new ExhibitResource($exhibit),
-        ]);
-    }
-
-    public function updateImages(ExhibitEditRequest $request, Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        try {
-            $request->validated();
-
-            $this->handleImageUpdate($request, $exhibit);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT CONTENT
-
-    public function editContent(Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        return Inertia::render('admin/exhibit/edit/content', [
-            'exhibit' => new ExhibitResource($exhibit),
-        ]);
-    }
-
-    public function updateContent(ExhibitEditRequest $request, Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        try {
-            $request->validated();
-
-            $this->handleContentUpdate($request, $exhibit);
-
-            session()->flash('success', true);
-            return redirect()->back();
-        } catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // EDIT SOURCES
-
-    public function editSources(Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        $exhibit->load('sources');
-
-        return Inertia::render('admin/exhibit/edit/sources', [
-            'exhibit' => new ExhibitResource($exhibit),
-        ]);
-    }
-
-    public function updateSources(ExhibitEditRequest $request, Exhibit $exhibit)
-    {
-        Gate::authorize('update', Exhibit::class);
-
-        try {
-            $request->validated();
-
-            $this->syncUuids($request->sources_uuids, $exhibit->sources());
-
-            $exhibit->save();
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // DELETE
-
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(Exhibit $exhibit)
     {
-        Gate::authorize('delete', Exhibit::class);
-
-        try {
-            $exhibit->delete();
-
-            session()->flash('success', true);
-            return redirect()->back();
-        }
-        catch (\Throwable $e) {
-            session()->flash('success', false);
-            return redirect()->back();
-        }
-    }
-
-    // -------------------------------------------------------------------------
-    // FETCH
-
-    public function fetchSelectOptions(FetchRequest $request)
-    {
-        Gate::authorize('view', Exhibit::class);
-
-        $request->validated();
-
-        return (new SearchController())->fetchMulti(
-            $request->merge([
-                'limit' => 5,
-                'only' => ['exhibits'],
-            ])
-        );
+        //
     }
 }

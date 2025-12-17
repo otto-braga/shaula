@@ -11,6 +11,8 @@ export default function Content({
 }: {
     review: { data: Review }
 }) {
+    console.log('mentions', review.data.mentions);
+
     const { data, setData, post, processing } = useForm({
         content: review.data.content as string ?? String(),
         files: Array<File>(),

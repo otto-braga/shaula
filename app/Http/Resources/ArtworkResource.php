@@ -24,6 +24,7 @@ class ArtworkResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
+            'mentions' => MentionResource::collection($this->mentions()),
             'sources' => SourceResource::collection($this->sources),
 
             'people' => PersonResource::collection($this->people),
@@ -41,8 +42,6 @@ class ArtworkResource extends JsonResource
             'year' => Carbon::parse($this->date)->year, // Apenas o ano, sem o mês e dia
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
-
-            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

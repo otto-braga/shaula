@@ -44,6 +44,19 @@ export default function Index({ review }: { review: { data: Review } }) {
                             ))}
                         </div>
                     )}
+
+                    {review.data.mentions.length > 0 && (
+                        <div className="">
+                            <p className="font-medium">Menções</p>
+                            <div className="mt-2 flex flex-col gap-1">
+                                {review.data.mentions.map((mention, index) => (
+                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                        <p className="line-clamp-1">{mention['name']}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                     {review.data.sources.length > 0 && (
                         <div className="space-y-3">
                             <p className="font-semibold">Fontes</p>
@@ -95,6 +108,19 @@ export default function Index({ review }: { review: { data: Review } }) {
                                     {category.name}
                                 </p>
                             ))}
+                        </div>
+                    )}
+
+                    {review.data.mentions.length > 0 && (
+                        <div className="">
+                            <p className="font-medium">Menções</p>
+                            <div className="mt-2 flex flex-col gap-1">
+                                {review.data.mentions.map((mention, index) => (
+                                    <Link href={mention['route']} className="hover:underline" key={'mention' + index}>
+                                        <p className="line-clamp-1">{mention['name']}</p>
+                                    </Link>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </section>

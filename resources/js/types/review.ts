@@ -1,5 +1,6 @@
 import { Category } from "./category";
 import { FileProps } from "./file";
+import { Mention } from "./mention";
 import { Person } from "./person";
 import { Source } from "./source";
 
@@ -23,6 +24,7 @@ export type Review = {
     primary_image: FileProps | null;
     content_images: FileProps[];
 
+    mentions: Mention[];
     sources: Source[];
 
     categories: Category[];

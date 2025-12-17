@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\File;
 use App\Models\Source;
+use App\Models\SourceCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 

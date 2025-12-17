@@ -60,6 +60,8 @@ class ReviewFactory extends Factory
             foreach ($sources as $source) {
                 $review->sources()->attach($source);
             }
+
+            MentionFactory::generateMentions($review);
         });
     }
 }

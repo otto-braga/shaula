@@ -11,6 +11,8 @@ class TestSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call(RoleSeeder::class);
+        $this->call(UserSeeder::class);
         $this->call(GenderSeeder::class);
         $this->call(CitySeeder::class);
         $this->call(ActivitySeeder::class);
@@ -23,6 +25,5 @@ class TestSeeder extends Seeder
         $this->call(ArtworkSeeder::class);
         $this->call(ReviewSeeder::class);
         $this->call(HistoryArticleSeeder::class);
-        $this->call(ExhibitSeeder::class);
     }
 }
