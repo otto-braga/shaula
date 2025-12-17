@@ -1,7 +1,6 @@
 import { Button } from '@/components/ui/button';
 import { Person, PersonLabels } from '@/types/person';
 import { Artwork, ArtworkLabels } from '@/types/artwork';
-import { Exhibit, ExhibitLabels } from '@/types/exhibit';
 import { Review, ReviewLabels } from '@/types/review';
 import { Period, PeriodLabels } from '@/types/period';
 import { HistoryArticle, HistoryArticleLabels } from '@/types/historyArticle';
@@ -13,7 +12,6 @@ import { useEffect, useState,  } from 'react';
 enum Labels {
     people = PersonLabels.TYPE_LABEL,
     artworks = ArtworkLabels.TYPE_LABEL,
-    exhibits = ExhibitLabels.TYPE_LABEL,
     reviews = ReviewLabels.TYPE_LABEL,
     history_articles = HistoryArticleLabels.TYPE_LABEL,
     periods = PeriodLabels.TYPE_LABEL,
@@ -21,7 +19,7 @@ enum Labels {
 };
 
 type EditTabsProps = {
-    model?: { data: Person | Artwork | Exhibit | Review | HistoryArticle | Period | Source };
+    model?: { data: Person | Artwork | Review | HistoryArticle | Period | Source };
     // model?: { data: any };
     route_base_name: string;
     processing: boolean;
@@ -75,12 +73,6 @@ export default function EditTabs({
             hasSourcesTab = hasSourcesTab || true;
             break;
         case 'artworks':
-            hasPeopleTab = hasPeopleTab || true;
-            hasImagesTab = hasImagesTab || true;
-            hasContentTab = hasContentTab || true;
-            hasSourcesTab = hasSourcesTab || true;
-            break;
-        case 'exhibits':
             hasPeopleTab = hasPeopleTab || true;
             hasImagesTab = hasImagesTab || true;
             hasContentTab = hasContentTab || true;

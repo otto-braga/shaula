@@ -28,7 +28,6 @@ use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
 use App\Http\Controllers\ArtworkController;
-use App\Http\Controllers\ExhibitController;
 use App\Http\Controllers\AwardController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
@@ -37,10 +36,10 @@ use App\Http\Controllers\GenderController;
 use App\Http\Controllers\HistoryArticleController;
 use App\Http\Controllers\HomePublicController;
 use App\Http\Controllers\LanguageController;
+use App\Http\Controllers\MentionController;
 use App\Http\Controllers\PeriodController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\Public\ArtworkPublicController;
-use App\Http\Controllers\Public\ExhibitPublicController;
 use App\Http\Controllers\Public\HistoryArticlePublicController;
 use App\Http\Controllers\Public\PeriodPublicController;
 use App\Http\Controllers\Public\PersonPublicController;
@@ -50,6 +49,7 @@ use App\Http\Controllers\SearchController;
 use App\Http\Controllers\Public\SourcePublicController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SourceCategoryController;
 use App\Http\Controllers\SourceController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
@@ -68,8 +68,6 @@ Route::name('public.')->group(function () {
     Route::get('/pessoas/{person:slug}', [PersonPublicController::class, 'show'])->name('people.show');
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
-
-    Route::get('/exposicoes/{exhibit:slug}', [ExhibitPublicController::class, 'show'])->name('exhibits.show');
 
     Route::redirect('historia', 'historia/artigos');
     Route::get('/historia/artigos', [HistoryArticlePublicController::class, 'index'])->name('history_articles.index');
@@ -112,7 +110,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::get('busca/fetch/search', [SearchController::class, 'fetchSearch'])->name('search.fetch.search');
     Route::get('busca/fetch/filters', [SearchController::class, 'fetchFilterOptions'])->name('search.filter.fetch.options');
     Route::get('busca/fetch/multi', [SearchController::class, 'fetchMulti'])->name('search.fetch.multi');
-    Route::get('busca/fetch/select-options', [SearchController::class, 'fetchSelectOptions'])->name('search.fetch.select.options');
 
     // Roles
     Route::get('funcoes', [RoleController::class, 'index'])->name('roles.index');
@@ -217,24 +214,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/obras/{artwork:uuid}/delete', [ArtworkController::class, 'destroy'])->name('artworks.destroy');
     Route::get('/obras/fetch/options', [ArtworkController::class, 'fetchSelectOptions'])->name('artworks.fetch.options');
 
-    // Exhibits
-    Route::get('/exposicoes', [ExhibitController::class, 'index'])->name('exhibits.index');
-    Route::get('/exposicoes/criar', [ExhibitController::class, 'create'])->name('exhibits.create');
-    Route::post('/exposicoes/store', [ExhibitController::class, 'store'])->name('exhibits.store');
-    Route::get('/exposicoes/{exhibit:slug}', [ExhibitController::class, 'show'])->name('exhibits.show');
-    Route::get('/exposicoes/{exhibit:slug}/editar', [ExhibitController::class, 'edit'])->name('exhibits.edit');
-    Route::post('/exposicoes/{exhibit:slug}/update', [ExhibitController::class, 'update'])->name('exhibits.update');
-    Route::get('/exposicoes/{exhibit:slug}/editar/pessoas', [ExhibitController::class, 'editPeople'])->name('exhibits.edit.people');
-    Route::post('/exposicoes/{exhibit:slug}/update/people', [ExhibitController::class, 'updatePeople'])->name('exhibits.update.people');
-    Route::get('/exposicoes/{exhibit:slug}/editar/imagens', [ExhibitController::class, 'editImages'])->name('exhibits.edit.images');
-    Route::post('/exposicoes/{exhibit:slug}/update/images', [ExhibitController::class, 'updateImages'])->name('exhibits.update.images');
-    Route::get('/exposicoes/{exhibit:slug}/editar/conteudo', [ExhibitController::class, 'editContent'])->name('exhibits.edit.content');
-    Route::post('/exposicoes/{exhibit:slug}/update/content', [ExhibitController::class, 'updateContent'])->name('exhibits.update.content');
-    Route::get('/exposicoes/{exhibit:slug}/editar/fontes', [ExhibitController::class, 'editSources'])->name('exhibits.edit.sources');
-    Route::post('/exposicoes/{exhibit:slug}/update/sources', [ExhibitController::class, 'updateSources'])->name('exhibits.update.sources');
-    Route::delete('/exposicoes/{exhibit:uuid}/delete', [ExhibitController::class, 'destroy'])->name('exhibits.destroy');
-    Route::get('/exposicoes/fetch/options', [ExhibitController::class, 'fetchSelectOptions'])->name('exhibits.fetch.options');
-
     // Reviews
     Route::get('/criticas', [ReviewController::class, 'index'])->name('reviews.index');
     Route::get('/criticas/criar', [ReviewController::class, 'create'])->name('reviews.create');
@@ -277,6 +256,16 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     Route::delete('/fontes/{source:uuid}/delete', [SourceController::class, 'destroy'])->name('sources.destroy');
     Route::get('/fontes/fetch/options', [SourceController::class, 'fetchSelectOptions'])->name('sources.fetch.options');
     Route::get('/fontes/fetch/{uuid}', [SourceController::class, 'fetchSingle'])->name('sources.fetch.single');
+
+    // Source Categories
+    Route::get('/categorias-fontes', [SourceCategoryController::class, 'index'])->name('source_categories.index');
+    Route::post('/categorias-fontes/store', [SourceCategoryController::class, 'store'])->name('source_categories.store');
+    Route::put('/categorias-fontes/{sourceCategory:uuid}/update', [SourceCategoryController::class, 'update'])->name('source_categories.update');
+    Route::delete('/categorias-fontes/{sourceCategory:uuid}/delete', [SourceCategoryController::class, 'destroy'])->name('source_categories.destroy');
+    Route::get('/categorias-fontes/fetch/options', [SourceCategoryController::class, 'fetchSelectOptions'])->name('source_categories.fetch.options');
+
+    // Mentions
+    Route::get('/mencoes/fetch/options', [MentionController::class, 'fetchSelectOptions'])->name('mentions.fetch.options');
 
     // Connection Checks
     Route::get('/check/db', [ConnectionChecker::class, 'isDatabaseReady'])->name('check.db');

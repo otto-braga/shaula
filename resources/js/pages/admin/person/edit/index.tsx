@@ -25,10 +25,9 @@ export default function Index({
         date_of_birth: person ? person.data.date_of_birth : '',
         date_of_death: person ? person.data.date_of_death : '',
 
-        genders_uuids: person ? person.data.genders?.map((gender) => gender.uuid) : ([] as string[]),
-        cities_uuids: person ? person.data.cities?.map((city) => city.uuid) : ([] as string[]),
-        periods_uuids: person ? person.data.periods?.map((period) => period.uuid) : ([] as string[]),
-        awards_uuids: person ? person.data.awards?.map((award) => award.uuid) : [] as string[],
+        genders_uuids: person ? person.data.genders?.map((gender) => gender.uuid) : ([] as number[]),
+        cities_uuids: person ? person.data.cities?.map((city) => city.uuid) : ([] as number[]),
+        periods_uuids: person ? person.data.periods?.map((period) => period.uuid) : ([] as number[]),
 
         links: person ? person.data.links : '',
         chronology: person ? person.data.chronology : '',
@@ -151,21 +150,6 @@ export default function Index({
                         }}
                     />
                     <InputError className="mt-2" message={errors.periods_uuids} />
-                </div>
-
-                <div>
-                    <Label htmlFor="awards_uuids">Prêmios</Label>
-                    <LazyLoadingSelectWithStates
-                        isMulti
-                        routeName={'awards.fetch.options'}
-                        value={person?.data.awards?.map(
-                            award => ({ uuid: award.uuid, label: award.name })
-                        )}
-                        onChange={(options: MultiValue<SearchResult>) => {
-                            setData('awards_uuids', options.map((option) => (option.uuid)))
-                        }}
-                    />
-                    <InputError className="mt-2" message={errors.awards_uuids} />
                 </div>
 
                 <div>

@@ -11,6 +11,8 @@ export default function Content({
 }: {
     artwork: { data: Artwork }
 }) {
+    console.log('mentions', artwork.data.mentions);
+
     const { data, setData, post, processing } = useForm({
         content: artwork.data.content as string ?? String(),
         files: Array<File>(),

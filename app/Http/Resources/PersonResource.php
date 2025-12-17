@@ -30,6 +30,8 @@ class PersonResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
+            'mentions' => MentionResource::collection($this->mentions()),
+
             'sources' => SourceResource::collection($this->sources),
 
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
@@ -44,7 +46,6 @@ class PersonResource extends JsonResource
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
             'genders' => new Collection($this->genders),
             'cities' => CityResource::collection($this->cities),
-            'awards' => AwardResource::collection($this->awards),
 
             'links' => $this->links,
 

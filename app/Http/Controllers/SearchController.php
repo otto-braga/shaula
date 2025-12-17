@@ -12,22 +12,6 @@ use Illuminate\Http\Request;
 
 class SearchController extends Controller
 {
-    public function fetchSelectOptions(Request $request)
-    {
-        return (new SearchController())->fetchMulti(
-            $request->merge([
-                'limit' => 5,
-                'only' => [
-                    'people',
-                    'artworks',
-                    'reviews',
-                    'history_articles',
-                    'exhibits',
-                ],
-            ])
-        );
-    }
-
     public function fetchSearch(Request $request)
     {
         $query = $request->q ?? null;

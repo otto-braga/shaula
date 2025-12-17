@@ -60,6 +60,8 @@ class PersonFactory extends Factory
             foreach ($sources as $source) {
                 $person->sources()->attach($source);
             }
+
+            MentionFactory::generateMentions($person);
         });
     }
 }

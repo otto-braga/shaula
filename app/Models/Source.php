@@ -37,14 +37,14 @@ class Source extends Model
             'uuid' => $this->uuid,
             'slug' => $this->slug,
             'route_base_name' => $this->getTable(),
-            'route' => '',
+            'route' => route('public.' . $this->getTable() . '.show', $this),
 
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',
 
             'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
 
-            'file_path' => $this->file ? $this->file->path : null,
+            'file_path' => $this->file() ? $this->file->path : null,
 
             'updated_at' => $this->updated_at ? $this->updated_at->timestamp : null,
             'created_at' => $this->created_at ? $this->created_at->timestamp : null,

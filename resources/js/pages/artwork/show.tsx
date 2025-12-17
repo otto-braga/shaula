@@ -43,6 +43,23 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                 ))}
                             </div>
                         )}
+
+                        {artwork.data.mentions.length > 0 && (
+                            <div className="">
+                                <p className="font-semibold">Menções</p>
+                                <div className="mt-2 space-y-3">
+                                    {artwork.data.mentions.map((mention, index) => (
+                                        <div key={'mention' + index}>
+                                            <p>
+                                                <Link href={mention['route']} className="hover:underline">
+                                                    {mention['name']}
+                                                </Link>
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </MobileDetailBar>
 
@@ -75,6 +92,23 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                                     <p className="line-clamp-1">{period.name}</p>
                                 </Link>
                             ))}
+                        </div>
+                    )}
+
+                    {artwork.data.mentions.length > 0 && (
+                        <div className="">
+                            <p className="font-semibold">Menções</p>
+                            <div className="mt-2 space-y-3">
+                                {artwork.data.mentions.map((mention, index) => (
+                                    <div key={'mention' + index}>
+                                        <p>
+                                            <Link href={mention['route']} className="hover:underline">
+                                                {mention['name']}
+                                            </Link>
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     )}
                 </section>

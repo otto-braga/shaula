@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -22,6 +23,7 @@ class ReviewResource extends JsonResource
             'primary_image' => new FileResource($this->primaryImage()),
             'content_images' => FileResource::collection($this->contentImages),
 
+            'mentions' => MentionResource::collection($this->mentions()),
             'sources' => SourceResource::collection($this->sources),
 
             'categories' => CategoryResource::collection($this->categories),

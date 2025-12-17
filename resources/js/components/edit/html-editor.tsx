@@ -35,6 +35,7 @@ type HtmlEditorProps = {
     submit: FormEventHandler;
 
     hasGallery?: boolean;
+    hasMentions?: boolean;
     hasImageUpload?: boolean;
 };
 
@@ -51,12 +52,13 @@ export default function HtmlEditor({
     submit,
 
     hasGallery = true,
+    hasMentions = true,
 }: HtmlEditorProps) {
     const toolbar =
         'undo redo | ' +
         (hasGallery ? 'gallery | ' : '') +
         'media | ' +
-        'link | ' +
+        (hasMentions ? 'mentions | ' : '') +
         'bold italic forecolor | alignleft aligncenter ' +
         'alignright alignjustify |  outdent indent | ' +
         'removeformat';
@@ -110,7 +112,7 @@ export default function HtmlEditor({
 
         let response;
 
-        fetch(route('search.fetch.select.options') + '?q=' + encodeURIComponent(search), {
+        fetch(route('mentions.fetch.options') + '?q=' + encodeURIComponent(search), {
             method: 'GET',
             headers: {
                 'X-Requested-With': 'XMLHttpRequest',
@@ -144,6 +146,7 @@ export default function HtmlEditor({
 
     const [fetchedMentions, setFetchedMentions] = useState<SearchResult[]>([]);
     const [selectedMention, setSelectedMention] = useState<SearchResult | null>(null);
+    const [shouldAddCharacter, setShouldAddCharacter] = useState<boolean>(true);
 
     const openMentionModal = () => {
         setShowMentions(true);
@@ -159,6 +162,11 @@ export default function HtmlEditor({
     };
 
     const closeMentionModal = () => {
+        if (!selectedMention && shouldAddCharacter) {
+            editorRef?.current?.execCommand('mceInsertContent', false, '@');
+            editorRef?.current?.focus();
+        }
+        setShouldAddCharacter(false);
         setShowMentions(false);
         setSelectedMention(null);
         setFetchedMentions([]);
@@ -210,10 +218,6 @@ export default function HtmlEditor({
 
                         toolbar: toolbar,
 
-                        link_title: false,
-                        link_default_target: 'New Tab',
-                        link_target_list: false,
-
                         content_style:
                             'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
@@ -237,43 +241,24 @@ export default function HtmlEditor({
                                 });
                             }
 
-                            editor.on('ExecCommand', function(e) {
-                                //if the command refers to the link dialog opening
-                                if (e.command === 'mceLink') {
-                                    //wait for the DOM to update before changing the dialog content
-                                    setTimeout(function() {
-                                        //retrieve the dialog content
-                                        const iframe = document.querySelector('.tox-dialog__body-content');
+                            // Handle @ mentions
+                            if (hasMentions) {
+                                editor.ui.registry.addButton('mentions', {
+                                    text: 'Mencionar',
+                                    onAction: () => {
+                                        setShouldAddCharacter(false);
+                                        openMentionModal();
+                                    },
+                                });
 
-                                        if (!iframe) {
-                                            return;
-                                        }
-
-                                        // get cancel button element
-                                        const element = iframe.querySelector('.tox-control-wrap .tox-textfield');
-
-                                        // const element = iframe;
-
-                                        //create a new button
-                                        let customButton = document.createElement('button');
-                                        customButton.textContent = 'procurar no shaula';
-                                        customButton.classList.add('tox-button', 'tox-button--secondary');
-                                        customButton.classList.add('!my-2');
-
-                                        customButton.onclick = function() {
-                                            // close the dialog and open the mention modal
-                                            editor.windowManager.close();
-                                            openMentionModal();
-                                        };
-
-                                        //insert the new button next to the url text field
-                                        if (element && element.parentNode && element.nextSibling) {
-                                            element.parentNode.insertBefore(customButton, element.nextSibling);
-                                        }
-                                    }, 1);
-                                }
-                            });
-
+                                editor.on('keydown', (e) => {
+                                    if (e.key === '@') {
+                                        e.preventDefault();
+                                        setShouldAddCharacter(true);
+                                        openMentionModal();
+                                    }
+                                });
+                            }
                         },
                     }}
                     onEditorChange={onContentInput}
@@ -387,19 +372,19 @@ export default function HtmlEditor({
             </Modal>
 
             <Modal show={showMentions} onClose={closeMentionModal}>
-                <div className="p-4 z-50 overflow-visible">
-                    <p className="mb-2">Digite o nome da entrada que deseja linkar:</p>
+                <div className="h-150 p-4 z-50">
+                    <h2 className="mb-4 text-lg font-semibold">Mencionar</h2>
+                    <p className="mb-2">Digite o nome da entrada que deseja mencionar:</p>
                     <LazyLoadingSelect
                         options={fetchedMentions}
                         value={selectedMention}
                         onChange={(option: SearchResult) => {
                             if (option) {
                                 option = fetchedMentions.find((mention) => mention.uuid === option?.uuid) || option;
-                                // insert the mention route at the current cursor position in the editor as link with the label as text
                                 editorRef?.current?.execCommand(
                                     'mceInsertContent',
                                     false,
-                                    `<a data-type="${option.type}" data-key="${option.uuid}" href="${option.route}">${option.label}</a>`,
+                                    `<span class="shaula-mention"><a data-type="${option.type}" data-key="${option.uuid}" href="${option.route}">${option.label}</a></span>`,
                                 );
                                 setSelectedMention(null);
                                 setShowMentions(false);
@@ -408,10 +393,8 @@ export default function HtmlEditor({
                         onInputChange={(inputValue: string) => {
                             fetchMentions(inputValue);
                         }}
-                        menuPortalTarget={document.body}
-                        styles={{ menuPortal: (base: any) => ({ ...base, zIndex: 9999 }) }}
                     />
-                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir o link.</p>
+                    <p className="mt-4 text-sm text-gray-500">Pressione "Enter" para inserir a menção.</p>
                 </div>
             </Modal>
         </>

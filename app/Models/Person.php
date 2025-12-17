@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Traits\HasFiles;
+use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,6 +21,7 @@ class Person extends Model
         HasFactory,
         HasUuid,
         HasSlug,
+        HasMentions,
         HasFiles;
         // Searchable;
 
@@ -164,12 +166,5 @@ class Person extends Model
     public function sources(): MorphToMany
     {
         return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
-    }
-
-    // Awards.
-
-    public function awards(): MorphToMany
-    {
-        return $this->morphToMany(Award::class, 'awardable', 'awardables');
     }
 }
