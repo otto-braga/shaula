@@ -1,7 +1,7 @@
 import InputError from '@/components/input-error';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Artwork } from '@/types/artwork';
+import { Exhibit } from '@/types/exhibit';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 import EditTabs from '@/components/edit/edit-tabs';
@@ -11,25 +11,23 @@ import { MultiValue } from 'react-select';
 import EditLayout from '@/components/edit/edit-layout';
 
 export default function Index({
-    artwork,
+    exhibit,
 }: {
-    artwork: { data: Artwork },
+    exhibit: { data: Exhibit },
 }) {
-    const isEdit = !!artwork;
+    const isEdit = !!exhibit;
 
 
     const { data, setData, post, patch, processing } = useForm({
-        title: artwork ? artwork.data.title : '' as string,
-        date: artwork ? new Date(artwork.data.date).getUTCFullYear() : '' as string,
+        title: exhibit ? exhibit.data.title : '' as string,
+        date: exhibit ? exhibit.data.date : '' as string,
 
-        authors_uuids: artwork ? artwork.data.authors.map((author) => author.uuid) : [] as string[],
-        periods_uuids: artwork ? artwork.data.periods?.map((period) => period.uuid) : [] as string[],
-        languages_uuids: artwork ? artwork.data.languages?.map((language) => language.uuid) : [] as string[],
-        categories_uuids: artwork ? artwork.data.categories?.map((category) => category.uuid) : [] as string[],
-        awards_uuids: artwork ? artwork.data.awards?.map((award) => award.uuid) : [] as string[],
+        authors_uuids: exhibit ? exhibit.data.authors.map((author) => author.uuid) : [] as string[],
+        periods_uuids: exhibit ? exhibit.data.periods?.map((period) => period.uuid) : [] as string[],
+        categories_uuids: exhibit ? exhibit.data.categories?.map((category) => category.uuid) : [] as string[],
+        awards_uuids: exhibit ? exhibit.data.awards?.map((award) => award.uuid) : [] as string[],
+        artworks_uuids: exhibit ? exhibit.data.artworks?.map((artwork) => artwork.uuid) : [] as string[],
 
-        dimensions: artwork ? artwork.data.dimensions : '',
-        materials: artwork ? artwork.data.materials : '',
     });
     const { errors } = usePage().props
 
@@ -37,12 +35,12 @@ export default function Index({
         e.preventDefault();
 
         if (isEdit) {
-            post(route('artworks.update', artwork.data), {
+            post(route('exhibits.update', exhibit.data), {
                 preserveScroll: true,
                 preserveState: false,
             });
         } else {
-            post(route('artworks.store'), {
+            post(route('exhibits.store'), {
                 preserveScroll: true,
                 preserveState: false,
             });
@@ -53,8 +51,8 @@ export default function Index({
         <EditLayout>
             <form onSubmit={submit} className="space-y-3 bg-inherit">
                 <EditTabs
-                    model={artwork}
-                    route_base_name="artworks"
+                    model={exhibit}
+                    route_base_name="exhibits"
                     processing={processing}
                 />
 
@@ -71,7 +69,7 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'people.fetch.options'}
-                        value={artwork?.data.authors?.map(
+                        value={exhibit?.data.authors?.map(
                             author => ({ uuid: author.uuid, label: author.name })
                         )}
                         onChange={(options: MultiValue<SearchResult>) => {
@@ -83,12 +81,11 @@ export default function Index({
 
                 <div className="flex flex-row gap-3">
                     <div className="w-full">
-                        <Label htmlFor="date">Ano</Label>
+                        <Label htmlFor="date">Data</Label>
                         <Input
                             id="date"
-                            type="number"
+                            type="date"
                             value={data.date ?? ''}
-                            pattern='[0-9]{4}'
                             onChange={(e) => setData('date', e.target.value)}
                             autoComplete="date"
                             className="w-full"
@@ -98,31 +95,11 @@ export default function Index({
                 </div>
 
                 <div>
-                    <Label htmlFor="dimensions">Dimensões</Label>
-                    <Input
-                        id="title"
-                        value={data.dimensions ?? ''}
-                        onChange={(e) => setData('dimensions', e.target.value)}
-                    />
-                    <InputError className="mt-2" message={errors.dimensions} />
-                </div>
-
-                <div>
-                    <Label htmlFor="materials">Materiais</Label>
-                    <Input
-                        id="materials"
-                        value={data.materials ?? ''}
-                        onChange={(e) => setData('materials', e.target.value)}
-                    />
-                    <InputError className="mt-2" message={errors.materials} />
-                </div>
-
-                <div>
                     <Label htmlFor="periods_uuids">Periodização</Label>
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'periods.fetch.options'}
-                        value={artwork?.data.periods?.map(
+                        value={exhibit?.data.periods?.map(
                             period => ({ uuid: period.uuid, label: period.name })
                         )}
                         onChange={(options: MultiValue<SearchResult>) => {
@@ -133,26 +110,11 @@ export default function Index({
                 </div>
 
                 <div>
-                    <Label htmlFor="languages">Linguagens</Label>
-                    <LazyLoadingSelectWithStates
-                        isMulti
-                        routeName={'languages.fetch.options'}
-                        value={artwork?.data.languages?.map(
-                            language => ({ uuid: language.uuid, label: language.name })
-                        )}
-                        onChange={(options: MultiValue<SearchResult>) => {
-                            setData('languages_uuids', options.map((option) => (option.uuid)))
-                        }}
-                    />
-                    <InputError className="mt-2" message={errors.languages_uuids} />
-                </div>
-
-                <div>
                     <Label htmlFor="categories_uuids">Categorias</Label>
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'categories.fetch.options'}
-                        value={artwork?.data.categories?.map(
+                        value={exhibit?.data.categories?.map(
                             category => ({ uuid: category.uuid, label: category.name })
                         )}
                         onChange={(options: MultiValue<SearchResult>) => {
@@ -167,7 +129,7 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'awards.fetch.options'}
-                        value={artwork?.data.awards?.map(
+                        value={exhibit?.data.awards?.map(
                             award => ({ uuid: award.uuid, label: award.name })
                         )}
                         onChange={(options: MultiValue<SearchResult>) => {
@@ -175,6 +137,21 @@ export default function Index({
                         }}
                     />
                     <InputError className="mt-2" message={errors.awards_uuids} />
+                </div>
+
+                <div>
+                    <Label htmlFor="artworks_uuids">Obras</Label>
+                    <LazyLoadingSelectWithStates
+                        isMulti
+                        routeName={'artworks.fetch.options'}
+                        value={exhibit?.data.artworks?.map(
+                            artwork => ({ uuid: artwork.uuid, label: artwork.title })
+                        )}
+                        onChange={(options: MultiValue<SearchResult>) => {
+                            setData('artworks_uuids', options.map((option) => (option.uuid)))
+                        }}
+                    />
+                    <InputError className="mt-2" message={errors.artworks_uuids} />
                 </div>
 
             </form>

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\HasFiles;
-use App\Traits\HasMentions;
 use App\Traits\HasSlug;
 use App\Traits\HasUuid;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,7 +19,6 @@ class Artwork extends Model
         HasFactory,
         HasUuid,
         HasSlug,
-        HasMentions,
         HasFiles;
         // Searchable;
 
@@ -117,9 +115,11 @@ class Artwork extends Model
         return $this->belongsToMany(Language::class, 'artwork_language', 'artwork_id', 'language_id');
     }
 
-    public function awards(): BelongsToMany
+    // Exhibits.
+
+    public function exhibits(): BelongsToMany
     {
-        return $this->belongsToMany(Award::class, 'artwork_award', 'artwork_id', 'award_id');
+        return $this->belongsToMany(Exhibit::class, 'artwork_exhibit', 'artwork_id', 'exhibit_id');
     }
 
     // Files.
@@ -155,5 +155,12 @@ class Artwork extends Model
     public function sources(): MorphToMany
     {
         return $this->morphToMany(Source::class, 'sourceable', 'sourceables');
+    }
+
+    // Awards.
+
+    public function awards(): MorphToMany
+    {
+        return $this->morphToMany(Award::class, 'awardable', 'awardables');
     }
 }

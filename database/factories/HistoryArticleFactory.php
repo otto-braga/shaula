@@ -63,8 +63,6 @@ class HistoryArticleFactory extends Factory
             foreach ($sources as $source) {
                 $article->sources()->attach($source);
             }
-
-            MentionFactory::generateMentions($article);
         });
     }
 }

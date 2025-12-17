@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Exhibit;
 use Illuminate\Database\Seeder;
 
 class ExhibitSeeder extends Seeder
@@ -12,6 +12,6 @@ class ExhibitSeeder extends Seeder
      */
     public function run(): void
     {
-        //
+        Exhibit::factory(20)->create();
     }
 }

@@ -47,6 +47,11 @@ const mainNavItems: NavItem[] = [
         icon: Circle,
     },
     {
+        title: 'Exposições',
+        href: route('exhibits.index'),
+        icon: FolderClosed,
+    },
+    {
         title: 'Críticas',
         href: route('reviews.index'),
         icon: Text,
