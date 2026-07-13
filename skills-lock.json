@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "laravel-expert": {
+      "source": "sickn33/antigravity-awesome-skills",
+      "sourceType": "github",
+      "skillPath": "skills/laravel-expert/SKILL.md",
+      "computedHash": "f62283f8b992fad54a2a9fd8d59326cc7ed1fabbd54e94810ebe6e6431428282"
+    }
+  }
+}
