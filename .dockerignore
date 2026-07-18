@@ -3,4 +3,6 @@ node_modules
 .gitignore
 *.md
 dist
-
+vendor
+storage
+.meilisearch-data
