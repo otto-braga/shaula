@@ -22,14 +22,17 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $password = 'mudar@shaula';
+        $passwordDev = 'Shaula@DEV#00';
+        $passwordCoordination = 'Shaula@UFRN#COORD';
+        $passwordEditor = 'Shaula@EDIT#DEART';
+
 
         // dev
 
         $user = User::create([
             'name' => 'dev',
             'email' => 'dev',
-            'password' => Hash::make($password),
+            'password' => Hash::make($passwordDev),
         ]);
         $user->role()->associate(
             Role::where('name', 'dev')->firstOrFail()
@@ -40,7 +43,7 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'Coordenação 1',
             'email' => 'coordenacao-1',
-            'password' => Hash::make($password),
+            'password' => Hash::make($passwordCoordination),
         ]);
         $user->role()->associate(
             Role::where('name', 'admin')->firstOrFail()
@@ -49,7 +52,7 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'Coordenação 2',
             'email' => 'coordenacao-2',
-            'password' => Hash::make($password),
+            'password' => Hash::make($passwordCoordination),
         ]);
         $user->role()->associate(
             Role::where('name', 'admin')->firstOrFail()
@@ -60,7 +63,7 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'Edição 1',
             'email' => 'edicao-1',
-            'password' => Hash::make($password),
+            'password' => Hash::make($passwordEditor),
         ]);
         $user->role()->associate(
             Role::where('name', 'editor')->firstOrFail()
@@ -69,7 +72,7 @@ class DatabaseSeeder extends Seeder
         $user = User::create([
             'name' => 'Edição 2',
             'email' => 'edicao-2',
-            'password' => Hash::make($password),
+            'password' => Hash::make($passwordEditor),
         ]);
         $user->role()->associate(
             Role::where('name', 'editor')->firstOrFail()

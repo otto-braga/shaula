@@ -39,9 +39,11 @@ COPY --chown=$user . /var/www/
 COPY . /var/www
 
 # Set permissions for laravel logs
+RUN mkdir -p /var/www/storage
 RUN chmod -R 775 /var/www/storage
 
 # Set permissions for laravel to write and cache
+RUN mkdir -p /var/www/bootstrap/cache
 RUN chmod -R 775 /var/www/bootstrap
 
 # Set the user for the container

@@ -11,6 +11,11 @@ class TestSeeder extends Seeder
      */
     public function run(): void
     {
+        if (!app()->environment('local')) {
+            $this->command->info('Skipping TestSeeder because environment is not local.');
+            return;
+        }
+
         $this->call(GenderSeeder::class);
         $this->call(CitySeeder::class);
         $this->call(ActivitySeeder::class);
