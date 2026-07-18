@@ -33,25 +33,17 @@ jobs:
           npm ci
           npm run build
 
-      - name: Setup SSH Key for Rsync
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SERVER_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -p ${{ secrets.SERVER_PORT }} -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
       - name: Sync Files to Server via Rsync
-        run: |
-          rsync -avz --delete \
-            --exclude '.git' \
-            --exclude '.github' \
-            --exclude 'node_modules' \
-            --exclude 'storage' \
-            --exclude '.env' \
-            --exclude '.docker/mysql' \
-            --exclude '.meilisearch-data' \
-            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.SERVER_PORT }}" \
-            ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }}:${{ secrets.PROJECT_PATH }}/
+        uses: easingthemes/ssh-deploy@main
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SERVER_KEY }}
+          ARGS: "-avz --delete"
+          SOURCE: "./"
+          REMOTE_HOST: ${{ secrets.SERVER_HOST }}
+          REMOTE_USER: ${{ secrets.SERVER_USER }}
+          REMOTE_PORT: ${{ secrets.SERVER_PORT }}
+          TARGET: ${{ secrets.PROJECT_PATH }}/
+          EXCLUDE: ".git/, .github/, node_modules/, storage/, .env, .docker/mysql/, .meilisearch-data/"
 
       - name: Execute post-deployment commands via SSH
         uses: appleboy/ssh-action@v1.0.3
