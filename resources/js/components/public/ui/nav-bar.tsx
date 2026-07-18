@@ -17,6 +17,10 @@ const navItems: NavItem[] = [
         href: '/pessoas',
     },
     {
+        title: 'Exposições',
+        href: '/exposicoes',
+    },
+    {
         title: 'História',
         href: '/historia/artigos',
     },

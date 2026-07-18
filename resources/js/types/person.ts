@@ -8,6 +8,7 @@ import { Language } from "./language";
 import { Period } from "./period";
 import { Review } from "./review";
 import { Source } from "./source";
+import { Exhibit } from "./exhibit";
 
 export enum PersonLabels {
     ROUTE = 'people',
@@ -33,6 +34,7 @@ export type Person = {
     sources: Source[];
 
     artworks: Artwork[];
+    exhibits: Exhibit[];
     activities: Activity[];
 
     // Atividades exercidas

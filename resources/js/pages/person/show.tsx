@@ -191,6 +191,45 @@ export default function Index({ person }: { person: { data: Person } }) {
                         //     </div>
                         // </div>
                     )}
+
+                    {person.data.exhibits && person.data.exhibits.length > 0 && (
+                        <div className="pt-6">
+                            <h2 className="mb-6 text-xl font-medium uppercase">EXPOSIÇÕES</h2>
+                            <div className="grid grid-cols-2 gap-8">
+                                {(() => {
+                                    const columns = person.data.exhibits.reduce(
+                                        (acc, exhibit, index) => {
+                                            acc[index % 2].push(
+                                                <Link href={route('public.exhibits.show', exhibit.slug)} className="group" key={exhibit.uuid}>
+                                                    <div key={exhibit.uuid} className="relative">
+                                                        <img
+                                                            src={`${exhibit.primary_image ? exhibit.primary_image.path : 'https://placehold.co/1280x900'}`}
+                                                            alt="exhibit Image"
+                                                            className="w-full"
+                                                        />
+                                                        <div className="mt-3">
+                                                            <h3 className="text-lg group-hover:underline">{exhibit.title}</h3>
+                                                            {exhibit.date && (
+                                                                <p className="text-sm text-slate-700">{exhibit.date}</p>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </Link>,
+                                            );
+                                            return acc;
+                                        },
+                                        [[], []] as JSX.Element[][],
+                                    );
+
+                                    return columns.map((column, columnIndex) => (
+                                        <div key={columnIndex} className="flex flex-col gap-8">
+                                            {column}
+                                        </div>
+                                    ));
+                                })()}
+                            </div>
+                        </div>
+                    )}
                 </section>
             </div>
         </PublicLayout>

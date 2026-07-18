@@ -37,7 +37,8 @@ class PersonPublicController extends Controller
 
         $person->load([
             'artworks',
-            'reviews'
+            'reviews',
+            'exhibits'
         ]);
 
         return Inertia::render('person/show', [

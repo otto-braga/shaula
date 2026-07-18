@@ -33,6 +33,7 @@ class PersonResource extends JsonResource
             'sources' => SourceResource::collection($this->sources),
 
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
+            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
             'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
             'pivot' => [
                 'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork

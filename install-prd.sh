@@ -27,8 +27,8 @@ docker compose exec app composer install --no-dev --optimize-autoloader --no-int
 
 # 5. Install Node Dependencies and Build Assets
 echo "[4/7] Building frontend assets..."
-docker compose exec app npm install
-docker compose exec app npm run build
+npm install
+npm run build
 
 # 6. Caching and Storage
 echo "[5/7] Caching configurations and linking storage..."

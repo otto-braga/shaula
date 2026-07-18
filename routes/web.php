@@ -69,6 +69,7 @@ Route::name('public.')->group(function () {
 
     Route::get('/obras/{artwork:slug}', [ArtworkPublicController::class, 'show'])->name('artworks.show');
 
+    Route::get('/exposicoes', [ExhibitPublicController::class, 'index'])->name('exhibits.index');
     Route::get('/exposicoes/{exhibit:slug}', [ExhibitPublicController::class, 'show'])->name('exhibits.show');
 
     Route::redirect('historia', 'historia/artigos');

@@ -10,6 +10,19 @@ use Inertia\Inertia;
 class ExhibitPublicController extends Controller
 {
     /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $exhibits = Exhibit::orderBy('date', 'desc')->paginate(12)->withQueryString();
+
+        return Inertia::render('exhibit/index', [
+            'exhibits' => ExhibitResource::collection($exhibits),
+            'filters' => \Illuminate\Support\Facades\Request::all('search'),
+        ]);
+    }
+
+    /**
      * Display the specified resource.
      */
     public function show($slug)

@@ -46,7 +46,7 @@ echo Waiting 15 seconds for the database to be ready...
 echo
 sleep 15
 docker compose exec app php artisan migrate
-docker compose exec app php artisan db:seed
+docker compose exec app php artisad db:seed
 echo
 
 echo
