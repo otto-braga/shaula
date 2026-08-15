@@ -17,7 +17,7 @@ class ArtworkResource extends JsonResource
 
             'title' => $this->title,
             'date' => Carbon::parse($this->date),
-            'authors' => PersonResource::collection($this->authors),
+            'authors' => PersonResource::collection($this->whenLoaded('authors', function () { return $this->authors->unique('id'); }, $this->authors->unique('id'))),
             'content' => $this->content,
 
             'images' => FileResource::collection($this->images),
@@ -26,8 +26,8 @@ class ArtworkResource extends JsonResource
 
             'sources' => SourceResource::collection($this->sources),
 
-            'people' => PersonResource::collection($this->people),
-            'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
+            'people' => PersonResource::collection($this->whenLoaded('people', function () { return $this->people->unique('id'); }, $this->people->unique('id'))),
+            'activities' => ActivityResource::collection($this->whenLoaded('activities', function () { return $this->activities->unique('id'); })), // Todas as atividades dessa artwork
             'pivot' => [
                 'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa artwork a partir de uma pessoa, activity é a atuação dessa pessoa nessa artwork
                 'is_author' => $this->pivot ? $this->pivot->is_author : false,
@@ -42,7 +42,7 @@ class ArtworkResource extends JsonResource
             'dimensions' => $this->dimensions,
             'materials' => $this->materials,
 
-            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
+            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits', function () { return $this->exhibits->unique('id'); })),
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

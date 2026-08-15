@@ -13,16 +13,31 @@ class PersonPublicController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(\Illuminate\Http\Request $request)
     {
+        $query = Person::query();
 
-        $people = Person::latest()
+        if ($request->has('search') && $request->search) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        if ($request->has('letter') && $request->letter) {
+            // Using LIKE allows case-insensitive and accent-insensitive matching 
+            // if the database collation supports it (which Laravel defaults to).
+            $query->where('name', 'like', $request->letter . '%');
+        }
+
+        $orderBy = $request->get('orderBy', 'name');
+        $direction = $request->get('direction', 'asc');
+
+        // Ordering alphabetically, utilizing DB collation for case/accent insensitivity
+        $people = $query->orderBy($orderBy, $direction)
             ->paginate(12)
             ->withQueryString();
 
         return Inertia::render('person/index', [
             'people' => PersonResource::collection($people),
-            'filters' => Request::all('search'),
+            'filters' => $request->only(['search', 'letter', 'orderBy', 'direction']),
         ]);
     }
 
