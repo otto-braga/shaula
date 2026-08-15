@@ -69,7 +69,13 @@ class FileFactory extends Factory
                         return;
                     }
 
-                    file_put_contents($file_storage_path, file_get_contents($url));
+                    $context = stream_context_create([
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                        ],
+                    ]);
+                    file_put_contents($file_storage_path, file_get_contents($url, false, $context));
                     $path = Storage::putFile('s3/files/dummy/', new \Illuminate\Http\File($file_storage_path));
                 }
                 else if ($user->mime_type == "application/pdf") {
@@ -92,7 +98,13 @@ class FileFactory extends Factory
                         return;
                     }
 
-                    file_put_contents($file_storage_path, file_get_contents($url));
+                    $context = stream_context_create([
+                        "ssl" => [
+                            "verify_peer" => false,
+                            "verify_peer_name" => false,
+                        ],
+                    ]);
+                    file_put_contents($file_storage_path, file_get_contents($url, false, $context));
                     $path = Storage::putFile('public/files/dummy/', new \Illuminate\Http\File($file_storage_path));
                 }
             });

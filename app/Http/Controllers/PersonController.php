@@ -35,8 +35,9 @@ class PersonController extends Controller
                     $query->where('name', 'like', '%' . request()->q . '%');
                 }
             })
-            ->latest()
-            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE);
+            ->orderBy('name', 'asc')
+            ->paginate(self::COMMON_INDEX_PAGINATION_SIZE)
+            ->withQueryString();
 
         return Inertia::render('admin/person/index', [
             'people' => PersonResource::collection($people),

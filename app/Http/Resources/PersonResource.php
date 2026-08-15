@@ -32,9 +32,9 @@ class PersonResource extends JsonResource
 
             'sources' => SourceResource::collection($this->sources),
 
-            'artworks' => ArtworkResource::collection($this->whenLoaded('artworks')),
-            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits')),
-            'activities' => ActivityResource::collection($this->whenLoaded('activities')), // Todas as atividades dessa artwork
+            'artworks' => ArtworkResource::collection($this->whenLoaded('artworks', function () { return $this->artworks->unique('id'); })),
+            'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits', function () { return $this->exhibits->unique('id'); })),
+            'activities' => ActivityResource::collection($this->whenLoaded('activities', function () { return $this->activities->unique('id'); })), // Todas as atividades dessa artwork
             'pivot' => [
                 'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
                 'is_author' => $this->pivot ? $this->pivot->is_author : false,
@@ -42,7 +42,7 @@ class PersonResource extends JsonResource
 
             'periods' => PeriodResource::collection($this->periods),
             'languages' => LanguageResource::collection($this->whenLoaded('languages')),
-            'reviews' => ReviewResource::collection($this->whenLoaded('reviews')),
+            'reviews' => ReviewResource::collection($this->whenLoaded('reviews', function () { return $this->reviews->unique('id'); })),
             'genders' => new Collection($this->genders),
             'cities' => CityResource::collection($this->cities),
             'awards' => AwardResource::collection($this->awards),

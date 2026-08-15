@@ -15,7 +15,7 @@ class ReviewResource extends JsonResource
 
             'title' => $this->title,
             'date' => $this->date,
-            'authors' => PersonResource::collection($this->authors),
+            'authors' => PersonResource::collection($this->whenLoaded('authors', function () { return $this->authors->unique('id'); }, $this->authors->unique('id'))),
             'content' => $this->content,
 
             'images' => FileResource::collection($this->images),
