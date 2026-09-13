@@ -98,9 +98,13 @@ class Review extends Model
 
     public function primaryImage()
     {
+        if ($this->relationLoaded('images')) {
+            return $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+        }
+
         return $this->images()
             ->where('is_primary', true)
-            ->first();
+            ->first() ?? $this->images()->first();
     }
 
     public function contentImages(): MorphMany
