@@ -1,169 +1,160 @@
-import PublicLayout from '@/layouts/public-layout';
-
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-
 import PaginationWithAnchor from '@/components/PaginationWithAnchor';
+import FeaturedCarousel from '@/components/public/featured-carousel';
+import PublicLayout from '@/layouts/public-layout';
+import { Category } from '@/types/category';
 import { PaginatedData } from '@/types/paginated-data';
 import { Review } from '@/types/review';
 import { Link } from '@inertiajs/react';
-import Autoplay from 'embla-carousel-autoplay';
 import 'keen-slider/keen-slider.min.css';
-import { ChevronDown } from 'lucide-react';
 
 export default function Index({
     reviews,
-    // filters,
+    categories,
+    totalCategoriesCount,
+    filters,
     lastReviews,
+    carouselReviews,
 }: {
     reviews: PaginatedData<Review>;
-    // filters: { search: string };
-    lastReviews: { data: Review[] };
+    categories: { data: Category[] };
+    totalCategoriesCount: number;
+    filters?: {
+        category?: string | null;
+        search?: string | null;
+        cat_limit?: number | string | null;
+    };
+    lastReviews?: { data: Review[] };
+    carouselReviews?: { data: Review[] };
 }) {
-    // const [search, setSearch] = useState(filters.search || '');
-
-    // function handleSearch(e: React.FormEvent) {
-    //     e.preventDefault();
-
-    //     router.get('/critica', { search }, { preserveState: true });
-    // }
+    const currentLimit = filters?.cat_limit ? Number(filters.cat_limit) : 10;
+    const nextLimit = currentLimit + 10;
 
     return (
         <PublicLayout head="Crítica">
-            {/* relative e object-cover para todos ficarem do mesmo tamanho. */}
-
-            <Carousel
-                opts={{
-                    // align: 'start',
-                    align: 'center',
-                    loop: true,
-                }}
-                plugins={[
-                    Autoplay({
-                        delay: 5000,
-                        stopOnInteraction: false,
-                        jump: false,
-                        // disableOnInteraction: false,
-                    }),
-                ]}
-                className="relative mt-3"
-            >
-                {/* <div className="absolute z-20 hidden h-full w-[6%] bg-gradient-to-r from-white md:block" /> */}
-                {/* <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" /> */}
-                <CarouselContent className="max-h-[90vh]">
-                    {lastReviews.data.map((review) => (
-                        <CarouselItem key={review.uuid} className="relative basis-1/1 pl-4">
-                            <img
-                                src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
-                                alt="Review Image"
-                                className="aspect-video w-full object-cover"
-                            />
-                            <div className="absolute bottom-4 z-20 mt-3 flex w-full flex-col items-center justify-center p-4 text-center">
-                                <h2 className="text-xl font-semibold text-white md:text-3xl">{review.title}</h2>
-                                <div className="space-x-1">
-                                    {review.authors.map((author) => (
-                                        <span key={author.uuid} className="text-gray-200 underline">
-                                            {author.name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <div className="hidden md:block">
-                    <CarouselPrevious className="absolute top-1/2 left-2 z-30" />
-                    <CarouselNext className="absolute top-1/2 right-2 z-30" />
-                </div>
-            </Carousel>
+            <FeaturedCarousel
+                items={carouselReviews?.data ?? lastReviews?.data ?? []}
+                getHref={(review) => route('public.reviews.show', { review: review.slug })}
+            />
 
             <section className="grid grid-cols-1 divide-x px-4 pt-8 md:grid-cols-8 md:gap-8 md:px-8">
                 <div className="mb-6 w-full pr-8 md:col-span-2 md:mb-0">
                     <div className="mt-3 space-y-6">
                         <h1 className="font-medium">SHAULA - CRÍTICA</h1>
                         <p className="max-w-sm text-justify">
-                            Esta seção busca divulgar os textos produzidos pelos estudantes da 
-                            disciplina de Crítica de Arte do curso de Artes Visuais da UFRN, bem 
-                            como publicar textos escritos por colaboradores convidados. Assim, objetiva-se 
-                            a promoção do debate crítico sobre a arte contemporânea e as práticas curatoriais 
-                            mais recentes. O ponto de vista adotado é a crítica de arte dedicada às artes visuais 
-                            no RN e a partir do Nordeste.
+                            Esta seção busca divulgar os textos produzidos pelos estudantes da disciplina de Crítica de Arte do curso de Artes Visuais
+                            da UFRN, bem como publicar textos escritos por colaboradores convidados. Assim, objetiva-se a promoção do debate crítico
+                            sobre a arte contemporânea e as práticas curatoriais mais recentes. O ponto de vista adotado é a crítica de arte dedicada
+                            às artes visuais no RN e a partir do Nordeste.
                         </p>
-                        <div className="space-y-3">
-                            <div>
-                                <p className="font-medium">Coordenadores</p>
-                                <p>Fabíola Alves</p>
-                                <p>Everardo Araújo</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Programadores</p>
-                                <p>Danilo Andrade</p>
-                                <p>Otto Braga</p>
-                            </div>
-                            <div>
-                                <p className="font-medium">Estudantes bolsistas</p>
-                                <p>Maria Sucar(2024)</p>
-                                <p>Danilo Andrade(2023 e 2025)</p>
-                            </div>
-                        </div>
                     </div>
                 </div>
-                <div id="criticas" className="divide-y md:col-span-5 md:pr-8">
-                    {/* <div className="mb-6 w-full md:col-span-1 md:mb-0">
-                        <form onSubmit={handleSearch}>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    placeholder="Buscar criticas..."
-                                    value={search}
-                                    onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full border-0 border-b-2 border-black px-3 py-2 text-lg ring-0 focus:ring-0 focus:outline-0"
-                                />
-                                <button type="submit" className="absolute right-0 bottom-1 bg-white p-2 hover:cursor-pointer">
-                                    <Search />
-                                </button>
-                            </div>
-                        </form>
-                    </div> */}
-                    {reviews.data.map((review) => (
-                        <Link href={route('public.reviews.show', review)}>
-                            <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
-                                <div>
-                                    <img
-                                        src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
-                                        alt="Review Image"
-                                        className="aspect-video w-full object-cover"
-                                    />
-                                </div>
-                                <div>
-                                    <h2 className="text-2xl font-semibold">{review.title}</h2>
-                                    <div className="space-x-1">
-                                        {review.authors.map((author) => (
-                                            <span key={author.uuid} className="text-gray-500 underline">
-                                                {author.name}
-                                            </span>
-                                        ))}
+                <div id="criticas" className="divide-y md:col-span-4 md:pr-8 lg:col-span-5">
+                    {reviews.data.length === 0 ? (
+                        <div className="py-12 text-center text-gray-500">
+                            <p className="text-lg">Nenhuma crítica encontrada para esta categoria.</p>
+                            <Link href={route('public.reviews.index')} className="mt-2 inline-block text-sm font-medium text-black underline">
+                                Limpar filtro
+                            </Link>
+                        </div>
+                    ) : (
+                        reviews.data.map((review) => (
+                            <Link href={route('public.reviews.show', review)} key={review.uuid}>
+                                <div className="grid gap-3 space-y-3 py-6 md:grid-cols-2">
+                                    <div>
+                                        <img
+                                            src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
+                                            alt="Review Image"
+                                            className="aspect-video w-full object-cover"
+                                        />
                                     </div>
-                                    <div dangerouslySetInnerHTML={{ __html: review.content }} className="mt-3 line-clamp-5 text-lg text-gray-600" />
+                                    <div>
+                                        <h2 className="text-2xl font-semibold">{review.title}</h2>
+                                        <div className="space-x-1">
+                                            {review.authors.map((author) => (
+                                                <span key={author.uuid} className="text-gray-500 underline">
+                                                    {author.name}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div
+                                            dangerouslySetInnerHTML={{ __html: review.content }}
+                                            className="mt-3 line-clamp-5 text-lg text-gray-600"
+                                        />
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))
+                    )}
                     <PaginationWithAnchor links={reviews.meta.links} anchor="#criticas" />
                 </div>
-                <div className="md:col-span-1">
-                    <div className="divide-y hidden">
-                        <div className="flex justify-between py-3">
-                            <p>Categorias</p>
-                            <ChevronDown />
+                <div className="mt-8 md:col-span-2 md:mt-0 md:pl-4 lg:col-span-1">
+                    <div className="space-y-4 pt-3">
+                        <div className="flex items-center justify-between border-b border-gray-200 pb-2">
+                            <h2 className="font-medium">Categorias</h2>
+                            {filters?.category && (
+                                <Link
+                                    href={route('public.reviews.index', {
+                                        ...(filters?.cat_limit ? { cat_limit: filters.cat_limit } : {}),
+                                    })}
+                                    preserveScroll
+                                    preserveState
+                                    className="text-xs text-gray-500 hover:text-black hover:underline"
+                                >
+                                    Limpar
+                                </Link>
+                            )}
                         </div>
-                        <div className="flex justify-between py-3">
-                            <p>Autores</p>
-                            <ChevronDown />
-                        </div>
-                        <div className="flex justify-between py-3">
-                            <p>Data de publicação</p>
-                            <ChevronDown />
-                        </div>
+                        <ul className="space-y-2">
+                            {filters?.category && (
+                                <li>
+                                    <Link
+                                        href={route('public.reviews.index', {
+                                            ...(filters?.cat_limit ? { cat_limit: filters.cat_limit } : {}),
+                                        })}
+                                        preserveScroll
+                                        preserveState
+                                        className="block text-sm text-gray-500 transition-colors hover:text-black hover:underline"
+                                    >
+                                        Limpar
+                                    </Link>
+                                </li>
+                            )}
+                            {categories?.data?.map((cat) => {
+                                const isActive = filters?.category === cat.slug;
+                                return (
+                                    <li key={cat.uuid}>
+                                        <Link
+                                            href={route('public.reviews.index', {
+                                                category: cat.slug,
+                                                ...(filters?.cat_limit ? { cat_limit: filters.cat_limit } : {}),
+                                            })}
+                                            preserveScroll
+                                            preserveState
+                                            className={`block text-sm transition-colors hover:underline ${
+                                                isActive ? 'font-bold text-black underline underline-offset-4' : 'text-gray-600 hover:text-black'
+                                            }`}
+                                        >
+                                            {cat.name}
+                                        </Link>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                        {categories?.data && categories.data.length < totalCategoriesCount && (
+                            <div className="pt-2">
+                                <Link
+                                    href={route('public.reviews.index', {
+                                        ...(filters?.category ? { category: filters.category } : {}),
+                                        cat_limit: nextLimit,
+                                    })}
+                                    preserveScroll
+                                    preserveState
+                                    className="inline-block cursor-pointer text-xs font-medium text-gray-500 hover:text-black hover:underline"
+                                >
+                                    Ver mais
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

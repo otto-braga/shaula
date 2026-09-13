@@ -17,6 +17,7 @@ class CategoryResource extends JsonResource
         return [
             'uuid' => $this->uuid,
             'name' => $this->name,
+            'slug' => $this->slug ?? \Illuminate\Support\Str::slug($this->name),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

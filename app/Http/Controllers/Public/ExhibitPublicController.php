@@ -25,12 +25,23 @@ class ExhibitPublicController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($slug)
+    public function show(Exhibit $exhibit)
     {
-        $exhibit = Exhibit::where('slug', $slug)->firstOrFail();
+        $exhibit->load([
+            'files',
+            'images',
+            'contentImages',
+            'authors',
+            'people',
+            'periods',
+            'awards',
+            'categories',
+            'sources',
+            'artworks.images',
+        ]);
 
         return Inertia::render('exhibit/show', [
-            'exhibit' => new ExhibitResource($exhibit)
+            'exhibit' => new ExhibitResource($exhibit),
         ]);
     }
 }

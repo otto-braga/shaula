@@ -6,58 +6,15 @@ import { Link } from '@inertiajs/react';
 import 'keen-slider/keen-slider.min.css';
 import { ArrowRight } from 'lucide-react';
 
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
-import Autoplay from 'embla-carousel-autoplay';
+import FeaturedCarousel from '@/components/public/featured-carousel';
 
 export default function Index({ historyArticles, periods }: { historyArticles: { data: HistoryArticle[] }; periods: { data: Period[] } }) {
-    console.log(periods);
-
     return (
         <PublicLayout head="História">
-            <Carousel
-                opts={{
-                    // align: 'start',
-                    align: 'center',
-                    loop: true,
-                }}
-                plugins={[
-                    Autoplay({
-                        delay: 5000,
-                        stopOnInteraction: false,
-                        jump: false,
-                        // disableOnInteraction: false,
-                    }),
-                ]}
-                className="relative mt-3"
-            >
-                {/* <div className="absolute z-20 hidden h-full w-[6%] bg-gradient-to-r from-white md:block" /> */}
-                {/* <div className="absolute right-0 z-20 hidden h-full w-[6%] bg-gradient-to-l from-white md:block" /> */}
-                <CarouselContent className="max-h-[50vh]">
-                    {historyArticles.data.map((review) => (
-                        <CarouselItem key={review.uuid} className="relative basis-1/2 pl-4">
-                            <img
-                                src={`${review.images.length > 0 ? review.images[0].path : 'https://placehold.co/1280x900'}`}
-                                alt="Review Image"
-                                className="aspect-video w-full object-cover"
-                            />
-                            <div className="absolute bottom-4 z-20 mt-3 flex w-full flex-col items-center justify-center p-4 text-center">
-                                <h2 className="text-xl font-semibold text-white md:text-3xl">{review.title}</h2>
-                                <div className="space-x-1">
-                                    {review.authors.map((author) => (
-                                        <span key={author.uuid} className="text-gray-200 underline">
-                                            {author.name}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        </CarouselItem>
-                    ))}
-                </CarouselContent>
-                <div className="hidden md:block">
-                    <CarouselPrevious className="absolute top-1/2 left-2 z-30 cursor-pointer" />
-                    <CarouselNext className="absolute top-1/2 right-2 z-30 cursor-pointer" />
-                </div>
-            </Carousel>
+            <FeaturedCarousel
+                items={historyArticles.data}
+                getHref={(article) => route('public.history_articles.show', { historyArticle: article.slug })}
+            />
             <section className="flex w-full items-center justify-center px-4 pt-8">
                 <div className="max-w-2xl">
                     <div className="mt-3 divide-y">

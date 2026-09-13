@@ -19,4 +19,7 @@ Route::group(['prefix' => '', 'as' => 'public.'], function () {
 
     Route::get('/obras', [ArtworkPublicController::class, 'index'])->name('artwork.index');
     Route::get('/obras/{uuid}', [ArtworkPublicController::class, 'show'])->name('artwork.show');
+
+    Route::get('/exposicoes', [\App\Http\Controllers\Public\ExhibitPublicController::class, 'index'])->name('exhibits.index');
+    Route::get('/exposicoes/{exhibit:slug}', [\App\Http\Controllers\Public\ExhibitPublicController::class, 'show'])->name('exhibits.show');
 });

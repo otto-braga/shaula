@@ -16,7 +16,10 @@ class HistoryArticlePublicController extends Controller
      */
     public function index()
     {
-        $historyArticles = HistoryArticle::get();
+        $historyArticles = HistoryArticle::with(['authors', 'images'])
+            ->latest()
+            ->take(5)
+            ->get();
 
         $periods = Period::get();
 

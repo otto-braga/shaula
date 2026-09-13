@@ -21,6 +21,11 @@ class Category extends Model
         'name',
     ];
 
+    public function getSlugAttribute(): string
+    {
+        return $this->attributes['slug'] ?? \Illuminate\Support\Str::slug($this->name);
+    }
+
     public function categorizables(): MorphToMany
     {
         return $this->morphedByMany(Review::class, 'categorizable')
