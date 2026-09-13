@@ -14,7 +14,10 @@ class PeriodPublicController extends Controller
 
     public function index()
     {
-        $historyArticles = HistoryArticle::take(3)->get();
+        $historyArticles = HistoryArticle::with(['authors', 'images'])
+            ->latest()
+            ->take(5)
+            ->get();
 
         $periods = Period::get();
 

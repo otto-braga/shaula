@@ -15,6 +15,15 @@ class ArtworkPublicController extends Controller
     public function show($slug)
     {
         $artwork = Artwork::where('slug', $slug)->firstOrFail();
+        $artwork->load([
+            'images',
+            'authors',
+            'categories',
+            'periods',
+            'sources',
+            'languages',
+            'awards',
+        ]);
 
         return Inertia::render('artwork/show', [
             'artwork' => new ArtworkResource($artwork)

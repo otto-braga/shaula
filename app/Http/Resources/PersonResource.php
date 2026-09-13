@@ -26,31 +26,37 @@ class PersonResource extends JsonResource
             'content' => $this->content,
             'chronology' => $this->chronology,
 
-            'images' => FileResource::collection($this->images),
-            'primary_image' => new FileResource($this->primaryImage()),
-            'content_images' => FileResource::collection($this->contentImages),
+            'images' => FileResource::collection($this->relationLoaded('images') ? $this->images : []),
+            'primary_image' => $this->relationLoaded('images') ? new FileResource($this->primaryImage()) : null,
+            'content_images' => FileResource::collection($this->relationLoaded('contentImages') ? $this->contentImages : []),
 
-            'sources' => SourceResource::collection($this->sources),
+            'sources' => SourceResource::collection($this->relationLoaded('sources') ? $this->sources : []),
 
             'artworks' => ArtworkResource::collection($this->whenLoaded('artworks', function () { return $this->artworks->unique('id'); })),
             'exhibits' => ExhibitResource::collection($this->whenLoaded('exhibits', function () { return $this->exhibits->unique('id'); })),
             'activities' => ActivityResource::collection($this->whenLoaded('activities', function () { return $this->activities->unique('id'); })), // Todas as atividades dessa artwork
             'pivot' => [
-                'activity' => $this->pivot ? new ActivityResource(Activity::find($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
-                'is_author' => $this->pivot ? $this->pivot->is_author : false,
+                'activity' => $this->pivot && $this->pivot->activity_id ? new ActivityResource(static::findActivity($this->pivot->activity_id)) : null, // Se estiver pegando essa pessoa a partir de uma obra, activity é a atuação dessa pessoa nessa artwork
+                'is_author' => $this->pivot ? (bool) $this->pivot->is_author : false,
             ],
 
-            'periods' => PeriodResource::collection($this->periods),
+            'periods' => PeriodResource::collection($this->relationLoaded('periods') ? $this->periods : []),
             'languages' => LanguageResource::collection($this->whenLoaded('languages')),
             'reviews' => ReviewResource::collection($this->whenLoaded('reviews', function () { return $this->reviews->unique('id'); })),
-            'genders' => new Collection($this->genders),
-            'cities' => CityResource::collection($this->cities),
-            'awards' => AwardResource::collection($this->awards),
+            'genders' => new Collection($this->relationLoaded('genders') ? $this->genders : []),
+            'cities' => CityResource::collection($this->relationLoaded('cities') ? $this->cities : []),
+            'awards' => AwardResource::collection($this->relationLoaded('awards') ? $this->awards : []),
 
             'links' => $this->links,
 
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];
+    }
+
+    protected static function findActivity($id)
+    {
+        static $activityCache = [];
+        return $activityCache[$id] ??= Activity::find($id);
     }
 }
