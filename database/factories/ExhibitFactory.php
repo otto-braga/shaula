@@ -25,9 +25,12 @@ class ExhibitFactory extends Factory
      */
     public function definition(): array
     {
+        $startDate = $this->faker->date();
+
         return [
             'title' => $this->faker->sentence,
-            'date' => $this->faker->date(),
+            'start_date' => $startDate,
+            'end_date' => $this->faker->optional(0.7)->dateTimeBetween($startDate, '+1 year')?->format('Y-m-d'),
             'content' => json_encode($this->faker->text(4000)),
         ];
     }

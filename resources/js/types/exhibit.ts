@@ -1,18 +1,17 @@
-import { Activity } from "./activity";
-import { Artwork } from "./artwork";
-import { Award } from "./award";
-import { Category } from "./category";
-import { FileProps } from "./file";
-import { Language } from "./language";
-import { Period } from "./period";
-import { Person } from "./person";
-import { Source } from "./source";
+import { Activity } from './activity';
+import { Artwork } from './artwork';
+import { Award } from './award';
+import { Category } from './category';
+import { FileProps } from './file';
+import { Period } from './period';
+import { Person } from './person';
+import { Source } from './source';
 
 export enum ExhibitLabels {
     ROUTE = 'exhibits',
     TYPE = 'exhibit',
     TYPE_LABEL = 'Exposição',
-    TYPE_PLURAL = 'Exposições'
+    TYPE_PLURAL = 'Exposições',
 }
 
 export type Exhibit = {
@@ -20,7 +19,8 @@ export type Exhibit = {
     slug: string;
 
     title: string;
-    date: string;
+    start_date?: string | null;
+    end_date?: string | null;
     authors: Person[];
     content: string;
 
@@ -38,7 +38,7 @@ export type Exhibit = {
     pivot: {
         activity: Activity | null;
         is_author: boolean;
-    }
+    };
 
     categories: Category[];
 
@@ -49,4 +49,4 @@ export type Exhibit = {
 
     created_at: string;
     updated_at: string;
-}
+};

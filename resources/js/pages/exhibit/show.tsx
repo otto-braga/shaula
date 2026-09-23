@@ -3,7 +3,7 @@ import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { Badge } from '@/components/ui/badge';
 import { SourceCard } from '@/components/ui/source-card';
 import PublicLayout from '@/layouts/public-layout';
-import { formatDate } from '@/lib/utils';
+import { formatExhibitDateRange } from '@/lib/utils';
 import { Link } from '@inertiajs/react';
 import { Award as AwardIcon, Calendar } from 'lucide-react';
 
@@ -74,7 +74,8 @@ export interface ExhibitDetail {
     uuid: string;
     slug: string;
     title: string;
-    date: string | null;
+    start_date?: string | null;
+    end_date?: string | null;
     content: string | null;
     authors: ExhibitPerson[];
     people: ExhibitPerson[];
@@ -98,17 +99,6 @@ export interface ExhibitShowProps {
         | ExhibitDetail;
 }
 
-function safeFormatDate(dateStr?: string | null): string | null {
-    if (!dateStr) return null;
-    try {
-        const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return dateStr;
-        return formatDate(dateStr);
-    } catch {
-        return dateStr;
-    }
-}
-
 export default function Show({ exhibit }: ExhibitShowProps) {
     const data: ExhibitDetail = 'data' in exhibit ? exhibit.data : exhibit;
 
@@ -130,7 +120,7 @@ export default function Show({ exhibit }: ExhibitShowProps) {
     const hasGallery = galleryImages.length > 0;
     const hasArtworks = Boolean(data.artworks && data.artworks.length > 0);
 
-    const formattedDate = safeFormatDate(data.date);
+    const formattedDate = formatExhibitDateRange(data.start_date, data.end_date);
 
     // Render metadata & credits section content (shared between desktop sidebar and mobile drawer)
     const renderSidebarContent = () => (

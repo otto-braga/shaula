@@ -1,35 +1,30 @@
+import EditLayout from '@/components/edit/edit-layout';
+import EditTabs from '@/components/edit/edit-tabs';
 import InputError from '@/components/input-error';
+import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Exhibit } from '@/types/exhibit';
+import { SearchResult } from '@/types/search-result';
 import { useForm, usePage } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import EditTabs from '@/components/edit/edit-tabs';
-import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
-import { SearchResult } from '@/types/search-result';
 import { MultiValue } from 'react-select';
-import EditLayout from '@/components/edit/edit-layout';
 
-export default function Index({
-    exhibit,
-}: {
-    exhibit: { data: Exhibit },
-}) {
+export default function Index({ exhibit }: { exhibit: { data: Exhibit } }) {
     const isEdit = !!exhibit;
 
-
     const { data, setData, post, patch, processing } = useForm({
-        title: exhibit ? exhibit.data.title : '' as string,
-        date: exhibit ? exhibit.data.date : '' as string,
+        title: exhibit ? exhibit.data.title : ('' as string),
+        start_date: exhibit ? (exhibit.data.start_date ?? '') : ('' as string),
+        end_date: exhibit ? (exhibit.data.end_date ?? '') : ('' as string),
 
-        authors_uuids: exhibit ? exhibit.data.authors.map((author) => author.uuid) : [] as string[],
-        periods_uuids: exhibit ? exhibit.data.periods?.map((period) => period.uuid) : [] as string[],
-        categories_uuids: exhibit ? exhibit.data.categories?.map((category) => category.uuid) : [] as string[],
-        awards_uuids: exhibit ? exhibit.data.awards?.map((award) => award.uuid) : [] as string[],
-        artworks_uuids: exhibit ? exhibit.data.artworks?.map((artwork) => artwork.uuid) : [] as string[],
-
+        authors_uuids: exhibit ? exhibit.data.authors.map((author) => author.uuid) : ([] as string[]),
+        periods_uuids: exhibit ? exhibit.data.periods?.map((period) => period.uuid) : ([] as string[]),
+        categories_uuids: exhibit ? exhibit.data.categories?.map((category) => category.uuid) : ([] as string[]),
+        awards_uuids: exhibit ? exhibit.data.awards?.map((award) => award.uuid) : ([] as string[]),
+        artworks_uuids: exhibit ? exhibit.data.artworks?.map((artwork) => artwork.uuid) : ([] as string[]),
     });
-    const { errors } = usePage().props
+    const { errors } = usePage().props;
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
@@ -50,11 +45,7 @@ export default function Index({
     return (
         <EditLayout>
             <form onSubmit={submit} className="space-y-3 bg-inherit">
-                <EditTabs
-                    model={exhibit}
-                    route_base_name="exhibits"
-                    processing={processing}
-                />
+                <EditTabs model={exhibit} route_base_name="exhibits" processing={processing} />
 
                 {isEdit}
 
@@ -69,28 +60,41 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'people.fetch.options'}
-                        value={exhibit?.data.authors?.map(
-                            author => ({ uuid: author.uuid, label: author.name })
-                        )}
+                        value={exhibit?.data.authors?.map((author) => ({ uuid: author.uuid, label: author.name }))}
                         onChange={(options: MultiValue<SearchResult>) => {
-                            setData('authors_uuids', options.map((option) => (option.uuid)))
+                            setData(
+                                'authors_uuids',
+                                options.map((option) => option.uuid),
+                            );
                         }}
                     />
                     <InputError className="mt-2" message={errors.authors_uuids} />
                 </div>
 
-                <div className="flex flex-row gap-3">
+                <div className="flex flex-col gap-3 sm:flex-row">
                     <div className="w-full">
-                        <Label htmlFor="date">Data</Label>
+                        <Label htmlFor="start_date">Data de Início</Label>
                         <Input
-                            id="date"
+                            id="start_date"
                             type="date"
-                            value={data.date ?? ''}
-                            onChange={(e) => setData('date', e.target.value)}
-                            autoComplete="date"
+                            value={data.start_date ?? ''}
+                            onChange={(e) => setData('start_date', e.target.value)}
+                            autoComplete="off"
                             className="w-full"
                         />
-                        <InputError className="mt-2" message={errors.date} />
+                        <InputError className="mt-2" message={errors.start_date} />
+                    </div>
+                    <div className="w-full">
+                        <Label htmlFor="end_date">Data de Fim</Label>
+                        <Input
+                            id="end_date"
+                            type="date"
+                            value={data.end_date ?? ''}
+                            onChange={(e) => setData('end_date', e.target.value)}
+                            autoComplete="off"
+                            className="w-full"
+                        />
+                        <InputError className="mt-2" message={errors.end_date} />
                     </div>
                 </div>
 
@@ -99,11 +103,12 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'periods.fetch.options'}
-                        value={exhibit?.data.periods?.map(
-                            period => ({ uuid: period.uuid, label: period.name })
-                        )}
+                        value={exhibit?.data.periods?.map((period) => ({ uuid: period.uuid, label: period.name }))}
                         onChange={(options: MultiValue<SearchResult>) => {
-                            setData('periods_uuids', options.map((option) => (option.uuid)))
+                            setData(
+                                'periods_uuids',
+                                options.map((option) => option.uuid),
+                            );
                         }}
                     />
                     <InputError className="mt-2" message={errors.periods_uuids} />
@@ -114,11 +119,12 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'categories.fetch.options'}
-                        value={exhibit?.data.categories?.map(
-                            category => ({ uuid: category.uuid, label: category.name })
-                        )}
+                        value={exhibit?.data.categories?.map((category) => ({ uuid: category.uuid, label: category.name }))}
                         onChange={(options: MultiValue<SearchResult>) => {
-                            setData('categories_uuids', options.map((option) => (option.uuid)))
+                            setData(
+                                'categories_uuids',
+                                options.map((option) => option.uuid),
+                            );
                         }}
                     />
                     <InputError className="mt-2" message={errors.categories_uuids} />
@@ -129,11 +135,12 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'awards.fetch.options'}
-                        value={exhibit?.data.awards?.map(
-                            award => ({ uuid: award.uuid, label: award.name })
-                        )}
+                        value={exhibit?.data.awards?.map((award) => ({ uuid: award.uuid, label: award.name }))}
                         onChange={(options: MultiValue<SearchResult>) => {
-                            setData('awards_uuids', options.map((option) => (option.uuid)))
+                            setData(
+                                'awards_uuids',
+                                options.map((option) => option.uuid),
+                            );
                         }}
                     />
                     <InputError className="mt-2" message={errors.awards_uuids} />
@@ -144,16 +151,16 @@ export default function Index({
                     <LazyLoadingSelectWithStates
                         isMulti
                         routeName={'artworks.fetch.options'}
-                        value={exhibit?.data.artworks?.map(
-                            artwork => ({ uuid: artwork.uuid, label: artwork.title })
-                        )}
+                        value={exhibit?.data.artworks?.map((artwork) => ({ uuid: artwork.uuid, label: artwork.title }))}
                         onChange={(options: MultiValue<SearchResult>) => {
-                            setData('artworks_uuids', options.map((option) => (option.uuid)))
+                            setData(
+                                'artworks_uuids',
+                                options.map((option) => option.uuid),
+                            );
                         }}
                     />
                     <InputError className="mt-2" message={errors.artworks_uuids} />
                 </div>
-
             </form>
         </EditLayout>
     );

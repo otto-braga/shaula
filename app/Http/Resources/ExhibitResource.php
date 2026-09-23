@@ -15,7 +15,8 @@ class ExhibitResource extends JsonResource
             'slug' => $this->slug,
 
             'title' => $this->title,
-            'date' => $this->date,
+            'start_date' => $this->start_date instanceof \Carbon\CarbonInterface ? $this->start_date->format('Y-m-d') : ($this->start_date ? (string) $this->start_date : null),
+            'end_date' => $this->end_date instanceof \Carbon\CarbonInterface ? $this->end_date->format('Y-m-d') : ($this->end_date ? (string) $this->end_date : null),
             'authors' => PersonResource::collection($this->whenLoaded('authors', function () { return $this->authors->unique('id'); })),
             'content' => $this->content,
 
