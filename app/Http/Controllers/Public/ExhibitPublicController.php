@@ -14,7 +14,7 @@ class ExhibitPublicController extends Controller
      */
     public function index()
     {
-        $exhibits = Exhibit::orderBy('date', 'desc')->paginate(12)->withQueryString();
+        $exhibits = Exhibit::orderByRaw('COALESCE(start_date, end_date) desc')->paginate(12)->withQueryString();
 
         return Inertia::render('exhibit/index', [
             'exhibits' => ExhibitResource::collection($exhibits),

@@ -26,8 +26,14 @@ class Exhibit extends Model
 
     protected $fillable = [
         'title',
-        'date',
+        'start_date',
+        'end_date',
         'content',
+    ];
+
+    protected $casts = [
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
 
     public function searchableAs(): string

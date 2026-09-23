@@ -1,5 +1,5 @@
 import PublicLayout from '@/layouts/public-layout';
-import { formatDate } from '@/lib/utils';
+import { formatDate, formatExhibitDateRange } from '@/lib/utils';
 import { Person } from '@/types/person';
 import { Link } from '@inertiajs/react';
 
@@ -65,7 +65,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                 </section>
                 {/* bio e crono */}
                 <section className="mt-6 border-t pt-4 md:col-span-2 md:mt-0 md:border-t-0 md:pt-0 md:pr-4">
-                    <div className="space-y-4 md:sticky md:top-24 divide-y">
+                    <div className="space-y-4 divide-y md:sticky md:top-24">
                         <div className="space-y-4">
                             <h2 className="text-xl font-medium uppercase">BIOGRAFIA</h2>
                             <div dangerouslySetInnerHTML={{ __html: person.data.content }} className="pb-6 text-lg" />
@@ -199,6 +199,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                                 {(() => {
                                     const columns = person.data.exhibits.reduce(
                                         (acc, exhibit, index) => {
+                                            const formattedExhibitDate = formatExhibitDateRange(exhibit.start_date, exhibit.end_date);
                                             acc[index % 2].push(
                                                 <Link href={route('public.exhibits.show', exhibit.slug)} className="group" key={exhibit.uuid}>
                                                     <div key={exhibit.uuid} className="relative">
@@ -209,9 +210,7 @@ export default function Index({ person }: { person: { data: Person } }) {
                                                         />
                                                         <div className="mt-3">
                                                             <h3 className="text-lg group-hover:underline">{exhibit.title}</h3>
-                                                            {exhibit.date && (
-                                                                <p className="text-sm text-slate-700">{exhibit.date}</p>
-                                                            )}
+                                                            {formattedExhibitDate && <p className="text-sm text-slate-700">{formattedExhibitDate}</p>}
                                                         </div>
                                                     </div>
                                                 </Link>,

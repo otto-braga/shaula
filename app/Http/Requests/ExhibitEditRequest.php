@@ -10,7 +10,8 @@ class ExhibitEditRequest extends BaseEditRequest
     {
         return [
             'title' => ['required', 'string', 'max:255'],
-            'date' => ['nullable', 'date'],
+            'start_date' => ['nullable', 'date'],
+            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'authors_uuids' => ['nullable', 'array'],
             'authors_uuids.*' => ['string', Rule::exists('people', 'uuid')],
             'periods_uuids' => ['nullable', 'array'],
@@ -30,7 +31,9 @@ class ExhibitEditRequest extends BaseEditRequest
             'title.required' => 'Obrigatório.',
             'title.string' => 'Deve ser texto.',
             'title.max' => 'Não deve ter mais de 255 caracteres.',
-            'date.date' => 'Deve ser uma data válida.',
+            'start_date.date' => 'Deve ser uma data válida.',
+            'end_date.date' => 'Deve ser uma data válida.',
+            'end_date.after_or_equal' => 'A data de fim deve ser posterior ou igual à data de início.',
             'authors_uuids.array' => 'Deve ser uma lista de índices.',
             'authors_uuids.*.string' => 'Deve ser um índice válido.',
             'authors_uuids.*.exists' => 'O autor deve existir.',

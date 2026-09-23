@@ -75,7 +75,8 @@ class ExhibitController extends Controller
             $exhibit = Exhibit::create(
                 $request->only([
                     'title',
-                    'date',
+                    'start_date',
+                    'end_date',
                 ])
             );
 
@@ -118,7 +119,8 @@ class ExhibitController extends Controller
             $exhibit->update(
                 $request->only([
                     'title',
-                    'date',
+                    'start_date',
+                    'end_date',
                 ])
             );
 
