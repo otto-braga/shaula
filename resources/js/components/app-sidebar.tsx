@@ -1,22 +1,21 @@
-import { NavFooter } from '@/components/nav-footer';
+import { AuthorizationCheck } from '@/auth/auth-helpers';
 import { NavMain } from '@/components/nav-main';
 import { NavUser } from '@/components/nav-user';
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarSeparator } from '@/components/ui/sidebar';
+import { Sidebar, SidebarContent, SidebarFooter } from '@/components/ui/sidebar';
 import { type NavItem } from '@/types';
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
 import {
     BookOpen,
     Building2,
     Circle,
     CircleDashed,
     CircleDotDashed,
-    CircleDotIcon,
     Clock,
     ContactRound,
     FileSpreadsheet,
     Folder,
-    FolderArchive,
     FolderClosed,
+    Info,
     LayoutGrid,
     PersonStanding,
     Text,
@@ -24,8 +23,6 @@ import {
     User,
     Workflow,
 } from 'lucide-react';
-import AppLogo from './app-logo';
-import { AuthorizationCheck, isAdminUser, isDevUser } from '@/auth/auth-helpers';
 
 const dashboardNavItems: NavItem[] = [
     {
@@ -71,7 +68,11 @@ const mainNavItems: NavItem[] = [
         href: route('sources.index'),
         icon: FileSpreadsheet,
     },
-
+    {
+        title: 'Página Sobre',
+        href: route('about.edit'),
+        icon: Info,
+    },
 ];
 
 const auxNavItems: NavItem[] = [
@@ -98,12 +99,12 @@ const auxNavItems: NavItem[] = [
     {
         title: 'Prêmios',
         href: route('awards.index'),
-        icon: CircleDotDashed
+        icon: CircleDotDashed,
     },
     {
         title: 'Categorias',
         href: route('categories.index'),
-        icon: Folder
+        icon: Folder,
     },
 ];
 
@@ -120,8 +121,7 @@ const adminNavItems: NavItem[] = [
     },
 ];
 
-const footerNavItems: NavItem[] = [
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     const { auth } = usePage().props as any;
@@ -142,7 +142,7 @@ export function AppSidebar() {
 
             {/* <SidebarSeparator /> */}
 
-            <SidebarContent className='mt-2 gap-8'>
+            <SidebarContent className="mt-2 gap-8">
                 <NavMain items={dashboardNavItems} title="Início" />
                 {/* { (isDevUser() || isAdminUser()) && (<>
                     <SidebarSeparator />
@@ -150,7 +150,7 @@ export function AppSidebar() {
                 </>)} */}
                 <AuthorizationCheck role_names={['dev']}>
                     {/* <SidebarSeparator /> */}
-                    <NavMain items={adminNavItems} title="Administração"/>
+                    <NavMain items={adminNavItems} title="Administração" />
                 </AuthorizationCheck>
                 {/* <SidebarSeparator /> */}
                 <NavMain items={mainNavItems} title="Conteúdo Principal" />

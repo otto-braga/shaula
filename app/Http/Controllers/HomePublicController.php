@@ -39,6 +39,6 @@ class HomePublicController extends Controller
 
     public function about(): Response
     {
-        return Inertia::render('about/index');
+        return app(AboutController::class)->show();
     }
 }
