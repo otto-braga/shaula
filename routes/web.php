@@ -24,6 +24,7 @@
 // -----------------------------------------------------------------------------
 
 use App\Helpers\ConnectionChecker;
+use App\Http\Controllers\AboutController;
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\Settings\PasswordController;
 use App\Http\Controllers\Settings\ProfileController;
@@ -59,7 +60,7 @@ Route::name('public.')->group(function () {
 
     Route::get('/', [HomePublicController::class, 'index'])->name('home');
 
-    Route::get('/sobre', [HomePublicController::class, 'about'])->name('about');
+    Route::get('/sobre', [AboutController::class, 'show'])->name('about');
 
     Route::get('/critica', [ReviewPublicController::class, 'index'])->name('reviews.index');
     Route::get('/critica/{review:slug}', [ReviewPublicController::class, 'show'])->name('reviews.show');
@@ -95,6 +96,10 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'admin', 'as' =>
     // })->name('dashboard');
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    // About (Sobre)
+    Route::get('sobre', [AboutController::class, 'edit'])->name('about.edit');
+    Route::match(['put', 'post'], 'sobre', [AboutController::class, 'update'])->name('about.update');
 
     Route::redirect('settings', 'settings/profile');
 

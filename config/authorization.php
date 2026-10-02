@@ -7,11 +7,13 @@ namespace App\Models;
 
 // Helper constants for permission groups
 // -----------------------------------------------------------------------------
-const DEV = ['dev', 'view', 'create', 'update', 'delete'];
-const ALL = ['view', 'create', 'update','delete',];
-const NO_DELETE = ['view','create','update',];
-const VIEW = ['view',];
-const NONE = [];
+if (! defined('App\Models\DEV')) {
+    define('App\Models\DEV', ['dev', 'view', 'create', 'update', 'delete']);
+    define('App\Models\ALL', ['view', 'create', 'update', 'delete']);
+    define('App\Models\NO_DELETE', ['view', 'create', 'update']);
+    define('App\Models\VIEW', ['view']);
+    define('App\Models\NONE', []);
+}
 
 return [
     // =========================================================================
@@ -44,6 +46,7 @@ return [
                 Language::class => DEV,
                 Category::class => DEV,
                 Award::class => DEV,
+                About::class => DEV,
             ],
         ],
         'admin' => [
@@ -67,6 +70,7 @@ return [
                 Language::class => ALL,
                 Category::class => ALL,
                 Award::class => ALL,
+                About::class => NO_DELETE,
             ],
         ],
         'editor' => [
@@ -87,6 +91,7 @@ return [
                 Language::class => NO_DELETE,
                 Category::class => NO_DELETE,
                 Award::class => NO_DELETE,
+                About::class => NO_DELETE,
             ],
         ],
     ],
