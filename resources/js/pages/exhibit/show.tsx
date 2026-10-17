@@ -120,7 +120,7 @@ export default function Show({ exhibit }: ExhibitShowProps) {
         <div className="space-y-4 divide-y *:pb-4">
             {hasAuthors && (
                 <div>
-                    <p className="font-semibold">Autoria / Curadoria</p>
+                    <p className="font-semibold">Autoria</p>
                     <div className="mt-1 space-y-1">
                         {data.authors.map((author) => (
                             <Link href={route('public.people.show', author.slug)} key={author.uuid} className="block">
@@ -225,7 +225,7 @@ export default function Show({ exhibit }: ExhibitShowProps) {
                         <div className="mt-8 space-y-3 border-t pt-6">
                             {hasAuthors && (
                                 <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                                    <span className="font-semibold text-zinc-900 uppercase dark:text-zinc-100">Curadoria / Autoria: </span>
+                                    <span className="font-semibold text-zinc-900 uppercase dark:text-zinc-100">Autoria: </span>
                                     {data.authors.map((author, index) => (
                                         <span key={author.uuid}>
                                             <Link
@@ -259,10 +259,10 @@ export default function Show({ exhibit }: ExhibitShowProps) {
                     )}
                 </div>
 
-                <div className="bg-zinc-100 p-4 sm:p-6 md:col-span-7 md:p-8 dark:bg-zinc-900">
+                <div className="bg-zinc-100 p-4 sm:p-6 md:col-span-7 md:p-4 dark:bg-zinc-900">
                     <div className="aspect-video max-h-[55vh] w-full overflow-hidden">
                         <ExpandableImage
-                            src={mainImage ? mainImage.path : 'https://placehold.co/1280x900'}
+                            src={'https://placehold.co/1280x900'}
                             alt={data.title}
                             className="h-full w-full object-cover"
                         />
