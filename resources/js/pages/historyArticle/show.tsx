@@ -145,7 +145,8 @@ export default function Show({ historyArticle }: HistoryArticleShowProps) {
                 {/* Coluna Esquerda: Metadados do Artigo (Desktop) */}
                 {hasSidebarMetadata && (
                     <aside className="hidden lg:col-span-2 lg:block lg:pr-10">
-                        <div className="sticky top-24">{renderMetadataBlocks()}</div>
+                        <div className="">{renderMetadataBlocks()}</div>
+                        {/* sticky top-24 para voltar com a barra sticky*/}
                     </aside>
                 )}
 

@@ -274,7 +274,7 @@ export default function Show({ exhibit }: ExhibitShowProps) {
             <div className="grid grid-cols-1 md:grid-cols-12 lg:divide-x">
                 {/* Left Column: Ficha Técnica (Desktop) */}
                 <aside className="hidden p-4 md:p-8 lg:col-span-3 lg:block">
-                    <div className="sticky top-24 space-y-4">
+                    <div className="space-y-4">  {/* sticky top-24 para voltar com a barra sticky*/}
                         <h2 className="border-b pb-3 text-sm font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
                             Ficha Técnica
                         </h2>

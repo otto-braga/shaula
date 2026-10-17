@@ -5,6 +5,7 @@ import { formatExhibitDateRange, safeFormatDate } from '@/lib/utils';
 import { Artwork } from '@/types/artwork';
 import { Exhibit } from '@/types/exhibit';
 import { FileProps } from '@/types/file';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Person } from '@/types/person';
 import { Review } from '@/types/review';
 import { Link } from '@inertiajs/react';
@@ -36,6 +37,18 @@ function resolveImagePath(primaryImage?: FileProps | null, images?: FileProps[],
     return fallback;
 }
 
+function formatPivotRole(pivot?: { is_author?: boolean; activity?: { name?: string } | null } | null): string | null {
+    if (!pivot) return null;
+    const roles: string[] = [];
+    if (pivot.is_author) {
+        roles.push('Autoria');
+    }
+    if (pivot.activity?.name && !roles.includes(pivot.activity.name)) {
+        roles.push(pivot.activity.name);
+    }
+    return roles.length > 0 ? roles.join(' · ') : null;
+}
+
 export default function Show({ person }: PersonShowProps) {
     const data: Person = 'data' in person ? person.data : person;
 
@@ -51,6 +64,7 @@ export default function Show({ person }: PersonShowProps) {
     const awards = Array.isArray(data.awards) ? data.awards.filter((a) => a?.name) : [];
     const sources = Array.isArray(data.sources) ? data.sources.filter((s) => hasRichTextContent(s?.content) || s?.title) : [];
     const reviews = Array.isArray(data.reviews) ? data.reviews.filter((r) => r?.slug && r?.title) : [];
+    const historyArticles = Array.isArray(data.history_articles) ? data.history_articles.filter((h) => h?.slug && h?.title) : [];
     const artworks = Array.isArray(data.artworks) ? data.artworks.filter((a) => a?.slug && a?.title) : [];
     const exhibits = Array.isArray(data.exhibits) ? data.exhibits.filter((e) => e?.slug && e?.title) : [];
 
@@ -63,12 +77,13 @@ export default function Show({ person }: PersonShowProps) {
     const hasSources = sources.length > 0;
 
     const hasReviews = reviews.length > 0;
+    const hasHistoryArticles = historyArticles.length > 0;
     const hasArtworks = artworks.length > 0;
     const hasExhibits = exhibits.length > 0;
 
     const hasMetadata = Boolean(cities.length > 0 || birthDate || deathDate || periods.length > 0 || awards.length > 0 || hasLinks);
     const hasMiddleColumn = Boolean(hasBio || hasChronology || hasGallery || hasSources);
-    const hasRightColumn = Boolean(hasReviews || hasArtworks || hasExhibits);
+    const hasRightColumn = Boolean(hasReviews || hasHistoryArticles || hasArtworks || hasExhibits);
 
     const distributeIntoTwoColumns = <T,>(items: T[]): [T[], T[]] => {
         return items.reduce<[T[], T[]]>(
@@ -88,7 +103,7 @@ export default function Show({ person }: PersonShowProps) {
             <div className="grid grid-cols-1 bg-white p-4 sm:p-6 md:grid-cols-3 md:gap-6 md:p-8 lg:grid-cols-5 lg:gap-8 lg:divide-x lg:divide-zinc-200 dark:bg-zinc-950 dark:lg:divide-zinc-800">
                 {/* Coluna 1: Retrato e Ficha Biográfica */}
                 <section className="pb-6 md:col-span-1 md:pb-0 lg:pr-8">
-                    <div className="lg:sticky lg:top-24">
+                    <div className="">
                         <div className="aspect-square w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
                             <ExpandableImage
                                 src={mainImage ? mainImage.path : 'https://placehold.co/800x800'}
@@ -188,14 +203,14 @@ export default function Show({ person }: PersonShowProps) {
                     >
                         <div className="space-y-8 divide-y divide-zinc-200 *:pt-8 first:*:pt-0 dark:divide-zinc-800">
                             {hasBio && (
-                                <div className="space-y-4">
+                                <div className="space-y-4 pb-8">
                                     <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">BIOGRAFIA</h2>
                                     <div dangerouslySetInnerHTML={{ __html: data.content }} className={richTextClasses} />
                                 </div>
                             )}
 
                             {hasChronology && (
-                                <div className="space-y-4">
+                                <div className="space-y-4 pb-8">
                                     <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">CRONOLOGIA</h2>
                                     <div dangerouslySetInnerHTML={{ __html: data.chronology }} className={richTextClasses} />
                                 </div>
@@ -234,7 +249,7 @@ export default function Show({ person }: PersonShowProps) {
                     </section>
                 )}
 
-                {/* Coluna 3: Produção Relacionada (Críticas, Obras e Exposições) */}
+                {/* Coluna 3: Produção Relacionada (Críticas, Artigos de História, Obras e Exposições) */}
                 {hasRightColumn && (
                     <section
                         className={`border-t border-zinc-200 pt-6 pb-3 dark:border-zinc-800 ${
@@ -245,7 +260,7 @@ export default function Show({ person }: PersonShowProps) {
                     >
                         <div className="space-y-8 divide-y divide-zinc-200 *:pt-8 first:*:pt-0 dark:divide-zinc-800">
                             {hasReviews && (
-                                <div>
+                                <div className="pb-8">
                                     <div className="mb-6 flex items-baseline justify-between gap-2">
                                         <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">CRÍTICAS</h2>
                                         <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -256,6 +271,7 @@ export default function Show({ person }: PersonShowProps) {
                                         {reviews.map((review: Review) => {
                                             const reviewImage = resolveImagePath(review.primary_image, review.images, 'https://placehold.co/600x600');
                                             const reviewExcerpt = hasRichTextContent(review.content) ? review.content : null;
+                                            const roleLabel = formatPivotRole(review.pivot);
 
                                             return (
                                                 <Link
@@ -275,6 +291,9 @@ export default function Show({ person }: PersonShowProps) {
                                                         <h3 className="text-lg font-medium break-words text-zinc-950 group-hover:underline sm:text-xl dark:text-zinc-50">
                                                             {review.title}
                                                         </h3>
+                                                        {roleLabel && (
+                                                            <p className="mt-0.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">{roleLabel}</p>
+                                                        )}
                                                         {reviewExcerpt && (
                                                             <div
                                                                 dangerouslySetInnerHTML={{ __html: reviewExcerpt }}
@@ -289,8 +308,63 @@ export default function Show({ person }: PersonShowProps) {
                                 </div>
                             )}
 
+                            {hasHistoryArticles && (
+                                <div className="pb-8">
+                                    <div className="mb-6 flex items-baseline justify-between gap-2">
+                                        <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">
+                                            ARTIGOS DE HISTÓRIA
+                                        </h2>
+                                        <span className="text-xs text-zinc-500 dark:text-zinc-400">
+                                            {historyArticles.length} {historyArticles.length === 1 ? 'artigo' : 'artigos'}
+                                        </span>
+                                    </div>
+                                    <div className="grid grid-cols-1 gap-6">
+                                        {historyArticles.map((article: HistoryArticle) => {
+                                            const articleImage = resolveImagePath(
+                                                article.primary_image,
+                                                article.images,
+                                                'https://placehold.co/600x600',
+                                            );
+                                            const articleExcerpt = hasRichTextContent(article.content) ? article.content : null;
+                                            const roleLabel = formatPivotRole(article.pivot);
+
+                                            return (
+                                                <Link
+                                                    href={route('public.history_articles.show', { historyArticle: article.slug })}
+                                                    key={article.uuid}
+                                                    className="group flex items-start gap-4"
+                                                >
+                                                    <div className="size-24 shrink-0 overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                                                        <img
+                                                            src={articleImage}
+                                                            alt={article.title}
+                                                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                                            loading="lazy"
+                                                        />
+                                                    </div>
+                                                    <div className="min-w-0 flex-1">
+                                                        <h3 className="text-lg font-medium break-words text-zinc-950 group-hover:underline sm:text-xl dark:text-zinc-50">
+                                                            {article.title}
+                                                        </h3>
+                                                        {roleLabel && (
+                                                            <p className="mt-0.5 text-xs font-medium text-zinc-500 dark:text-zinc-400">{roleLabel}</p>
+                                                        )}
+                                                        {articleExcerpt && (
+                                                            <div
+                                                                dangerouslySetInnerHTML={{ __html: articleExcerpt }}
+                                                                className="mt-1 line-clamp-3 text-sm text-gray-600 dark:text-zinc-400"
+                                                            />
+                                                        )}
+                                                    </div>
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            )}
+
                             {hasArtworks && (
-                                <div>
+                                <div className="pb-8">
                                     <div className="mb-6 flex items-baseline justify-between gap-2">
                                         <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">OBRAS</h2>
                                         <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -306,9 +380,7 @@ export default function Show({ person }: PersonShowProps) {
                                                         artwork.images,
                                                         'https://placehold.co/800x800',
                                                     );
-                                                    const roleLabel = artwork.pivot?.is_author
-                                                        ? 'Autoria'
-                                                        : artwork.pivot?.activity?.name || null;
+                                                    const roleLabel = formatPivotRole(artwork.pivot);
 
                                                     return (
                                                         <Link
@@ -342,7 +414,7 @@ export default function Show({ person }: PersonShowProps) {
                             )}
 
                             {hasExhibits && (
-                                <div>
+                                <div className="pb-8">
                                     <div className="mb-6 flex items-baseline justify-between gap-2">
                                         <h2 className="text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">EXPOSIÇÕES</h2>
                                         <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -359,9 +431,7 @@ export default function Show({ person }: PersonShowProps) {
                                                         'https://placehold.co/800x800',
                                                     );
                                                     const formattedExhibitDate = formatExhibitDateRange(exhibit.start_date, exhibit.end_date);
-                                                    const roleLabel = exhibit.pivot?.is_author
-                                                        ? 'Autoria'
-                                                        : exhibit.pivot?.activity?.name || null;
+                                                    const roleLabel = formatPivotRole(exhibit.pivot);
 
                                                     return (
                                                         <Link
@@ -414,4 +484,5 @@ export default function Show({ person }: PersonShowProps) {
         </PublicLayout>
     );
 }
+
 

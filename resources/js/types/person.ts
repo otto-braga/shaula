@@ -4,6 +4,7 @@ import { Award } from "./award";
 import { City } from "./city";
 import { FileProps } from "./file";
 import { Gender } from "./gender";
+import { HistoryArticle } from "./historyArticle";
 import { Language } from "./language";
 import { Period } from "./period";
 import { Review } from "./review";
@@ -46,6 +47,7 @@ export type Person = {
     periods: Period[];
     languages: Language[];
     reviews: Review[];
+    history_articles: HistoryArticle[];
     genders: Gender[];
     cities: City[];
     awards: Award[];

@@ -1,3 +1,4 @@
+import { Activity } from "./activity";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Person } from "./person";
@@ -24,6 +25,11 @@ export type Review = {
     content_images: FileProps[];
 
     sources: Source[];
+
+    pivot?: {
+        activity: Activity | null;
+        is_author: boolean;
+    };
 
     categories: Category[];
 

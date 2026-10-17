@@ -62,6 +62,7 @@ class PersonPublicController extends Controller
             'artworks.images',
             'reviews.images',
             'exhibits.images',
+            'historyArticles.images',
         ]);
 
         return Inertia::render('person/show', [
