@@ -21,7 +21,7 @@ class HistoryArticlePublicController extends Controller
             ->take(5)
             ->get();
 
-        $periods = Period::get();
+        $periods = Period::with(['images'])->get();
 
         return Inertia::render('historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),
@@ -34,7 +34,16 @@ class HistoryArticlePublicController extends Controller
      */
     public function show($slug)
     {
-        $historyArticle = HistoryArticle::where('slug', $slug)->firstOrFail();
+        $historyArticle = HistoryArticle::where('slug', $slug)
+            ->with([
+                'authors',
+                'images',
+                'contentImages',
+                'sources.file',
+                'categories',
+                'periods',
+            ])
+            ->firstOrFail();
 
         return Inertia::render('historyArticle/show', [
             'historyArticle' => new HistoryArticleResource($historyArticle),

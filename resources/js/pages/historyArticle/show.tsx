@@ -1,165 +1,229 @@
-import PublicLayout from '@/layouts/public-layout';
-import { formatDate } from '@/lib/utils';
-import { HistoryArticle } from '@/types/historyArticle';
-
-// import styles
-import 'lightgallery/css/lg-thumbnail.css';
-import 'lightgallery/css/lg-zoom.css';
-import 'lightgallery/css/lightgallery.css';
-
-// If you want you can use SCSS instead of css
-import 'lightgallery/scss/lg-zoom.scss';
-import 'lightgallery/scss/lightgallery.scss';
-
 import ExpandableImage from '@/components/expandable-image';
 import MobileDetailBar from '@/components/public/mobile-detail-bar';
 import { SourceCard } from '@/components/ui/source-card';
+import PublicLayout from '@/layouts/public-layout';
+import { safeFormatDate } from '@/lib/utils';
+import { FileProps } from '@/types/file';
+import { HistoryArticle } from '@/types/historyArticle';
 import { Link } from '@inertiajs/react';
-import 'keen-slider/keen-slider.min.css';
 
-export default function Show({ historyArticle }: { historyArticle: { data: HistoryArticle } }) {
-    console.log(historyArticle.data);
-    return (
-        <PublicLayout head="História">
-            {/* barra inferior para informações do artigo, apenas mobile */}
-            <MobileDetailBar>
-                <div className="space-y-3 divide-y *:pb-3">
-                    <div className="pb-3 md:pr-6 md:pb-6">
-                        <h3 className="">Período</h3>
-                        {historyArticle.data.periods.map((period) => (
-                            <p className="text-xl font-medium">{period.name}</p>
-                        ))}
-                    </div>
-                    <div>
-                        <p className="mb-2 font-medium">Autoria</p>
-                        {historyArticle.data.authors.map((author) => (
-                            <Link href={route('public.people.show', author)} key={author.uuid}>
-                                <p className="hover:underline">{author.name}</p>
+export interface HistoryArticleShowProps {
+    historyArticle:
+        | {
+              data: HistoryArticle;
+          }
+        | HistoryArticle;
+}
+
+function hasRichTextContent(html?: string | null): boolean {
+    if (!html) return false;
+    const text = html
+        .replace(/<[^>]*>/g, '')
+        .replace(/&nbsp;/gi, ' ')
+        .trim();
+    return text.length > 0;
+}
+
+export default function Show({ historyArticle }: HistoryArticleShowProps) {
+    const data: HistoryArticle = 'data' in historyArticle ? historyArticle.data : historyArticle;
+
+    const images = Array.isArray(data.images) ? data.images.filter((img) => Boolean(img?.path)) : [];
+    const mainImage =
+        (data.primary_image && typeof data.primary_image.path === 'string' && data.primary_image.path.trim().length > 0
+            ? data.primary_image
+            : null) || (images.length > 0 ? images[0] : null);
+    const galleryImages = images.filter((img) => !mainImage || img.uuid !== mainImage.uuid);
+
+    const periods = Array.isArray(data.periods) ? data.periods.filter((p) => p?.name && p?.slug) : [];
+    const authors = Array.isArray(data.authors) ? data.authors.filter((a) => a?.name && a?.slug) : [];
+    const categories = Array.isArray(data.categories) ? data.categories.filter((c) => c?.name) : [];
+    const sources = Array.isArray(data.sources) ? data.sources.filter((s) => hasRichTextContent(s?.content) || s?.title) : [];
+
+    const hasPeriods = periods.length > 0;
+    const hasAuthors = authors.length > 0;
+    const hasCategories = categories.length > 0;
+    const hasSources = sources.length > 0;
+    const hasLinks = hasRichTextContent(data.links);
+    const hasSidebarMetadata = Boolean(hasPeriods || hasAuthors || hasCategories || hasSources || hasLinks);
+
+    const formattedDate = safeFormatDate(data.date);
+    const hasContent = hasRichTextContent(data.content);
+    const hasGallery = galleryImages.length > 0;
+
+    const distributeIntoTwoColumns = <T,>(items: T[]): [T[], T[]] => {
+        return items.reduce<[T[], T[]]>(
+            (acc, item, index) => {
+                acc[index % 2].push(item);
+                return acc;
+            },
+            [[], []],
+        );
+    };
+
+    const renderMetadataBlocks = () => (
+        <div className="space-y-4 divide-y divide-zinc-200 *:pt-4 first:*:pt-0 dark:divide-zinc-800">
+            {hasPeriods && (
+                <div>
+                    <h3 className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">
+                        {periods.length === 1 ? 'Período' : 'Períodos'}
+                    </h3>
+                    <div className="mt-1.5 space-y-1">
+                        {periods.map((period) => (
+                            <Link
+                                key={period.uuid}
+                                href={route('public.periods.show', { period: period.slug })}
+                                className="block text-lg font-medium text-zinc-950 hover:underline dark:text-zinc-50"
+                            >
+                                {period.name}
                             </Link>
                         ))}
                     </div>
-                    {historyArticle.data.categories.length > 0 && (
-                        <div className="mt-4">
-                            <p className="mb-2 font-medium">Categorias</p>
-                            {historyArticle.data.categories.map((category) => (
-                                <p>{category.name}</p>
-                            ))}
-                        </div>
-                    )}
-                    {historyArticle.data.sources.length > 0 && (
-                        <div className="space-y-2">
-                            <p className="font-semibold">Fontes</p>
-                            {historyArticle.data.sources.map((source, index) => (
-                                <div key={'source' + index}>
-                                    <SourceCard source={source} className="line-clamp-1" />
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
-            </MobileDetailBar>
+            )}
 
-            {/* A GRID AQUI SERÁ 3(OU 4) PRO CONTENT E 2 PRA GALERIA
-            NO CONTENT PRIMEIRO TERÁ TITULO E SOBRE O PERIODO DO ARTIGO
-            DEPOIS O TITULO, AUTORES E CONTEUDO DO ARTIGO
-            NAO SEI SE 'CATEGORIAS' SE APLICA */}
-
-            <main className="grid gap-12 p-4 pt-8 pb-20 md:grid-cols-6 md:divide-x-1 md:px-8">
-                {/* infomações sobre o artigo */}
-                <section className="hidden md:col-span-2 md:space-y-3 md:divide-y lg:block lg:pr-12">
-                    <div className="space-y-3 divide-y *:pb-3">
-                        <div className="md:pr-6">
-                            <h3 className="">Períodos</h3>
-                            {historyArticle.data.periods.map((period) => (
-                                <Link href={route('public.periods.show', period)}>
-                                    <p className="text-xl font-medium">{period.name}</p>
-                                </Link>
-                            ))}
-                        </div>
-                        <div>
-                            <p className="mb-2 font-medium">Autoria</p>
-                            {historyArticle.data.authors.map((author) => (
-                                <Link href={route('public.people.show', author)} key={author.uuid}>
-                                    <p className="hover:underline">{author.name}</p>
-                                </Link>
-                            ))}
-                        </div>
-                        {historyArticle.data.categories.length > 0 && (
-                            <div className="mt-4">
-                                <p className="mb-2 font-medium">Categorias</p>
-                                {historyArticle.data.categories.map((category) => (
-                                    <p>{category.name}</p>
-                                ))}
-                            </div>
-                        )}
-                        {historyArticle.data.sources.length > 0 && (
-                            <div className="space-y-2">
-                                <p className="font-semibold">Fontes</p>
-                                {historyArticle.data.sources.map((source, index) => (
-                                    <div key={'source' + index}>
-                                        <SourceCard source={source} className="line-clamp-1" />
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+            {hasAuthors && (
+                <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">Autoria</p>
+                    <div className="mt-1.5 space-y-1">
+                        {authors.map((author) => (
+                            <Link
+                                href={route('public.people.show', { person: author.slug })}
+                                key={author.uuid}
+                                className="block text-base text-zinc-800 hover:text-zinc-950 hover:underline dark:text-zinc-200 dark:hover:text-zinc-50"
+                            >
+                                {author.name}
+                            </Link>
+                        ))}
                     </div>
-                </section>
+                </div>
+            )}
 
-                {/* conteúdo do artigo */}
-                <section className="col-span-6 space-y-8 divide-y *:pb-8 lg:col-span-4 lg:pr-12">
-                    <div className="">
-                        <div className="mb-8 text-center">
-                            <h1 className="text-2xl font-medium md:text-3xl">{historyArticle.data.title}</h1>
-                            <div className="">
-                                {historyArticle.data.authors.map((author, index) => (
-                                    <span key={author.uuid}>
-                                        <Link href={route('public.people.show', author)}>
-                                            <p className="inline hover:underline">{author.name}</p>
-                                        </Link>
-                                        {index < historyArticle.data.authors.length - 1 && ', '}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                        {historyArticle.data.primary_image && (
-                            <div className="flex h-64 w-full">
-                                <img src={historyArticle.data.primary_image.path} alt="Review Image" className="w-full object-cover object-center" />
-                            </div>
-                        )}
-                        <p className="mt-8 mb-4 text-sm text-slate-500">{formatDate(historyArticle.data.date)}</p>
-                        <div dangerouslySetInnerHTML={{ __html: historyArticle.data.content }} className="text-lg md:text-2xl" />
+            {hasCategories && (
+                <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">Categorias</p>
+                    <div className="mt-1.5 space-y-1 text-base text-zinc-800 dark:text-zinc-200">
+                        {categories.map((category) => (
+                            <p key={category.uuid}>{category.name}</p>
+                        ))}
                     </div>
+                </div>
+            )}
+
+            {hasLinks && (
+                <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">Links</p>
+                    <div
+                        className="mt-1.5 space-y-1 text-sm break-words text-zinc-700 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:text-zinc-300 dark:hover:[&_a]:text-zinc-50"
+                        dangerouslySetInnerHTML={{ __html: data.links }}
+                    />
+                </div>
+            )}
+
+            {hasSources && (
+                <div>
+                    <p className="text-xs font-semibold tracking-wider text-zinc-500 uppercase dark:text-zinc-400">Fontes</p>
+                    <div className="mt-1.5 space-y-2 text-sm text-zinc-800 dark:text-zinc-200">
+                        {sources.map((source, index) => (
+                            <div key={source.uuid || `source-${index}`} className="break-words">
+                                <SourceCard source={source} className="line-clamp-2 text-zinc-800 dark:text-zinc-200" />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+
+    const richTextClasses =
+        'text-lg leading-relaxed break-words text-zinc-800 md:text-xl lg:text-2xl dark:text-zinc-200 [&_p]:mb-5 last:[&_p]:mb-0 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:hover:[&_a]:text-zinc-50 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-700';
+
+    return (
+        <PublicLayout head={data.title || 'História'}>
+            {hasSidebarMetadata && <MobileDetailBar title="Detalhes">{renderMetadataBlocks()}</MobileDetailBar>}
+
+            <div className="grid grid-cols-1 gap-8 bg-white p-4 pt-8 pb-20 sm:px-6 md:px-8 lg:grid-cols-6 lg:gap-12 lg:divide-x lg:divide-zinc-200 dark:bg-zinc-950 dark:lg:divide-zinc-800">
+                {/* Coluna Esquerda: Metadados do Artigo (Desktop) */}
+                {hasSidebarMetadata && (
+                    <aside className="hidden lg:col-span-2 lg:block lg:pr-10">
+                        <div className="sticky top-24">{renderMetadataBlocks()}</div>
+                    </aside>
+                )}
+
+                {/* Coluna Direita: Conteúdo do Artigo e Galeria */}
+                <section
+                    className={`space-y-8 divide-y divide-zinc-200 *:pt-8 first:*:pt-0 dark:divide-zinc-800 ${
+                        hasSidebarMetadata ? 'lg:col-span-4 lg:pr-4' : 'mx-auto w-full max-w-4xl lg:col-span-6'
+                    }`}
+                >
                     <div>
-                        {/* <Gallery images={historyArticle.data.images} columns={2} /> */}
-                        <div className="grid grid-cols-2 gap-4">
-                            {(() => {
-                                const columns = historyArticle.data.images.reduce(
-                                    (acc, image, index) => {
-                                        acc[index % 2].push(
-                                            <ExpandableImage
-                                                key={image.uuid}
-                                                src={`${image.path ? image.path : 'https://placehold.co/900x1280'}`}
-                                                alt="History Article Image"
-                                                className="w-full cursor-pointer object-cover"
-                                            />,
-                                        );
-                                        return acc;
-                                    },
-                                    [[], []] as JSX.Element[][],
-                                );
+                        <header className="mb-8 text-center">
+                            <h1 className="text-2xl font-medium tracking-tight break-words text-zinc-950 sm:text-3xl md:text-4xl dark:text-zinc-50">
+                                {data.title}
+                            </h1>
 
-                                return columns.map((column, columnIndex) => (
-                                    <div key={columnIndex} className="flex flex-col gap-4">
-                                        {column}
-                                    </div>
-                                ));
-                            })()}
-                        </div>
+                            {hasAuthors && (
+                                <div className="mt-2 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-1 text-base text-zinc-700 md:text-lg dark:text-zinc-300">
+                                    {authors.map((author, index) => (
+                                        <span key={author.uuid}>
+                                            <Link
+                                                href={route('public.people.show', { person: author.slug })}
+                                                className="hover:text-zinc-950 hover:underline dark:hover:text-zinc-50"
+                                            >
+                                                {author.name}
+                                            </Link>
+                                            {index < authors.length - 1 && ', '}
+                                        </span>
+                                    ))}
+                                </div>
+                            )}
+                        </header>
+
+                        {mainImage && (
+                            <div className="mb-6 w-full overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                                <ExpandableImage
+                                    src={mainImage.path}
+                                    alt={mainImage.name || data.title}
+                                    className="h-64 w-full object-cover object-center sm:h-80 md:h-96"
+                                />
+                            </div>
+                        )}
+
+                        {formattedDate && (
+                            <p className="mt-6 mb-4 text-sm text-zinc-500 dark:text-zinc-400">{formattedDate}</p>
+                        )}
+
+                        {hasContent ? (
+                            <div dangerouslySetInnerHTML={{ __html: data.content }} className={richTextClasses} />
+                        ) : (
+                            <p className="text-base text-zinc-500 italic dark:text-zinc-400">
+                                Este artigo ainda não possui conteúdo textual cadastrado.
+                            </p>
+                        )}
                     </div>
-                </section>
 
-                {/* galeria de imagens */}
-            </main>
+                    {hasGallery && (
+                        <div>
+                            <h2 className="mb-6 text-xl font-medium tracking-wide text-zinc-950 uppercase dark:text-zinc-50">IMAGENS</h2>
+                            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+                                {distributeIntoTwoColumns<FileProps>(galleryImages).map((column, columnIndex) => (
+                                    <div key={columnIndex} className="flex flex-col gap-4 sm:gap-6">
+                                        {column.map((image) => (
+                                            <div key={image.uuid} className="overflow-hidden bg-zinc-100 dark:bg-zinc-900">
+                                                <ExpandableImage
+                                                    src={image.path}
+                                                    alt={image.name || data.title}
+                                                    className="w-full cursor-pointer object-cover"
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </section>
+            </div>
         </PublicLayout>
     );
 }
+

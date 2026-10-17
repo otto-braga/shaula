@@ -22,7 +22,7 @@ class PeriodResource extends JsonResource
             'content' => $this->content,
 
             'images' => FileResource::collection($this->images),
-            'primary_image' => new FileResource($this->primaryImage()),
+            'primary_image' => $this->primaryImage() ? new FileResource($this->primaryImage()) : null,
             'content_images' => FileResource::collection($this->contentImages),
 
             'sources' => SourceResource::collection($this->sources),
