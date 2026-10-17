@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SearchResultResource;
 use Illuminate\Http\Request;
-// use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 // use Meilisearch\Client;
 // use Meilisearch\Contracts\MultiSearchFederation;
 // use Meilisearch\Contracts\SearchQuery;
@@ -30,66 +31,117 @@ class SearchController extends Controller
 
     public function fetchSearch(Request $request)
     {
-        $query = $request->q ?? null;
-        $page = (int) $request->page ?? 1;
-        $page_size = $request->page_size ?? 5;
+        $query = $request->q !== null ? trim((string) $request->q) : null;
+        $page = max(1, (int) ($request->page ?: 1));
+        $page_size = max(1, (int) ($request->page_size ?? $request->limit ?? 5));
 
-        $only = $request->only ?? [];
-        $exclude = $request->exclude ?? [];
+        $only = is_string($request->only)
+            ? array_values(array_filter(explode(',', $request->only)))
+            : ($request->only ?? []);
 
-        $filter = json_decode($request->filter, true) ?? [];
+        $exclude = is_string($request->exclude)
+            ? array_values(array_filter(explode(',', $request->exclude)))
+            : ($request->exclude ?? []);
 
-        $offset = $page_size * ($page - 1) < 0 ? 0 : $page_size * ($page - 1);
+        $rawFilter = $request->filter;
+        $filter = is_string($rawFilter) ? (json_decode($rawFilter, true) ?? []) : (is_array($rawFilter) ? $rawFilter : []);
 
         $indexes = config('search.index');
-        $results = [];
         $retval = [];
+        $seenKeys = [];
 
-        // if ($query) {
-            foreach ($indexes as $indexUid => $indexUidData) {
-                if (
-                    (count($only) > 0 && !in_array($indexUidData['indexUid'], $only))
-                ) {
-                    continue; // Skip excluded index UIDs
-                }
+        foreach ($indexes as $indexUid => $indexUidData) {
+            $uid = $indexUidData['indexUid'] ?? '';
 
-                if (
-                    (count($exclude) > 0 && in_array($indexUidData['indexUid'], $exclude))
-                ) {
-                    continue; // Skip excluded index UIDs
-                }
+            if (count($only) > 0 && !in_array($uid, $only, true)) {
+                continue;
+            }
 
-                // If the index has no searchable attributes, skip it
-                if (empty($indexUidData['searchableAttributes'])) {
-                    continue;
-                }
+            if (count($exclude) > 0 && in_array($uid, $exclude, true)) {
+                continue;
+            }
 
-                foreach ($indexUidData['searchableAttributes'] as $attribute) {
-                    $results[$indexUid] = $indexUid::where($attribute, 'like', '%' . $query . '%')->get();
-                    foreach ($results[$indexUid] as $result) {
-                        $retval[] = $result->toSearchableArray();
+            if (empty($indexUidData['searchableAttributes'])) {
+                continue;
+            }
+
+            $modelQuery = $indexUid::query();
+
+            if ($query !== null && $query !== '') {
+                $searchableAttributes = $indexUidData['searchableAttributes'];
+                $modelQuery->where(function ($subQuery) use ($searchableAttributes, $query) {
+                    foreach ($searchableAttributes as $attribute) {
+                        $subQuery->orWhere($attribute, 'like', '%' . $query . '%');
                     }
+                });
+            }
+
+            $models = $modelQuery->get();
+
+            foreach ($models as $result) {
+                $item = $result->toSearchableArray();
+                $item['_federation'] = [
+                    'indexUid' => $uid,
+                ];
+
+                $uniqueKey = $uid . ':' . ($item['uuid'] ?? $item['id'] ?? spl_object_id($result));
+                if (!isset($seenKeys[$uniqueKey])) {
+                    $seenKeys[$uniqueKey] = true;
+                    $retval[] = $item;
                 }
             }
-        // }
+        }
 
-        // remove duplicates
-        $retval = array_map("unserialize", array_unique(array_map("serialize", $retval)));
+        // Apply attribute filters (periods, categories, cities, etc.) if provided
+        if (!empty($filter) && is_array($filter)) {
+            $activeFilters = [];
+            foreach ($filter as $filterItem) {
+                if (is_array($filterItem) && !empty($filterItem['name']) && !empty($filterItem['value']) && is_array($filterItem['value'])) {
+                    $activeFilters[$filterItem['name']] = array_values(array_filter($filterItem['value']));
+                }
+            }
 
-        // sort by updated_at desc
+            if (!empty($activeFilters)) {
+                $retval = array_values(array_filter($retval, function ($item) use ($activeFilters) {
+                    foreach ($activeFilters as $attrName => $selectedValues) {
+                        if (empty($selectedValues)) {
+                            continue;
+                        }
+
+                        $itemValues = $item[$attrName] ?? [];
+                        if (!is_array($itemValues)) {
+                            $itemValues = [$itemValues];
+                        }
+
+                        // Special case: Period model matched against 'periods' filter
+                        if ($attrName === 'periods' && ($item['_federation']['indexUid'] ?? '') === 'periods' && !empty($item['name'])) {
+                            $itemValues[] = $item['name'];
+                        }
+
+                        if (count(array_intersect($itemValues, $selectedValues)) === 0) {
+                            return false;
+                        }
+                    }
+
+                    return true;
+                }));
+            }
+        }
+
+        // Sort by updated_at desc
         usort($retval, function ($a, $b) {
-            return $b['updated_at'] <=> $a['updated_at'];
+            return ($b['updated_at'] ?? 0) <=> ($a['updated_at'] ?? 0);
         });
 
-        $retval = array_slice($retval, $offset, $page_size);
-
         $estimated_total_hits = count($retval);
-        $last_page = intdiv($estimated_total_hits, $page_size);
+        $last_page = max(1, (int) ceil($estimated_total_hits / $page_size));
 
         if ($page > $last_page) {
-            $offset = $last_page * $page_size;
-            $retval = array_slice($retval, $offset, $page_size);
+            $page = $last_page;
         }
+
+        $offset = max(0, $page_size * ($page - 1));
+        $retval = array_slice($retval, $offset, $page_size);
 
         return [
             'q' => $query,
@@ -101,7 +153,57 @@ class SearchController extends Controller
         ];
     }
 
-    public function fetchMulti(Request $request) {
+    public function fetchFilterOptions(Request $request)
+    {
+        $indexes = config('search.index', []);
+        $filterableAttributes = [];
+
+        foreach ($indexes as $indexUidData) {
+            if (!empty($indexUidData['filterableAttributes']) && is_array($indexUidData['filterableAttributes'])) {
+                foreach ($indexUidData['filterableAttributes'] as $attr) {
+                    if (!in_array($attr, $filterableAttributes, true)) {
+                        $filterableAttributes[] = $attr;
+                    }
+                }
+            }
+        }
+
+        $labels = config('filterable_attributes', []);
+        $filterOptions = [];
+
+        foreach ($filterableAttributes as $attribute) {
+            if (!Schema::hasTable($attribute) || !Schema::hasColumn($attribute, 'name')) {
+                continue;
+            }
+
+            $values = DB::table($attribute)
+                ->select('name')
+                ->whereNotNull('name')
+                ->where('name', '!=', '')
+                ->orderBy('name')
+                ->pluck('name')
+                ->unique()
+                ->values()
+                ->toArray();
+
+            if (empty($values)) {
+                continue;
+            }
+
+            $filterOptions[] = [
+                'name' => $attribute,
+                'label' => $labels[$attribute] ?? ucfirst($attribute),
+                'value' => $values,
+            ];
+        }
+
+        return response()->json([
+            'data' => $filterOptions,
+        ]);
+    }
+
+    public function fetchMulti(Request $request)
+    {
         return $this->fetchSearch($request);
     }
 

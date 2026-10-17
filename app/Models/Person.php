@@ -140,6 +140,15 @@ class Person extends Model
             ]);
     }
 
+    public function historyArticles(): MorphToMany
+    {
+        return $this->morphedByMany(HistoryArticle::class, 'personable', 'personables')
+            ->withPivot([
+                'activity_id',
+                'is_author',
+            ]);
+    }
+
     // files
 
     public function files(): MorphMany

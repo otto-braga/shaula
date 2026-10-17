@@ -1,3 +1,4 @@
+import { Activity } from "./activity";
 import { Category } from "./category";
 import { FileProps } from "./file";
 import { Period } from "./period";
@@ -25,6 +26,11 @@ export type HistoryArticle = {
     content_images: FileProps[];
 
     sources: Source[];
+
+    pivot?: {
+        activity: Activity | null;
+        is_author: boolean;
+    };
 
     categories: Category[];
     periods: Period[];

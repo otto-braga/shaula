@@ -37,7 +37,7 @@ class Source extends Model
             'uuid' => $this->uuid,
             'slug' => $this->slug,
             'route_base_name' => $this->getTable(),
-            'route' => '',
+            'route' => $this->slug ? route('public.' . $this->getTable() . '.show', $this) : '',
 
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',
