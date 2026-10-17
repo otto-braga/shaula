@@ -1,6 +1,5 @@
 import { FileProps } from "./file";
 import { HistoryArticle } from "./historyArticle";
-import { Mention } from "./mention";
 import { Source } from "./source";
 
 export enum PeriodLabels {

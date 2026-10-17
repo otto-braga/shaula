@@ -19,7 +19,7 @@ class PeriodPublicController extends Controller
             ->take(5)
             ->get();
 
-        $periods = Period::get();
+        $periods = Period::with(['images'])->get();
 
         return Inertia::render('historyArticle/index', [
             'historyArticles' => HistoryArticleResource::collection($historyArticles),
@@ -32,8 +32,13 @@ class PeriodPublicController extends Controller
      */
     public function show(Period $period)
     {
-
-        $period->load('historyArticles');
+        $period->load([
+            'images',
+            'contentImages',
+            'sources.file',
+            'historyArticles.authors',
+            'historyArticles.images',
+        ]);
 
         return Inertia::render('period/show', [
             'period' => new PeriodResource($period)
