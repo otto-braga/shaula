@@ -122,10 +122,10 @@ All public pages wrap their content in `PublicLayout` (`resources/js/layouts/pub
        - Right (`col-span-6 lg:col-span-4 lg:pr-12 space-y-8 divide-y *:pb-8`): Centered title & inline authors, `h-64 w-full object-cover` lead image, date (`text-sm text-slate-500`), prose (`text-lg md:text-2xl`), and a 2-column modulo-distributed (`acc[index % 2]`) `ExpandableImage` gallery below the divider.
    - **Exhibit Show (`/exposicoes/{slug}` — `resources/js/pages/exhibit/show.tsx`):**
      - **Top Split Exhibition Poster Header:** Full-width `border-b` 12-column split header (`grid grid-cols-1 divide-y border-b md:grid-cols-12 md:divide-x md:divide-y-0`):
-       - Left Panel (`md:col-span-5`): `Exposição` kicker, bold exhibition title (`text-3xl sm:text-4xl lg:text-5xl font-bold`), prominent date range (`text-lg md:text-xl`), and a bottom `border-t` strip with `Curadoria / Autoria` and `Período` links.
+       - Left Panel (`md:col-span-5`): `Exposição` kicker, bold exhibition title (`text-3xl sm:text-4xl lg:text-5xl font-bold`), prominent date range (`text-lg md:text-xl`), and a bottom `border-t` strip with `Autoria` and `Período` links.
        - Right Panel (`md:col-span-7 bg-zinc-100 dark:bg-zinc-900`): Framed `aspect-video max-h-[55vh]` primary exhibition poster/cover image (`ExpandableImage`).
      - **Divided Exhibition Catalog Body (`grid grid-cols-1 md:grid-cols-12 lg:divide-x`):**
-       - Left Sticky Technical Sheet (`lg:col-span-3`): `Ficha Técnica` header + `divide-y` blocks for `Autoria / Curadoria`, `Equipe e Participantes`, `Períodos`, `Categorias`, and `Premiações` (paired with `MobileDetailBar title="Ficha Técnica"` on mobile).
+       - Left Sticky Technical Sheet (`lg:col-span-3`): `Ficha Técnica` header + `divide-y` blocks for `Autoria`, `Equipe e Participantes`, `Períodos`, `Categorias`, and `Premiações` (paired with `MobileDetailBar title="Ficha Técnica"` on mobile).
        - Right Horizontal Showcase Sections (`lg:col-span-9 divide-y`): Full-width stacked catalog sections for `SOBRE A EXPOSIÇÃO` (curatorial text), `OBRAS EM EXPOSIÇÃO` (4-column square artwork showcase grid), `REGISTROS DA EXPOSIÇÃO` (3-column `ExpandableImage` installation gallery), and `FONTES`.
 
 ### Archetype E: Clean Container Directory / Catalog Listing

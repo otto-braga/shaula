@@ -27,7 +27,7 @@ class PersonResource extends JsonResource
             'chronology' => $this->chronology,
 
             'images' => FileResource::collection($this->relationLoaded('images') ? $this->images : []),
-            'primary_image' => $this->relationLoaded('images') ? new FileResource($this->primaryImage()) : null,
+            'primary_image' => ($this->relationLoaded('images') && $this->primaryImage()) ? new FileResource($this->primaryImage()) : null,
             'content_images' => FileResource::collection($this->relationLoaded('contentImages') ? $this->contentImages : []),
 
             'sources' => SourceResource::collection($this->relationLoaded('sources') ? $this->sources : []),

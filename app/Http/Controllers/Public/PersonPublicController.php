@@ -51,9 +51,17 @@ class PersonPublicController extends Controller
             ->firstOrFail();
 
         $person->load([
-            'artworks',
-            'reviews',
-            'exhibits'
+            'images',
+            'contentImages',
+            'cities',
+            'genders',
+            'periods',
+            'awards',
+            'activities',
+            'sources.file',
+            'artworks.images',
+            'reviews.images',
+            'exhibits.images',
         ]);
 
         return Inertia::render('person/show', [
