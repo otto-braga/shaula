@@ -11,9 +11,9 @@ interface PublicLayoutProps {
 export default ({ children, head }: PublicLayoutProps) => (
     <>
         <Head title={head ?? 'SHAULA'} />
-        <div className="flex min-h-screen flex-col bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
+        <div className="flex min-h-screen w-full max-w-full flex-col overflow-x-hidden bg-white text-zinc-950 dark:bg-zinc-950 dark:text-zinc-50">
             <NavBar />
-            <main className="mt-16 flex-1">{children}</main>
+            <main className="mt-14 w-full max-w-full min-w-0 flex-1 overflow-x-hidden">{children}</main>
             <Footer />
         </div>
     </>

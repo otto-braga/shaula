@@ -25,19 +25,22 @@ function SourceCard({
 
     if (!href) {
         return (
-            <span {...props} dangerouslySetInnerHTML={{ __html: source.content }} >
-            </span>
-        )
+            <span
+                {...props}
+                className={`${className} block max-w-full min-w-0 break-words [overflow-wrap:anywhere]`}
+                dangerouslySetInnerHTML={{ __html: source.content }}
+            />
+        );
     }
 
     return (
-        <a className={`${className} hover:underline`}
+        <a
+            className={`${className} block max-w-full min-w-0 break-words [overflow-wrap:anywhere] hover:underline`}
             href={href}
-            target='_blank'
+            target="_blank"
             dangerouslySetInnerHTML={{ __html: content }}
-        >
-        </a>
-    )
+        />
+    );
 }
 
 export { SourceCard };

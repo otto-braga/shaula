@@ -56,20 +56,20 @@ export function NavBar() {
 
     return (
         <nav
-            className={`fixed top-0 z-50 flex h-16 w-full items-center justify-between border-b border-zinc-200 bg-white px-4 transition-transform duration-300 md:px-8 dark:border-zinc-800 dark:bg-zinc-950 ${
+            className={`fixed inset-x-0 top-0 z-50 flex h-16 w-full max-w-full items-center justify-between border-b border-zinc-200 bg-white px-3 transition-transform duration-300 sm:px-4 md:px-8 dark:border-zinc-800 dark:bg-zinc-950 ${
                 showNavbar ? 'translate-y-0' : '-translate-y-full'
             }`}
         >
-            <Link href="/" className="shrink-0">
-                <img src="/images/logo.webp" alt="SHAULA" className="mb-2 w-28 sm:w-32 dark:invert" />
+            <Link href="/" className="min-w-0 shrink-0">
+                <img src="/images/logo.webp" alt="SHAULA" className="mb-2 w-24 max-w-full sm:w-32 dark:invert" />
             </Link>
 
-            <div className="flex items-center gap-1 md:hidden">
+            <div className="flex min-w-0 shrink-0 items-center gap-0.5 sm:gap-1 md:hidden">
                 <SearchBar />
                 <AppearanceToggleSidebarHeader />
                 <Sheet>
                     <SheetTrigger asChild>
-                        <Button variant="ghost" size="icon" aria-label="Menu">
+                        <Button variant="ghost" size="icon" aria-label="Menu" className="shrink-0">
                             <Menu />
                         </Button>
                     </SheetTrigger>

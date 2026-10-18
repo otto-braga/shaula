@@ -24,7 +24,7 @@ export function FeaturedCarousel<T extends FeaturedCarouselItem>({
     items,
     getHref,
     maxItems = 5,
-    className = 'relative mt-3',
+    className = 'relative mt-3 w-full max-w-full overflow-hidden',
 }: FeaturedCarouselProps<T>) {
     const displayItems = items.slice(0, maxItems);
 
@@ -53,17 +53,17 @@ export function FeaturedCarousel<T extends FeaturedCarouselItem>({
                         item.primary_image?.path || (item.images && item.images.length > 0 ? item.images[0].path : 'https://placehold.co/1280x900');
 
                     return (
-                        <CarouselItem key={item.uuid} className="basis-full md:basis-1/2">
-                            <Link href={getHref(item)} className="group relative block w-full overflow-hidden">
+                        <CarouselItem key={item.uuid} className="min-w-0 basis-full md:basis-1/2">
+                            <Link href={getHref(item)} className="group relative block w-full max-w-full overflow-hidden">
                                 <img
                                     src={imageSrc}
                                     alt={item.title}
-                                    className="aspect-video w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    className="aspect-video w-full max-w-full object-cover transition-transform duration-300 group-hover:scale-105"
                                     loading="lazy"
                                 />
                                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-                                <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center justify-center p-3 text-center sm:p-4 md:bottom-4 md:p-6">
-                                    <h2 className="line-clamp-2 max-w-full text-base font-semibold break-words text-white group-hover:underline sm:line-clamp-2 sm:text-lg md:line-clamp-3 md:text-2xl lg:text-3xl">
+                                <div className="absolute inset-x-0 bottom-0 z-20 flex flex-col items-center justify-center p-3 text-center sm:p-4 md:bottom-12 sm:bottom-12 md:p-6">
+                                    <h2 className="line-clamp-2 max-w-full text-base font-semibold break-words text-white group-hover:underline sm:line-clamp-2 sm:text-lg md:line-clamp-3 md:text-xl">
                                         {item.title}
                                     </h2>
                                     {item.authors && item.authors.length > 0 && (

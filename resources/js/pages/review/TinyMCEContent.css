@@ -8,6 +8,8 @@ figure.image {
   border: 1px solid gray;
   margin: 0 2px 0 1px;
   background: #f5f2f0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 figure.align-left {
@@ -20,11 +22,14 @@ figure.align-right {
 
 figure.image img {
   margin: 8px 8px 0 8px;
+  max-width: calc(100% - 16px);
+  height: auto;
 }
 
 figure.image figcaption {
   margin: 6px 8px 6px 8px;
   text-align: center;
+  overflow-wrap: break-word;
 }
 
 /*
@@ -34,10 +39,61 @@ figure.image figcaption {
 
 img.align-left {
   float: left;
+  max-width: 100%;
+  height: auto;
 }
 
 img.align-right {
   float: right;
+  max-width: 100%;
+  height: auto;
+}
+
+/* Mobile & Rich-Text Containment */
+.tinymce-content,
+.prose {
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+.tinymce-content *,
+.prose * {
+  max-width: 100%;
+  overflow-wrap: break-word;
+}
+
+.tinymce-content img,
+.tinymce-content iframe,
+.tinymce-content video,
+.tinymce-content table,
+.tinymce-content pre,
+.prose img,
+.prose iframe,
+.prose video,
+.prose table,
+.prose pre,
+img,
+iframe,
+video,
+table,
+pre {
+  max-width: 100%;
+  height: auto;
+}
+
+.tinymce-content table,
+.prose table {
+  display: block;
+  overflow-x: auto;
+}
+
+.tinymce-content pre,
+.prose pre {
+  overflow-x: auto;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 }
 
 /*
@@ -89,6 +145,7 @@ img.align-right {
   padding: 0;
   position: relative;
   width: 100%;
+  max-width: 100%;
 }
 
 .tiny-pageembed--21by9 {
@@ -117,6 +174,7 @@ img.align-right {
   position: absolute;
   top: 0;
   width: 100%;
+  max-width: 100%;
 }
 
 /* The Media Embed plugin */
@@ -127,11 +185,15 @@ img.align-right {
   padding: 10px;
   overflow: hidden;
   margin-bottom: 1em;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
 }
 
 .ephox-summary-card a {
   text-decoration: none;
   color: inherit;
+  overflow-wrap: break-word;
 }
 
 .ephox-summary-card a:visited {
@@ -141,18 +203,21 @@ img.align-right {
 .ephox-summary-card-title {
   font-size: 1.2em;
   display: block;
+  overflow-wrap: break-word;
 }
 
 .ephox-summary-card-author {
   color: #999;
   display: block;
   margin-top: 0.5em;
+  overflow-wrap: break-word;
 }
 
 .ephox-summary-card-website {
   color: #999;
   display: block;
   margin-top: 0.5em;
+  overflow-wrap: break-word;
 }
 
 .ephox-summary-card-thumbnail {
@@ -165,6 +230,7 @@ img.align-right {
 .ephox-summary-card-description {
   margin-top: 0.5em;
   display: block;
+  overflow-wrap: break-word;
 }
 
 /* The Footnotes plugin */
