@@ -5,10 +5,16 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 
-const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
+const appName = (import.meta.env.VITE_APP_NAME || 'SHAULA').toUpperCase();
 
 createInertiaApp({
-    title: (title) => `${title} - ${appName}`,
+    title: (title) => {
+        const trimmed = title?.trim();
+        if (!trimmed || trimmed.toUpperCase() === appName) {
+            return appName;
+        }
+        return `${trimmed} | ${appName}`;
+    },
     resolve: (name) => resolvePageComponent(`./pages/${name}.tsx`, import.meta.glob('./pages/**/*.tsx')),
     setup({ el, App, props }) {
         const root = createRoot(el);

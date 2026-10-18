@@ -277,7 +277,7 @@ export default function Index({ q }: { q: string | null }) {
     const hasSidebar = fetchedFilter.length > 0;
 
     return (
-        <PublicLayout head={activeQuery ? `Busca: ${activeQuery} — SHAULA` : 'Busca — SHAULA'}>
+        <PublicLayout head={activeQuery ? `Busca: ${activeQuery}` : 'Busca'}>
             {hasSidebar && (
                 <MobileDetailBar
                     title={

@@ -34,7 +34,11 @@
         } */
     </style>
 
-    <title inertia>{{ config('app.name', 'Laravel') }}</title>
+    <title inertia>{{ config('app.name', 'SHAULA') }}</title>
+
+    <link rel="icon" type="image/webp" href="/images/logo.webp">
+    <link rel="shortcut icon" type="image/webp" href="/images/logo.webp">
+    <link rel="apple-touch-icon" href="/images/logo.webp">
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
