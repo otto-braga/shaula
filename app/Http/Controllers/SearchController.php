@@ -46,6 +46,20 @@ class SearchController extends Controller
         $rawFilter = $request->filter;
         $filter = is_string($rawFilter) ? (json_decode($rawFilter, true) ?? []) : (is_array($rawFilter) ? $rawFilter : []);
 
+        $selectedCategories = [];
+        if (!empty($filter) && is_array($filter)) {
+            foreach ($filter as $filterItem) {
+                if (
+                    is_array($filterItem)
+                    && ($filterItem['name'] ?? '') === 'categories'
+                    && !empty($filterItem['value'])
+                    && is_array($filterItem['value'])
+                ) {
+                    $selectedCategories = array_values(array_filter($filterItem['value']));
+                }
+            }
+        }
+
         $indexes = config('search.index');
         $retval = [];
         $seenKeys = [];
@@ -65,7 +79,17 @@ class SearchController extends Controller
                 continue;
             }
 
+            $filterableAttributes = $indexUidData['filterableAttributes'] ?? [];
+            if (!empty($selectedCategories) && !in_array('categories', $filterableAttributes, true)) {
+                continue;
+            }
+
+            $relations = $indexUidData['relations'] ?? [];
             $modelQuery = $indexUid::query();
+
+            if (!empty($relations)) {
+                $modelQuery->with($relations);
+            }
 
             if ($query !== null && $query !== '') {
                 $searchableAttributes = $indexUidData['searchableAttributes'];
@@ -76,7 +100,13 @@ class SearchController extends Controller
                 });
             }
 
-            $models = $modelQuery->get();
+            if (!empty($selectedCategories) && method_exists($indexUid, 'categories')) {
+                $modelQuery->whereHas('categories', function ($catQuery) use ($selectedCategories) {
+                    $catQuery->whereIn('categories.name', $selectedCategories);
+                });
+            }
+
+            $models = $modelQuery->orderByDesc('updated_at')->get();
 
             foreach ($models as $result) {
                 $item = $result->toSearchableArray();
@@ -89,42 +119,6 @@ class SearchController extends Controller
                     $seenKeys[$uniqueKey] = true;
                     $retval[] = $item;
                 }
-            }
-        }
-
-        // Apply attribute filters (periods, categories, cities, etc.) if provided
-        if (!empty($filter) && is_array($filter)) {
-            $activeFilters = [];
-            foreach ($filter as $filterItem) {
-                if (is_array($filterItem) && !empty($filterItem['name']) && !empty($filterItem['value']) && is_array($filterItem['value'])) {
-                    $activeFilters[$filterItem['name']] = array_values(array_filter($filterItem['value']));
-                }
-            }
-
-            if (!empty($activeFilters)) {
-                $retval = array_values(array_filter($retval, function ($item) use ($activeFilters) {
-                    foreach ($activeFilters as $attrName => $selectedValues) {
-                        if (empty($selectedValues)) {
-                            continue;
-                        }
-
-                        $itemValues = $item[$attrName] ?? [];
-                        if (!is_array($itemValues)) {
-                            $itemValues = [$itemValues];
-                        }
-
-                        // Special case: Period model matched against 'periods' filter
-                        if ($attrName === 'periods' && ($item['_federation']['indexUid'] ?? '') === 'periods' && !empty($item['name'])) {
-                            $itemValues[] = $item['name'];
-                        }
-
-                        if (count(array_intersect($itemValues, $selectedValues)) === 0) {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }));
             }
         }
 
@@ -155,27 +149,11 @@ class SearchController extends Controller
 
     public function fetchFilterOptions(Request $request)
     {
-        $indexes = config('search.index', []);
-        $filterableAttributes = [];
-
-        foreach ($indexes as $indexUidData) {
-            if (!empty($indexUidData['filterableAttributes']) && is_array($indexUidData['filterableAttributes'])) {
-                foreach ($indexUidData['filterableAttributes'] as $attr) {
-                    if (!in_array($attr, $filterableAttributes, true)) {
-                        $filterableAttributes[] = $attr;
-                    }
-                }
-            }
-        }
-
         $labels = config('filterable_attributes', []);
         $filterOptions = [];
+        $attribute = 'categories';
 
-        foreach ($filterableAttributes as $attribute) {
-            if (!Schema::hasTable($attribute) || !Schema::hasColumn($attribute, 'name')) {
-                continue;
-            }
-
+        if (Schema::hasTable($attribute) && Schema::hasColumn($attribute, 'name')) {
             $values = DB::table($attribute)
                 ->select('name')
                 ->whereNotNull('name')
@@ -186,15 +164,13 @@ class SearchController extends Controller
                 ->values()
                 ->toArray();
 
-            if (empty($values)) {
-                continue;
+            if (!empty($values)) {
+                $filterOptions[] = [
+                    'name' => $attribute,
+                    'label' => $labels[$attribute] ?? 'Categorias',
+                    'value' => $values,
+                ];
             }
-
-            $filterOptions[] = [
-                'name' => $attribute,
-                'label' => $labels[$attribute] ?? ucfirst($attribute),
-                'value' => $values,
-            ];
         }
 
         return response()->json([

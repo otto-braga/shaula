@@ -57,7 +57,8 @@ export default function Index({ q }: { q: string | null }) {
                 return response.json();
             })
             .then((data) => {
-                const options: SearchFilterOption[] = Array.isArray(data?.data) ? data.data : [];
+                const rawOptions: SearchFilterOption[] = Array.isArray(data?.data) ? data.data : [];
+                const options = rawOptions.filter((option) => option.name === 'categories');
                 setFetchedFilter(options);
                 setFilter(
                     options.map((option) => ({

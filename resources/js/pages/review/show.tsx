@@ -57,11 +57,11 @@ export default function Index({ review }: { review: { data: Review } }) {
                 </section>
             </MobileDetailBar>
 
-            <div className="relative -mt-16 h-[25vh] w-full max-w-full overflow-hidden lg:h-[50vh]">
+            <div className="relative -mt-16 h-[35vh] w-full max-w-full overflow-hidden [clip-path:inset(0)] sm:h-[45vh] lg:h-[60vh]">
                 <img
                     src={`${review.data.primary_image ? review.data.primary_image.path : 'https://placehold.co/1280x900'}`}
                     alt="Review Image"
-                    className="fixed inset-x-0 w-full max-w-full object-cover lg:bottom-36"
+                    className="fixed inset-x-0 top-0 mx-auto h-[35vh] w-full max-w-full object-cover object-center sm:h-[45vh] lg:h-[60vh]"
                 />
                 {/* <div className="via-zinc-70 absolute bottom-1/4 left-1/2 z-20 flex justify-center bg-gradient-to-r from-zinc-900/20 via-zinc-400/50 to-zinc-900/40 p-1 backdrop-blur-lg">
                     <div>

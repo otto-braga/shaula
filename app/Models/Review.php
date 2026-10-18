@@ -46,7 +46,7 @@ class Review extends Model
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',
 
-            'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+            'content' => $this->content ? mb_substr(strip_tags($this->content), 0, 255) : '',
             'primary_image_path' => $this->primaryImage() ? $this->primaryImage()->path : null,
 
             'categories' => $this->categories->pluck('name')->toArray(),
