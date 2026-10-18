@@ -9,12 +9,16 @@ return [
             'indexUid' => 'artworks',
             'searchableAttributes' => [
                 'title',
-                // 'authors',
-                // 'periods',
+                'content',
             ],
             'filterableAttributes' => [
+                'categories',
+            ],
+            'relations' => [
+                'images',
                 'periods',
-                'categories'
+                'categories',
+                'authors',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -26,12 +30,16 @@ return [
             'indexUid' => 'exhibits',
             'searchableAttributes' => [
                 'title',
-                // 'artworks',
-                // 'periods',
+                'content',
             ],
             'filterableAttributes' => [
+                'categories',
+            ],
+            'relations' => [
+                'images',
                 'periods',
-                'cities',
+                'categories',
+                'authors',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -43,12 +51,14 @@ return [
             'indexUid' => 'people',
             'searchableAttributes' => [
                 'name',
-                // 'artworks',
-                // 'periods',
             ],
             'filterableAttributes' => [
+            ],
+            'relations' => [
+                'images',
                 'periods',
                 'cities',
+                'artworks',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -60,11 +70,15 @@ return [
             'indexUid' => 'reviews',
             'searchableAttributes' => [
                 'title',
-                // 'authors',
-                // 'artworks',
+                'content',
             ],
             'filterableAttributes' => [
                 'categories',
+            ],
+            'relations' => [
+                'images',
+                'categories',
+                'authors',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -76,12 +90,16 @@ return [
             'indexUid' => 'history_articles',
             'searchableAttributes' => [
                 'title',
-                // 'authors',
-                // 'periods',
+                'content',
             ],
             'filterableAttributes' => [
+                'categories',
+            ],
+            'relations' => [
+                'images',
                 'periods',
                 'categories',
+                'authors',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -93,10 +111,11 @@ return [
             'indexUid' => 'sources',
             'searchableAttributes' => [
                 'title',
-                'content',
             ],
             'filterableAttributes' => [
-                'source_categories',
+            ],
+            'relations' => [
+                'file',
             ],
             'sortableAttributes' => [
                 'created_at',
@@ -108,9 +127,11 @@ return [
             'indexUid' => 'periods',
             'searchableAttributes' => [
                 'name',
-                'content',
             ],
             'filterableAttributes' => [
+            ],
+            'relations' => [
+                'images',
             ],
             'sortableAttributes' => [
                 'created_at',

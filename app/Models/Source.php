@@ -42,7 +42,7 @@ class Source extends Model
             'label' => $this->title ?? '',
             'title' => $this->title ?? '',
 
-            'content' => $this->content ? substr(strip_tags($this->content), 0, 255) : '',
+            'content' => $this->content ? mb_substr(strip_tags($this->content), 0, 255) : '',
 
             'file_path' => $this->file ? $this->file->path : null,
 
