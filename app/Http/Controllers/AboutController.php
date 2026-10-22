@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\HtmlSanitizer;
 use App\Http\Requests\AboutUpdateRequest;
 use App\Http\Resources\AboutResource;
 use App\Models\About;
@@ -57,7 +58,9 @@ class AboutController extends Controller
 
             $about->update([
                 'title' => $request->filled('title') ? $request->input('title') : ($about->title ?: 'Sobre o Shaula'),
-                'content' => $request->input('content', ''),
+                'content' => HtmlSanitizer::clean($request->input('content', '')),
+                'team' => HtmlSanitizer::clean($request->input('team', '')),
+                'support' => HtmlSanitizer::clean($request->input('support', '')),
             ]);
 
             // Handle removal of existing cover image if requested

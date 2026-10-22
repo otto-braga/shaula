@@ -5,6 +5,8 @@ export interface About {
     uuid: string;
     title: string;
     content: string | null;
+    team: string | null;
+    support: string | null;
     cover_image: FileProps | null;
     created_at?: string;
     updated_at?: string;

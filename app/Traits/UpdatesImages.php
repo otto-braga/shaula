@@ -37,7 +37,7 @@ trait UpdatesImages
 
         if ($model->images()->count() > 0) {
             $model->images()->update(['is_primary' => false]);
-            if ($request->primary_image_uuid > 0) {
+            if (!empty($request->primary_image_uuid)) {
                 $model->images()->where('uuid', $request->primary_image_uuid)->update(['is_primary' => true]);
             } else {
                 $model->images()->first()->update(['is_primary' => true]);

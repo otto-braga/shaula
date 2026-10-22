@@ -13,6 +13,7 @@ import { Editor as TinyMCEEditor } from 'tinymce';
 
 import Modal from '@/components/common/modal';
 import { Button } from '@/components/ui/button';
+import { sanitizeRichTextHtml, tinymceCleanPasteInit } from '@/lib/clean-html';
 import { CheckIcon, DeleteIcon, XIcon } from 'lucide-react';
 
 import { SearchResult } from '@/types/search-result';
@@ -57,8 +58,8 @@ export default function HtmlEditor({
         (hasGallery ? 'gallery | ' : '') +
         'media | ' +
         'link | ' +
-        'bold italic forecolor | alignleft aligncenter ' +
-        'alignright alignjustify |  outdent indent | ' +
+        'bold italic underline | alignleft aligncenter ' +
+        'alignright alignjustify | outdent indent | ' +
         'removeformat';
 
     const [images, setImages] = useState<Array<FilePondInitialFile | File | Blob | string>>([]);
@@ -71,7 +72,7 @@ export default function HtmlEditor({
     const editorRef = useRef<TinyMCEEditor | null>(null);
 
     function onContentInput(e: any) {
-        setData('content', editorRef?.current?.getContent() ?? String());
+        setData('content', sanitizeRichTextHtml(editorRef?.current?.getContent() ?? String()));
     }
 
     const [showGallery, setShowGallery] = useState(false);
@@ -215,17 +216,9 @@ export default function HtmlEditor({
                         link_target_list: false,
 
                         content_style:
-                            'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                            'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.7; } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
 
-                        paste_preprocess: (editor, args) => {
-                            const blob = args.content.match(/<img src="blob:.*">/g);
-
-                            if (blob) {
-                                args.content = '';
-                            }
-                        },
-
-                        paste_block_drop: true,
+                        ...tinymceCleanPasteInit,
 
                         setup: (editor) => {
                             if (hasGallery) {

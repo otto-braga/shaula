@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\HtmlSanitizer;
 use App\Models\File;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
@@ -35,6 +36,6 @@ trait UpdatesContent
             }
         }
 
-        $model->update(['content' => $request->content]);
+        $model->update(['content' => HtmlSanitizer::clean($request->content)]);
     }
 }

@@ -9,6 +9,7 @@ import { Editor } from '@tinymce/tinymce-react';
 import { Editor as TinyMCEEditor } from 'tinymce';
 import EditTabs from '@/components/edit/edit-tabs';
 import { LazyLoadingSelectWithStates } from '@/components/select/lazy-loading-select';
+import { sanitizeRichTextHtml, tinymceCleanPasteInit } from '@/lib/clean-html';
 import { MultiValue } from 'react-select';
 import { SearchResult } from '@/types/search-result';
 import EditLayout from '@/components/edit/edit-layout';
@@ -54,13 +55,13 @@ export default function Index({
     const editorLinksRef = useRef<TinyMCEEditor | null>(null);
 
     function onLinksInput(e: any) {
-        setData('links', editorLinksRef?.current?.getContent() ?? String());
+        setData('links', sanitizeRichTextHtml(editorLinksRef?.current?.getContent() ?? String()));
     }
 
     const editorChronologyRef = useRef<TinyMCEEditor | null>(null);
 
     function onChronologyInput(e: any) {
-        setData('chronology', editorChronologyRef?.current?.getContent() ?? String());
+        setData('chronology', sanitizeRichTextHtml(editorChronologyRef?.current?.getContent() ?? String()));
     }
 
     return (
@@ -191,7 +192,8 @@ export default function Index({
 
                             toolbar: 'link | undo redo',
 
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                            content_style: 'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.7; } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                            ...tinymceCleanPasteInit,
                         }}
                         onEditorChange={onLinksInput}
                     />
@@ -220,7 +222,8 @@ export default function Index({
 
                             toolbar: 'undo redo',
 
-                            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                            content_style: 'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height:1.7; } img {max-width: 80%; display: block; margin: auto; padding: 1rem;}',
+                            ...tinymceCleanPasteInit,
                         }}
                         onEditorChange={onChronologyInput}
                     />

@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
+import { sanitizeRichTextHtml, tinymceCleanPasteInit } from '@/lib/clean-html';
 import { About } from '@/types/about';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { Editor } from '@tinymce/tinymce-react';
@@ -11,7 +12,7 @@ import { FilePondFile } from 'filepond';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 import 'filepond/dist/filepond.min.css';
-import { Check, ExternalLink, Image as ImageIcon, Loader2, Save, Trash2, Undo2 } from 'lucide-react';
+import { Building2, Check, ExternalLink, Image as ImageIcon, Loader2, Save, Trash2, Undo2, Users } from 'lucide-react';
 import { FormEventHandler, useRef, useState } from 'react';
 import { FilePond, registerPlugin } from 'react-filepond';
 import { Editor as TinyMCEEditor } from 'tinymce';
@@ -28,6 +29,8 @@ export default function EditAbout({ about }: EditAboutProps) {
     const { data, setData, post, processing, errors, recentlySuccessful } = useForm({
         title: aboutData?.title || 'Sobre o Shaula',
         content: aboutData?.content || '',
+        team: aboutData?.team || '',
+        support: aboutData?.support || '',
         cover_image: null as File | null,
         remove_cover_image: false,
         _method: 'PUT',
@@ -38,6 +41,8 @@ export default function EditAbout({ about }: EditAboutProps) {
     const [previewNewCover, setPreviewNewCover] = useState<string | null>(null);
     const [isCoverMarkedForRemoval, setIsCoverMarkedForRemoval] = useState<boolean>(false);
     const editorRef = useRef<TinyMCEEditor | null>(null);
+    const teamEditorRef = useRef<TinyMCEEditor | null>(null);
+    const supportEditorRef = useRef<TinyMCEEditor | null>(null);
 
     // Track removal toggle
     const handleRemoveCurrentCover = () => {
@@ -65,9 +70,15 @@ export default function EditAbout({ about }: EditAboutProps) {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        // Ensure latest content from TinyMCE is synced
+        // Ensure latest content from TinyMCE is synced and cleaned
         if (editorRef.current) {
-            data.content = editorRef.current.getContent();
+            data.content = sanitizeRichTextHtml(editorRef.current.getContent());
+        }
+        if (teamEditorRef.current) {
+            data.team = sanitizeRichTextHtml(teamEditorRef.current.getContent());
+        }
+        if (supportEditorRef.current) {
+            data.support = sanitizeRichTextHtml(supportEditorRef.current.getContent());
         }
 
         post(route('about.update'), {
@@ -287,17 +298,143 @@ export default function EditAbout({ about }: EditAboutProps) {
                                             skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
                                             content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
                                             toolbar:
-                                                'undo redo | blocks fontfamily fontsize | bold italic underline forecolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link table media | removeformat code fullscreen',
+                                                'undo redo | blocks | bold italic underline | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link table media | removeformat code fullscreen',
                                             link_title: false,
                                             link_default_target: '_blank',
                                             link_target_list: false,
                                             content_style:
                                                 'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height: 1.7; padding: 1rem; } p { margin-bottom: 1rem; } h1, h2, h3 { margin-top: 1.5rem; margin-bottom: 0.75rem; font-weight: 600; } a { color: #0284c7; text-decoration: underline; } blockquote { border-left: 3px solid #cbd5e1; padding-left: 1rem; font-style: italic; margin: 1.5rem 0; }',
+                                            ...tinymceCleanPasteInit,
                                         }}
-                                        onEditorChange={(newContent) => setData('content', newContent)}
+                                        onEditorChange={(newContent) => setData('content', sanitizeRichTextHtml(newContent))}
                                     />
                                 </div>
                                 <InputError message={errors.content} />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Team Section (Equipe) */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg">
+                                <Users className="text-primary size-5" />
+                                Equipe
+                            </CardTitle>
+                            <CardDescription>
+                                Liste os coordenadores, pesquisadores, docentes, discentes, bolsistas e colaboradores que integram a equipe do
+                                projeto.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="team">Equipe do Projeto</Label>
+                                <div className="border-input overflow-hidden rounded-md border">
+                                    <Editor
+                                        tinymceScriptSrc="/tinymce/tinymce.min.js"
+                                        licenseKey="gpl"
+                                        onInit={(_evt, editor) => (teamEditorRef.current = editor)}
+                                        initialValue={data.team || ''}
+                                        init={{
+                                            plugins: [
+                                                'advlist',
+                                                'autolink',
+                                                'lists',
+                                                'link',
+                                                'charmap',
+                                                'anchor',
+                                                'searchreplace',
+                                                'visualblocks',
+                                                'code',
+                                                'fullscreen',
+                                                'insertdatetime',
+                                                'media',
+                                                'table',
+                                                'preview',
+                                                'help',
+                                                'wordcount',
+                                                'autoresize',
+                                            ],
+                                            min_height: 280,
+                                            autoresize_bottom_margin: 0,
+                                            menubar: false,
+                                            skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                                            content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                            toolbar:
+                                                'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link table | removeformat code fullscreen',
+                                            link_title: false,
+                                            link_default_target: '_blank',
+                                            link_target_list: false,
+                                            content_style:
+                                                'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height: 1.7; padding: 1rem; } p { margin-bottom: 0.75rem; } h1, h2, h3 { margin-top: 1.25rem; margin-bottom: 0.5rem; font-weight: 600; } a { color: #0284c7; text-decoration: underline; }',
+                                            ...tinymceCleanPasteInit,
+                                        }}
+                                        onEditorChange={(newContent) => setData('team', sanitizeRichTextHtml(newContent))}
+                                    />
+                                </div>
+                                <InputError message={errors.team} />
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {/* Support Section (Apoio) */}
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2 text-lg">
+                                <Building2 className="text-primary size-5" />
+                                Apoio
+                            </CardTitle>
+                            <CardDescription>
+                                Informe as instituições apoiadoras, agências de fomento, pró-reitorias, grupos de pesquisa e parceiros institucionais.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <div className="space-y-2">
+                                <Label htmlFor="support">Apoio Institucional</Label>
+                                <div className="border-input overflow-hidden rounded-md border">
+                                    <Editor
+                                        tinymceScriptSrc="/tinymce/tinymce.min.js"
+                                        licenseKey="gpl"
+                                        onInit={(_evt, editor) => (supportEditorRef.current = editor)}
+                                        initialValue={data.support || ''}
+                                        init={{
+                                            plugins: [
+                                                'advlist',
+                                                'autolink',
+                                                'lists',
+                                                'link',
+                                                'charmap',
+                                                'anchor',
+                                                'searchreplace',
+                                                'visualblocks',
+                                                'code',
+                                                'fullscreen',
+                                                'insertdatetime',
+                                                'media',
+                                                'table',
+                                                'preview',
+                                                'help',
+                                                'wordcount',
+                                                'autoresize',
+                                            ],
+                                            min_height: 240,
+                                            autoresize_bottom_margin: 0,
+                                            menubar: false,
+                                            skin: document.documentElement.classList.contains('dark') ? 'oxide-dark' : 'oxide',
+                                            content_css: document.documentElement.classList.contains('dark') ? 'dark' : 'default',
+                                            toolbar:
+                                                'undo redo | blocks | bold italic underline | alignleft aligncenter alignright | bullist numlist | link table media | removeformat code fullscreen',
+                                            link_title: false,
+                                            link_default_target: '_blank',
+                                            link_target_list: false,
+                                            content_style:
+                                                'body { font-family:Instrument Sans,Helvetica,Arial,sans-serif; font-size:16px; line-height: 1.7; padding: 1rem; } p { margin-bottom: 0.75rem; } h1, h2, h3 { margin-top: 1.25rem; margin-bottom: 0.5rem; font-weight: 600; } a { color: #0284c7; text-decoration: underline; }',
+                                            ...tinymceCleanPasteInit,
+                                        }}
+                                        onEditorChange={(newContent) => setData('support', sanitizeRichTextHtml(newContent))}
+                                    />
+                                </div>
+                                <InputError message={errors.support} />
                             </div>
                         </CardContent>
                     </Card>

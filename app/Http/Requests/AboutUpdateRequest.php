@@ -24,6 +24,8 @@ class AboutUpdateRequest extends FormRequest
         return [
             'title' => ['nullable', 'string', 'max:255'],
             'content' => ['nullable', 'string'],
+            'team' => ['nullable', 'string'],
+            'support' => ['nullable', 'string'],
             'cover_image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
             'files.*' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:10240'],
             'remove_cover_image' => ['nullable', 'boolean'],
@@ -40,6 +42,8 @@ class AboutUpdateRequest extends FormRequest
         return [
             'title' => 'título',
             'content' => 'conteúdo',
+            'team' => 'equipe',
+            'support' => 'apoio',
             'cover_image' => 'imagem de capa',
             'files' => 'arquivos',
         ];

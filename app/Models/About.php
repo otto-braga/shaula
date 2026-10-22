@@ -18,6 +18,8 @@ class About extends Model
     protected $fillable = [
         'title',
         'content',
+        'team',
+        'support',
     ];
 
     /**
@@ -47,6 +49,8 @@ class About extends Model
             $about = static::create([
                 'title' => 'Sobre',
                 'content' => '',
+                'team' => '',
+                'support' => '',
             ]);
         }
 

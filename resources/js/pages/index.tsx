@@ -27,13 +27,29 @@ export default function Index({ reviews, historyArticles, artworks }: IndexProps
                         Memória e Acervo da Arte Potiguar
                     </p>
                     <p className="mt-6 text-base leading-relaxed break-words text-gray-600 sm:text-lg dark:text-gray-300">
-                        O portal SHAULA é um espaço de memória e difusão dedicado às artes visuais e à história cultural potiguar. Desenvolvido no
-                        âmbito do Curso de Artes Visuais e do grupo de pesquisa Matizes da UFRN, o projeto pesquisa, preserva e cataloga acervos de
-                        obras, trajetórias de artistas, ensaios históricos e fortuna crítica, promovendo o acesso público e a valorização do patrimônio
-                        artístico do Rio Grande do Norte.
+                        O portal SHAULA é um espaço de memória e difusão dedicado às artes visuais e à história cultural potiguar. Desenvolvido no âmbito do Curso de Artes Visuais e do grupo de pesquisa Matizes da UFRN, o projeto pesquisa e mapeia acervos e trajetórias artísticas, reunindo ensaios históricos e fortuna crítica para promover o acesso público e a valorização do patrimônio artístico do Rio Grande do Norte.
                     </p>
                 </div>
             </section>
+
+             {/* Últimas Críticas */}
+            {reviews?.data && reviews.data.length > 0 && (
+                <section className="w-full max-w-full overflow-hidden px-4 py-8 md:p-8">
+                    <Link href="/critica" className="inline-block max-w-full">
+                        <span className="flex flex-wrap items-center gap-1 hover:underline">
+                            <h2 className="text-red text-2xl break-words sm:text-3xl">ÚLTIMAS CRÍTICAS</h2>
+                            <ArrowUpRight size={32} className="shrink-0" />
+                        </span>
+                    </Link>
+                    <div className="mt-6 grid w-full max-w-full grid-cols-1 gap-8 md:grid-cols-3">
+                        {reviews.data.map((review) => (
+                            <div key={review.uuid} className="w-full max-w-full min-w-0">
+                                <ReviewCard review={review} />
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* Últimos Artigos de História */}
             {historyArticles?.data && historyArticles.data.length > 0 && (
@@ -72,24 +88,7 @@ export default function Index({ reviews, historyArticles, artworks }: IndexProps
                 </section>
             )}
 
-            {/* Últimas Críticas */}
-            {reviews?.data && reviews.data.length > 0 && (
-                <section className="w-full max-w-full overflow-hidden px-4 py-8 md:p-8">
-                    <Link href="/critica" className="inline-block max-w-full">
-                        <span className="flex flex-wrap items-center gap-1 hover:underline">
-                            <h2 className="text-red text-2xl break-words sm:text-3xl">ÚLTIMAS CRÍTICAS</h2>
-                            <ArrowUpRight size={32} className="shrink-0" />
-                        </span>
-                    </Link>
-                    <div className="mt-6 grid w-full max-w-full grid-cols-1 gap-8 md:grid-cols-3">
-                        {reviews.data.map((review) => (
-                            <div key={review.uuid} className="w-full max-w-full min-w-0">
-                                <ReviewCard review={review} />
-                            </div>
-                        ))}
-                    </div>
-                </section>
-            )}
+           
         </PublicLayout>
     );
 }

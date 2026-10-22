@@ -96,7 +96,7 @@ export default function Show({ person }: PersonShowProps) {
     };
 
     const richTextClasses =
-        'text-lg leading-relaxed break-words text-zinc-800 dark:text-zinc-200 [&_p]:mb-4 last:[&_p]:mb-0 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:hover:[&_a]:text-zinc-50 [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-700';
+        'tinymce-content text-lg leading-relaxed break-words text-zinc-800 dark:text-zinc-200 [&_p]:mb-4 last:[&_p]:mb-0 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:hover:[&_a]:text-zinc-50 [&_ul]:my-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:my-3 [&_ol]:list-decimal [&_ol]:pl-5 [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-700';
 
     return (
         <PublicLayout head={data.name}>

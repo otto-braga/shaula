@@ -19,6 +19,8 @@ class AboutResource extends JsonResource
             'uuid' => $this->uuid,
             'title' => $this->title,
             'content' => $this->content,
+            'team' => $this->team,
+            'support' => $this->support,
             'cover_image' => $this->coverImage ? new FileResource($this->coverImage) : null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

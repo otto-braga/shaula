@@ -184,3 +184,15 @@
 .dark .filepond--drop-label {
     color: var(--primary);
 }
+
+/* Normalize pasted rich-text HTML so inline styles never override site typography or spacing */
+.tinymce-content *,
+.prose * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    letter-spacing: inherit !important;
+    word-spacing: inherit !important;
+    color: inherit !important;
+    background-color: transparent !important;
+}

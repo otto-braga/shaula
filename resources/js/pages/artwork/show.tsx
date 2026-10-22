@@ -109,7 +109,7 @@ export default function Show({ artwork }: { artwork: { data: Artwork } }) {
                         </div>
                     </div>
                     <div className="space-y-6 divide-y *:pb-6">
-                        <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="mt-6 text-lg" />
+                        <div dangerouslySetInnerHTML={{ __html: artwork.data.content }} className="tinymce-content mt-6 text-lg" />
                         {artwork.data.sources.length > 0 && (
                             <div className="space-y-3">
                                 <p className="font-medium">Fontes</p>

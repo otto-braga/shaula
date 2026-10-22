@@ -1,4 +1,5 @@
 import { Link } from '@inertiajs/react';
+import { ArrowUpRight } from 'lucide-react';
 
 const footerLinks = [
     { title: 'Início', href: '/' },
@@ -29,8 +30,7 @@ export function Footer() {
                         </p>
                     </div>
                     <p className="max-w-sm text-sm leading-relaxed text-zinc-600 dark:text-zinc-400">
-                        Portal de memória, pesquisa e difusão dedicado às artes visuais, trajetórias artísticas, ensaios históricos e fortuna
-                        crítica do Rio Grande do Norte.
+                        Portal de memória, pesquisa e difusão dedicado às artes visuais, trajetórias artísticas, ensaios históricos e crítica de arte.
                     </p>
                 </div>
 
@@ -54,10 +54,17 @@ export function Footer() {
                 <div className="space-y-3 p-6 sm:p-8">
                     <h2 className="text-xs font-semibold tracking-widest text-zinc-500 uppercase dark:text-zinc-400">Realização Institucional</h2>
                     <div className="space-y-1.5 text-sm leading-relaxed text-zinc-700 dark:text-zinc-300">
-                        <p className="font-medium text-zinc-950 dark:text-zinc-100">Grupo de Pesquisa Matizes</p>
-                        <p>Curso de Artes Visuais · Departamento de Artes (DEART)</p>
-                        <p>Universidade Federal do Rio Grande do Norte (UFRN)</p>
-                        <p className="text-xs text-zinc-500 dark:text-zinc-400">Natal, RN — Brasil</p>
+                        <p className="font-medium text-zinc-950 dark:text-zinc-100">Universidade Federal do Rio Grande do Norte (UFRN)</p>
+                        <p>Departamento de Artes (DEART)</p>
+                        <div className="pt-1">
+                            <Link
+                                href={route('public.about')}
+                                className="group inline-flex items-center gap-1 font-medium text-zinc-950 hover:underline dark:text-zinc-100"
+                            >
+                                <span>Ver mais</span>
+                                <ArrowUpRight className="size-3.5 text-zinc-500 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 dark:text-zinc-400" />
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>

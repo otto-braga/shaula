@@ -135,7 +135,7 @@ export default function Show({ historyArticle }: HistoryArticleShowProps) {
     );
 
     const richTextClasses =
-        'text-lg leading-relaxed break-words text-zinc-800 md:text-xl lg:text-2xl dark:text-zinc-200 [&_p]:mb-5 last:[&_p]:mb-0 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:hover:[&_a]:text-zinc-50 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-700';
+        'tinymce-content text-lg leading-relaxed break-words text-zinc-800 md:text-xl lg:text-2xl dark:text-zinc-200 [&_p]:mb-5 last:[&_p]:mb-0 [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-zinc-950 dark:hover:[&_a]:text-zinc-50 [&_ul]:my-4 [&_ul]:list-disc [&_ul]:pl-6 [&_ol]:my-4 [&_ol]:list-decimal [&_ol]:pl-6 [&_blockquote]:border-l-2 [&_blockquote]:border-zinc-300 [&_blockquote]:pl-4 [&_blockquote]:italic dark:[&_blockquote]:border-zinc-700';
 
     return (
         <PublicLayout head={data.title || 'História'}>

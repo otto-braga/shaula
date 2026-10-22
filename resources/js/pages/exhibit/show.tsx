@@ -100,8 +100,11 @@ export interface ExhibitShowProps {
 export default function Show({ exhibit }: ExhibitShowProps) {
     const data: ExhibitDetail = 'data' in exhibit ? exhibit.data : exhibit;
 
-    const mainImage = data.primary_image || (data.images && data.images.length > 0 ? data.images[0] : null);
-    const galleryImages = (data.images || []).filter((img) => !mainImage || img.uuid !== mainImage.uuid);
+    const mainImage =
+        (data.primary_image && typeof data.primary_image.path === 'string' && data.primary_image.path.trim().length > 0
+            ? data.primary_image
+            : null) || (data.images && data.images.length > 0 && data.images[0]?.path ? data.images[0] : null);
+    const galleryImages = (data.images || []).filter((img) => img?.path && (!mainImage || img.uuid !== mainImage.uuid));
 
     const hasAuthors = Boolean(data.authors && data.authors.length > 0);
     const hasPeople = Boolean(data.people && data.people.length > 0);
@@ -262,8 +265,8 @@ export default function Show({ exhibit }: ExhibitShowProps) {
                 <div className="bg-zinc-100 p-4 sm:p-6 md:col-span-7 md:p-4 dark:bg-zinc-900">
                     <div className="aspect-video max-h-[55vh] w-full overflow-hidden">
                         <ExpandableImage
-                            src={'https://placehold.co/1280x900'}
-                            alt={data.title}
+                            src={mainImage?.path || 'https://placehold.co/1280x900'}
+                            alt={mainImage?.name || data.title}
                             className="h-full w-full object-cover"
                         />
                     </div>
@@ -290,7 +293,7 @@ export default function Show({ exhibit }: ExhibitShowProps) {
                             <h2 className="mb-6 text-xl font-medium uppercase">SOBRE A EXPOSIÇÃO</h2>
                             <div
                                 dangerouslySetInnerHTML={{ __html: data.content as string }}
-                                className="max-w-4xl text-lg leading-relaxed text-zinc-800 lg:text-xl dark:text-zinc-200"
+                                className="tinymce-content max-w-4xl text-lg leading-relaxed text-zinc-800 lg:text-xl dark:text-zinc-200"
                             />
                         </section>
                     )}

@@ -143,7 +143,7 @@ class Exhibit extends Model
 
         return $this->images()
             ->where('is_primary', true)
-            ->first();
+            ->first() ?? $this->images()->first();
     }
 
     public function contentImages(): MorphMany
