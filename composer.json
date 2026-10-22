@@ -9,15 +9,15 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.3",
         "guzzlehttp/guzzle": "^7.9",
         "http-interop/http-factory-guzzle": "^1.2",
         "inertiajs/inertia-laravel": "^2.0",
         "laravel/framework": "^12.0",
-        "laravel/scout": "^10.16",
+        "laravel/scout": "^11.9",
         "laravel/tinker": "^2.10.1",
-        "meilisearch/meilisearch-php": "^1.15",
-        "predis/predis": "^3.0",
+        "meilisearch/meilisearch-php": "^1.17",
+        "predis/predis": "^3.7",
         "tightenco/ziggy": "^2.4"
     },
     "require-dev": {

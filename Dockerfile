@@ -1,4 +1,4 @@
-FROM php:8.2-fpm AS php
+FROM php:8.3-fpm AS php
 
 # Install system dependencies
 RUN apt-get update -y
@@ -7,6 +7,9 @@ RUN apt-get install -y \
     curl \
     libpq-dev \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libwebp-dev \
     libonig-dev \
     libxml2-dev \
     zip \
@@ -15,13 +18,18 @@ RUN apt-get install -y \
     fish
 
 # Install PHP extensions
-RUN docker-php-ext-install \
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+    && docker-php-ext-install \
     pdo_mysql \
     mbstring \
     exif \
     pcntl \
     bcmath \
-    gd
+    gd \
+    opcache \
+    zip \
+    && pecl install redis \
+    && docker-php-ext-enable redis
 
 # Install composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
